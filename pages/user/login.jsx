@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { getError } from '../../utilities/error';
 import { signIn, useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Register from '../user/register';
+// import Register from '../user/register';
 import Link from 'next/link';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ import {
   logoutSuccess,
   isLogout,
 } from '../../redux/slices/userSlice';
-import { appIsWaiting } from '../../redux/slices/appSlice';
+// import { appIsWaiting } from '../../redux/slices/appSlice';
 import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
@@ -138,7 +138,8 @@ export default function LoginScreen() {
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
         ? router.push(redirect || selection_data.where_going_after_signin)
-        : router.push(redirect || '/admin/dashboard');
+        : null;
+        // : router.push(redirect || '/admin/dashboard');
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -207,7 +208,7 @@ export default function LoginScreen() {
   return (
     <>
       <Head>
-        <title>Login / Register</title>
+        <title>Login</title>
       </Head>
 
       <div className="border-solid rounded-xl  mt-5 bg-loginbg bg-no-repeat bg-cover bg-center text-white p-5">

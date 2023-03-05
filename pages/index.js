@@ -8,11 +8,12 @@
 
 /* eslint-disable @next/next/no-img-element */
 // import { useSession } from 'next-auth/react';
-// import Head from 'next/head';
-// import Image from 'next/image';
-// import Carousel from 'react-material-ui-carousel';
-// import { ApplyNow } from '../components/ApplyNow';
-//import selection_data from '../utilities/selection_data';
+import Head from 'next/head';
+import Image from 'next/image';
+// import { useState } from 'react';
+import Carousel from 'react-material-ui-carousel';
+import { ApplyNow } from '../components/ApplyNow';
+import selection_data from '../utilities/selection_data';
 // import axios from 'axios';
 // import decrypt from '../utilities/encrypt_decrypt/decryptText';
 // import { useEffect } from 'react';
@@ -21,13 +22,18 @@
 // import Link from 'next/link';
 
 // import { useEffect} from 'react';
-// import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { useDispatch } from 'react-redux';
 // import { appSetting} from '../redux/slices/appSlice';
-import LoginScreen from './user/login'
+// import LoginScreen from './user/login'
 export default function Home() {
 
-// const [carousel,setCarousel]=useState([]);
+const [carousel,setCarousel]=useState([]);
+
+useEffect(() => {
+  setCarousel(selection_data.carouselList);
+   }, []);
+
   //  const dispatch = useDispatch();
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -77,7 +83,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ESA Business School</title>
+        <title>ESA Business School - SIS Application</title>
       </Head>
       <Carousel
         className="mt-8 rounded-xl border-8 border-gray-300 h-[200px] md:h-[600px]"
@@ -93,7 +99,7 @@ export default function Home() {
         ))}
       </Carousel>
       
-      <ApplyNow />
+      <ApplyNow /> 
       {/* <LoginScreen/> */}
 
     </>

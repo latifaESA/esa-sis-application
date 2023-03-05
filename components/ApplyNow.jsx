@@ -28,7 +28,7 @@ export const ApplyNow = () => {
       {!session?.user.role ? (
         <Link href="/user/login">
           <div className="flex justify-center uppercase rounded-lg w-32 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800">
-            Apply Now
+            Login
           </div>
         </Link>
       ) : (
