@@ -74,24 +74,24 @@ export const authOptions = {
       // console.log('Session=', session);
       return session;
     },
-    // route the app to /auth-error instead of /api/auth/error
-    async redirect(URL, { error } = {}) {
-      const baseUrl = URL.baseUrl;
-      const url = URL.url;
-      console.log('-------------------');
-      console.log('Testing Version:');
-      console.log('URL==', URL);
-      console.log('url==', url);
-      const errorMessage = error?.toString
-        ? encodeURIComponent(error.toString())
-        : '';
-      console.log('route to==', `${baseUrl}/auth-error?error=${errorMessage}`);
-      console.log('-------------------');
-      if (error && url === `${baseUrl}/api/auth/error`) {
-        return `${baseUrl}/auth-error?error=${errorMessage}`;
-      }
-      return url;
-    },
+    // // route the app to /auth-error instead of /api/auth/error
+    // async redirect(URL, { error } = {}) {
+    //   const baseUrl = URL.baseUrl;
+    //   const url = URL.url;
+    //   console.log('-------------------');
+    //   console.log('Testing Version:');
+    //   console.log('URL==', URL);
+    //   console.log('url==', url);
+    //   const errorMessage = error?.toString
+    //     ? encodeURIComponent(error.toString())
+    //     : '';
+    //   console.log('route to==', `${baseUrl}/auth-error?error=${errorMessage}`);
+    //   console.log('-------------------');
+    //   if (error && url === `${baseUrl}/api/auth/error`) {
+    //     return `${baseUrl}/auth-error?error=${errorMessage}`;
+    //   }
+    //   return url;
+    // },
   },
 
   useWebSocket: false, // disable WebSocket

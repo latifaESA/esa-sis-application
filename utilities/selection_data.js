@@ -2907,7 +2907,7 @@ const selection_data = {
   // where_going_after_logout_fr: '/',
   where_going_after_logout: '/user/login',
 
-  where_going_onclicking_esa_logo: '/user/login',
+  where_going_onclicking_esa_logo: '/',
 
   // where_going_wrong_major_by_URL: '/',
   where_going_wrong_major_by_URL: '/user/login',
@@ -3293,7 +3293,7 @@ const selection_data = {
   cloudinary_image_url:
     'https://api.cloudinary.com/v1_1/ds6avfn6i/image/upload',
   cloudinary_document_url: 'https://api.cloudinary.com/v1_1/ds6avfn6i/upload',
-  isMongoDb: true,
+  isMongoDb: false,
   logger_expiry_day: '30d',
   logger_max_file_size: '20m',
   axios_timeout: [60000], // timeout in milliseconds

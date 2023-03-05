@@ -6,28 +6,30 @@
  * Copyright (c) 2023 ESA
  */
 // import selection_data from '../../utilities/selection_data';
-const fetch = require('node-fetch');
-const { env } = require('process');
+// const fetch = require('node-fetch');
+// const { env } = require('process');
 const winston = require('winston');
 const winstonDaily = require('winston-daily-rotate-file');
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
+// import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 
 // Fetching the logger_max_file_size and logger_expiry_day from the API
 let maxSize, maxFiles;
-(async () => {
-  try {
-    const response = await fetch(
-      `${env.NEXTAUTH_URL}api/controller/settingdata`
-    );
-    const data = await response.json();
-    const decryptedData = JSON.parse(decrypt(data.data));
-    maxSize = decryptedData.setting[0].logger_max_file_size;
-    maxFiles = decryptedData.setting[0].logger_expiry_day;
-  } catch (error) {
-    console.error(`Error fetching settings from API: ${error.message}`);
-    process.exit(1);
-  }
-})();
+maxSize = '20m';
+    maxFiles = '30d';
+// (async () => {
+//   try {
+//     const response = await fetch(
+//       `${env.NEXTAUTH_URL}api/controller/settingdata`
+//     );
+//     const data = await response.json();
+//     const decryptedData = JSON.parse(decrypt(data.data));
+//     maxSize = decryptedData.setting[0].logger_max_file_size;
+//     maxFiles = decryptedData.setting[0].logger_expiry_day;
+//   } catch (error) {
+//     console.error(`Error fetching settings from API: ${error.message}`);
+//     process.exit(1);
+//   }
+// })();
 
 // Creating the winston logger instances
 const loggerError = winston.createLogger({
