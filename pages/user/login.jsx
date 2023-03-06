@@ -23,9 +23,11 @@ import selection_data from '../../utilities/selection_data';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useSelector } from 'react-redux';
-import DownloadIcon from '@mui/icons-material/Download';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { Transition } from '@headlessui/react';
+import Person2Icon from '@mui/icons-material/Person2';
+import LockIcon from '@mui/icons-material/Lock';
+// import DownloadIcon from '@mui/icons-material/Download';
+// import FileUploadIcon from '@mui/icons-material/FileUpload';
+// import { Transition } from '@headlessui/react';
 // import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 // import { appSetting } from '../../redux/slices/appSlice';
 // import { useUserStore } from '../../context/userContext';
@@ -36,11 +38,6 @@ export default function LoginScreen() {
   const router = useRouter();
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
-  const [showReg, setShowReg] = useState(false);
-
-  const showRegHandler = () => {
-    setShowReg(!showReg);
-  };
 
   const dispatch = useDispatch();
 
@@ -137,9 +134,9 @@ export default function LoginScreen() {
     // console.log(session);
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
-        ? router.push(redirect || selection_data.where_going_after_signin)
+        ? router.push(redirect || '/user/dashboard')
         : null;
-        // : router.push(redirect || '/admin/dashboard');
+      // : router.push(redirect || '/admin/dashboard');
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -211,137 +208,97 @@ export default function LoginScreen() {
         <title>Login</title>
       </Head>
 
-      <div className="border-solid rounded-xl  mt-5 bg-loginbg bg-no-repeat bg-cover bg-center text-white p-5">
-        {showReg === false && (
-          <Transition
-            as="div"
-            appear={true}
-            show={true}
-            enter="transition-all duration-500"
-            enterFrom="transform translate-y-full"
-            enterTo="transform translate-x-0"
-            leave="transition-all duration-300"
-            leaveFrom="transform translate-x-0"
-            leaveTo="transform translate-x-full"
+      <div className='border-solid rounded-xl bg-blue-800 mt-5 p-8'>
+        <div className='mx-auto max-w-screen-md p-12 bg-gray-300 shadow-2xl rounded-xl'>
+          <form
+            onSubmit={handleSubmit(submitHandler)}
+            className='rounded-lg p-2 font-bold'
           >
-            <div className="mx-auto max-w-screen-md p-5 ">
-              <form
-                onSubmit={handleSubmit(submitHandler)}
-                className="border-2 rounded-lg p-8 font-bold "
-              >
-                <h1 className="mb-4 text-3xl  text-center">
-                  Input your Email and Password
-                </h1>
-                {errors && (
-                  <div className="text-red-500 text-xl font-bold w-full text-center mt-4 mb-4">
-                    {errorMessage}
+            <h1 className='mb-8 text-[50px] text-center text-blue-900'>
+              ESA SIS
+            </h1>
+            {errors && (
+              <div className='text-red-500 text-xl font-bold w-full mt-4 mb-4'>
+                {errorMessage}
+              </div>
+            )}
+
+            <div className='flex-col justify-center items-center gap-8 '>
+              <div className='relative mb-8'>
+                <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
+                  <Person2Icon fontSize='large' style={{ color: 'darkblue' }} />
+                </div>
+                <input
+                  type='email'
+                  placeholder='USER NAME'
+                  {...register('email', {
+                    required: 'Please Enter Email',
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: 'Please Enter Valid Email',
+                    },
+                  })}
+                  className={`w-full empty:px-12 empty:h-14 border-black`}
+                  id='lemail'
+                />
+                {errors.email && (
+                  <div className='text-red-500 w-full ml-2'>
+                    {errors.email.message}
                   </div>
                 )}
-                <div className="mb-4   ">
-                  <label htmlFor="email">Email</label>
-                  <input
-                    type="email"
-                    {...register('email', {
-                      required: 'Please Enter Email',
-                      pattern: {
-                        value: /\S+@\S+\.\S+/,
-                        message: 'Please Enter Valid Email',
-                      },
-                    })}
-                    className="w-full bg-transparent"
-                    id="lemail"
-                  />
-                  {errors.email && (
-                    <div className="text-red-500 w-full ml-2">
-                      {errors.email.message}
-                    </div>
+              </div>
+              <div className='relative mb-8'>
+                <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
+                  <LockIcon fontSize='large' style={{ color: 'darkblue' }} />
+                </div>
+                <input
+                  type={showPassword === false ? 'password' : 'text'}
+                  className={`w-full empty:px-12 empty:h-14 border-black`}
+                  id='lpassword'
+                  placeholder='PASSWORD'
+                  {...register('password', {
+                    required: 'Please enter password',
+                    minLength: {
+                      value: 7,
+                      message: 'password is more than 6 chars',
+                    },
+                  })}
+                />
+                <div className='absolute top-4 right-5 cursor-pointer'>
+                  {showPassword === false ? (
+                    <VisibilityOffIcon
+                      fontSize='small'
+                      onClick={showPasswordHandler}
+                    />
+                  ) : (
+                    <VisibilityIcon
+                      fontSize='small'
+                      onClick={showPasswordHandler}
+                    />
                   )}
                 </div>
-                <div className="mb-4 relative">
-                  <label htmlFor="password">Password</label>
-                  <input
-                    type={showPassword === false ? 'password' : 'text'}
-                    {...register('password', {
-                      required: 'Please enter password',
-                      minLength: {
-                        value: 7,
-                        message: 'password is more than 6 chars',
-                      },
-                    })}
-                    className="w-full bg-transparent"
-                    id="lpassword"
-                    // autoFocus
-                  />
-                  <div className="absolute top-8 right-5 cursor-pointer">
-                    {showPassword === false ? (
-                      <VisibilityOffIcon
-                        fontSize="small"
-                        onClick={showPasswordHandler}
-                      />
-                    ) : (
-                      <VisibilityIcon
-                        fontSize="small"
-                        onClick={showPasswordHandler}
-                      />
-                    )}
+
+                {errors.password && (
+                  <div className='text-red-500 w-full ml-2'>
+                    {errors.password.message}
                   </div>
-
-                  {errors.password && (
-                    <div className="text-red-500 w-full ml-2">
-                      {errors.password.message}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <Link href="/user/password/forgetpassword" legacyBehavior>
-                    <label className="underline hover:text-red-500 hover:font-bold cursor-pointer">
-                      Forget Password?
-                    </label>
-                  </Link>
-                  <button className="primary-button  float-right hover:text-white hover:font-bold ">
-                    Login
-                  </button>
-                </div>
-              </form>
+                )}
+              </div>
             </div>
-          </Transition>
-        )}
-
-        <div className="flex justify-center">
-          {showReg === false ? (
-            <div
-              onClick={showRegHandler}
-              className={`text-xl font-bold italic cursor-pointer hover:text-red-500`}
-            >
-              Don`t Have an Account? Signup Here!
-              <DownloadIcon />
+            <div className='mb-4 text-right'>
+              <Link href='/user/password/forgetpassword' legacyBehavior>
+                <label className='underline hover:text-red-500 hover:font-bold cursor-pointer'>
+                  Forget Password?
+                </label>
+              </Link>
             </div>
-          ) : (
-            <div
-              onClick={showRegHandler}
-              className={`text-xl font-bold italic cursor-pointer hover:text-red-500`}
-            >
-              Already have an Account? Log in Here!
-              <FileUploadIcon />
+            <div className='mb-4 flex justify-center items-center '>
+              <button className='w-72 bg-gray-600 p-3 uppercase text-[20px] text-white hover:bg-blue-700 hover:font-bold rounded-lg '>
+                Login
+              </button>
             </div>
-          )}
+          </form>
         </div>
-        {showReg === true && (
-          <Transition
-            as="div"
-            appear={true}
-            show={true}
-            enter="transition-all duration-700"
-            enterFrom="transform -translate-y-full"
-            enterTo="transform -translate-y-0"
-            leave="transition-all duration-300"
-            leaveFrom="transform translate-y-0"
-            leaveTo="transform translate-x-full"
-          >
-            {/* <Register /> */}
-          </Transition>
-        )}
       </div>
     </>
   );

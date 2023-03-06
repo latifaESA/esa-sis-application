@@ -24,18 +24,18 @@ export const ApplyNow = () => {
   }, [session?.user.major, userState.user.application_Language]);
 
   return (
-    <div className="flex justify-center mt-2">
+    <div className='flex justify-center mt-2'>
       {!session?.user.role ? (
-        <Link href="/user/login">
-          <div className="flex justify-center uppercase rounded-lg w-32 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800">
+        <Link href='/user/login'>
+          <div className='flex justify-center uppercase rounded-lg w-32 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800'>
             Login
           </div>
         </Link>
       ) : (
         <Link href={`${href}`}>
-          <div className="flex justify-center uppercase rounded-lg w-92 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800">
+          <div className='flex justify-center uppercase rounded-lg w-92 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800'>
             {session?.user.role === '1'
-              ? 'Go To Your Application'
+              ? 'Go To Your Dashboard'
               : 'Go To Dashbord'}
           </div>
         </Link>
