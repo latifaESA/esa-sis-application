@@ -47,10 +47,10 @@ export default function AdminLayout({ children, title }) {
             : 'ESA SIS Application Dashboard'}
         </title>
         <meta
-          name="description"
-          content="ESA SIS Application Dashboard Website Using Next.Js"
+          name='description'
+          content='ESA SIS Application Dashboard Website Using Next.Js'
         />
-        <link rel="icon" href={appState.appVar.esa_logo} />
+        <link rel='icon' href={appState.appVar.esa_logo} />
       </Head>
       {session?.user.role !== '1' ? (
         <>
@@ -58,12 +58,12 @@ export default function AdminLayout({ children, title }) {
           <Transition
             as={Fragment}
             show={showNav}
-            enter="transform transition duration-[400ms]"
-            enterFrom="-translate-x-full"
-            enterTo="translate-x-0"
-            leave="transform duration-[400ms] transition ease-in-out"
-            leaveFrom="translate-x-0"
-            leaveTo="-translate-x-full"
+            enter='transform transition duration-[400ms]'
+            enterFrom='-translate-x-full'
+            enterTo='translate-x-0'
+            leave='transform duration-[400ms] transition ease-in-out'
+            leaveFrom='translate-x-0'
+            leaveTo='-translate-x-full'
           >
             <AdminSideBar showNav={showNav} />
           </Transition>
@@ -72,7 +72,7 @@ export default function AdminLayout({ children, title }) {
               showNav && !isMobile ? 'pl-56' : ''
             }`}
           >
-            <div className="px-4 md:px-16">{children}</div>
+            <div className='px-4 md:px-16'>{children}</div>
           </main>
         </>
       ) : (
