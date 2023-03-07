@@ -134,7 +134,7 @@ export default function LoginScreen() {
     // console.log(session);
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
-        ? router.push(redirect || '/user/dashboard')
+        ? router.push(redirect || '/admin/dashboard')
         : null;
       // : router.push(redirect || '/admin/dashboard');
     }

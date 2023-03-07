@@ -38,50 +38,50 @@ export const Students = () => {
       [name]: value === 'All' ? '' : value,
     });
   };
-  useEffect(() => {
-    // Added as per owner request
-    const handleShowAll = async () => {
-      try {
-        const response = await axios.get('/api/admin/listusers');
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-          setUsers(incomingData);
-          setFormData({
-            ID: '',
-            // Name: '',
-            Lname: '',
-            Fname: '',
-            from: '',
-            to: '',
-            major: '',
-            status: '',
-          });
-          setError('');
-        } else {
-          // If the server sends an empty array of users,
-          // set the message state to indicate that no users were found
-          setUsers([]);
-          setError('No users found');
-        }
-      } catch (error) {
-        console.error(error);
-        setError(error.response.data.message);
-      }
-    };
-    handleShowAll();
+  // useEffect(() => {
+  //   // Added as per owner request
+  //   const handleShowAll = async () => {
+  //     try {
+  //       const response = await axios.get('/api/admin/listusers');
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
+  //         setUsers(incomingData);
+  //         setFormData({
+  //           ID: '',
+  //           // Name: '',
+  //           Lname: '',
+  //           Fname: '',
+  //           from: '',
+  //           to: '',
+  //           major: '',
+  //           status: '',
+  //         });
+  //         setError('');
+  //       } else {
+  //         // If the server sends an empty array of users,
+  //         // set the message state to indicate that no users were found
+  //         setUsers([]);
+  //         setError('No users found');
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //       setError(error.response.data.message);
+  //     }
+  //   };
+  //   handleShowAll();
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/controller/majoritems');
-        const incomingeData = JSON.parse(decrypt(response.data.data));
-        setmajorList(incomingeData.majors);
-        setStatueList(incomingeData.status);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/controller/majoritems');
+  //       const incomingeData = JSON.parse(decrypt(response.data.data));
+  //       setmajorList(incomingeData.majors);
+  //       setStatueList(incomingeData.status);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

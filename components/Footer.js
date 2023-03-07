@@ -14,7 +14,7 @@ export const Footer = () => {
   return (
     <footer className='text-center h-12 shadow-inner'>
       <div className='flex justify-center align-middle items-center m-6 p-2'>
-        <p>copyright © {date} ESA</p>
+        <p>© {date} ESA Business School</p>
       </div>
     </footer>
   );
