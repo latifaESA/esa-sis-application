@@ -68,7 +68,6 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   );
 
   const warnings = [
-  
     {
       id: 0,
       role: 1,
@@ -78,7 +77,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
       isSolved: 0,
       date: '01/03/2023',
     },
-    
+
     {
       id: 1,
       role: 1,
@@ -133,101 +132,25 @@ export default function AdminTopBar({ showNav, setShowNav }) {
 
   return (
     <>
-      {session?.user.role !== '1' && (
-        <div
-          className={`fixed w-full h-16 flex justify-between items-center transition-all z-10 bg-white shadow-sm duration-[400ms] ${
-            showNav ? 'pl-56' : ''
-          }`}
-        >
-          <div className='pl-4 md:pl-16'>
-            <Bars3CenterLeftIcon
-              className='h-8 w-8 text-gray-700 cursor-pointer'
-              onClick={() => setShowNav(!showNav)}
-            />
-          </div>
-          <div className='flex items-center pr-4 md:pr-16'>
-            {session?.user.role === '0' && (
-              <Popover className='relative'>
-                <Popover.Button className='outline-none mr-5 md:mr-8 cursor-pointer text-gray-700'>
-                  <Badge badgeContent={unSolvedWarnings.length} color='warning'>
-                    <BellIcon className='h-6 w-6' />
-                  </Badge>
-                </Popover.Button>
-                <Transition
-                  as={Fragment}
-                  enter='transition ease-out duration-100'
-                  enterFrom='transform scale-95'
-                  enterTo='transform scale-100'
-                  leave='transition ease-in duration=75'
-                  leaveFrom='transform scale-100'
-                  leaveTo='transform scale-95'
-                >
-                  <Popover.Panel className='absolute -right-16 sm:right-4 z-50 mt-2 bg-white shadow-sm rounded max-w-xs sm:max-w-sm w-screen'>
-                    <div className='relative p-3'>
-                      <div className='flex justify-between items-center w-full'>
-                        <p className='text-gray-700 font-medium'>
-                          Notifications
-                        </p>
-                        {/* <a
-                          className='text-sm text-orange-500 cursor-pointer'
-                        >
-                          Mark all as read
-                        </a> */}
-                      </div>
-                      {warningNotification.map(
-                        (warning) =>
-                          warning.isSolved === 0 && (
-                            <div
-                              key={warning.id}
-                              className='mt-4 grid gap-4 grid-cols-1 overflow-hidden'
-                            >
-                              <div className='flex'>
-                                <div className='rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center'>
-                                  <CheckIcon className='h-4 w-4 text-white' />
-                                </div>
-                                <div className='ml-4'>
-                                  <p
-                                    onClick={handleOpenNotificatonMessages}
-                                    className='font-medium text-gray-700 cursor-pointer'
-                                  >
-                                    {warning.action}
-                                  </p>
-                                  <p className='text-sm text-gray-500 truncate'>
-                                    {warning.date}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          )
-                      )}
-                    </div>
-                  </Popover.Panel>
-                </Transition>
-              </Popover>
-            )}
-            <Menu as='div' className='relative inline-block text-left'>
-              <div>
-                <Menu.Button className='inline-flex w-full justify-center items-center'>
-                  <picture>
-                    <Image
-                      className='w-[40px] h-[40px] rounded-full'
-                      alt='avatar'
-                      width={70}
-                      height={70}
-                      src={
-                        userState.user.profileUrl &&
-                        userState.user.profileUrl !== ' '
-                          ? userState.user.profileUrl
-                          : selection_data.user_Avatar
-                      }
-                    ></Image>
-                  </picture>
-                  <span className='hidden md:block font-medium text-gray-700 ml-2'>
-                    {userState.user.name}
-                  </span>
-                  <ChevronDownIcon className='ml-2 h-4 w-4 text-gray-700' />
-                </Menu.Button>
-              </div>
+      <div
+        className={`fixed w-full h-16 flex justify-between items-center transition-all z-10 bg-white shadow-sm duration-[400ms] ${
+          showNav ? 'pl-56' : ''
+        }`}
+      >
+        <div className='pl-4 md:pl-16'>
+          <Bars3CenterLeftIcon
+            className='h-8 w-8 text-gray-700 cursor-pointer'
+            onClick={() => setShowNav(!showNav)}
+          />
+        </div>
+        <div className='flex items-center pr-4 md:pr-16'>
+          {session?.user.role === '0' && (
+            <Popover className='relative'>
+              <Popover.Button className='outline-none mr-5 md:mr-8 cursor-pointer text-gray-700'>
+                <Badge badgeContent={unSolvedWarnings.length} color='warning'>
+                  <BellIcon className='h-6 w-6' />
+                </Badge>
+              </Popover.Button>
               <Transition
                 as={Fragment}
                 enter='transition ease-out duration-100'
@@ -237,9 +160,82 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                 leaveFrom='transform scale-100'
                 leaveTo='transform scale-95'
               >
-                <Menu.Items className='absolute right-0 w-56 z-50 mt-2 origin-top-right bg-white rounded shadow-sm'>
-                  <div className='p-1'>
-                    {/* <Menu.Item>
+                <Popover.Panel className='absolute -right-16 sm:right-4 z-50 mt-2 bg-white shadow-sm rounded max-w-xs sm:max-w-sm w-screen'>
+                  <div className='relative p-3'>
+                    <div className='flex justify-between items-center w-full'>
+                      <p className='text-gray-700 font-medium'>Notifications</p>
+                      {/* <a
+                          className='text-sm text-orange-500 cursor-pointer'
+                        >
+                          Mark all as read
+                        </a> */}
+                    </div>
+                    {warningNotification.map(
+                      (warning) =>
+                        warning.isSolved === 0 && (
+                          <div
+                            key={warning.id}
+                            className='mt-4 grid gap-4 grid-cols-1 overflow-hidden'
+                          >
+                            <div className='flex'>
+                              <div className='rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center'>
+                                <CheckIcon className='h-4 w-4 text-white' />
+                              </div>
+                              <div className='ml-4'>
+                                <p
+                                  onClick={handleOpenNotificatonMessages}
+                                  className='font-medium text-gray-700 cursor-pointer'
+                                >
+                                  {warning.action}
+                                </p>
+                                <p className='text-sm text-gray-500 truncate'>
+                                  {warning.date}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                    )}
+                  </div>
+                </Popover.Panel>
+              </Transition>
+            </Popover>
+          )}
+          <Menu as='div' className='relative inline-block text-left'>
+            <div>
+              <Menu.Button className='inline-flex w-full justify-center items-center'>
+                <picture>
+                  <Image
+                    className='w-[40px] h-[40px] rounded-full'
+                    alt='avatar'
+                    width={70}
+                    height={70}
+                    src={
+                      userState.user.profileUrl &&
+                      userState.user.profileUrl !== ' '
+                        ? userState.user.profileUrl
+                        : selection_data.user_Avatar
+                    }
+                  ></Image>
+                </picture>
+                <span className='hidden md:block font-medium text-gray-700 ml-2'>
+                  {userState.user.name}
+                </span>
+                <ChevronDownIcon className='ml-2 h-4 w-4 text-gray-700' />
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-100'
+              enterFrom='transform scale-95'
+              enterTo='transform scale-100'
+              leave='transition ease-in duration=75'
+              leaveFrom='transform scale-100'
+              leaveTo='transform scale-95'
+            >
+              <Menu.Items className='absolute right-0 w-56 z-50 mt-2 origin-top-right bg-white rounded shadow-sm'>
+                <div className='p-1'>
+                  {/* <Menu.Item>
                   <Link
                     href="/admin/profile"
                     className="flex hover:bg-orange-500 hover:text-white text-gray-700 rounded p-2 text-sm group transition-colors items-center"
@@ -248,23 +244,23 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                     Edit Profile
                   </Link>
                 </Menu.Item> */}
-                    <Menu.Item>
-                      <a
-                        href='#'
-                        className='flex hover:bg-orange-500 hover:text-white text-gray-700 rounded p-2 text-sm group transition-colors items-center'
-                        onClick={logoutClickHandler}
-                      >
-                        <ArrowLeftOnRectangleIcon className='h-4 w-4 mr-2' />
-                        Logout
-                      </a>
-                    </Menu.Item>
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </Menu>
-          </div>
+                  <Menu.Item>
+                    <a
+                      href='#'
+                      className='flex hover:bg-orange-500 hover:text-white text-gray-700 rounded p-2 text-sm group transition-colors items-center'
+                      onClick={logoutClickHandler}
+                    >
+                      <ArrowLeftOnRectangleIcon className='h-4 w-4 mr-2' />
+                      Logout
+                    </a>
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
         </div>
-      )}
+      </div>
+
       {openNotificatonMessages && (
         <NotificatonMessages
           handleOpenNotificatonMessages={handleOpenNotificatonMessages}

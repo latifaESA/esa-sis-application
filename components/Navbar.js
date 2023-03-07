@@ -159,54 +159,54 @@ export const Navbar = () => {
     <>
       {/* <ToastContainer position="bottom-center" limit={1} /> */}
       <header>
-        <nav className="w-full bg-white shadow-md">
-          <div className="justify-between px-4 mx-auto md:items-center md:flex md:px-8">
+        <nav className='w-full bg-white shadow-md'>
+          <div className='justify-between px-4 mx-auto md:items-center md:flex md:px-8'>
             <div>
-              <div className="flex items-center justify-between  md:block">
+              <div className='flex items-center justify-between  md:block'>
                 <Link
                   href={selection_data.where_going_onclicking_esa_logo}
-                  className="text-lg font-bold mt-1"
+                  className='text-lg font-bold mt-1'
                 >
                   <Image
                     src={appState.appVar.esa_logo}
-                    alt="ESA logo"
+                    alt='ESA logo'
                     width={65}
                     height={100}
-                    className="w-[65px] h-[100px]"
+                    className='w-[65px] h-[100px]'
                     priority
                   ></Image>
                 </Link>
-                <div className="md:hidden">
+                <div className='md:hidden'>
                   <button
-                    className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
+                    className='p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border'
                     onClick={() => setIsOpen(!isOpen)}
                   >
                     {isOpen ? (
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='w-6 h-6'
+                        viewBox='0 0 20 20'
+                        fill='currentColor'
                       >
                         <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
+                          fillRule='evenodd'
+                          d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                          clipRule='evenodd'
                         />
                       </svg>
                     ) : (
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='w-6 h-6'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
                         strokeWidth={2}
                       >
                         <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4 6h16M4 12h16M4 18h16"
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M4 6h16M4 12h16M4 18h16'
                         />
                       </svg>
                     )}
@@ -220,14 +220,14 @@ export const Navbar = () => {
                   isOpen ? 'block' : 'hidden'
                 }`}
               >
-                <ul className="items-center flex justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
-                  <li className="text-gray-600 hover:text-blue-600">
+                <ul className='items-center flex justify-end space-y-8 md:flex md:space-x-6 md:space-y-0'>
+                  <li className='text-gray-600 hover:text-blue-600'>
                     <div>
                       {status === 'loading' ? (
                         'Checking Authentication ...'
                       ) : session?.user ? (
                         <>
-                          <div className="flex justify-center">
+                          <div className='flex justify-center'>
                             <Image
                               src={
                                 userState.user.profileUrl &&
@@ -235,19 +235,19 @@ export const Navbar = () => {
                                   ? userState.user.profileUrl
                                   : selection_data.user_Avatar
                               }
-                              alt="avatar"
+                              alt='avatar'
                               width={70}
                               height={70}
-                              className="w-[70px] h-[70px] rounded-full"
+                              className='w-[70px] h-[70px] rounded-full'
                             ></Image>
                           </div>
-                          <Menu as="div" className="relative inline-block">
-                            <Menu.Button className="text-blue-800 uppercase font-bold hover:text-xl">
+                          <Menu as='div' className='relative inline-block'>
+                            <Menu.Button className='text-blue-800 uppercase font-bold hover:text-xl'>
                               {userState.user.name}
                             </Menu.Button>
                             {/* Insert DropDown Menu Items */}
 
-                            <Menu.Items className="absolute w-48 pl-3 min-[200px]:right-0 md:right-0 xl:right-0 origin-top-right bg-white shadow-lg z-10 rounded-xl">
+                            <Menu.Items className='absolute w-48 pl-3 min-[200px]:right-0 md:right-0 xl:right-0 origin-top-right bg-white shadow-lg z-10 rounded-xl'>
                               <Menu.Item>
                                 {/* <DropdownLink
                           className="dropdown-link"
@@ -256,11 +256,11 @@ export const Navbar = () => {
                           Profile
                         </DropdownLink> */}
                                 <Link
-                                  className="dropdown-link"
-                                  href="/user/profile"
+                                  className='dropdown-link'
+                                  href='/user/profile'
                                   replace
                                 >
-                                  <MyLink className="dropdown-link">
+                                  <MyLink className='dropdown-link'>
                                     Profile
                                   </MyLink>
                                 </Link>
@@ -269,12 +269,12 @@ export const Navbar = () => {
                               {session.user.role === '1' && (
                                 <Menu.Item>
                                   <Link
-                                    className="dropdown-link w-full"
-                                    href={href}
+                                    className='dropdown-link w-full'
+                                    href='/admin/dashboard'
                                     replace
                                   >
-                                    <MyLink className="dropdown-link">
-                                      Student Application
+                                    <MyLink className='dropdown-link'>
+                                      Student Dashboard
                                     </MyLink>
                                   </Link>
                                 </Menu.Item>
@@ -285,7 +285,7 @@ export const Navbar = () => {
                                 session.user.role === '3') && (
                                 <Menu.Item>
                                   <DropdownLink
-                                    className="dropdown-link"
+                                    className='dropdown-link'
                                     href={href}
                                   >
                                     Admin Dashboard
@@ -295,8 +295,8 @@ export const Navbar = () => {
 
                               <Menu.Item>
                                 <a
-                                  className="dropdown-link"
-                                  href="#"
+                                  className='dropdown-link'
+                                  href='#'
                                   onClick={logoutClickHandler}
                                 >
                                   Logout
@@ -307,8 +307,8 @@ export const Navbar = () => {
                         </>
                       ) : (
                         <Link
-                          href="/user/login"
-                          className="p-2 font-bold uppercase hover:text-xl"
+                          href='/user/login'
+                          className='p-2 font-bold uppercase hover:text-xl'
                         >
                           Login / Register
                         </Link>

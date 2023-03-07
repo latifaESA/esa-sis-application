@@ -15,11 +15,11 @@ import moment from 'moment';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
 import encrypt from '../../utilities/encrypt_decrypt/encryptText';
-import major_code from '../../utilities/major_code';
+// import major_code from '../../utilities/major_code';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import exportAll from '../../utilities/ExcelExport/exportAll';
-import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
+// import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
@@ -54,31 +54,30 @@ const StudentsList = ({ users, setUsers }) => {
   };
 
   //cancle incomplete
-    const handleCancleIncomplete = (user) => {
+  const handleCancleIncomplete = (user) => {
     setSelectedUser(user);
     setCancleIncomplete(true);
-    const prevStatus = users.find(
-      (u) => u.ID === user.ID
-        )?.status;
-       // console.log("prevStatus",prevStatus)
+    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+    // console.log("prevStatus",prevStatus)
     setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.ID === user.ID ? { ...u, status: prevStatus } : u))
+      prevUsers.map((u) =>
+        u.ID === user.ID ? { ...u, status: prevStatus } : u
+      )
+    );
   };
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
     setConfirmOpenObsolote(false);
     setCancleIncomplete(false);
-     const prevStatus = users.find(
-      (u) => u.ID === user.ID
-        )?.status;
-       // console.log("prevStatus",prevStatus)
+    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+    // console.log("prevStatus",prevStatus)
     setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.ID === user.ID ? { ...u, status: prevStatus } : u))
+      prevUsers.map((u) =>
+        u.ID === user.ID ? { ...u, status: prevStatus } : u
+      )
+    );
   };
-
 
   const handleSave = (user) => {
     axios
@@ -108,62 +107,62 @@ const StudentsList = ({ users, setUsers }) => {
       });
   };
 
-  const handleConfirm = () => {
-    handleSave(selectedUser);
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
-    };
-   const handleChangeMajor =  async(user) => {
-    const targetPromotion = major_code.find(
-      (major) => major.major === user.major
-    )?.promotion;
-    await axios
-      .put(`/api/admin/listusers/major`, {
-        data: encrypt(
-          JSON.stringify({
-            ID: user.ID,
-            major: user.major,
-            promotion: targetPromotion,
-          })
-        ),
-      })
-      .then(async (response) => {
-        // Handle success
-        console.log(response.data);
-        //console.log(response.data.defaultpassword)
-        //console.log(response.data.newID)
-        setMessage('User Major Changed Succesfully!');
-          await EmailAfterChangMajor({
-           lname:response.data.lastname ,
-           fname:response.data.firstname,
-           newID:response.data.newID,
-           email:response.data.email,
-           defaultpassword:response.data.defaultpassword,
-           oldmajor:response.data.oldmajor,
-           newmajor:response.data.newmajor,
-         });
-        
-        setMajorEnable(null);
-        //Update the user's major in the table);
-        setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.ID === user.ID
-              ? {
-                  ...u,
-                  major: user.major,
-                  promotion: targetPromotion,
-                  status: 'incomplete',
-                }
-              : u
-          )
-        );
-      })
-      .catch((error) => {
-        // Handle error
-        console.log(error.response.data);
-      });
-  };
+  // const handleConfirm = () => {
+  //   handleSave(selectedUser);
+  //   setConfirmOpenIncomplete(false);
+  //   setConfirmOpenObsolote(false);
+  //   setCancleIncomplete(false);
+  //   };
+  //  const handleChangeMajor =  async(user) => {
+  //   const targetPromotion = major_code.find(
+  //     (major) => major.major === user.major
+  //   )?.promotion;
+  //   await axios
+  //     .put(`/api/admin/listusers/major`, {
+  //       data: encrypt(
+  //         JSON.stringify({
+  //           ID: user.ID,
+  //           major: user.major,
+  //           promotion: targetPromotion,
+  //         })
+  //       ),
+  //     })
+  //     .then(async (response) => {
+  //       // Handle success
+  //       console.log(response.data);
+  //       //console.log(response.data.defaultpassword)
+  //       //console.log(response.data.newID)
+  //       setMessage('User Major Changed Succesfully!');
+  //         await EmailAfterChangMajor({
+  //          lname:response.data.lastname ,
+  //          fname:response.data.firstname,
+  //          newID:response.data.newID,
+  //          email:response.data.email,
+  //          defaultpassword:response.data.defaultpassword,
+  //          oldmajor:response.data.oldmajor,
+  //          newmajor:response.data.newmajor,
+  //        });
+
+  //       setMajorEnable(null);
+  //       //Update the user's major in the table);
+  //       setUsers((prevUsers) =>
+  //         prevUsers.map((u) =>
+  //           u.ID === user.ID
+  //             ? {
+  //                 ...u,
+  //                 major: user.major,
+  //                 promotion: targetPromotion,
+  //                 status: 'incomplete',
+  //               }
+  //             : u
+  //         )
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       // Handle error
+  //       console.log(error.response.data);
+  //     });
+  // };
 
   setTimeout(() => {
     setMessage('');
@@ -274,7 +273,7 @@ const StudentsList = ({ users, setUsers }) => {
     {
       field: 'action',
       headerName: 'Action',
-      width: `${session.user.role==='0'?300:150}`,
+      width: `${session.user.role === '0' ? 300 : 150}`,
       headerAlign: 'center',
       align: 'center',
       sortable: false,
@@ -299,7 +298,6 @@ const StudentsList = ({ users, setUsers }) => {
               }
             }}
             type='button'
-
           >
             Save
           </button>
@@ -321,7 +319,11 @@ const StudentsList = ({ users, setUsers }) => {
             onClick={() => handleChangeMajor(params.row)}
             disabled={params.id !== majorEnable}
             type='button'
-            hidden={session.user.role === '2' || session.user.role==='3' ? true : false}
+            hidden={
+              session.user.role === '2' || session.user.role === '3'
+                ? true
+                : false
+            }
           >
             Change Major
           </button>
@@ -368,23 +370,21 @@ const StudentsList = ({ users, setUsers }) => {
       }
     }
   };
-const handlePrintSelected = () => {
-  const selectedIDs = selectedRows;
-  console.log('selectedIDs', selectedIDs);
-  const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-  console.log('selectedUsersbefore', selectedUsers);
-selectedUsers.forEach((user) => {
-    if (user.reportURL) {
-      window.open(user.reportURL);
-    }else{
-      setMessage('Please select a user with a report')
-    }
-  });  
-  
-  console.log('selectedUsers', selectedUsers);
-};
+  const handlePrintSelected = () => {
+    const selectedIDs = selectedRows;
+    console.log('selectedIDs', selectedIDs);
+    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+    console.log('selectedUsersbefore', selectedUsers);
+    selectedUsers.forEach((user) => {
+      if (user.reportURL) {
+        window.open(user.reportURL);
+      } else {
+        setMessage('Please select a user with a report');
+      }
+    });
 
-
+    console.log('selectedUsers', selectedUsers);
+  };
 
   return (
     <>
