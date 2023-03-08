@@ -1,23 +1,24 @@
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
-import { SearchInfo } from '../../../components/Admin/Logs/Info/Info';
+import { useSession } from 'next-auth/react';
+import Main from '../../../components/Dashboard/settings/Main';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
 
-export default function InfoPage() {
+export default function Settings() {
   const { data: session } = useSession();
   return (
     <>
       <Head>
-        <title>Dashboard Logs - Info</title>
+        <title>Dashboard - Settings</title>
       </Head>
+
       {session?.user.role === '0' ? (
         <>
           <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
-            Logs Info
+            Settings
           </p>
 
           <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-            <SearchInfo />
+            <Main />
           </div>
         </>
       ) : (
@@ -26,5 +27,5 @@ export default function InfoPage() {
     </>
   );
 }
-InfoPage.auth = true;
-InfoPage.adminOnly = true;
+Settings.auth = true;
+Settings.adminOnly = true;

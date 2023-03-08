@@ -1,14 +1,13 @@
 import { forwardRef } from 'react';
 import Link from 'next/link';
 import {
-  HomeIcon,
   PencilIcon,
-  UserIcon,
   Cog8ToothIcon,
   ComputerDesktopIcon,
   CreditCardIcon,
-  ArchiveBoxIcon,
-  AcademicCapIcon,
+  TableCellsIcon,
+  CalendarDaysIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/react/24/solid';
 
 import { useRouter } from 'next/router';
@@ -42,10 +41,10 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
 
         <div className='flex flex-col'>
           {/* Dashboard Section */}
-          <Link href='/admin/dashboard'>
+          <Link href='/dashboard/dashboard'>
             <div
               className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == '/admin/dashboard'
+                router.pathname == '/dashboard/dashboard'
                   ? 'bg-orange-100 text-orange-500'
                   : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
               }`}
@@ -61,17 +60,17 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
 
           {/* Statistics Section */}
 
-          <Link href='/admin/Statistics'>
+          <Link href='/dashboard/Classes'>
             <div
               className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == '/admin/Statistics'
+                router.pathname == '/dashboard/Classes'
                   ? 'bg-orange-100 text-orange-500'
                   : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
               }`}
               disabled={true}
             >
               <div className='mr-2'>
-                <AcademicCapIcon className='h-5 w-5' />
+                <TableCellsIcon className='h-5 w-5' />
               </div>
               <div>
                 <p>Classes</p>
@@ -79,12 +78,48 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
             </div>
           </Link>
 
-          {/* Warrnings Section */}
+          {/* Grades Section */}
 
-          <Link href='/admin/Logs/Logs'>
+          <Link href='/dashboard/Grades'>
             <div
               className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == '/admin/Logs/Logs'
+                router.pathname == '/dashboard/Grades'
+                  ? 'bg-orange-100 text-orange-500'
+                  : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
+              }`}
+            >
+              <div className='mr-2'>
+                <ClipboardDocumentListIcon className='h-5 w-5' />
+              </div>
+              <div>
+                <p>Grades</p>
+              </div>
+            </div>
+          </Link>
+
+          <Link href='/dashboard/Schedule'>
+            <div
+              className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                router.pathname == '/dashboard/Schedule'
+                  ? 'bg-orange-100 text-orange-500'
+                  : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
+              }`}
+            >
+              <div className='mr-2'>
+                <CalendarDaysIcon className='h-5 w-5' />
+              </div>
+              <div>
+                <p>Schedule</p>
+              </div>
+            </div>
+          </Link>
+
+          {/* Payment Section */}
+
+          <Link href='/dashboard/Payments'>
+            <div
+              className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                router.pathname == '/dashboard/Payments'
                   ? 'bg-orange-100 text-orange-500'
                   : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
               }`}
@@ -98,47 +133,9 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
             </div>
           </Link>
 
-          {/* Archive Section */}
-
-          <Link href='/admin/Archive'>
-            <div
-              className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == '/admin/Archive'
-                  ? 'bg-orange-100 text-orange-500'
-                  : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
-              }`}
-            >
-              <div className='mr-2'>
-                <ArchiveBoxIcon className='h-5 w-5' />
-              </div>
-              <div>
-                <p>Archive</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link href='/admin/Account/Account'>
-            <div
-              className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == '/admin/Account/Account' ||
-                router.pathname == '/admin/Account/CreateAccount' ||
-                router.pathname == '/admin/Account/UsersList'
-                  ? 'bg-orange-100 text-orange-500'
-                  : 'text-gray-400 hover:bg-orange-100 hover:text-orange-500'
-              }`}
-            >
-              <div className='mr-2'>
-                <UserIcon className='h-5 w-5' />
-              </div>
-              <div>
-                <p>Account</p>
-              </div>
-            </div>
-          </Link>
-
           {/* Edit Profile */}
 
-          <Link href='/admin/profile'>
+          <Link href='/dashboard/profile'>
             <div
               className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                 router.pathname == '/admin/profile'
@@ -148,8 +145,6 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
             >
               <div className='mr-2'>
                 <PencilIcon className='h-5 w-5' />
-
-                {/* <CreditCardIcon className="h-5 w-5" /> */}
               </div>
               <div>
                 <p> Edit Profile</p>
@@ -159,7 +154,7 @@ const AdminSideBar = forwardRef(({ showNav }, ref) => {
 
           {/* Settings Section */}
 
-          <Link href='/admin/Settings/Settings'>
+          <Link href='/dashboard/Settings/Settings'>
             <div
               className={`pl-6 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                 router.pathname == '/admin/Settings/Settings' ||

@@ -1,24 +1,24 @@
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
-import Main from '../../../components/Admin/settings/Main';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
+import { GeneralSettings } from '../../../components/Dashboard/settings/general/General';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
 
-export default function Settings() {
+export default function General() {
   const { data: session } = useSession();
   return (
     <>
       <Head>
-        <title>Dashboard - Settings</title>
+        <title>Dashboard Settings - General</title>
       </Head>
 
       {session?.user.role === '0' ? (
         <>
           <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
-            Settings
+            General Settings
           </p>
 
           <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-            <Main />
+            <GeneralSettings />
           </div>
         </>
       ) : (
@@ -27,5 +27,5 @@ export default function Settings() {
     </>
   );
 }
-Settings.auth = true;
-Settings.adminOnly = true;
+General.auth = true;
+General.adminOnly = true;

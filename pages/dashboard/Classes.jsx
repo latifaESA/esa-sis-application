@@ -1,5 +1,3 @@
-import Counts from '../../components/Admin/Statistics/Counts';
-import Chart from '../../components/Admin/Statistics/Chart';
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -19,15 +17,12 @@ export default function Statistics() {
   return (
     <>
       <Head>
-        <title>Dashboard - Statistics</title>
+        <title>Dashboard - Classes</title>
       </Head>
 
-      <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Statistics</p>
+      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Classes</p>
 
-      <div className="grid lg:grid-cols-1 gap-5 mb-5">
-        <Counts />
-        <>{appState.isWaiting ? <> </> : <Chart />}</>
-      </div>
+      <div className='grid lg:grid-cols-1 gap-5 mb-5'>classes table</div>
     </>
   );
 }

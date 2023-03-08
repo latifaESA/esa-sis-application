@@ -270,7 +270,7 @@ export const Navbar = () => {
                                 <Menu.Item>
                                   <Link
                                     className='dropdown-link w-full'
-                                    href='/admin/dashboard'
+                                    href='/dashboard/dashboard'
                                     replace
                                   >
                                     <MyLink className='dropdown-link'>

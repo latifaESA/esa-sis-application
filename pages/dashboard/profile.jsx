@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import ProfileScreen from '../../components/Admin/profile';
+import ProfileScreen from '../../components/Dashboard/profile';
 
 export default function Profile() {
   return (

@@ -14,7 +14,7 @@ import { wrapper } from '../redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import CircularProgress from '@mui/material/CircularProgress';
-import AdminLayout from '../components/Admin/AdminLayout';
+import AdminLayout from '../components/Dashboard/AdminLayout';
 import Cookies from 'js-cookie';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
@@ -94,7 +94,7 @@ function Auth({ children }) {
 
   if (status === 'loading') {
     return (
-      <div className="grid h-screen place-items-center">
+      <div className='grid h-screen place-items-center'>
         <CircularProgress />
       </div>
     );

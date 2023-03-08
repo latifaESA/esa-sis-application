@@ -1,23 +1,23 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
-import SearchError from '../../../components/Admin/Logs/Error/Error';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
+import { DropDownList } from '../../../components/Dashboard/settings/dropDownList/DropDownList';
 
-export default function Error() {
+export default function DropDownListPage() {
   const { data: session } = useSession();
   return (
     <>
       <Head>
-        <title>Dashboard Logs - Errors</title>
+        <title>Dashboard Settings - DropDown Lists</title>
       </Head>
       {session?.user.role === '0' ? (
         <>
           <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
-            Logs Errors
+            DropDown Lists
           </p>
 
           <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-            <SearchError />
+            <DropDownList />
           </div>
         </>
       ) : (
@@ -26,5 +26,5 @@ export default function Error() {
     </>
   );
 }
-Error.auth = true;
-Error.adminOnly = true;
+DropDownListPage.auth = true;
+DropDownListPage.adminOnly = true;

@@ -134,7 +134,7 @@ export default function LoginScreen() {
     // console.log(session);
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
-        ? router.push(redirect || '/admin/dashboard')
+        ? router.push(redirect || '/dashboard/dashboard')
         : null;
       // : router.push(redirect || '/admin/dashboard');
     }
@@ -209,7 +209,7 @@ export default function LoginScreen() {
       </Head>
 
       <div className='border-solid rounded-xl bg-blue-800 mt-5 p-8'>
-        <div className='mx-auto max-w-screen-md p-12 bg-gray-300 shadow-2xl rounded-xl'>
+        <div className='mx-auto max-w-screen-sm p-12 bg-gray-300 shadow-2xl rounded-xl'>
           <form
             onSubmit={handleSubmit(submitHandler)}
             className='rounded-lg p-2 font-bold'
