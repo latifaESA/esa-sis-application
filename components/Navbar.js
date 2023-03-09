@@ -270,7 +270,7 @@ export const Navbar = () => {
                                 <Menu.Item>
                                   <Link
                                     className='dropdown-link w-full'
-                                    href='/dashboard/dashboard'
+                                    href={href}
                                     replace
                                   >
                                     <MyLink className='dropdown-link'>
@@ -280,9 +280,7 @@ export const Navbar = () => {
                                 </Menu.Item>
                               )}
 
-                              {(session.user.role === '0' ||
-                                session.user.role === '2' ||
-                                session.user.role === '3') && (
+                              {session.user.role === '0' && (
                                 <Menu.Item>
                                   <DropdownLink
                                     className='dropdown-link'

@@ -134,9 +134,8 @@ export default function LoginScreen() {
     // console.log(session);
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
-        ? router.push(redirect || '/dashboard/dashboard')
-        : null;
-      // : router.push(redirect || '/admin/dashboard');
+        ? router.push(redirect || '/user/sis/main')
+        : router.push(redirect || '/admin/main');
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -205,7 +204,7 @@ export default function LoginScreen() {
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>ESA SIS - Login</title>
       </Head>
 
       <div className='border-solid rounded-xl bg-blue-800 mt-5 p-8'>

@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
 
-export default function Dashboard() {
+export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(appIsWaiting(false));
@@ -15,9 +15,9 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>Dashboard - Main Board</title>
+        <title>SIS Admin - Main Board</title>
       </Head>
-      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Dashboard</p>
+      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Admin SIS</p>
 
       {/* <div className="grid lg:grid-cols-2 gap-5 mb-5">
         <div className="rounded bg-white h-20 shadow-sm">Notifications</div>
@@ -25,7 +25,7 @@ export default function Dashboard() {
       </div> */}
       <div className='grid lg:grid-cols-1 gap-5 mb-5'>
         {/* <ListUsersDetail /> */}
-        Student Main View
+        Admin Main View
       </div>
       {/* <div className="grid lg:grid-cols-1 gap-5 mb-5">
         <div className="grid col-1 bg-white h-96 shadow-sm">Candidate List</div>
@@ -36,5 +36,5 @@ export default function Dashboard() {
     </>
   );
 }
-Dashboard.auth = true;
-Dashboard.adminOnly = true;
+Main.auth = true;
+Main.adminOnly = true;

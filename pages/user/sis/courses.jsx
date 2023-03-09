@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { appIsWaiting } from '../../redux/slices/appSlice';
+import { appIsWaiting } from '../../../redux/slices/appSlice';
 
-export default function Statistics() {
+export default function Courses() {
   const appState = useSelector(
     (state) => state.persistedReducer.app_state.appState
   );
@@ -17,14 +17,14 @@ export default function Statistics() {
   return (
     <>
       <Head>
-        <title>Dashboard - Classes</title>
+        <title>SIS - Courses</title>
       </Head>
 
-      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Classes</p>
+      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Courses</p>
 
-      <div className='grid lg:grid-cols-1 gap-5 mb-5'>classes table</div>
+      <div className='grid lg:grid-cols-1 gap-5 mb-5'>Courses table</div>
     </>
   );
 }
-Statistics.auth = true;
-Statistics.adminOnly = true;
+Courses.auth = true;
+Courses.adminOnly = true;

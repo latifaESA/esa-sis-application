@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment } from 'react';
-import AdminSideBar from './AdminSideBar';
-import AdminTopBar from './AdminTopBar';
+import DashboardSideBar from './DashboardSideBar';
+import DashboardTopBar from './DashboardTopBar';
 import { Transition } from '@headlessui/react';
 
 export default function AdminLayout({ children }) {
@@ -29,7 +29,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <>
-      <AdminTopBar showNav={showNav} setShowNav={setShowNav} />
+      <DashboardTopBar showNav={showNav} setShowNav={setShowNav} />
       <Transition
         as={Fragment}
         show={showNav}
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }) {
         leaveFrom='translate-x-0'
         leaveTo='-translate-x-full'
       >
-        <AdminSideBar showNav={showNav} />
+        <DashboardSideBar showNav={showNav} />
       </Transition>
       <main
         className={`pt-16 transition-all duration-[400ms] ${

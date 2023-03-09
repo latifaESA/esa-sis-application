@@ -1,12 +1,12 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 
-export default function Account() {
+export default function Schedule() {
   const { data: session } = useSession();
   return (
     <>
       <Head>
-        <title>Dashboard - Account</title>
+        <title>SIS Admin - Schedule</title>
       </Head>
 
       <>
@@ -17,5 +17,5 @@ export default function Account() {
     </>
   );
 }
-Account.auth = true;
-Account.adminOnly = true;
+Schedule.auth = true;
+Schedule.adminOnly = true;

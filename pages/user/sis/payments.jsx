@@ -1,12 +1,12 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 
-export default function Logs() {
+export default function Payments() {
   const { data: session } = useSession();
   return (
     <>
       <Head>
-        <title>Dashboard - Payments</title>
+        <title>SIS - Payments</title>
       </Head>
 
       <>
@@ -17,5 +17,5 @@ export default function Logs() {
     </>
   );
 }
-Logs.auth = true;
-Logs.adminOnly = true;
+Payments.auth = true;
+Payments.adminOnly = true;
