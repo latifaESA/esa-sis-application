@@ -81,7 +81,7 @@ export default function Home() {
         <title>ESA Business School - SIS Application</title>
       </Head>
       <Carousel
-        className='mt-8 rounded-xl border-8 border-gray-300 h-[200px] md:h-[600px]'
+        className='mt-8 rounded-xl  border-8 border-gray-300 h-[200px] md:h-[600px]'
         navButtonsAlwaysVisible={true}
         activeIndicatorIconButtonProps={{
           style: {
@@ -90,7 +90,17 @@ export default function Home() {
         }}
       >
         {carousel.map((item, i) => (
-          <Image key={i} src={item} alt='carousel' fill priority={true} />
+          <Image
+            alt='esa'
+            fill
+            style={{
+              objectFit: 'cover',
+            }}
+            key={i}
+            src={item}
+            priority={true}
+            sizes='100vw,100vw'
+          />
         ))}
       </Carousel>
       <ApplyNow />
@@ -157,9 +167,11 @@ export default function Home() {
             </div>
 
             <div className='w-full md:w-4/12 ml-auto mr-auto px-4'>
-              <img
+              <Image
                 alt='...'
-                src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80'
+                src='/images/img1.png'
+                width={500}
+                height={200}
                 className='max-w-full rounded-lg shadow-lg'
               />
             </div>
@@ -171,10 +183,12 @@ export default function Home() {
         <div className='container mx-auto px-4'>
           <div className='items-center flex flex-wrap'>
             <div className='w-full md:w-4/12 ml-auto mr-auto px-4'>
-              <img
+              <Image
                 alt='...'
+                width={500}
+                height={200}
                 className='max-w-full rounded-lg shadow-lg'
-                src='https://images.unsplash.com/photo-1555212697-194d092e3b8f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
+                src='/images/img2.png'
               />
             </div>
             <div className='w-full md:w-5/12 ml-auto mr-auto px-4'>

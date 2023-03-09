@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
-import { GeneralSettings } from '../../../components/Admin/settings/general/General';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
+import { GeneralSettings } from '../../../components/Dashboard/settings/general/General';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
 
 export default function General() {
   const { data: session } = useSession();

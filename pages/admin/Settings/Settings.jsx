@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
-import Main from '../../../components/Admin/settings/Main';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
+import Main from '../../../components/Dashboard/settings/Main';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
 
 export default function Settings() {
   const { data: session } = useSession();

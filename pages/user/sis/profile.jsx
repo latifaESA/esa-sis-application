@@ -1,11 +1,11 @@
 import Head from 'next/head';
-import ProfileScreen from '../../components/Dashboard/profile';
+import ProfileScreen from '../../../components/Dashboard/profile';
 
 export default function Profile() {
   return (
     <>
       <Head>
-        <title>SIS Admin - Profile Page</title>
+        <title>SIS - Profile Page</title>
       </Head>
 
       <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>

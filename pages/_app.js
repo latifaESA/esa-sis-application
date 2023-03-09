@@ -14,7 +14,7 @@ import { wrapper } from '../redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import CircularProgress from '@mui/material/CircularProgress';
-import AdminLayout from '../components/Admin/AdminLayout';
+import DashboardLayout from '../components/Dashboard/DashboardLayout';
 import Cookies from 'js-cookie';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
@@ -36,9 +36,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 // persistor={store.__persistor}
               >
                 {Component.adminOnly ? (
-                  <AdminLayout>
+                  <DashboardLayout>
                     <Component {...props.pageProps} />
-                  </AdminLayout>
+                  </DashboardLayout>
                 ) : (
                   <Layout>
                     <Component {...props.pageProps} />
@@ -94,7 +94,7 @@ function Auth({ children }) {
 
   if (status === 'loading') {
     return (
-      <div className="grid h-screen place-items-center">
+      <div className='grid h-screen place-items-center'>
         <CircularProgress />
       </div>
     );

@@ -74,7 +74,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
       action: 'Sending Verificaton Email',
       message:
         'Email Could not be sent, a user is trying to register and verify his email but got error while verifiying!',
-      isSolved: 0,
+      isSolved: 1,
       date: '01/03/2023',
     },
 
@@ -84,14 +84,6 @@ export default function AdminTopBar({ showNav, setShowNav }) {
       action: 'Submitting',
       message:
         'network failed a user is trying to submit his application and got this error',
-      isSolved: 0,
-      date: '01/03/2023',
-    },
-    {
-      id: 2,
-      role: 1,
-      action: 'Registering',
-      message: 'Network Error',
       isSolved: 1,
       date: '01/03/2023',
     },
@@ -104,7 +96,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   const handleSolveNotificatonMessages = () => {
     setWarningNotification((prevWarning) =>
       prevWarning.map((warning) => {
-        if (warning.id) {
+        if (warning.id === 0) {
           return { ...warning, isSolved: 1 };
         } else {
           warning;
@@ -137,70 +129,69 @@ export default function AdminTopBar({ showNav, setShowNav }) {
           showNav ? 'pl-56' : ''
         }`}
       >
-        <div className='pl-4 md:pl-16'>
+        <div className='pl-2 md:pl-5'>
           <Bars3CenterLeftIcon
             className='h-8 w-8 text-gray-700 cursor-pointer'
             onClick={() => setShowNav(!showNav)}
           />
         </div>
         <div className='flex items-center pr-4 md:pr-16'>
-          {session?.user.role === '0' && (
-            <Popover className='relative'>
-              <Popover.Button className='outline-none mr-5 md:mr-8 cursor-pointer text-gray-700'>
-                <Badge badgeContent={unSolvedWarnings.length} color='warning'>
-                  <BellIcon className='h-6 w-6' />
-                </Badge>
-              </Popover.Button>
-              <Transition
-                as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform scale-95'
-                enterTo='transform scale-100'
-                leave='transition ease-in duration=75'
-                leaveFrom='transform scale-100'
-                leaveTo='transform scale-95'
-              >
-                <Popover.Panel className='absolute -right-16 sm:right-4 z-50 mt-2 bg-white shadow-sm rounded max-w-xs sm:max-w-sm w-screen'>
-                  <div className='relative p-3'>
-                    <div className='flex justify-between items-center w-full'>
-                      <p className='text-gray-700 font-medium'>Notifications</p>
-                      {/* <a
+          <Popover className='relative'>
+            <Popover.Button className='outline-none mr-5 md:mr-8 cursor-pointer text-gray-700'>
+              <Badge badgeContent={unSolvedWarnings.length} color='warning'>
+                <BellIcon className='h-6 w-6' />
+              </Badge>
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-100'
+              enterFrom='transform scale-95'
+              enterTo='transform scale-100'
+              leave='transition ease-in duration=75'
+              leaveFrom='transform scale-100'
+              leaveTo='transform scale-95'
+            >
+              <Popover.Panel className='absolute -right-16 sm:right-4 z-50 mt-2 bg-white shadow-sm rounded max-w-xs sm:max-w-sm w-screen'>
+                <div className='relative p-3'>
+                  <div className='flex justify-between items-center w-full'>
+                    <p className='text-gray-700 font-medium'>Notifications</p>
+                    {/* <a
                           className='text-sm text-orange-500 cursor-pointer'
                         >
                           Mark all as read
                         </a> */}
-                    </div>
-                    {warningNotification.map(
-                      (warning) =>
-                        warning.isSolved === 0 && (
-                          <div
-                            key={warning.id}
-                            className='mt-4 grid gap-4 grid-cols-1 overflow-hidden'
-                          >
-                            <div className='flex'>
-                              <div className='rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center'>
-                                <CheckIcon className='h-4 w-4 text-white' />
-                              </div>
-                              <div className='ml-4'>
-                                <p
-                                  onClick={handleOpenNotificatonMessages}
-                                  className='font-medium text-gray-700 cursor-pointer'
-                                >
-                                  {warning.action}
-                                </p>
-                                <p className='text-sm text-gray-500 truncate'>
-                                  {warning.date}
-                                </p>
-                              </div>
+                  </div>
+                  {warningNotification.map(
+                    (warning) =>
+                      warning.isSolved === 0 && (
+                        <div
+                          key={warning.id}
+                          className='mt-4 grid gap-4 grid-cols-1 overflow-hidden'
+                        >
+                          <div className='flex'>
+                            <div className='rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center'>
+                              <CheckIcon className='h-4 w-4 text-white' />
+                            </div>
+                            <div className='ml-4'>
+                              <p
+                                onClick={handleOpenNotificatonMessages}
+                                className='font-medium text-gray-700 cursor-pointer'
+                              >
+                                {warning.action}
+                              </p>
+                              <p className='text-sm text-gray-500 truncate'>
+                                {warning.date}
+                              </p>
                             </div>
                           </div>
-                        )
-                    )}
-                  </div>
-                </Popover.Panel>
-              </Transition>
-            </Popover>
-          )}
+                        </div>
+                      )
+                  )}
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </Popover>
+
           <Menu as='div' className='relative inline-block text-left'>
             <div>
               <Menu.Button className='inline-flex w-full justify-center items-center'>

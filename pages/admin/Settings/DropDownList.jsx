@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import AccessDenied from '../../../components/Admin/accessDenied/AccessDenied';
-import { DropDownList } from '../../../components/Admin/settings/dropDownList/DropDownList';
+import AccessDenied from '../../../components/Dashboard/accessDenied/AccessDenied';
+import { DropDownList } from '../../../components/Dashboard/settings/dropDownList/DropDownList';
 
 export default function DropDownListPage() {
   const { data: session } = useSession();
