@@ -308,7 +308,7 @@ export const Navbar = () => {
                           href='/user/login'
                           className='p-2 font-bold uppercase hover:text-xl'
                         >
-                          Login / Register
+                          Login
                         </Link>
                       )}
                     </div>

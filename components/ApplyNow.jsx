@@ -27,13 +27,13 @@ export const ApplyNow = () => {
     <div className='flex justify-center mt-2'>
       {!session?.user.role ? (
         <Link href='/user/login'>
-          <div className='flex justify-center uppercase rounded-lg w-32 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800'>
+          <div className='flex justify-center uppercase rounded-lg w-32 font-bold text-xl p-2 bg-gray-600 text-white hover:bg-blue-700 opacity-90'>
             Login
           </div>
         </Link>
       ) : (
         <Link href={`${href}`}>
-          <div className='flex justify-center uppercase rounded-lg w-92 font-bold text-lg p-2 bg-blue-500 text-white hover:bg-gray-400 hover:text-blue-800'>
+          <div className='flex justify-center uppercase rounded-lg w-92 font-bold text-xl p-2 bg-gray-600 text-white hover:bg-blue-700 opacity-90'>
             {session?.user.role === '1'
               ? 'Go To Your Dashboard'
               : 'Go To Dashbord'}

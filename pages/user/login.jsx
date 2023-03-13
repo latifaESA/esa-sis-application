@@ -25,6 +25,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useSelector } from 'react-redux';
 import Person2Icon from '@mui/icons-material/Person2';
 import LockIcon from '@mui/icons-material/Lock';
+import Image from 'next/image';
 // import DownloadIcon from '@mui/icons-material/Download';
 // import FileUploadIcon from '@mui/icons-material/FileUpload';
 // import { Transition } from '@headlessui/react';
@@ -207,15 +208,21 @@ export default function LoginScreen() {
         <title>ESA SIS - Login</title>
       </Head>
 
-      <div className='border-solid rounded-xl bg-blue-800 mt-5 p-8'>
-        <div className='mx-auto max-w-screen-sm p-12 bg-gray-300 shadow-2xl rounded-xl'>
+      <div className='border-solid rounded-xl bg-loginbg bg-cover mt-5 p-8'>
+        <div className='mx-auto max-w-screen-sm p-8 pt-5 pb-5 bg-gray-300 shadow-2xl rounded-xl opacity-90'>
           <form
             onSubmit={handleSubmit(submitHandler)}
             className='rounded-lg p-2 font-bold'
           >
-            <h1 className='mb-8 text-[50px] text-center text-blue-900'>
-              ESA SIS
-            </h1>
+            <div className='flex mb-8 w-full items-center justify-center'>
+              <Image
+                alt='logo'
+                src='/images/esa.png'
+                width={80}
+                height={120}
+                className='rounded-lg'
+              />
+            </div>
             {errors && (
               <div className='text-red-500 text-xl font-bold w-full mt-4 mb-4'>
                 {errorMessage}
