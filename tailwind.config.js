@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     // screens: {
@@ -11,7 +11,7 @@ module.exports = {
     //   desktop: "1280px",
     // },
     backgroundImage: {
-      loginbg: "url('https://res.cloudinary.com/ds6avfn6i/image/upload/v1672437676/esaonlineapp/Login_background/lgin_eubqpd.png')",
+      loginbg: "url('/images/ESA2.jpg')",
       // loginbg: "url('/images/lgin.png')",
     },
     extend: {},

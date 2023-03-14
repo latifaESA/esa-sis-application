@@ -9,9 +9,9 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Carousel from 'react-material-ui-carousel';
-import { ApplyNow } from '../components/ApplyNow';
 import selection_data from '../utilities/selection_data';
 import { useEffect, useState } from 'react';
+import { ApplyNow } from '../components/ApplyNow';
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -80,7 +80,7 @@ export default function Home() {
       <Head>
         <title>ESA Business School - SIS Application</title>
       </Head>
-      <Carousel
+      {/* <Carousel
         className='mt-8 rounded-xl  border-8 border-gray-300 h-[200px] md:h-[600px]'
         navButtonsAlwaysVisible={true}
         activeIndicatorIconButtonProps={{
@@ -103,7 +103,39 @@ export default function Home() {
           />
         ))}
       </Carousel>
-      <ApplyNow />
+      <ApplyNow /> */}
+
+      <div className='relative pt-16 pb-32 h-[600px] flex content-center items-center justify-center min-h-screen-72 '>
+        <div
+          className='absolute top-0 w-full h-full bg-center bg-cover rounded-lg'
+          style={{
+            backgroundImage: 'url(images/ESA1.jpg)',
+          }}
+        >
+          <span
+            id='blackOverlay'
+            className='w-full h-full absolute opacity-30 bg-black'
+          ></span>
+        </div>
+        <div className='container relative mx-auto'>
+          <div className='items-center flex flex-wrap'>
+            <div className='w-full pt-48 px-4 ml-auto mr-auto text-center'>
+              <div className='text-center'>
+                <h1 className='text-white font-semibold text-5xl'>
+                  One Place for All Your Needs
+                </h1>
+              </div>
+              <div className='pt-60'>
+                <ApplyNow />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className='top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-16'
+          style={{ transform: 'translateZ(0)' }}
+        ></div>
+      </div>
 
       <section className='mt-16 bg-blueGray-200'>
         <div className='container mx-auto px-4'>
