@@ -207,103 +207,107 @@ export default function LoginScreen() {
       <Head>
         <title>ESA SIS - Login</title>
       </Head>
-
-      <div className='border-solid rounded-xl bg-loginbg bg-cover mt-5 p-8'>
-        <div className='mx-auto max-w-screen-sm p-8 pt-5 pb-5 bg-gray-300 shadow-2xl rounded-xl opacity-90'>
-          <form
-            onSubmit={handleSubmit(submitHandler)}
-            className='rounded-lg p-2 font-bold'
-          >
-            <div className='flex mb-8 w-full items-center justify-center'>
-              <Image
-                alt='logo'
-                src='/images/esa.png'
-                width={80}
-                height={120}
-                className='rounded-lg'
-              />
-            </div>
-            {errors && (
-              <div className='text-red-500 text-xl font-bold w-full mt-4 mb-4'>
-                {errorMessage}
-              </div>
-            )}
-
-            <div className='flex-col justify-center items-center gap-8 '>
-              <div className='relative mb-8'>
-                <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                  <Person2Icon fontSize='large' style={{ color: 'darkblue' }} />
-                </div>
-                <input
-                  type='email'
-                  placeholder='USER NAME'
-                  {...register('email', {
-                    required: 'Please Enter Email',
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: 'Please Enter Valid Email',
-                    },
-                  })}
-                  className={`w-full empty:px-12 empty:h-14 border-black`}
-                  id='lemail'
+      <div className=' bg-loginbg bg-cover w-full h-full bg-center top-0'>
+        <div className='border-solid rounded-xl p-8 '>
+          <div className='mx-auto max-w-screen-sm p-8 pt-5 pb-5 bg-gray-300 shadow-2xl rounded-xl opacity-90'>
+            <form
+              onSubmit={handleSubmit(submitHandler)}
+              className='rounded-lg p-2 font-bold'
+            >
+              <div className='flex mb-8 w-full items-center justify-center'>
+                <Image
+                  alt='logo'
+                  src='/images/esa.png'
+                  width={80}
+                  height={120}
+                  className='rounded-lg'
                 />
-                {errors.email && (
-                  <div className='text-red-500 w-full ml-2'>
-                    {errors.email.message}
+              </div>
+              {errors && (
+                <div className='text-red-500 text-xl font-bold w-full mt-4 mb-4'>
+                  {errorMessage}
+                </div>
+              )}
+
+              <div className='flex-col justify-center items-center gap-8 '>
+                <div className='relative mb-8'>
+                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
+                    <Person2Icon
+                      fontSize='large'
+                      style={{ color: 'darkblue' }}
+                    />
                   </div>
-                )}
-              </div>
-              <div className='relative mb-8'>
-                <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                  <LockIcon fontSize='large' style={{ color: 'darkblue' }} />
-                </div>
-                <input
-                  type={showPassword === false ? 'password' : 'text'}
-                  className={`w-full empty:px-12 empty:h-14 border-black`}
-                  id='lpassword'
-                  placeholder='PASSWORD'
-                  {...register('password', {
-                    required: 'Please enter password',
-                    minLength: {
-                      value: 7,
-                      message: 'password is more than 6 chars',
-                    },
-                  })}
-                />
-                <div className='absolute top-4 right-5 cursor-pointer'>
-                  {showPassword === false ? (
-                    <VisibilityOffIcon
-                      fontSize='small'
-                      onClick={showPasswordHandler}
-                    />
-                  ) : (
-                    <VisibilityIcon
-                      fontSize='small'
-                      onClick={showPasswordHandler}
-                    />
+                  <input
+                    type='email'
+                    placeholder='USER NAME'
+                    {...register('email', {
+                      required: 'Please Enter Email',
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: 'Please Enter Valid Email',
+                      },
+                    })}
+                    className={`w-full empty:px-12 empty:h-14 border-black`}
+                    id='lemail'
+                  />
+                  {errors.email && (
+                    <div className='text-red-500 w-full ml-2'>
+                      {errors.email.message}
+                    </div>
                   )}
                 </div>
-
-                {errors.password && (
-                  <div className='text-red-500 w-full ml-2'>
-                    {errors.password.message}
+                <div className='relative mb-8'>
+                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
+                    <LockIcon fontSize='large' style={{ color: 'darkblue' }} />
                   </div>
-                )}
+                  <input
+                    type={showPassword === false ? 'password' : 'text'}
+                    className={`w-full empty:px-12 empty:h-14 border-black`}
+                    id='lpassword'
+                    placeholder='PASSWORD'
+                    {...register('password', {
+                      required: 'Please enter password',
+                      minLength: {
+                        value: 7,
+                        message: 'password is more than 6 chars',
+                      },
+                    })}
+                  />
+                  <div className='absolute top-4 right-5 cursor-pointer'>
+                    {showPassword === false ? (
+                      <VisibilityOffIcon
+                        fontSize='small'
+                        onClick={showPasswordHandler}
+                      />
+                    ) : (
+                      <VisibilityIcon
+                        fontSize='small'
+                        onClick={showPasswordHandler}
+                      />
+                    )}
+                  </div>
+
+                  {errors.password && (
+                    <div className='text-red-500 w-full ml-2'>
+                      {errors.password.message}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className='mb-4 text-right'>
-              <Link href='/user/password/forgetpassword' legacyBehavior>
-                <label className='underline hover:text-red-500 hover:font-bold cursor-pointer'>
-                  Forget Password?
-                </label>
-              </Link>
-            </div>
-            <div className='mb-4 flex justify-center items-center '>
-              <button className='w-72 bg-gray-600 p-3 uppercase text-[20px] text-white hover:bg-blue-700 hover:font-bold rounded-lg '>
-                Login
-              </button>
-            </div>
-          </form>
+              <div className='mb-4 text-right'>
+                <Link href='/user/password/forgetpassword' legacyBehavior>
+                  <label className='underline hover:text-red-500 hover:font-bold cursor-pointer'>
+                    Forget Password?
+                  </label>
+                </Link>
+              </div>
+              <div className='mb-4 flex justify-center items-center '>
+                <button className='w-72 bg-gray-600 p-3 uppercase text-[20px] text-white hover:bg-blue-700 hover:font-bold rounded-lg '>
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

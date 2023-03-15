@@ -86,3 +86,74 @@ textarea {
   text-align: center;
   padding: 5px !important;
 }
+
+.fc-col-header-cell-cushion {
+  color: black;
+}
+.fc-daygrid-day-number {
+  color: black;
+}
+.fc-event-title {
+  margin: 1px;
+  padding-top: 1px;
+  margin-top: 5px;
+  white-space: normal;
+  font-size: 12px;
+}
+.fc-event-time {
+  margin: 1px;
+  padding: 1px;
+  white-space: normal;
+  font-size: 0.9em;
+  width: 3em;
+}
+.fc-day {
+  white-space: normal;
+  font-size: 0.9em;
+}
+.fc-month {
+  white-space: normal;
+  font-size: 0.9em;
+}
+.fc-today-button {
+  background-color: darkgray !important;
+  color: black !important;
+  cursor: pointer;
+}
+.fc-today-button:hover {
+  background-color: darkblue !important;
+  color: white !important;
+}
+.fc-dayGridMonth-button {
+  background-color: darkgray !important;
+  color: black !important;
+  cursor: pointer;
+}
+.fc-dayGridMonth-button:hover {
+  background-color: darkblue !important;
+  color: white !important;
+}
+
+.fc-timeGridWeek-button {
+  background-color: darkgray !important;
+  color: black !important;
+  cursor: pointer;
+}
+.fc-timeGridWeek-button:hover {
+  background-color: darkblue !important;
+  color: white !important;
+}
+.fc-timeGridDay-button {
+  background-color: darkgray !important;
+  color: black !important;
+  cursor: pointer;
+}
+.fc-timeGridDay-button:hover {
+  background-color: darkblue !important;
+  color: white !important;
+}
+
+.fc-button-active {
+  background-color: rgb(46, 46, 218) !important;
+  color: white !important;
+}

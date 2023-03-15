@@ -347,17 +347,15 @@ export default function Layout({ children, title }) {
 
       <Head>
         <title>
-          {title
-            ? title + '- ESA SIS Application'
-            : 'ESA SIS Application'}
+          {title ? title + '- ESA SIS Application' : 'ESA SIS Application'}
         </title>
 
         {/* <meta name="description" content="ESA SIS Application Website" /> */}
         <link rel='icon' href={appState.appVar.esa_logo} />
       </Head>
-      <div className='max-w-screen'>
+      <div>
         <Navbar />
-        <main className='container m-auto px-4 mt-4'>{children}</main>
+        <main>{children}</main>
         <Footer />
       </div>
     </>

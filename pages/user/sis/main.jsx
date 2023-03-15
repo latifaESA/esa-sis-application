@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import SearchCourse from '../../../components/Dashboard/Courses/SearchCourse';
 // import { LowerButtons } from '../../components/Admin/LowerButtons';
 import { appIsWaiting } from '../../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
@@ -24,15 +25,8 @@ export default function Main() {
         <div className="rounded bg-white h-20 shadow-sm">Messages</div>
       </div> */}
       <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-        {/* <ListUsersDetail /> */}
-        Student Main View
+        <SearchCourse />
       </div>
-      {/* <div className="grid lg:grid-cols-1 gap-5 mb-5">
-        <div className="grid col-1 bg-white h-96 shadow-sm">Candidate List</div>
-      </div> */}
-      {/* <div className='grid lg:grid-cols-1 bg-white p-5 shadow-sm'>
-        <LowerButtons />
-      </div> */}
     </>
   );
 }

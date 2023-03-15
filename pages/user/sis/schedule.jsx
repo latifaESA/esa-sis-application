@@ -11,9 +11,7 @@ export default function Schedule() {
       </Head>
 
       <>
-        <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
-          Schedule Table
-        </p>
+        <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Schedule</p>
 
         <div className='grid lg:grid-cols-1 gap-5 mb-5'>
           <CourseSchedule />
