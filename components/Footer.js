@@ -12,8 +12,8 @@ export const Footer = () => {
   const date = new Date().getFullYear();
   // let router = useRouter();
   return (
-    <footer className='text-center h-12 shadow-inner'>
-      <div className='flex justify-center align-middle items-center m-6 p-2'>
+    <footer className='text-center h-10 shadow-inner'>
+      <div className='flex justify-center align-middle items-center p-2'>
         <p>© {date} ESA Business School</p>
       </div>
     </footer>

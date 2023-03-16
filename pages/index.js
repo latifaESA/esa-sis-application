@@ -12,6 +12,7 @@ import Carousel from 'react-material-ui-carousel';
 import selection_data from '../utilities/selection_data';
 import { useEffect, useState } from 'react';
 import { ApplyNow } from '../components/ApplyNow';
+import SocialIcons from '../components/SocialIcons';
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -117,15 +118,18 @@ export default function Home() {
             className='w-full h-full absolute opacity-30 bg-black'
           ></span>
         </div>
-        <div className='container relative mx-auto'>
-          <div className='items-center flex flex-wrap'>
-            <div className='w-full pt-48 px-4 ml-auto mr-auto text-center'>
+
+        <SocialIcons />
+
+        <div className='container relative mx-auto '>
+          <div className='flex flex-wrap items-center'>
+            <div className='w-full pt-30 px-4 text-center'>
               <div className='text-center'>
                 <h1 className='text-white font-semibold text-5xl'>
                   One Place for All Your Needs
                 </h1>
               </div>
-              <div className='pt-60'>
+              <div className='py-8'>
                 <ApplyNow />
               </div>
             </div>
