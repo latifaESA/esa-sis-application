@@ -7,14 +7,14 @@
  */
 
 // import { getSession } from 'next-auth/react';
-import bcryptjs from 'bcryptjs';
+// import bcryptjs from 'bcryptjs';
 // import { getSession } from 'next-auth/react';
 // import { getSession } from 'next-auth/client';
-import UserProfile from '../../../../models/user/ProfileModel';
-import db from '../../../../utilities/connectToDb';
+// import UserProfile from '../../../../models/user/ProfileModel';
+// import db from '../../../../utilities/connectToDb';
 import { newpassword } from '../../controller/queries';
 import { connect, disconnect } from '../../../../utilities/db';
-import selection_data from '../../../../utilities/selection_data';
+// import selection_data from '../../../../utilities/selection_data';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]';
 import sis_app_logger from '../../../api/logger';
@@ -50,50 +50,31 @@ async function handler(req, res) {
   const userAgent = req.headers['user-agent'];
   const userAgentinfo = useragent.parse(userAgent);
 
-  if (selection_data.isMongoDb) {
-    await db.connect();
-    // canceled as per owner request, don't generate a password and singin with it only take the user choose one
-    const toUpdateUser = await UserProfile.findById(user._id);
-    // const toUpdateUser = await UserProfile.findOne({
-    //   email: email,
-    // });
-    if (password) {
-      toUpdateUser.password = bcryptjs.hashSync(password);
+  if (password) {
+    const connection = await connect();
+    if (!connection.success) {
+      const message = connection.message;
+      sis_app_logger.error(
+        `${new Date()}=From changepassword page,connection unsuccess=1=${
+          user.email
+        }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
+          userAgentinfo.family
+        }=${userAgentinfo.source}=${userAgentinfo.device.family}`
+      );
+      res.status(500).json({
+        message: message,
+      });
+    } else {
+      await newpassword(connection, user.email, password);
+      // console.log(update);
+      await disconnect(connection);
     }
-
-    await toUpdateUser.save();
-    await db.disconnect();
-    // console.log('User Password Updated');
-    res.send({
-      message: 'User Password Updated',
-    });
-  } else {
-    if (password) {
-      const connection = await connect();
-      if (!connection.success) {
-        const message = connection.message;
-        sis_app_logger.error(
-          `${new Date()}=From changepassword page,connection unsuccess=1=${
-            user.email
-          }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
-            userAgentinfo.family
-          }=${userAgentinfo.source}=${userAgentinfo.device.family}`
-        );
-        res.status(500).json({
-          message: message,
-        });
-      } else {
-        await newpassword(connection, user.email, password);
-        // console.log(update);
-        await disconnect(connection);
-      }
-    }
-
-    console.log('User Password Updated');
-    res.send({
-      message: 'User Password Updated',
-    });
   }
+
+  console.log('User Password Updated');
+  res.send({
+    message: 'User Password Updated',
+  });
 }
 
 export default handler;
