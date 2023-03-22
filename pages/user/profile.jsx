@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { getError } from '../../utilities/error';
 import axios from 'axios';
 import Head from 'next/head';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useState } from 'react';
 import uploadDocumentToCloud from '../../utilities/uploadToCloud/uploadDocumentToCloud';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
@@ -23,6 +25,14 @@ export default function ProfileScreen() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
     useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const showPasswordHandler = () => {
+    setShowPassword(!showPassword);
+  };
+  const showConfirmPasswordHandler = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
   const openProfileModal = () => setShowProfileModal(true);
   const closeModal = () => {
     setShowProfileModal(false);
@@ -67,23 +77,23 @@ export default function ProfileScreen() {
           session,
           true
         );
- // console.log('uploadPhotoData',typeof uploadPhotoData,uploadPhotoData)
-// //         const imageFile =uploadPhotoData.fileList.find(
-// //           (file) =>
-// //       file.type === 'image/png' ||
-// //       file.type === 'image/jpeg' ||
-// //       file.type === 'image/jpg'
-// //         )
-// // console.log('imageFile',imageFile)
+        // console.log('uploadPhotoData',typeof uploadPhotoData,uploadPhotoData)
+        // //         const imageFile =uploadPhotoData.fileList.find(
+        // //           (file) =>
+        // //       file.type === 'image/png' ||
+        // //       file.type === 'image/jpeg' ||
+        // //       file.type === 'image/jpg'
+        // //         )
+        // // console.log('imageFile',imageFile)
 
-//         const formProfileData = new FormData();
-//         formProfileData.append('file', uploadPhotoData.fileList[0]);
-//         console.log('formData', formProfileData);
-        
-//         const secure_url = await axios.post('/api/CRUD_Op/sendprofile', formProfileData)
-//         .then((res) => res.data.secure_url);
-        
-//         console.log('secure_url', secure_url);
+        //         const formProfileData = new FormData();
+        //         formProfileData.append('file', uploadPhotoData.fileList[0]);
+        //         console.log('formData', formProfileData);
+
+        //         const secure_url = await axios.post('/api/CRUD_Op/sendprofile', formProfileData)
+        //         .then((res) => res.data.secure_url);
+
+        //         console.log('secure_url', secure_url);
 
         if (secure_url) setProfileUrl(secure_url);
         if (typeof secure_url !== 'undefined') {
@@ -183,7 +193,6 @@ export default function ProfileScreen() {
             type='text'
             className='w-full'
             id='fname'
-            // disabled="true"
             autoFocus
             {...register('fname', {
               required: 'Please enter first name',
@@ -201,8 +210,6 @@ export default function ProfileScreen() {
             type='text'
             className='w-full'
             id='lname'
-            // disabled="true"
-            // autoFocus
             {...register('lname', {
               required: 'Please enter last name',
             })}
@@ -212,45 +219,16 @@ export default function ProfileScreen() {
           )}
         </div>
 
-        {/* <div className="mb-4">
-          <label className="font-bold" htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            className="w-full"
-            id="email"
-            disabled="true"
-            {...register('email', {
-              required: 'Please enter email',
-              pattern: {
-                value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/i,
-                message: 'Please enter valid email',
-              },
-            })}
-          />
-          {errors.email && (
-            <div className="text-red-500">{errors.email.message}</div>
-          )}
-        </div> */}
-
-        <div className='mb-4'>
+        <div className='mb-4 relative'>
           <label className='font-bold' htmlFor='password'>
             Password
           </label>
-          {/* <input
-            className="w-full"
-            type="password"
-            id="password"
-            {...register('password', {
-              minLength: { value: 6, message: 'password is more than 5 chars' },
-            })}
-          /> */}
           <input
-            type='password'
+            className='w-full'
+            id='password'
+            type={showPassword === false ? 'password' : 'text'}
             autoComplete='off'
             {...register('password', {
-              // required: 'Please Enter Password',
               pattern: {
                 value:
                   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/,
@@ -258,21 +236,29 @@ export default function ProfileScreen() {
                   'Password should be greater than 7, containing at 1 number and one special (non-alphanumeric) character',
               },
             })}
-            className='w-full'
-            id='password'
-          ></input>
+          />
+          <div className='absolute top-8 right-5 cursor-pointer'>
+            {showPassword === false ? (
+              <VisibilityOffIcon
+                fontSize='small'
+                onClick={showPasswordHandler}
+              />
+            ) : (
+              <VisibilityIcon fontSize='small' onClick={showPasswordHandler} />
+            )}
+          </div>
           {errors.password && (
             <div className='text-red-500 '>{errors.password.message}</div>
           )}
         </div>
 
-        <div className='mb-4'>
+        <div className='mb-4 relative'>
           <label className='font-bold' htmlFor='confirmPassword'>
             Confirm Password
           </label>
           <input
             className='w-full'
-            type='password'
+            type={showConfirmPassword === false ? 'password' : 'text'}
             autoComplete='off'
             id='confirmPassword'
             {...register('confirmPassword', {
@@ -283,6 +269,19 @@ export default function ProfileScreen() {
               },
             })}
           />
+          <div className='absolute top-8 right-5 cursor-pointer'>
+            {showConfirmPassword === false ? (
+              <VisibilityOffIcon
+                fontSize='small'
+                onClick={showConfirmPasswordHandler}
+              />
+            ) : (
+              <VisibilityIcon
+                fontSize='small'
+                onClick={showConfirmPasswordHandler}
+              />
+            )}
+          </div>
           {errors.confirmPassword && (
             <div className='text-red-500 '>
               {errors.confirmPassword.message}
