@@ -110,7 +110,7 @@ export default function Home() {
         <div
           className='absolute top-0 w-full h-full bg-center bg-cover rounded-lg'
           style={{
-            backgroundImage: 'url(images/ESA1.jpg)',
+            backgroundImage: 'url(images/home.jpg)',
           }}
         >
           <span
@@ -123,13 +123,13 @@ export default function Home() {
 
         <div className='container relative mx-auto '>
           <div className='flex flex-wrap items-center'>
-            <div className='w-full pt-30 px-4 text-center'>
-              <div className='text-center'>
+            <div className='w-full pt-16 mr-32 text-center'>
+              <div className='text-center mb-14'>
                 <h1 className='text-white font-semibold text-5xl'>
                   One Place for All Your Needs
                 </h1>
               </div>
-              <div className='py-8'>
+              <div className='py-16'>
                 <ApplyNow />
               </div>
             </div>

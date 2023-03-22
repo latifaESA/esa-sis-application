@@ -12,7 +12,7 @@ module.exports = {
     // },
     backgroundImage: {
       loginbg: "url('/images/ESA2.jpg')",
-      // loginbg: "url('/images/lgin.png')",
+      // loginbg: "url('/images/lgin.jpg')",
     },
     extend: {},
   },
