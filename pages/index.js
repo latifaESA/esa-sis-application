@@ -13,6 +13,7 @@ import selection_data from '../utilities/selection_data';
 import { useEffect, useState } from 'react';
 import { ApplyNow } from '../components/ApplyNow';
 import SocialIcons from '../components/SocialIcons';
+import LoginScreen from './user/login'
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -81,6 +82,7 @@ export default function Home() {
       <Head>
         <title>ESA Business School - SIS Application</title>
       </Head>
+      <LoginScreen />
       {/* <Carousel
         className='mt-8 rounded-xl  border-8 border-gray-300 h-[200px] md:h-[600px]'
         navButtonsAlwaysVisible={true}
@@ -105,8 +107,8 @@ export default function Home() {
         ))}
       </Carousel>
       <ApplyNow /> */}
-
-      <div className='relative pt-16 pb-32 h-[600px] flex content-center items-center justify-center min-h-screen-72 '>
+        
+      {/* <div className='relative pt-16 pb-32 h-[600px] flex content-center items-center justify-center min-h-screen-72 '>
         <div
           className='absolute top-0 w-full h-full bg-center bg-cover rounded-lg'
           style={{
@@ -425,7 +427,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
