@@ -207,19 +207,21 @@ export default function LoginScreen() {
       <Head>
         <title>ESA SIS - Login</title>
       </Head>
-      <div className=' bg-loginbg bg-cover w-full h-full bg-center top-0'>
-        <div className='border-solid rounded-xl p-8 '>
-          <div className='mx-auto max-w-screen-sm p-8 pt-5 pb-5 bg-gray-300 shadow-2xl rounded-xl opacity-90'>
+      <div className=' bg-gray gray-scale-4 bg-cover w-full h-full bg-center top-0'>
+        <div className='space-x-0 flex justify-center border-solid  p-8 fixed top-0 left-0 w-full h-full'>
+        <div className='md:w-1/2 md:bg-loginbg max-w-md p-8 pt-4 pb-4 bg-gray-300 shadow-2xl opacity-90'>
+          </div>
+          <div className='w-1/2 max-w-md p-8 pt-4 pb-4 bg-white shadow-2xl  opacity-90'>
             <form
               onSubmit={handleSubmit(submitHandler)}
               className='rounded-lg p-2 font-bold'
             >
-              <div className='flex mb-8 w-full items-center justify-center'>
+              <div className='flex mb-8 w-full mr-8'>
                 <Image
                   alt='logo'
                   src='/images/esa.png'
-                  width={80}
-                  height={120}
+                  width={81}
+                  height={151}
                   className='rounded-lg'
                 />
               </div>
@@ -228,15 +230,35 @@ export default function LoginScreen() {
                   {errorMessage}
                 </div>
               )}
+              
+              <div className="flex absolute w-164 h-66 tracking-wider text-gray-700 opacity-100 top-16 right-17 ml-28 mt-10 ">
+              <div className="flex flex-col ">
+                <span className="font-normal text-2xl ">WELCOME TO </span>
+                <span className="font-bold text-3xl mt-2 ">SIS</span>
+              </div>
+            </div>
+            
+            
 
-              <div className='flex-col justify-center items-center gap-8 '>
-                <div className='relative mb-8'>
-                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                    <Person2Icon
+
+             <div className="flex sm:justify-center  absolute top-485 left-1134 w-89 h-39 text-left font-medium text-3xl leading-10 tracking-normal text-blue-700 opacity-100 ml-32">
+                 Login
+             </div>
+
+              <div className="relative top-28 left-1034 w-74 h-18 text-left font-normal leading-30 tracking-wider text-gray-700 opacity-100">
+              Username
+              </div>
+
+
+              <div className='flex-col justify-center items-center  '>
+                <div className='relative mb-8  top-16 mt-6 '>
+                  {/* <div className='absolute inset-y-0 left-0 flex items-center pl-2 '> */}
+                    {/* <Person2Icon
                       fontSize='large'
                       style={{ color: 'darkblue' }}
-                    />
-                  </div>
+                    /> */}
+                  {/* </div> */}
+                 
                   <input
                     type='email'
                     placeholder='USER NAME'
@@ -247,22 +269,36 @@ export default function LoginScreen() {
                         message: 'Please Enter Valid Email',
                       },
                     })}
-                    className={`w-full empty:px-12 empty:h-14 border-black`}
+                    className={`w-full px-3 py-2 appearance-none border border-gray-400 bg-white  mt-8 mb-2`}
                     id='lemail'
+                    style={{ borderRadius: '9999px' }}
                   />
+                   
                   {errors.email && (
                     <div className='text-red-500 w-full ml-2'>
                       {errors.email.message}
                     </div>
+                    
                   )}
+                  
                 </div>
-                <div className='relative mb-8'>
-                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                    <LockIcon fontSize='large' style={{ color: 'darkblue' }} />
-                  </div>
+
+             
+            
+               
+                <div className="relative top-28 mb-11  left-1034 w-74 h-18 text-left font-normal leading-30 tracking-wider text-gray-700 opacity-100">
+              Password
+              </div>
+
+                <div className='relative mb-8  top-4'>
+                  
+                  {/* <div className='absolute inset-y-0 left-0 flex items-center pl-2'> */}
+                    {/* <LockIcon fontSize='large' style={{ color: 'darkblue' }} /> */}
+                  {/* </div> */}
                   <input
                     type={showPassword === false ? 'password' : 'text'}
-                    className={`w-full empty:px-12 empty:h-14 border-black`}
+                    className={`w-full px-3 py-2 appearance-none border border-gray-400 bg-white pb-8 mt-16 -mb-20`}
+                    style={{ borderRadius: '9999px' }}
                     id='lpassword'
                     placeholder='PASSWORD'
                     {...register('password', {
@@ -273,7 +309,7 @@ export default function LoginScreen() {
                       },
                     })}
                   />
-                  <div className='absolute top-4 right-5 cursor-pointer'>
+                  {/* <div className='absolute top-4 right-5 cursor-pointer'>
                     {showPassword === false ? (
                       <VisibilityOffIcon
                         fontSize='small'
@@ -285,7 +321,7 @@ export default function LoginScreen() {
                         onClick={showPasswordHandler}
                       />
                     )}
-                  </div>
+                  </div> */}
 
                   {errors.password && (
                     <div className='text-red-500 w-full ml-2'>
@@ -294,16 +330,17 @@ export default function LoginScreen() {
                   )}
                 </div>
               </div>
-              <div className='mb-4 text-right'>
+              <div className='flex relative mb-4 text-right sm:justify-end'>
                 <Link href='/user/password/forgetpassword' legacyBehavior>
-                  <label className='underline hover:text-red-500 hover:font-bold cursor-pointer'>
+                  <label className='absolute top-718 left-32 ml-4 mt-4 w-90 h-10 text-left font-light text-xs leading-4 tracking-normal text-gray-700 opacity-100'>
                     Forget Password?
                   </label>
                 </Link>
               </div>
-              <div className='mb-4 flex justify-center items-center '>
-                <button className='w-72 bg-gray-600 p-3 uppercase text-[20px] text-white hover:bg-blue-700 hover:font-bold rounded-lg '>
-                  Login
+              
+              <div className=' relative flex justify-center items-center h-48 '>
+                <button className='w-20 bg-blue-600 p-3 text-[18px] text-white hover:bg-gray-700 hover:font-bold rounded-full  mb-12 bottom-24">'>
+                  Log in
                 </button>
               </div>
             </form>
