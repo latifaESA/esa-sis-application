@@ -166,20 +166,13 @@ console.log(result)
         const userSession = await getSession();
         console.log('userSession==>', userSession);
         if (userSession) {
-          // dispatch(
-          //   loginSuccess({
-          //     name: userSession.user.name,
-          //     _id: userSession.user._id,
-          //     major: userSession.user.major,
-          //     status: userSession.user.status,
-          //     appisSaved:
-          //       typeof userSession.user.appisSaved !== 'undefined'
-          //         ? userSession.user.appisSaved
-          //         : false,
-          //     application_Language: userSession.user.application_Language,
-          //     profileUrl: userSession.user.profileUrl,
-          //   })
-          // );
+          dispatch(
+            loginSuccess({
+              name: userSession.user.name,
+              email: userSession.user.email,
+              role: userSession.user.role,
+            })
+          );
           console.log(userSession)
           dispatch(isLogout(false));
         }

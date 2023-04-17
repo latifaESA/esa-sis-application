@@ -45,35 +45,15 @@ export const authOptions = {
   callbacks: {
     /* A function that is called by the `next-auth` module. */
     async jwt({ token, user }) {
-      if (user?._id) token._id = user._id;
-      if (user?.ID) token.ID = user.ID;
-      if (user?.fname && user?.lname)
-        token.name = user.fname + ' ' + user.lname;
+      if (user?.name) token.name = user.name;
+      if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;
-      if (user?.major) token.major = user.major;
-      if (user?.mobileNumber) token.mobileNumber = user.mobileNumber;
-      if (user?.status) token.status = user.status;
-      if (user?.appisSaved) token.appisSaved = user.appisSaved;
-      if (user?.promotion) token.promotion = user.promotion;
-      if (user?.application_Language)
-        token.application_Language = user.application_Language;
-      if (user?.profileUrl) token.profileUrl = user.profileUrl;
       return token;
     },
     async session({ session, token }) {
-      if (token?._id) session.user._id = token._id;
-      if (token?.ID) session.user.ID = token.ID;
       if (token?.name) session.user.name = token.name;
+      if (token?.email) session.user.email = token.email;
       if (token?.role) session.user.role = token.role;
-      if (token?.major) session.user.major = token.major;
-      if (token?.mobileNumber) session.user.mobileNumber = token.mobileNumber;
-      if (token?.status) session.user.status = token.status;
-      if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
-      if (token?.promotion) session.user.promotion = token.promotion;
-      if (token?.application_Language)
-        session.user.application_Language = token.application_Language;
-      if (token?.profileUrl) session.user.profileUrl = token.profileUrl;
-      // console.log('Session=', session);
       return session;
     },
   },
@@ -112,7 +92,8 @@ export const authOptions = {
               credentials.email,
             );
           //  check if there is user with the given id
-          if(user.rows){
+          // check if the user is admin
+          if(user.rows[0].role === 2){
             // check if the password is correct
             if(bcryptjs.compareSync(credentials.password.trim(),user.rows[0].userpassword)){
               // check if the user is admin
@@ -126,19 +107,25 @@ export const authOptions = {
                 );
                 // if the admin exists then send the data to frontend
             if(admin.rows){
+
+              await disconnect(connection);
+              // Write to logger
+              if (req) {
+                // Log user information
+                // userinfo.role ==='1'?
+                sis_app_logger.info(
+                  `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                    userAgentinfo.os.family
+                  }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                    userAgentinfo.source
+                  }=${userAgentinfo.device.family}`
+                );
+              }
+
               return {
-                        _id: 123,
-                        ID: 89,
-                        name: 'userinfo.firstname  userinfo.lastname',
-                        email: 'userinfo.email',
-                        major: 'program.program',
-                        status: 'userinfo.status',
-                        appisSaved: 'userinfo.appisSaved',
-                        application_Language: 'userinfo.application_Language',
-                        mobileNumber: 'userinfo.mobile_number',
-                        role: 'userinfo.role',
-                        profileUrl: 'userinfo.profileUrl',
-                        promotion: 'current_app_promotion.current_applicants_promotion',
+                        name: admin.rows[0].adminname,
+                        email: admin.rows[0].adminemail,
+                        role: user.rows[0].role,
                       };
               }else{
                 // if the admin is not exists then send this message to frontend
@@ -148,8 +135,19 @@ export const authOptions = {
           }else{
             // if the password is incorrect then send this message
             message = 'Invalid Password';
+                sis_app_logger.error(
+                  `${new Date()}=From nextauth signin=---=${
+                    req.body.email
+                  }=${message}=${userAgentinfo.os.family}=${
+                    userAgentinfo.os.major
+                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
+                    userAgentinfo.device.family
+                  }`
+                );
           }
                 }
+
+
           // connection.end();
 
           // const user = await findData(
