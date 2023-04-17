@@ -23,24 +23,43 @@ async function current_applicant_promotion(major_id, user_id, connection) {
   }
 }
 
+/* Start Postegresql */
 /**
  * It finds Data from the databasevand returns true or false
  * </code>
  */
-async function findData(connection, name, table, value) {
-  try {
-    const [result] = await executeQuery(
-      connection,
-      `select max(if(${name}=?,true,false)) AS result from ${table}`,
-      [value]
-    );
+// async function findData(connection, name, table, value) {
+//   try {
+//     const [result] = await executeQuery(
+//       connection,
+//       `select max(if(${name}=?,true,false)) AS result from ${table}`,
+//       [value]
+//     );
 
+//     return result;
+//   } catch (err) {
+//     return err;
+//   }
+// }
+// const results = await new Promise((resolve, reject) => {
+//   connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
+//     if (err) {
+//       reject(err);
+//     } else {
+//       resolve(res.rows);
+//     }
+//   });
+// });
+async function findData(connection, table, where, name){
+  try{
+    const result = connection.query(`SELECT * from ${table} WHERE ${where} = ${name}`)
     return result;
-  } catch (err) {
-    return err;
+  }catch(err){
+    return err
   }
 }
 
+/* End Postegresql */
 /**
  * It saves the userinfo at signup(register) page FOR BBA .
  * </code>

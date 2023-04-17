@@ -1,5 +1,6 @@
 // const mysql = require('mysql2');
 // const { env } = require('process');
+const { Client } = require('pg');
 
 // let connected = false;
 // async function connect() {
@@ -99,21 +100,35 @@
 
 // module.exports = { executeQuery, connect, disconnect };
 
-const mysql = require('mysql2');
-const { env } = require('process');
+// const mysql = require('mysql2');
+// const { env } = require('process');
 
 let connected = false;
 async function connect() {
   // Create a new connection to the database
 
+
+
+
+
+// client.connect();
+
   try {
-    const connection = mysql.createConnection({
-      host: env.host,
-      user: env.user,
-      password: env.password,
-      database: env.database,
-      multipleStatements: false,
-    });
+    // const connection = mysql.createConnection({
+    //   host: env.host,
+    //   user: env.user,
+    //   password: env.password,
+    //   database: env.database,
+    //   multipleStatements: false,
+    // });
+
+    const connection = new Client({
+      user: 'postgres',
+      host: 'localhost',
+      database: 'postgres',
+      password: '0000',
+      port: 5432,
+    })
 
     await new Promise((resolve, reject) => {
       connection.connect((err) => {

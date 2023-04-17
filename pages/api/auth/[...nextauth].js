@@ -9,17 +9,19 @@
 import bcryptjs from 'bcryptjs';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import {
-  findData,
-  Userinfo,
-  findmajor_name,
-  current_applicant_promotion,
-  findmajor_id,
-} from '../controller/queries';
+// import {
+//   findData,
+//   Userinfo,
+//   findmajor_name,
+//   current_applicant_promotion,
+//   findmajor_id,
+// } from '../controller/queries';
 import { connect, disconnect } from '../../../utilities/db';
 
 import sis_app_logger from '../logger';
 import useragent from 'useragent';
+import { findData } from '../controller/queries';
+// import client from '../../../utilities/db1'
 
 // // Import cors
 // import cors from 'cors';
@@ -74,24 +76,6 @@ export const authOptions = {
       // console.log('Session=', session);
       return session;
     },
-    // // route the app to /auth-error instead of /api/auth/error
-    // async redirect(URL, { error } = {}) {
-    //   const baseUrl = URL.baseUrl;
-    //   const url = URL.url;
-    //   console.log('-------------------');
-    //   console.log('Testing Version:');
-    //   console.log('URL==', URL);
-    //   console.log('url==', url);
-    //   const errorMessage = error?.toString
-    //     ? encodeURIComponent(error.toString())
-    //     : '';
-    //   console.log('route to==', `${baseUrl}/auth-error?error=${errorMessage}`);
-    //   console.log('-------------------');
-    //   if (error && url === `${baseUrl}/api/auth/error`) {
-    //     return `${baseUrl}/auth-error?error=${errorMessage}`;
-    //   }
-    //   return url;
-    // },
   },
 
   useWebSocket: false, // disable WebSocket
@@ -104,143 +88,208 @@ export const authOptions = {
         const connection = await connect();
         if (connection.success) {
           console.log('connection to DB succes nextauth signin');
+
+          // try {
+          //   const results = await new Promise((resolve, reject) => {
+          //     connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
+          //       if (err) {
+          //         reject(err);
+          //       } else {
+          //         resolve(res.rows);
+          //       }
+          //     });
+          //   });
+          //   console.log(results);
+          // } catch (err) {
+          //   console.error(err);
+          // }
+
+          // get the user info
           const user = await findData(
-            connection,
-            'email',
-            'user_profile',
-            credentials.email
-          ); //email from req body
-          const userinfo = await Userinfo(connection, credentials.email); //email from req body
-          // console.log(user);
-          // console.log('User In Auth=', user);
-          if (user.result) {
-            // console.log('User=', user);
-            /* Checking if the user is verified and if the user is not obsolete. */
-            if (
-              bcryptjs.compareSync(
-                credentials.password.trim(),
-                userinfo.password
-              ) &&
-              userinfo.status !== 'obsolete' &&
-              userinfo.isVerified
-            ) {
-              if (userinfo) {
-                const program = await findmajor_name(
+              connection,
+              'users',
+              'userid',
+              credentials.email,
+            );
+          //  check if there is user with the given id
+          if(user.rows){
+            // check if the password is correct
+            if(bcryptjs.compareSync(credentials.password.trim(),user.rows[0].userpassword)){
+              // check if the user is admin
+              if(user.rows[0].role === 2){
+                // get the admin data
+                const admin = await findData(
                   connection,
-                  userinfo.user_id
+                  'admin',
+                  'adminid',
+                  user.rows[0].userid,
                 );
-                const programid = await findmajor_id(
-                  connection,
-                  program.program
-                );
-                const current_app_promotion = await current_applicant_promotion(
-                  programid.major_id,
-                  userinfo.user_id,
-                  connection
-                );
-
-                //console.log('User', userinfo)
-                //console.log(program.program)
-                await disconnect(connection);
-                // Write to logger
-                if (req) {
-                  // Log user information
-                  // userinfo.role ==='1'?
-                  sis_app_logger.info(
-                    `${new Date()}=${userinfo.role}=login=${req.body.email}=${
-                      userAgentinfo.os.family
-                    }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-                      userAgentinfo.source
-                    }=${userAgentinfo.device.family}`
-                  );
-                }
-
-                return {
-                  _id: userinfo.user_id,
-                  ID: userinfo.user_id,
-                  name: userinfo.firstname + ' ' + userinfo.lastname,
-                  email: userinfo.email,
-                  major: program.program,
-                  status: userinfo.status,
-                  appisSaved: userinfo.appisSaved,
-                  application_Language: userinfo.application_Language,
-                  mobileNumber: userinfo.mobile_number,
-                  role: userinfo.role,
-                  profileUrl: userinfo.profileUrl,
-                  promotion: current_app_promotion.current_applicants_promotion,
-                };
-              }
-            } else {
-              /* Checking if the password is correct. */
-              if (
-                !bcryptjs.compareSync(credentials.password, userinfo.password)
-              ) {
-                message = 'Invalid Password';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              /* Checking if the user is obsolete. */
-              if (userinfo.status === 'obsolete') {
-                message =
-                  'Your application has been created a year ago and thus you need to submit a new application ';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              /* Checking if the user student is verified or not. */
-              if (!userinfo.isVerified && userinfo.role === '1') {
-                message =
-                  'Account Not Activated, Please Check Your Email Indox!';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              // case where admin account was locked by the super admin
-              if (!userinfo.isVerified && userinfo.role !== '1') {
-                message = 'Account Is Locked Contact The Admin!';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
+                // if the admin exists then send the data to frontend
+            if(admin.rows){
+              return {
+                        _id: 123,
+                        ID: 89,
+                        name: 'userinfo.firstname  userinfo.lastname',
+                        email: 'userinfo.email',
+                        major: 'program.program',
+                        status: 'userinfo.status',
+                        appisSaved: 'userinfo.appisSaved',
+                        application_Language: 'userinfo.application_Language',
+                        mobileNumber: 'userinfo.mobile_number',
+                        role: 'userinfo.role',
+                        profileUrl: 'userinfo.profileUrl',
+                        promotion: 'current_app_promotion.current_applicants_promotion',
+                      };
+              }else{
+                // if the admin is not exists then send this message to frontend
+                message = 'Admin is not exists'
               }
             }
-          } else {
-            message =
-              'Invalid Email:the account is not found, submit a new application';
-            sis_app_logger.error(
-              `${new Date()}=From nextauth signin=---=${
-                req.body.email
-              }=${message}=${userAgentinfo.os.family}=${
-                userAgentinfo.os.major
-              }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                userAgentinfo.device.family
-              }`
-            );
+          }else{
+            // if the password is incorrect then send this message
+            message = 'Invalid Password';
           }
+                }
+          // connection.end();
+
+          // const user = await findData(
+          //   connection,
+          //   'email',
+          //   'user_profile',
+          //   credentials.email
+          // ); //email from req body
+
+          // const userinfo = await Userinfo(connection, credentials.email); //email from req body
+          // // console.log(user);
+          // // console.log('User In Auth=', user);
+          // if (user.result) {
+          //   // console.log('User=', user);
+          //   /* Checking if the user is verified and if the user is not obsolete. */
+          //   if (
+          //     bcryptjs.compareSync(
+          //       credentials.password.trim(),
+          //       userinfo.password
+          //     ) &&
+          //     userinfo.status !== 'obsolete' &&
+          //     userinfo.isVerified
+          //   ) {
+          //     if (userinfo) {
+          //       const program = await findmajor_name(
+          //         connection,
+          //         userinfo.user_id
+          //       );
+          //       const programid = await findmajor_id(
+          //         connection,
+          //         program.program
+          //       );
+          //       const current_app_promotion = await current_applicant_promotion(
+          //         programid.major_id,
+          //         userinfo.user_id,
+          //         connection
+          //       );
+
+          //       //console.log('User', userinfo)
+          //       //console.log(program.program)
+          //       await disconnect(connection);
+          //       // Write to logger
+          //       if (req) {
+          //         // Log user information
+          //         // userinfo.role ==='1'?
+          //         sis_app_logger.info(
+          //           `${new Date()}=${userinfo.role}=login=${req.body.email}=${
+          //             userAgentinfo.os.family
+          //           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+          //             userAgentinfo.source
+          //           }=${userAgentinfo.device.family}`
+          //         );
+          //       }
+
+          //       return {
+          //         _id: userinfo.user_id,
+          //         ID: userinfo.user_id,
+          //         name: userinfo.firstname + ' ' + userinfo.lastname,
+          //         email: userinfo.email,
+          //         major: program.program,
+          //         status: userinfo.status,
+          //         appisSaved: userinfo.appisSaved,
+          //         application_Language: userinfo.application_Language,
+          //         mobileNumber: userinfo.mobile_number,
+          //         role: userinfo.role,
+          //         profileUrl: userinfo.profileUrl,
+          //         promotion: current_app_promotion.current_applicants_promotion,
+          //       };
+          //     }
+          //   } else {
+          //     /* Checking if the password is correct. */
+          //     if (
+          //       !bcryptjs.compareSync(credentials.password, userinfo.password)
+          //     ) {
+          //       message = 'Invalid Password';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     /* Checking if the user is obsolete. */
+          //     if (userinfo.status === 'obsolete') {
+          //       message =
+          //         'Your application has been created a year ago and thus you need to submit a new application ';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     /* Checking if the user student is verified or not. */
+          //     if (!userinfo.isVerified && userinfo.role === '1') {
+          //       message =
+          //         'Account Not Activated, Please Check Your Email Indox!';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     // case where admin account was locked by the super admin
+          //     if (!userinfo.isVerified && userinfo.role !== '1') {
+          //       message = 'Account Is Locked Contact The Admin!';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //   }
+          // } else {
+          //   message =
+          //     'Invalid Email:the account is not found, submit a new application';
+          //   sis_app_logger.error(
+          //     `${new Date()}=From nextauth signin=---=${
+          //       req.body.email
+          //     }=${message}=${userAgentinfo.os.family}=${
+          //       userAgentinfo.os.major
+          //     }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //       userAgentinfo.device.family
+          //     }`
+          //   );
+          // }
         } //(!connection.success)
         else {
           console.log('connection to DB unsucces nextauth signin');

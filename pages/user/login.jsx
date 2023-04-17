@@ -19,7 +19,7 @@ import {
 // import { appIsWaiting } from '../../redux/slices/appSlice';
 import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+// import selection_data from '../../utilities/selection_data';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useSelector } from 'react-redux';
@@ -161,32 +161,35 @@ export default function LoginScreen() {
         email,
         password,
       });
-
+console.log(result)
       if (!result?.error) {
         const userSession = await getSession();
-        // console.log('userSession==>', userSession);
+        console.log('userSession==>', userSession);
         if (userSession) {
-          dispatch(
-            loginSuccess({
-              name: userSession.user.name,
-              _id: userSession.user._id,
-              major: userSession.user.major,
-              status: userSession.user.status,
-              appisSaved:
-                typeof userSession.user.appisSaved !== 'undefined'
-                  ? userSession.user.appisSaved
-                  : false,
-              application_Language: userSession.user.application_Language,
-              profileUrl: userSession.user.profileUrl,
-            })
-          );
+          // dispatch(
+          //   loginSuccess({
+          //     name: userSession.user.name,
+          //     _id: userSession.user._id,
+          //     major: userSession.user.major,
+          //     status: userSession.user.status,
+          //     appisSaved:
+          //       typeof userSession.user.appisSaved !== 'undefined'
+          //         ? userSession.user.appisSaved
+          //         : false,
+          //     application_Language: userSession.user.application_Language,
+          //     profileUrl: userSession.user.profileUrl,
+          //   })
+          // );
+          console.log(userSession)
           dispatch(isLogout(false));
         }
       } else {
+        console.log(result.error)
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }
     } catch (err) {
+console.log(err)
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
@@ -238,12 +241,12 @@ export default function LoginScreen() {
                     />
                   </div>
                   <input
-                    type='email'
+                    type='text'
                     placeholder='USER NAME'
                     {...register('email', {
                       required: 'Please Enter Email',
                       pattern: {
-                        value: /\S+@\S+\.\S+/,
+                        // value: /\S+@\S+\.\S+/,
                         message: 'Please Enter Valid Email',
                       },
                     })}
