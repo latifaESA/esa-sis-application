@@ -122,8 +122,24 @@ const loggerInfo = winston.createLogger({
 //   ],
 // });
 
-const sis_app_logger = winston.createLogger({
-  transports: [loggerInfo, loggerError],
-});
+
+// const sis_app_logger = winston.createLogger({
+//   transports: [loggerInfo, loggerError],
+// });
+
+const sis_app_logger = {
+  info: (message) => {
+    loggerInfo.log({
+      level: 'info',
+      message: message
+    });
+  },
+  error: (message) => {
+    loggerError.log({
+      level: 'error',
+      message: message
+    });
+  }
+};
 
 module.exports = sis_app_logger;
