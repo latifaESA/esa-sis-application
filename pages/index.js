@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { ApplyNow } from '../components/ApplyNow';
 import SocialIcons from '../components/SocialIcons';
 import LoginScreen from './user/login'
+import NewLogin from './user/NewLogin'
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -82,7 +83,7 @@ export default function Home() {
       <Head>
         <title>ESA Business School - SIS Application</title>
       </Head>
-      <LoginScreen />
+      <NewLogin />
       {/* <Carousel
         className='mt-8 rounded-xl  border-8 border-gray-300 h-[200px] md:h-[600px]'
         navButtonsAlwaysVisible={true}
