@@ -193,6 +193,7 @@ textarea {
   outline-color: transparent !important;
 }
 
+
 @media only screen and (max-width: 500px){
   .imageRes{ 
     display: none;

@@ -21,6 +21,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
 
+  
+     if(Component.getLayout){ 
+       return (<>
+       <SessionProvider session={session}>
+       <Provider store={store}><Component {...props.pageProps} /></Provider>
+       </SessionProvider>
+       </>)
+     }
+
   // try {
   return (
     <>
