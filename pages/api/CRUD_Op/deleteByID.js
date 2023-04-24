@@ -13,7 +13,7 @@ import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
 import xss from 'xss-filters';
 import selection_data from '../../../utilities/selection_data';
 import { connect } from '../../../utilities/db';
-import { findData,DeleteTableBYID } from '../controller/queries';
+import { findData, DeleteTableBYID } from '../controller/queries';
 
 async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -61,8 +61,7 @@ async function handler(req, res) {
       ID
     );
     if (existingUserID.result) {
-      
-      await DeleteTableBYID(ID,'user_profile',connection)
+      await DeleteTableBYID(ID, 'user_profile', connection);
       res.status(200).json({
         message: 'Account deleted from database',
       });
