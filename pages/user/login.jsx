@@ -131,14 +131,14 @@ export default function LoginScreen() {
         </div>
         <div className='bg-white pr-11 sm:pl-11'>
             <div className='log flex pr-11 '>
-                <Image src={esaLogo} width={81} alt='Logo' height={151} />
+                <Image src={esaLogo} width={81} className='esaLogo' alt='Logo' height={151} />
                 <div className='leading-7 welcometoSis mt-4 ml-5'>
                     <p className='welcomeTo mt-11'>WELCOME TO</p>
                 <span className='SIS'>SIS</span>
                 </div>
                 
             </div>
-                <div className='text-center mt-11 text-[#3D709A] text-[39px] bold'>
+                <div className='text-center mt-11 login text-[#3D709A] text-[39px] bold'>
                     Login
                 </div>
                 <div>
