@@ -1,4 +1,3 @@
-
 /*
  * Created By: KANSO Adi/Mohammad Yassine
  * Project: SIS Application
@@ -74,12 +73,7 @@ async function handler(req, res) {
     );
     // console.log('existingUserID=', existingUserID);
     if (existingUserID.result) {
-      await UpdateData(
-        connection,
-        'user_profile',
-        ID,
-        ['status', status]
-      );
+      await UpdateData(connection, 'user_profile', ID, ['status', status]);
       res.status(200).json({
         message: `Account Status was Changed in the database to:${status}`,
       });
