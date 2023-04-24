@@ -4,11 +4,12 @@ import { useForm } from 'react-hook-form';
 import { getError } from '../../utilities/error';
 import { signIn, useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-// import Register from '../user/register';
 import Link from 'next/link';
 import Head from 'next/head';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import esaBuilding from '../../public/images/ESA-building.png'
+import esaLogo from '../../public/images/esa.png'
 import {
   loginFailed,
   loginRequest,
@@ -16,7 +17,6 @@ import {
   logoutSuccess,
   isLogout,
 } from '../../redux/slices/userSlice';
-// import { appIsWaiting } from '../../redux/slices/appSlice';
 import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
@@ -26,12 +26,7 @@ import { useSelector } from 'react-redux';
 import Person2Icon from '@mui/icons-material/Person2';
 import LockIcon from '@mui/icons-material/Lock';
 import Image from 'next/image';
-// import DownloadIcon from '@mui/icons-material/Download';
-// import FileUploadIcon from '@mui/icons-material/FileUpload';
-// import { Transition } from '@headlessui/react';
-// import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-// import { appSetting } from '../../redux/slices/appSlice';
-// import { useUserStore } from '../../context/userContext';
+
 
 export default function LoginScreen() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -50,86 +45,7 @@ export default function LoginScreen() {
     (state) => state.persistedReducer.user_state.userState
   );
 
-  // useEffect(() => {
-  //   setErrorMessage('');
-  //   dispatch(appIsWaiting(false));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/controller/settingdata', {
-  //         timeout: selection_data.axios_timeout,
-  //       });
 
-  //       if (response.status === 200) {
-  //         const incomingData = JSON.parse(decrypt(response.data.data));
-  //         dispatch(
-  //           appSetting({
-  //             auto_Save_Timing:
-  //               incomingData.setting[0].auto_Save_Timing * 60 * 1000,
-  //             disapearing_Message_Time:
-  //               incomingData.setting[0].message_disapear_timing * 1000,
-  //             max_characters_count:
-  //               incomingData.setting[0].max_characters_count,
-  //             education_Year_of_Acquisition_Limit:
-  //               incomingData.setting[0].Year_of_Acquisition_Limit,
-  //             personalinfo_dob_min:
-  //               incomingData.setting[0].personalinfo_dob_min.split('T')[0],
-  //             personalinfo_dob_max:
-  //               incomingData.setting[0].personalinfo_dob_max.split('T')[0],
-  //             upload_file_single_size:
-  //               incomingData.setting[0].upload_file_single_size * 1024 * 1024,
-  //             upload_file_total_size:
-  //               incomingData.setting[0].upload_file_total_size * 1024 * 1024,
-  //             logger_expiry_day:
-  //               incomingData.setting[0].logger_expiry_day + 'd',
-  //             logger_max_file_size:
-  //               incomingData.setting[0].logger_max_file_size + 'm',
-  //             upload_file_directory_name:
-  //               incomingData.setting[0].upload_file_directory_name,
-  //             carouselList: incomingData.setting[0].carouselList,
-  //             esa_logo: incomingData.setting[0].esa_logo,
-  //             login_bg: incomingData.setting[0].login_bg,
-  //             MBA_recommendation_letter:
-  //               incomingData.setting[0].MBA_recommendation_letter,
-  //             EMBA_recommendation_letter:
-  //               incomingData.setting[0].EMBA_recommendation_letter,
-  //           })
-  //         );
-  //       } else {
-  //         // localStorage.clear();
-  //         sessionStorage.clear();
-  //         const encryptedBody = encrypt(
-  //           JSON.stringify({
-  //             email: '---',
-  //             role: '---',
-  //             info: 'From login page,appVar cant be readed from DB',
-  //             error: `${response.status}`,
-  //           })
-  //         );
-  //         await axios.put('/api/logger/sendErrorToLogger', {
-  //           data: encryptedBody,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //       // localStorage.clear();
-  //       sessionStorage.clear();
-  //       const encryptedBody = encrypt(
-  //         JSON.stringify({
-  //           email: '---',
-  //           role: '---',
-  //           info: 'From login page,appVar cant be fetched from DB; sessionStorage was cleared',
-  //           error: `${error}`,
-  //         })
-  //       );
-  //       await axios.put('/api/logger/sendErrorToLogger', {
-  //         data: encryptedBody,
-  //       });
-  //     }
-  //   };
-  //   fetchData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   useEffect(() => {
     // console.log(session);
@@ -207,109 +123,96 @@ export default function LoginScreen() {
       <Head>
         <title>ESA SIS - Login</title>
       </Head>
-      <div className=' bg-loginbg bg-cover w-full h-full bg-center top-0'>
-        <div className='border-solid rounded-xl p-8 '>
-          <div className='mx-auto max-w-screen-sm p-8 pt-5 pb-5 bg-gray-300 shadow-2xl rounded-xl opacity-90'>
-            <form
-              onSubmit={handleSubmit(submitHandler)}
-              className='rounded-lg p-2 font-bold'
-            >
-              <div className='flex mb-8 w-full items-center justify-center'>
-                <Image
-                  alt='logo'
-                  src='/images/esa.png'
-                  width={80}
-                  height={120}
-                  className='rounded-lg'
-                />
-              </div>
-              {errors && (
-                <div className='text-red-500 text-xl font-bold w-full mt-4 mb-4'>
-                  {errorMessage}
-                </div>
-              )}
+      <div className='bg-[#F7F7F7] mt-11 pt-11 h-screen'>
 
-              <div className='flex-col justify-center items-center gap-8 '>
-                <div className='relative mb-8'>
-                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                    <Person2Icon
-                      fontSize='large'
-                      style={{ color: 'darkblue' }}
-                    />
-                  </div>
-                  <input
-                    type='email'
-                    placeholder='USER NAME'
-                    {...register('email', {
-                      required: 'Please Enter Email',
-                      pattern: {
-                        value: /\S+@\S+\.\S+/,
-                        message: 'Please Enter Valid Email',
-                      },
-                    })}
-                    className={`w-full empty:px-12 empty:h-14 border-black`}
-                    id='lemail'
-                  />
+      <div className='flex justify-center  text-black'>
+        <div className='imageRes lg:visible invisible'>
+            <Image src={esaBuilding} alt='Esa-Building' width={457} height={680} />
+        </div>
+        <div className='bg-white pr-11 sm:pl-11'>
+            <div className='log flex pr-11 '>
+                <Image src={esaLogo} width={81} alt='Logo' height={151} />
+                <div className='leading-7 welcometoSis mt-4 ml-5'>
+                    <p className='welcomeTo mt-11'>WELCOME TO</p>
+                <span className='SIS'>SIS</span>
+                </div>
+                
+            </div>
+                <div className='text-center mt-11 text-[#3D709A] text-[39px] bold'>
+                    Login
+                </div>
+                <div>
+                    <form onSubmit={handleSubmit(submitHandler)}>
+                        <div>
+                        
                   {errors.email && (
-                    <div className='text-red-500 w-full ml-2'>
+                    <div className='text-red-500 text-center w-full ml-2'>
                       {errors.email.message}
                     </div>
                   )}
-                </div>
-                <div className='relative mb-8'>
-                  <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-                    <LockIcon fontSize='large' style={{ color: 'darkblue' }} />
-                  </div>
-                  <input
-                    type={showPassword === false ? 'password' : 'text'}
-                    className={`w-full empty:px-12 empty:h-14 border-black`}
-                    id='lpassword'
-                    placeholder='PASSWORD'
-                    {...register('password', {
-                      required: 'Please enter password',
-                      minLength: {
-                        value: 7,
-                        message: 'password is more than 6 chars',
-                      },
-                    })}
-                  />
-                  <div className='absolute top-4 right-5 cursor-pointer'>
-                    {showPassword === false ? (
-                      <VisibilityOffIcon
-                        fontSize='small'
-                        onClick={showPasswordHandler}
-                      />
-                    ) : (
-                      <VisibilityIcon
-                        fontSize='small'
-                        onClick={showPasswordHandler}
-                      />
-                    )}
-                  </div>
-
                   {errors.password && (
-                    <div className='text-red-500 w-full ml-2'>
+                    <div className='text-red-500 w-full text-center'>
                       {errors.password.message}
                     </div>
                   )}
+                  {errors && (
+                <div className='text-red-500 text-center w-full mt-4 mb-4'>
+                  {errorMessage}
                 </div>
-              </div>
-              <div className='mb-4 text-right'>
-                <Link href='/user/password/forgetpassword' legacyBehavior>
-                  <label className='underline hover:text-red-500 hover:font-bold cursor-pointer'>
-                    Forget Password?
-                  </label>
-                </Link>
-              </div>
-              <div className='mb-4 flex justify-center items-center '>
-                <button className='w-72 bg-gray-600 p-3 uppercase text-[20px] text-white hover:bg-blue-700 hover:font-bold rounded-lg '>
-                  Login
-                </button>
-              </div>
-            </form>
-          </div>
+              )}
+                             <div className='formDiv mt-9'>
+                            <label className='text-[#707070] text-[18px]' htmlFor="username">Username</label><br />
+                            <input className='bg-white inputT ml-2' type="text" 
+                             {...register('email', {
+                                required: 'Please Enter Email',
+                                pattern: {
+                                  value: /\S+@\S+\.\S+/,
+                                  message: 'Please Enter Valid Email',
+                                },
+                              })}
+                            />
+                        </div>
+                        <div className='formDiv mt-3'>
+                            <label className='text-[#707070] text-[18px]' htmlFor="password">Password</label><br />
+                            <input className='bg-white inputT focus:outline-none  ml-2' type="password"
+                             {...register('password', {
+                                required: 'Please enter password',
+                                minLength: {
+                                  value: 7,
+                                  message: 'password is more than 6 chars',
+                                },
+                              })}
+                            />
+                        </div>
+                        <Link href='/user/password/forgetpassword' legacyBehavior>
+                        <p className='text-[10px] tracking-normal ml-11 text-[#707070] cursor-pointer mt-1 text-center '>
+                            Forgot your Password?
+                        </p>
+                          </Link>
+                        </div>
+                       <div className='text-center ml-11 mt-11'>
+                        <button className='text-white btn bg-[#3D709A] rounded-3xl p-3'>
+                            Log in
+                        </button>
+                       </div>
+                    </form>
+                </div>
+            <div>
+                
+            </div>
         </div>
       </div>
+
+
+      </div>
+  
+     
     </>
   );
+}
+
+LoginScreen.getLayout = function(page){ 
+    return (<>
+    {page}
+    </>)
 }

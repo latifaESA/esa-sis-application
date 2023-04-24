@@ -18,7 +18,7 @@ const LogOut = async (router) => {
       console.log('router.locale after=', router.locale);
     }
     // FIXME: delete this two line router and signout() after fixing the forwardRef bug in dob datepicker
-    await router.push('/user/login');
+    await router.push('/');
     await signOut();
     // FIXME: un-comment after fixing the forwardRef bug in dob datepicker
     // await signOut({ redirect: true, callbackUrl: '/user/login' });
