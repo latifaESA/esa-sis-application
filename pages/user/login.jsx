@@ -123,9 +123,9 @@ export default function LoginScreen() {
       <Head>
         <title>ESA SIS - Login</title>
       </Head>
-      <div className='bg-[#F7F7F7] mt-11 pt-11 h-screen'>
+      <div className='bg-[#F7F7F7] mt-11  h-screen'>
 
-      <div className='flex justify-center  text-black'>
+      <div className='flex justify-center   text-black'>
         <div className='imageRes lg:visible invisible'>
             <Image src={esaBuilding} alt='Esa-Building' width={457} height={680} />
         </div>
@@ -144,19 +144,19 @@ export default function LoginScreen() {
                 <div>
                     <form onSubmit={handleSubmit(submitHandler)}>
                         <div>
-                        
+                       
                   {errors.email && (
-                    <div className='text-red-500 text-center w-full ml-2'>
+                    <div className='text-red-500 error text-center w-full ml-2'>
                       {errors.email.message}
                     </div>
                   )}
-                  {errors.password && (
-                    <div className='text-red-500 w-full text-center'>
+                  {!errors.email && errors.password && (
+                    <div className='text-red-500 error w-full text-center'>
                       {errors.password.message}
                     </div>
                   )}
                   {errors && (
-                <div className='text-red-500 text-center w-full mt-4 mb-4'>
+                <div className='text-red-500 error text-center w-full mt-4 mb-4'>
                   {errorMessage}
                 </div>
               )}
