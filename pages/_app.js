@@ -9,7 +9,7 @@
 import '../styles/globals.css';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
+// import Layout from '../components/Layout';
 import { wrapper } from '../redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -21,14 +21,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
 
-  
-     if(Component.getLayout){ 
-       return (<>
-       <SessionProvider session={session}>
-       <Provider store={store}><Component {...props.pageProps} /></Provider>
-       </SessionProvider>
-       </>)
-     }
+  if (Component.getLayout) {
+    return (
+      <>
+        <SessionProvider session={session}>
+          <Provider store={store}>
+            <Component {...props.pageProps} />
+          </Provider>
+        </SessionProvider>
+      </>
+    );
+  }
 
   // try {
   return (
@@ -49,9 +52,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     <Component {...props.pageProps} />
                   </DashboardLayout>
                 ) : (
-                  <Layout>
-                    <Component {...props.pageProps} />
-                  </Layout>
+                  // <Layout>
+                  <Component {...props.pageProps} />
+                  // </Layout>
                 )}
               </PersistGate>
             </Provider>
@@ -62,9 +65,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
               persistor={persistor}
               // persistor={store.__persistor}
             >
-              <Layout>
-                <Component {...props.pageProps} />
-              </Layout>
+              {/* <Layout> */}
+              <Component {...props.pageProps} />
+              {/* </Layout> */}
             </PersistGate>
           </Provider>
         )}
@@ -103,7 +106,7 @@ function Auth({ children }) {
 
   if (status === 'loading') {
     return (
-      <div className='grid h-screen place-items-center'>
+      <div className="grid h-screen place-items-center">
         <CircularProgress />
       </div>
     );

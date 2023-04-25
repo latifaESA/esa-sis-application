@@ -14,7 +14,7 @@ import selection_data from '../../../utilities/selection_data';
 import { connect, disconnect } from '../../../utilities/db';
 import { findData, UpdateData } from '../controller/queries';
 import xss from 'xss-filters';
-import sis_app_logger from '../logger';
+import online_app_logger from '../logger';
 import useragent from 'useragent';
 
 async function handler(req, res) {
@@ -35,7 +35,7 @@ async function handler(req, res) {
   const incomingData = JSON.parse(decrypt(req.body.data));
 
   const reportURL = xss.inHTMLData(incomingData.reportURL);
-  console.log('reportURLInSend', reportURL);
+  // console.log('reportURLInSend', reportURL);
 
   if (!reportURL) {
     res.status(422).json({
@@ -52,7 +52,7 @@ async function handler(req, res) {
         return res.status(404).send({ message: 'User not found' });
       }
       toUpdateUserReport.reportURL = reportURL;
-      sis_app_logger.info(
+      online_app_logger.info(
         `${new Date()}=${user.role}=add reprotURl=${user.email}=${
           userAgentinfo.os.family
         }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
@@ -66,7 +66,7 @@ async function handler(req, res) {
       await toUpdateUserReport.save();
       await db.disconnect();
     } catch (error) {
-      sis_app_logger.error(
+      online_app_logger.error(
         `${new Date()}=add reprotURl error=${user.role}=${user.email}=${
           error.message
         }=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
@@ -78,9 +78,8 @@ async function handler(req, res) {
       });
     }
   } else {
+    const connection = await connect();
     try {
-      const connection = await connect();
-
       const toUpdateUserReport = await findData(
         connection,
         'user_id',
@@ -94,7 +93,7 @@ async function handler(req, res) {
         'reportURL',
         reportURL,
       ]);
-      sis_app_logger.info(
+      online_app_logger.info(
         `${new Date()}=${user.role}=add reportURl=${user.email}=${
           userAgentinfo.os.family
         }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
@@ -104,10 +103,8 @@ async function handler(req, res) {
       res.status(200).json({
         message: 'Report URL was saved in the database',
       });
-
-      await disconnect(connection);
     } catch (error) {
-      sis_app_logger.error(
+      online_app_logger.error(
         `${new Date()}=add reportURl error=${user.role}=${user.email}=${
           error.message
         }=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
@@ -117,6 +114,8 @@ async function handler(req, res) {
       res.status(500).json({
         message: 'Something went wrong',
       });
+    } finally {
+      await disconnect(connection);
     }
   }
 }
