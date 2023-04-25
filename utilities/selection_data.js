@@ -2905,7 +2905,7 @@ const selection_data = {
 
   // where_going_after_logout_en: '/',
   // where_going_after_logout_fr: '/',
-  where_going_after_logout: '/user/login',
+  where_going_after_logout: '/',
 
   where_going_onclicking_esa_logo: '/',
 
