@@ -21,6 +21,8 @@ import { connect, disconnect } from '../../../utilities/db';
 import sis_app_logger from '../logger';
 import useragent from 'useragent';
 import { findData } from '../controller/queries';
+import axios from 'axios';
+import https from 'https';
 // import client from '../../../utilities/db1'
 
 // // Import cors
@@ -91,47 +93,81 @@ export const authOptions = {
               'userid',
               credentials.email,
             );
+            console.log(user.rowCount)
           //  check if there is user with the given id
-          // check if the user is admin
-          if(user.rows[0].role === 2){
+          if(user.rowCount > 0){
             // check if the password is correct
             if(bcryptjs.compareSync(credentials.password.trim(),user.rows[0].userpassword)){
-              // check if the user is admin
-              if(user.rows[0].role === 2){
-                // get the admin data
-                const admin = await findData(
-                  connection,
-                  'admin',
-                  'adminid',
-                  user.rows[0].userid,
-                );
-                // if the admin exists then send the data to frontend
-            if(admin.rows){
+               
+              // check if the user completed the survey
+                try {
+                let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636', {
+                httpsAgent: new https.Agent({
+                  rejectUnauthorized: false,
+                })
+                })
+                console.log(data.blocked)
+                // if the user did not complete the survey then send the links
+                if(data.blocked){
+                  try{
+                  let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01', {
+                    httpsAgent: new https.Agent({
+                      rejectUnauthorized: false,
+                    })
+                    })
+                    console.log(data.Tasks)
+                    // return {data};
+                    message = JSON.stringify(data);
+             
+                  }catch (error) {
+                    console.log('the error is: ', error)
+                    message = JSON.stringify(error);
+                }
+                }else{
+                      // check if the user is admin
+                      if(user.rows[0].role === 2){
+                        // get the admin data
+                        const admin = await findData(
+                          connection,
+                          'admin',
+                          'adminid',
+                          user.rows[0].userid,
+                        );
+                        // if the admin exists then send the data to frontend
+                    if(admin.rows){
 
-              await disconnect(connection);
-              // Write to logger
-              if (req) {
-                // Log user information
-                // userinfo.role ==='1'?
-                sis_app_logger.info(
-                  `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
-                    userAgentinfo.os.family
-                  }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-                    userAgentinfo.source
-                  }=${userAgentinfo.device.family}`
-                );
-              }
+                      await disconnect(connection);
+                      // Write to logger
+                      if (req) {
+                        // Log user information
+                        // userinfo.role ==='1'?
+                        sis_app_logger.info(
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                            userAgentinfo.os.family
+                          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                            userAgentinfo.source
+                          }=${userAgentinfo.device.family}`
+                        );
+                      }
 
-              return {
-                        name: admin.rows[0].adminname,
-                        email: admin.rows[0].adminemail,
-                        role: user.rows[0].role,
-                      };
-              }else{
-                // if the admin is not exists then send this message to frontend
-                message = 'Admin is not exists'
-              }
-            }
+                      return {
+                                name: admin.rows[0].adminname,
+                                email: admin.rows[0].adminemail,
+                                role: user.rows[0].role,
+                              };
+                      }else{
+                        // if the admin is not exists then send this message to frontend
+                        message = 'Admin is not exists'
+                      }
+                    }
+                    
+                }
+                console.log(data)          
+                  } catch (error) {
+                      console.log('the error is: ', error)
+                      return {error};
+                  }
+              // message = 'hello'
           }else{
             // if the password is incorrect then send this message
             message = 'Invalid Password';
@@ -145,6 +181,8 @@ export const authOptions = {
                   }`
                 );
           }
+                }else{
+                  message = "user is not exists";
                 }
 
 

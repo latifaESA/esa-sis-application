@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

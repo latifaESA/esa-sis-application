@@ -6,9 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-import { executeQuery } from '../../../utilities/db';
-import crypto from 'crypto';
-import bcryptjs from 'bcryptjs';
+// import { executeQuery } from '../../../utilities/db';
+// import crypto from 'crypto';
+// import bcryptjs from 'bcryptjs';
+const { executeQuery } = require('../../../utilities/db');
+const crypto = require('crypto');
+const bcryptjs = require('bcryptjs');
+
 
 async function current_applicant_promotion(major_id, user_id, connection) {
   try {
@@ -50,14 +54,27 @@ async function current_applicant_promotion(major_id, user_id, connection) {
 //     }
 //   });
 // });
-async function findData(connection, table, where, name){
+async function findData(connection, table, where, columnName){
   try{
-    const result = connection.query(`SELECT * from ${table} WHERE ${where} = ${name}`)
+    const result = connection.query(`SELECT * from ${table} WHERE ${where} = ${columnName}`)
     return result;
   }catch(err){
     return err
   }
 }
+
+// insert to the database as much as you like columns and values
+async function insertData(connection, table, columns, values) {
+  try {
+    const columnList = columns.join(", ");
+    const valueList = values.map(val => `'${val}'`).join(", ");
+    const result = await connection.query(`INSERT INTO ${table} (${columnList}) VALUES (${valueList})`);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 
 /* End Postegresql */
 /**
@@ -598,7 +615,8 @@ async function UpdateAny(
   }
 }
 
-export {
+module.exports = {
+  insertData,
   UpdateUserpassword,
   NewUser,
   UpdateSource,

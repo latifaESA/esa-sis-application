@@ -154,14 +154,15 @@ export default function LoginScreen() {
 
   const submitHandler = async ({ email, password }) => {
     try {
-      setErrorMessage('');
+      setErrorMessage("");
       dispatch(loginRequest());
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-console.log(result)
+      console.log(result);
+      // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
         console.log('userSession==>', userSession);
