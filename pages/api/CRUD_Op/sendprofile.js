@@ -13,6 +13,9 @@ import { authOptions } from '../auth/[...nextauth]';
 import * as dateFn from 'date-fns';
 import axios from 'axios';
 import selection_data from '../../../utilities/selection_data';
+import db from '../../../utilities/db';
+import { executeQuery, connect, disconnect } from '../../../utilities/db';
+
 
 async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -51,16 +54,25 @@ async function handler(req, res) {
 
   //const directory =path.join(process.cwd(),'public','Files','Users',user.ID.toString(),'Photo');
   //const desktopPath = require('path').join(require('os').homedir(), 'Desktop');
-  const localDiskPath = path.parse(require('os').homedir()).root;
+  // const localDiskPath = path.parse(require('os').homedir()).root;
   //console.log('the path',desktopPath);
   //console.log('Local disk path',localDiskPath);
   const directory = path.join(
-    localDiskPath,
-    'esa-applicants-data',
+    process.cwd(),
+    'public',
+    'Images',
     'Users',
     user.ID.toString(),
     'Photo'
   );
+  
+  // const directory = path.join(
+  //   localDiskPath,
+  //   'esa-applicants-data',
+  //   'Images',
+  //   'Users',
+  //   user.ID.toString()
+  // );
 
   //console.log(directory2)
   if (!fs.existsSync(directory)) {
@@ -95,6 +107,26 @@ async function handler(req, res) {
   // res.status(200).send({ reportURL: `/api/get-report?filePath=${encodeURIComponent(reportFilePath)}` });
   //res.status(200).send({ cloudURL: `/Files/Users/${user.ID.toString()}/Photo/${photoFileName}` });
   //res.status(200).send({ cloudURL: `/Files/Users/${user.ID.toString()}/Photo/${photoFileName}` });
-  res.status(200).send({ cloudURL: cloudURL });
+ // Construct the URL of the image
+ 
+ const photoURL = `${req.headers['x-forwarded-proto']}://${req.headers['host']}/Images/Users/${user.ID.toString()}/Photo/${photoFileName}`;
+  // Save the URL of the image in the database
+  const query = `UPDATE user_document SET profileUrl = ? WHERE user_id = ?`;
+  // const photoURL = `/Images/Users/${user.ID.toString()}/Photo/${photoFileName}`;
+  try {
+    const connection = await connect();
+    await executeQuery(connection, query, [photoURL, user.ID]);
+    await disconnect(connection);
+    console.log('Photo URL saved to database');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Error saving photo URL to database' });
+    return;
+  }
+ 
+
+
+
+  res.status(200).send({cloudURL: photoURL });
 }
 export default handler;

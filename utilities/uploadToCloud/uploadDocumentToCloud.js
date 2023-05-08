@@ -10,6 +10,7 @@ import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 import selection_data from '../selection_data';
 
+
 async function uploadDocumentToCloud(uploadData, session, isPhoto) {
   const imageFile = uploadData.fileList.find(
     (file) =>
@@ -27,8 +28,12 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto) {
     let publicId;
     // Test If the uploaded document is the photo
     isPhoto
-      ? (publicId = `users/${session.user.name}-${session.user.ID}/photo/${imageFile.name}`)
-      : (publicId = `users/${session.user.name}-${session.user.ID}/application/${imageFile.name}`);
+      ? (publicId = `SIS/users/${session.user.name}-${
+          session.user.ID
+        }/photo/${imageFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`)
+      : (publicId = `SIS/users/${session.user.name}-${
+          session.user.ID
+        }/application/${imageFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`);
 
     formProfileData.append('public_id', publicId);
     formProfileData.append('upload_preset', selection_data.upload_preset);
@@ -89,7 +94,7 @@ console.log("cloudURL",cloudURL)
 
     formDocData.append('file', pdfFile);
 
-    const publicId = `users/${session.user.name}-${session.user.ID}/application/${pdfFile.name}`;
+    const publicId = `SIS/users/${session.user.name}-${session.user.ID}/application/${pdfFile.name}`;
     formDocData.append('public_id', publicId);
 
     formDocData.append('upload_preset', selection_data.upload_preset);

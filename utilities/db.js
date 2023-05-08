@@ -211,4 +211,4 @@ const executeQuery = (connection, query, arraParms) => {
   });
 };
 
-module.exports = { executeQuery, connect, disconnect };
+module.exports = { executeQuery, connect, disconnect};
