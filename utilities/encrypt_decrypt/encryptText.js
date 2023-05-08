@@ -1,4 +1,3 @@
-
 /*
  * Created By: KANSO Adi
  * Project: SIS Application
@@ -9,6 +8,13 @@
 import CryptoJS from 'crypto-js';
 import getConfig from 'next/config';
 
+// Issue with Jest and next/config
+// Try to get the publicRuntimeConfig property in config object
+
+// const config = getConfig();
+// const publicRuntimeConfig = config.publicRuntimeConfig;
+
+// or use the default value
 
 const { publicRuntimeConfig } = getConfig();
 const secretKey = publicRuntimeConfig.ENCRYPT_SECRET_KEY;
