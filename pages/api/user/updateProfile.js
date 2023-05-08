@@ -8,9 +8,9 @@
 // import { getSession } from 'next-auth/react';
 
 import bcryptjs from 'bcryptjs';
-// import UserProfile from '../../../models/user/ProfileModel';
-// import UserInfo from '../../../models/user/InfoModel';
-import db from '../../../utilities/db';
+import UserProfile from '../../../models/user/ProfileModel';
+import UserInfo from '../../../models/user/InfoModel';
+import db from '../../../utilities/connectToDb';
 import { UpdateUserpassword, UpdateData } from '../controller/queries';
 import { connect, disconnect } from '../../../utilities/db';
 import selection_data from '../../../utilities/selection_data';
