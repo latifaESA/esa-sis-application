@@ -6,9 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-import { executeQuery } from '../../../utilities/db';
-import crypto from 'crypto';
-import bcryptjs from 'bcryptjs';
+// import { executeQuery } from '../../../utilities/db';
+// import crypto from 'crypto';
+// import bcryptjs from 'bcryptjs';
+const { executeQuery } = require('../../../utilities/db');
+const crypto = require('crypto');
+const bcryptjs = require('bcryptjs');
+
 
 async function current_applicant_promotion(major_id, user_id, connection) {
   try {
@@ -23,24 +27,56 @@ async function current_applicant_promotion(major_id, user_id, connection) {
   }
 }
 
+/* Start Postegresql */
 /**
  * It finds Data from the databasevand returns true or false
  * </code>
  */
-async function findData(connection, name, table, value) {
-  try {
-    const [result] = await executeQuery(
-      connection,
-      `select max(if(${name}=?,true,false)) AS result from ${table}`,
-      [value]
-    );
+// async function findData(connection, name, table, value) {
+//   try {
+//     const [result] = await executeQuery(
+//       connection,
+//       `select max(if(${name}=?,true,false)) AS result from ${table}`,
+//       [value]
+//     );
 
+//     return result;
+//   } catch (err) {
+//     return err;
+//   }
+// }
+// const results = await new Promise((resolve, reject) => {
+//   connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
+//     if (err) {
+//       reject(err);
+//     } else {
+//       resolve(res.rows);
+//     }
+//   });
+// });
+async function findData(connection, table, where, columnName){
+  try{
+    const result = connection.query(`SELECT * from ${table} WHERE ${where} = ${columnName}`)
+    return result;
+  }catch(err){
+    return err
+  }
+}
+
+// insert to the database as much as you like columns and values
+async function insertData(connection, table, columns, values) {
+  try {
+    const columnList = columns.join(", ");
+    const valueList = values.map(val => `'${val}'`).join(", ");
+    const result = await connection.query(`INSERT INTO ${table} (${columnList}) VALUES (${valueList})`);
     return result;
   } catch (err) {
     return err;
   }
 }
 
+
+/* End Postegresql */
 /**
  * It saves the userinfo at signup(register) page FOR BBA .
  * </code>
@@ -579,7 +615,8 @@ async function UpdateAny(
   }
 }
 
-export {
+module.exports = {
+  insertData,
   UpdateUserpassword,
   NewUser,
   UpdateSource,

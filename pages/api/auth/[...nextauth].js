@@ -9,17 +9,21 @@
 import bcryptjs from 'bcryptjs';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import {
-  findData,
-  Userinfo,
-  findmajor_name,
-  current_applicant_promotion,
-  findmajor_id,
-} from '../controller/queries';
+// import {
+//   findData,
+//   Userinfo,
+//   findmajor_name,
+//   current_applicant_promotion,
+//   findmajor_id,
+// } from '../controller/queries';
 import { connect, disconnect } from '../../../utilities/db';
 
 import sis_app_logger from '../logger';
 import useragent from 'useragent';
+import { findData } from '../controller/queries';
+import axios from 'axios';
+import https from 'https';
+// import client from '../../../utilities/db1'
 
 // // Import cors
 // import cors from 'cors';
@@ -43,55 +47,17 @@ export const authOptions = {
   callbacks: {
     /* A function that is called by the `next-auth` module. */
     async jwt({ token, user }) {
-      if (user?._id) token._id = user._id;
-      if (user?.ID) token.ID = user.ID;
-      if (user?.fname && user?.lname)
-        token.name = user.fname + ' ' + user.lname;
+      if (user?.name) token.name = user.name;
+      if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;
-      if (user?.major) token.major = user.major;
-      if (user?.mobileNumber) token.mobileNumber = user.mobileNumber;
-      if (user?.status) token.status = user.status;
-      if (user?.appisSaved) token.appisSaved = user.appisSaved;
-      if (user?.promotion) token.promotion = user.promotion;
-      if (user?.application_Language)
-        token.application_Language = user.application_Language;
-      if (user?.profileUrl) token.profileUrl = user.profileUrl;
       return token;
     },
     async session({ session, token }) {
-      if (token?._id) session.user._id = token._id;
-      if (token?.ID) session.user.ID = token.ID;
       if (token?.name) session.user.name = token.name;
+      if (token?.email) session.user.email = token.email;
       if (token?.role) session.user.role = token.role;
-      if (token?.major) session.user.major = token.major;
-      if (token?.mobileNumber) session.user.mobileNumber = token.mobileNumber;
-      if (token?.status) session.user.status = token.status;
-      if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
-      if (token?.promotion) session.user.promotion = token.promotion;
-      if (token?.application_Language)
-        session.user.application_Language = token.application_Language;
-      if (token?.profileUrl) session.user.profileUrl = token.profileUrl;
-      // console.log('Session=', session);
       return session;
     },
-    // // route the app to /auth-error instead of /api/auth/error
-    // async redirect(URL, { error } = {}) {
-    //   const baseUrl = URL.baseUrl;
-    //   const url = URL.url;
-    //   console.log('-------------------');
-    //   console.log('Testing Version:');
-    //   console.log('URL==', URL);
-    //   console.log('url==', url);
-    //   const errorMessage = error?.toString
-    //     ? encodeURIComponent(error.toString())
-    //     : '';
-    //   console.log('route to==', `${baseUrl}/auth-error?error=${errorMessage}`);
-    //   console.log('-------------------');
-    //   if (error && url === `${baseUrl}/api/auth/error`) {
-    //     return `${baseUrl}/auth-error?error=${errorMessage}`;
-    //   }
-    //   return url;
-    // },
   },
 
   useWebSocket: false, // disable WebSocket
@@ -104,143 +70,262 @@ export const authOptions = {
         const connection = await connect();
         if (connection.success) {
           console.log('connection to DB succes nextauth signin');
-          const user = await findData(
-            connection,
-            'email',
-            'user_profile',
-            credentials.email
-          ); //email from req body
-          const userinfo = await Userinfo(connection, credentials.email); //email from req body
-          // console.log(user);
-          // console.log('User In Auth=', user);
-          if (user.result) {
-            // console.log('User=', user);
-            /* Checking if the user is verified and if the user is not obsolete. */
-            if (
-              bcryptjs.compareSync(
-                credentials.password.trim(),
-                userinfo.password
-              ) &&
-              userinfo.status !== 'obsolete' &&
-              userinfo.isVerified
-            ) {
-              if (userinfo) {
-                const program = await findmajor_name(
-                  connection,
-                  userinfo.user_id
-                );
-                const programid = await findmajor_id(
-                  connection,
-                  program.program
-                );
-                const current_app_promotion = await current_applicant_promotion(
-                  programid.major_id,
-                  userinfo.user_id,
-                  connection
-                );
 
-                //console.log('User', userinfo)
-                //console.log(program.program)
-                await disconnect(connection);
-                // Write to logger
-                if (req) {
-                  // Log user information
-                  // userinfo.role ==='1'?
-                  sis_app_logger.info(
-                    `${new Date()}=${userinfo.role}=login=${req.body.email}=${
-                      userAgentinfo.os.family
-                    }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-                      userAgentinfo.source
-                    }=${userAgentinfo.device.family}`
-                  );
+          // try {
+          //   const results = await new Promise((resolve, reject) => {
+          //     connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
+          //       if (err) {
+          //         reject(err);
+          //       } else {
+          //         resolve(res.rows);
+          //       }
+          //     });
+          //   });
+          //   console.log(results);
+          // } catch (err) {
+          //   console.error(err);
+          // }
+
+          // get the user info
+          const user = await findData(
+              connection,
+              'users',
+              'userid',
+              credentials.email,
+            );
+            console.log(user.rowCount)
+          //  check if there is user with the given id
+          if(user.rowCount > 0){
+            // check if the password is correct
+            if(bcryptjs.compareSync(credentials.password.trim(),user.rows[0].userpassword)){
+               
+              // check if the user completed the survey
+                try {
+                let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636', {
+                httpsAgent: new https.Agent({
+                  rejectUnauthorized: false,
+                })
+                })
+                console.log(data.blocked)
+                // if the user did not complete the survey then send the links
+                if(data.blocked){
+                  try{
+                  let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01', {
+                    httpsAgent: new https.Agent({
+                      rejectUnauthorized: false,
+                    })
+                    })
+                    console.log(data.Tasks)
+                    // return {data};
+                    message = JSON.stringify(data);
+             
+                  }catch (error) {
+                    console.log('the error is: ', error)
+                    message = JSON.stringify(error);
+                }
+                }else{
+                      // check if the user is admin
+                      if(user.rows[0].role === 2){
+                        // get the admin data
+                        const admin = await findData(
+                          connection,
+                          'admin',
+                          'adminid',
+                          user.rows[0].userid,
+                        );
+                        // if the admin exists then send the data to frontend
+                    if(admin.rows){
+
+                      await disconnect(connection);
+                      // Write to logger
+                      if (req) {
+                        // Log user information
+                        // userinfo.role ==='1'?
+                        sis_app_logger.info(
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                            userAgentinfo.os.family
+                          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                            userAgentinfo.source
+                          }=${userAgentinfo.device.family}`
+                        );
+                      }
+
+                      return {
+                                name: admin.rows[0].adminname,
+                                email: admin.rows[0].adminemail,
+                                role: user.rows[0].role,
+                              };
+                      }else{
+                        // if the admin is not exists then send this message to frontend
+                        message = 'Admin is not exists'
+                      }
+                    }
+                    
+                }
+                console.log(data)          
+                  } catch (error) {
+                      console.log('the error is: ', error)
+                      return {error};
+                  }
+              // message = 'hello'
+          }else{
+            // if the password is incorrect then send this message
+            message = 'Invalid Password';
+                sis_app_logger.error(
+                  `${new Date()}=From nextauth signin=---=${
+                    req.body.email
+                  }=${message}=${userAgentinfo.os.family}=${
+                    userAgentinfo.os.major
+                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
+                    userAgentinfo.device.family
+                  }`
+                );
+          }
+                }else{
+                  message = "user is not exists";
                 }
 
-                return {
-                  _id: userinfo.user_id,
-                  ID: userinfo.user_id,
-                  name: userinfo.firstname + ' ' + userinfo.lastname,
-                  email: userinfo.email,
-                  major: program.program,
-                  status: userinfo.status,
-                  appisSaved: userinfo.appisSaved,
-                  application_Language: userinfo.application_Language,
-                  mobileNumber: userinfo.mobile_number,
-                  role: userinfo.role,
-                  profileUrl: userinfo.profileUrl,
-                  promotion: current_app_promotion.current_applicants_promotion,
-                };
-              }
-            } else {
-              /* Checking if the password is correct. */
-              if (
-                !bcryptjs.compareSync(credentials.password, userinfo.password)
-              ) {
-                message = 'Invalid Password';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              /* Checking if the user is obsolete. */
-              if (userinfo.status === 'obsolete') {
-                message =
-                  'Your application has been created a year ago and thus you need to submit a new application ';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              /* Checking if the user student is verified or not. */
-              if (!userinfo.isVerified && userinfo.role === '1') {
-                message =
-                  'Account Not Activated, Please Check Your Email Indox!';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-              // case where admin account was locked by the super admin
-              if (!userinfo.isVerified && userinfo.role !== '1') {
-                message = 'Account Is Locked Contact The Admin!';
-                sis_app_logger.error(
-                  `${new Date()}=From nextauth signin=---=${
-                    req.body.email
-                  }=${message}=${userAgentinfo.os.family}=${
-                    userAgentinfo.os.major
-                  }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                    userAgentinfo.device.family
-                  }`
-                );
-              }
-            }
-          } else {
-            message =
-              'Invalid Email:the account is not found, submit a new application';
-            sis_app_logger.error(
-              `${new Date()}=From nextauth signin=---=${
-                req.body.email
-              }=${message}=${userAgentinfo.os.family}=${
-                userAgentinfo.os.major
-              }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                userAgentinfo.device.family
-              }`
-            );
-          }
+
+          // connection.end();
+
+          // const user = await findData(
+          //   connection,
+          //   'email',
+          //   'user_profile',
+          //   credentials.email
+          // ); //email from req body
+
+          // const userinfo = await Userinfo(connection, credentials.email); //email from req body
+          // // console.log(user);
+          // // console.log('User In Auth=', user);
+          // if (user.result) {
+          //   // console.log('User=', user);
+          //   /* Checking if the user is verified and if the user is not obsolete. */
+          //   if (
+          //     bcryptjs.compareSync(
+          //       credentials.password.trim(),
+          //       userinfo.password
+          //     ) &&
+          //     userinfo.status !== 'obsolete' &&
+          //     userinfo.isVerified
+          //   ) {
+          //     if (userinfo) {
+          //       const program = await findmajor_name(
+          //         connection,
+          //         userinfo.user_id
+          //       );
+          //       const programid = await findmajor_id(
+          //         connection,
+          //         program.program
+          //       );
+          //       const current_app_promotion = await current_applicant_promotion(
+          //         programid.major_id,
+          //         userinfo.user_id,
+          //         connection
+          //       );
+
+          //       //console.log('User', userinfo)
+          //       //console.log(program.program)
+          //       await disconnect(connection);
+          //       // Write to logger
+          //       if (req) {
+          //         // Log user information
+          //         // userinfo.role ==='1'?
+          //         sis_app_logger.info(
+          //           `${new Date()}=${userinfo.role}=login=${req.body.email}=${
+          //             userAgentinfo.os.family
+          //           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+          //             userAgentinfo.source
+          //           }=${userAgentinfo.device.family}`
+          //         );
+          //       }
+
+          //       return {
+          //         _id: userinfo.user_id,
+          //         ID: userinfo.user_id,
+          //         name: userinfo.firstname + ' ' + userinfo.lastname,
+          //         email: userinfo.email,
+          //         major: program.program,
+          //         status: userinfo.status,
+          //         appisSaved: userinfo.appisSaved,
+          //         application_Language: userinfo.application_Language,
+          //         mobileNumber: userinfo.mobile_number,
+          //         role: userinfo.role,
+          //         profileUrl: userinfo.profileUrl,
+          //         promotion: current_app_promotion.current_applicants_promotion,
+          //       };
+          //     }
+          //   } else {
+          //     /* Checking if the password is correct. */
+          //     if (
+          //       !bcryptjs.compareSync(credentials.password, userinfo.password)
+          //     ) {
+          //       message = 'Invalid Password';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     /* Checking if the user is obsolete. */
+          //     if (userinfo.status === 'obsolete') {
+          //       message =
+          //         'Your application has been created a year ago and thus you need to submit a new application ';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     /* Checking if the user student is verified or not. */
+          //     if (!userinfo.isVerified && userinfo.role === '1') {
+          //       message =
+          //         'Account Not Activated, Please Check Your Email Indox!';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //     // case where admin account was locked by the super admin
+          //     if (!userinfo.isVerified && userinfo.role !== '1') {
+          //       message = 'Account Is Locked Contact The Admin!';
+          //       sis_app_logger.error(
+          //         `${new Date()}=From nextauth signin=---=${
+          //           req.body.email
+          //         }=${message}=${userAgentinfo.os.family}=${
+          //           userAgentinfo.os.major
+          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //           userAgentinfo.device.family
+          //         }`
+          //       );
+          //     }
+          //   }
+          // } else {
+          //   message =
+          //     'Invalid Email:the account is not found, submit a new application';
+          //   sis_app_logger.error(
+          //     `${new Date()}=From nextauth signin=---=${
+          //       req.body.email
+          //     }=${message}=${userAgentinfo.os.family}=${
+          //       userAgentinfo.os.major
+          //     }=${userAgentinfo.family}=${userAgentinfo.source}=${
+          //       userAgentinfo.device.family
+          //     }`
+          //   );
+          // }
         } //(!connection.success)
         else {
           console.log('connection to DB unsucces nextauth signin');

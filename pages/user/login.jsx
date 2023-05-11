@@ -19,7 +19,7 @@ import {
 } from '../../redux/slices/userSlice';
 import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+// import selection_data from '../../utilities/selection_data';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useSelector } from 'react-redux';
@@ -70,39 +70,36 @@ export default function LoginScreen() {
 
   const submitHandler = async ({ email, password }) => {
     try {
-      setErrorMessage('');
+      setErrorMessage("");
       dispatch(loginRequest());
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-
+      console.log(result);
+      // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
-        // console.log('userSession==>', userSession);
+        console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
             loginSuccess({
               name: userSession.user.name,
-              _id: userSession.user._id,
-              major: userSession.user.major,
-              status: userSession.user.status,
-              appisSaved:
-                typeof userSession.user.appisSaved !== 'undefined'
-                  ? userSession.user.appisSaved
-                  : false,
-              application_Language: userSession.user.application_Language,
-              profileUrl: userSession.user.profileUrl,
+              email: userSession.user.email,
+              role: userSession.user.role,
             })
           );
+          console.log(userSession)
           dispatch(isLogout(false));
         }
       } else {
+        console.log(result.error)
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }
     } catch (err) {
+console.log(err)
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
@@ -125,6 +122,7 @@ export default function LoginScreen() {
       </Head>
       <div className='bg-[#F7F7F7] mt-11  h-screen'>
 
+
       <div className='flex justify-center   text-black'>
         <div className='imageRes lg:visible invisible'>
             <Image src={esaBuilding} alt='Esa-Building' width={457} height={680} />
@@ -145,6 +143,7 @@ export default function LoginScreen() {
                     <form onSubmit={handleSubmit(submitHandler)}>
                         <div>
                        
+
                   {errors.email && (
                     <div data-testid='errorEmail' className='text-red-500 error text-center w-full ml-2'>
                       {errors.email.message}
