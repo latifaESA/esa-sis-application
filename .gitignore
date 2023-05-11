@@ -45,3 +45,6 @@ utilities/emailing_data.js
 #
 *.lock
 package-lock.json
+/test-results/
+/playwright-report/
+/playwright/.cache/

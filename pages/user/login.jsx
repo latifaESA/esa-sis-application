@@ -52,7 +52,7 @@ export default function LoginScreen() {
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
         ? router.push(redirect || '/user/sis/main')
-        : router.push(redirect || '/admin/main');
+        : router.push(redirect || '/programManager/main');
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -123,46 +123,46 @@ export default function LoginScreen() {
       <Head>
         <title>ESA SIS - Login</title>
       </Head>
-      <div className='bg-[#F7F7F7] mt-11 pt-11 h-screen'>
+      <div className='bg-[#F7F7F7] mt-11  h-screen'>
 
-      <div className='flex justify-center  text-black'>
+      <div className='flex justify-center   text-black'>
         <div className='imageRes lg:visible invisible'>
             <Image src={esaBuilding} alt='Esa-Building' width={457} height={680} />
         </div>
         <div className='bg-white pr-11 sm:pl-11'>
             <div className='log flex pr-11 '>
-                <Image src={esaLogo} width={81} alt='Logo' height={151} />
+                <Image src={esaLogo} width={81} className='esaLogo' alt='Logo' height={151} />
                 <div className='leading-7 welcometoSis mt-4 ml-5'>
                     <p className='welcomeTo mt-11'>WELCOME TO</p>
                 <span className='SIS'>SIS</span>
                 </div>
                 
             </div>
-                <div className='text-center mt-11 text-[#3D709A] text-[39px] bold'>
+                <div className='text-center mt-11 login text-[#3D709A] text-[39px] bold'>
                     Login
                 </div>
                 <div>
                     <form onSubmit={handleSubmit(submitHandler)}>
                         <div>
-                        
+                       
                   {errors.email && (
-                    <div className='text-red-500 text-center w-full ml-2'>
+                    <div data-testid='errorEmail' className='text-red-500 error text-center w-full ml-2'>
                       {errors.email.message}
                     </div>
                   )}
-                  {errors.password && (
-                    <div className='text-red-500 w-full text-center'>
+                  {!errors.email && errors.password && (
+                    <div data-testid='errorPassword' className='text-red-500 error w-full text-center'>
                       {errors.password.message}
                     </div>
                   )}
                   {errors && (
-                <div className='text-red-500 text-center w-full mt-4 mb-4'>
+                <div data-testid='error' className='text-red-500 error text-center w-full mt-4 mb-4'>
                   {errorMessage}
                 </div>
               )}
                              <div className='formDiv mt-9'>
                             <label className='text-[#707070] text-[18px]' htmlFor="username">Username</label><br />
-                            <input className='bg-white inputT ml-2' type="text" 
+                            <input className='bg-white inputT ml-2' type="text" data-testid='username'
                              {...register('email', {
                                 required: 'Please Enter Email',
                                 pattern: {
@@ -174,7 +174,7 @@ export default function LoginScreen() {
                         </div>
                         <div className='formDiv mt-3'>
                             <label className='text-[#707070] text-[18px]' htmlFor="password">Password</label><br />
-                            <input className='bg-white inputT focus:outline-none  ml-2' type="password"
+                            <input className='bg-white inputT focus:outline-none  ml-2' type="password" data-testid='password'
                              {...register('password', {
                                 required: 'Please enter password',
                                 minLength: {
@@ -191,7 +191,7 @@ export default function LoginScreen() {
                           </Link>
                         </div>
                        <div className='text-center ml-11 mt-11'>
-                        <button className='text-white btn bg-[#3D709A] rounded-3xl p-3'>
+                        <button className='text-white btn bg-[#3D709A] rounded-3xl p-3' data-testid='btn'>
                             Log in
                         </button>
                        </div>

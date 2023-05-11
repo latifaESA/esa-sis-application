@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "generate-sitemap": "next-sitemap",
-    "test": "jest"
+    "test": "npx playwright test"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -90,6 +90,8 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@applitools/eyes-playwright": "^1.16.1",
+    "@playwright/test": "^1.33.0",
     "autoprefixer": "^10.4.8",
     "enzyme": "^3.11.0",
     "eslint": "8.22.0",
