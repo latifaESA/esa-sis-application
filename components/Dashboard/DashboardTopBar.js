@@ -200,6 +200,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                     className='w-[40px] h-[40px] rounded-full'
                     alt='avatar'
                     width={70}
+                    data-testid='img'
                     height={70}
                     src={
                       userState.user.profileUrl &&

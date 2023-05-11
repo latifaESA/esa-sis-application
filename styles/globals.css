@@ -157,3 +157,97 @@ textarea {
   background-color: rgb(46, 46, 218) !important;
   color: white !important;
 }
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Libre+Franklin:wght@500&family=Montserrat:wght@300&display=swap');
+
+
+.log {
+  margin-top: 79px;
+  margin-left: 69px !important;
+}
+.welcomeTo{ 
+  font-family: 'Montserrat';
+  font-size: 30px;
+  color: #707070;
+  letter-spacing: 0px;
+}
+.SIS {
+  font-family: 'Montserrat';
+  font-size: 35px;
+  color: #707070;
+  font-weight: bold;
+  letter-spacing: 0px;
+}
+.formDiv{ 
+  margin-left: 69px !important;
+  
+}
+.inputT{ 
+  border-radius: 21px !important;
+  outline: transparent;
+  border: 1px solid #707070;
+  width: 300px !important;
+  overflow: none !important;
+}
+.inputT:focus{ 
+  outline-color: transparent !important;
+}
+
+
+
+@media only screen and (max-width: 500px){
+  .imageRes{ 
+    display: none;
+  }
+  .log{ 
+    margin-left: 50px;
+    font-size: 200px;
+  }
+  .SIS{ 
+    position: absolute;
+    margin-top: 0px;
+  }
+  .btn{ 
+    margin-bottom: 20px;
+  }
+ 
+}
+@media only screen and (max-width: 400px){
+  .imageRes{ 
+    display: none;
+  }
+  .log{ 
+    margin-left: 50px;
+    font-size: 200px;
+  }
+  .welcometoSis { 
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 50px;
+  }
+  .SIS{ 
+    margin-left: 80px;
+    position: static;
+  }
+  
+}
+@media only screen and (max-width: 500px){
+ .esaLogo{ 
+  margin: auto;
+ } 
+ .welcometoSis{ 
+  position: absolute;
+  margin-top: 120px;
+ }
+ .SIS{ 
+  margin-left: 206px;
+  margin-top: -14%;
+ }
+ .login{ 
+  margin-left: 60px !important;
+ }
+ .error{ 
+  margin-left: 30px !important;
+ }
+ 
+}
