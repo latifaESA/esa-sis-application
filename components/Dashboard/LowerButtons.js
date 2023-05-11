@@ -13,7 +13,7 @@ export const LowerButtons = ({
         <button className='primary-button hover:text-white' type='button'>
           Save Selected
         </button>
-        <button
+        {/* <button
           className='primary-button hover:text-white'
           type='button'
           disabled={selectedRows.length < 1}
@@ -21,7 +21,7 @@ export const LowerButtons = ({
           // hidden={session.user.role === '2'?true:false}
         >
           Export Selected
-        </button>
+        </button> */}
         <button
           className='primary-button hover:text-white'
           type='button'
@@ -30,12 +30,12 @@ export const LowerButtons = ({
         >
           Export All
         </button>
-        <button className='primary-button hover:text-white' type='button'
+        {/* <button className='primary-button hover:text-white' type='button'
          disabled={selectedRows.length < 1}
         onClick={()=>handlePrintSelected(selectedRows)}
         >
           Print Selected
-        </button>
+        </button> */}
       </div>
     </>
   );
