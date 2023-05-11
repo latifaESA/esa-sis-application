@@ -164,10 +164,10 @@ console.log(err)
                             <input className='bg-white inputT ml-2' type="text" data-testid='username'
                              {...register('email', {
                                 required: 'Please Enter Email',
-                                pattern: {
-                                  value: /\S+@\S+\.\S+/,
-                                  message: 'Please Enter Valid Email',
-                                },
+                                // pattern: {
+                                //   value: /\S+@\S+\.\S+/,
+                                //   message: 'Please Enter Valid Email',
+                                // },
                               })}
                             />
                         </div>
