@@ -93,7 +93,7 @@ export const authOptions = {
               'userid',
               credentials.email,
             );
-            console.log(user.rowCount)
+            console.log(user)
           //  check if there is user with the given id
           if(user.rowCount > 0){
             // check if the password is correct
@@ -125,7 +125,7 @@ export const authOptions = {
                 }
                 }else{
                       // check if the user is admin
-                      if(user.rows[0].role === 2){
+                      if(user.rows[0].role === 0){
                         // get the admin data
                         const admin = await findData(
                           connection,
@@ -159,7 +159,115 @@ export const authOptions = {
                         // if the admin is not exists then send this message to frontend
                         message = 'Admin is not exists'
                       }
+                    }else if(user.rows[0].role === 1){
+                      // get the student data
+                      const ST = await findData(
+                        connection,
+                        'student',
+                        'student_id',
+                        user.rows[0].userid,
+                      );
+                      console.log(user.rows[0].userid)
+                      console.log(ST)
+                      // if the program_manager exists then send the data to frontend
+                  if(ST.rows){
+
+                    await disconnect(connection);
+                    // Write to logger
+                    if (req) {
+                      // Log user information
+                      // userinfo.role ==='1'?
+                      sis_app_logger.info(
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                          userAgentinfo.os.family
+                        }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                          userAgentinfo.source
+                        }=${userAgentinfo.device.family}`
+                      );
                     }
+
+                    return {
+                              name: ST.rows[0].student_name,
+                              email: ST.rows[0].student_name,
+                              role: user.rows[0].role,
+                            };
+                    }else{
+                      // if the student is not exists then send this message to frontend
+                      message = 'Student is not exists'
+                    }
+                  }else if(user.rows[0].role === 2){
+                      // get the program_manager data
+                      const PM = await findData(
+                        connection,
+                        'program_manager',
+                        'pm_id',
+                        user.rows[0].userid,
+                      );
+                      console.log(user.rows[0].userid)
+                      console.log(PM)
+                      // if the program_manager exists then send the data to frontend
+                  if(PM.rows){
+
+                    await disconnect(connection);
+                    // Write to logger
+                    if (req) {
+                      // Log user information
+                      // userinfo.role ==='1'?
+                      sis_app_logger.info(
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                          userAgentinfo.os.family
+                        }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                          userAgentinfo.source
+                        }=${userAgentinfo.device.family}`
+                      );
+                    }
+
+                    return {
+                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
+                              email: PM.rows[0].pm_email,
+                              role: user.rows[0].role,
+                            };
+                    }else{
+                      // if the program manager is not exists then send this message to frontend
+                      message = 'Program manager is not exists'
+                    }
+                  }else if(user.rows[0].role === 3){
+                    // get the program_manager_assistance data
+                    const AS = await findData(
+                      connection,
+                      'program_manager_assistance',
+                      'pm_ass_id',
+                      user.rows[0].userid,
+                    );
+                    console.log(user.rows[0].userid)
+                    console.log(AS)
+                    // if the program_manager_assistance exists then send the data to frontend
+                if(AS.rows){
+
+                  await disconnect(connection);
+                  // Write to logger
+                  if (req) {
+                    // Log user information
+                    // userinfo.role ==='1'?
+                    sis_app_logger.info(
+                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                        userAgentinfo.os.family
+                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                        userAgentinfo.source
+                      }=${userAgentinfo.device.family}`
+                    );
+                  }
+
+                  return {
+                            name: `${AS.rows[0].pm_ass_firstname} ${AS.rows[0].pm_ass_lastname}`,
+                            email: AS.rows[0].pm_ass_email,
+                            role: user.rows[0].role,
+                          };
+                  }else{
+                    // if the admin is not exists then send this message to frontend
+                    message = 'Program manager assistance is not exists'
+                  }
+                }
                     
                 }
                 console.log(data)          

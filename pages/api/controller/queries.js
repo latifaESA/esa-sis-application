@@ -56,7 +56,7 @@ async function current_applicant_promotion(major_id, user_id, connection) {
 // });
 async function findData(connection, table, where, columnName){
   try{
-    const result = connection.query(`SELECT * from ${table} WHERE ${where} = ${columnName}`)
+    const result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
     return result;
   }catch(err){
     return err

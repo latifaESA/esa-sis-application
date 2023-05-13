@@ -167,10 +167,17 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
               const connection = await connect();
       
               // insert the user
-              const columns_user = ['userid', 'role', 'userpassword'];
-              const values_user = [`${recieved_data.UserProfileID}`, 2, `${recieved_data.password}`];
+              const columns_user = ['userid','role', 'userpassword'];
+              const values_user = [ `${recieved_data.UserProfileID}`, 1, `${recieved_data.password}`];
               let resUser = await insertData(connection, 'users', columns_user, values_user);
-              console.log("resUser: ", resUser)
+              console.log("resUser: ", resUser);
+
+              // insert the student
+              const columns_student = ['student_id', 'student_name', 'status', 'major_id', 'promotion', 'academic_year'];
+              const values_student = [`${recieved_data.UserProfileID}`, `${recieved_data.firstname} ${recieved_data.lastname}`, `${recieved_data.status}`, `${recieved_data.major}`, `${recieved_data.promotion}`, '2023'];
+              let resstudent = await insertData(connection, 'student', columns_student, values_student);
+              console.log("resstudent: ", resstudent)
+              
       
               // insert the major
               const columns_major = ['major_id', 'major_name', 'current_promotion'];
@@ -189,14 +196,14 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
               // insert the user_contact
               const columns_user_contact = ['userid', 'email', 'email_two', 'mobile_number', 'landline_number'];
               const values_user_contact = [`${recieved_data.UserProfileID}`, `${recieved_data.email}`, `${recieved_data.email_two}`, `${recieved_data.mobile_number}`, `${recieved_data.landline_number}`];
-              const res_user_contact = insertData(connection, 'user_contact', columns_user_contact, values_user_contact);
+              const res_user_contact = await insertData(connection, 'user_contact', columns_user_contact, values_user_contact);
       
               console.log('res_user_contact: ', res_user_contact)
       
               // insert the user_personal_address
               const columns_user_personal_address = ['userid', 'address_country', 'address_region', 'address_city', 'address_street', 'address_building', 'address_floor', 'address_postal'];
               const values_user_personal_address = [`${recieved_data.UserProfileID}`, `${recieved_data.address_country}`, `${recieved_data.address_region}`, `${recieved_data.address_city}`, `${recieved_data.address_street}`,`${recieved_data.address_building}`, `${recieved_data.address_floor}`, `${recieved_data.address_postal}`];
-              const res_user_personal_address = insertData(connection, 'user_personal_address', columns_user_personal_address, values_user_personal_address);
+              const res_user_personal_address = await insertData(connection, 'user_personal_address', columns_user_personal_address, values_user_personal_address);
       
               console.log('res_user_personal_address: ', res_user_personal_address)
       
