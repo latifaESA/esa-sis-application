@@ -5,7 +5,6 @@
 // // import { Client } from "pg"
 // const { Client } = require('pg');
 
-
 // const pool = new Client({
 //   user: 'postgres',
 //   host: 'localhost',
@@ -19,14 +18,21 @@
 
 const { Client } = require('pg');
 
-
 const client = new Client({
   user: 'postgres',
   host: 'localhost',
   database: 'postgres',
   password: '0000',
   port: 5432,
-})
+});
+
+// const client = new Client({
+//   user: env.user,
+//   host: env.host,
+//   database: env.database,
+//   password: env.password,
+//   port: env.port,
+// });
 
 client.connect();
 
@@ -42,5 +48,5 @@ client.connect();
 // export default client;
 
 module.exports = {
-  default: client
+  default: client,
 };
