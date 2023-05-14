@@ -152,7 +152,7 @@ export const authOptions = {
                           }=${userAgentinfo.device.family}`
                         );
                       }
-
+                      console.log('user.rows[0].role==',user.rows[0].role);
                       return {
                                 name: admin.rows[0].adminname,
                                 email: admin.rows[0].adminemail,

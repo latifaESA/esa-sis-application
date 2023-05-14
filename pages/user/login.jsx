@@ -50,9 +50,9 @@ export default function LoginScreen() {
   useEffect(() => {
     // console.log(session);
     if (session?.user && !userState.user.isLogOut) {
-      session?.user.role === '1'
-        ? router.push(redirect || '/user/sis/main')
-        : router.push(redirect || '/programManager/main');
+      if(session?.user.role === 1){router.push(redirect || '/user/sis/main')}
+        else if(session?.user.role === 2) {router.push(redirect || '/programManager/main')}
+        else if(session?.user.role === 0){router.push(redirect || '/admin/main')}
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -98,8 +98,8 @@ export default function LoginScreen() {
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }
-    } catch (err) {
-console.log(err)
+      } catch (err) {
+      console.log(err)
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
