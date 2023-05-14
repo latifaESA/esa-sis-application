@@ -125,7 +125,7 @@ async function connect() {
     const connection = new Client({
       user: 'postgres',
       host: 'localhost',
-      database: 'postgres',
+      database: 'SIS',
       password: '0000',
       port: 5432,
     })
