@@ -111,8 +111,9 @@ export const authOptions = {
                 // if the user did not complete the survey then send the links
                 if(data.blocked){
                   try{
-                    // change to 6 at userid
-                  let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01', {
+
+                  let {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705637&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01', {
+
                     httpsAgent: new https.Agent({
                       rejectUnauthorized: false,
                     })
