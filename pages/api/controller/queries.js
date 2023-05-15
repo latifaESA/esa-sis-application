@@ -75,6 +75,16 @@ async function insertData(connection, table, columns, values) {
   }
 }
 
+// get all data from specific column
+async function getAll(connection, table){
+  try{
+    const result = connection.query(`SELECT * from ${table}`)
+    return result;
+  }catch(err){
+    return err
+  }
+}
+
 
 /* End Postegresql */
 /**
@@ -616,6 +626,7 @@ async function UpdateAny(
 }
 
 module.exports = {
+  getAll,
   insertData,
   UpdateUserpassword,
   NewUser,
