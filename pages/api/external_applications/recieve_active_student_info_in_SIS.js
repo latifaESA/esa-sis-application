@@ -173,8 +173,8 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
               console.log("resUser: ", resUser);
 
               // insert the student
-              const columns_student = ['student_id', 'student_name', 'status', 'major_id', 'promotion', 'academic_year'];
-              const values_student = [`${recieved_data.UserProfileID}`, `${recieved_data.firstname} ${recieved_data.lastname}`, `${recieved_data.status}`, `${recieved_data.major}`, `${recieved_data.promotion}`, '2023'];
+              const columns_student = ['student_id', 'student_firstname','student_lastname', 'status', 'major_id', 'promotion', 'academic_year'];
+              const values_student = [`${recieved_data.UserProfileID}`, `${recieved_data.firstname}`, `${recieved_data.lastname}`, `${recieved_data.status}`, `${recieved_data.major}`, `${recieved_data.promotion}`, '2023'];
               let resstudent = await insertData(connection, 'student', columns_student, values_student);
               console.log("resstudent: ", resstudent)
               

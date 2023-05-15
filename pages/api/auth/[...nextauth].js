@@ -153,7 +153,7 @@ export const authOptions = {
                       return {
                                 name: admin.rows[0].adminname,
                                 email: admin.rows[0].adminemail,
-                                role: user.rows[0].role,
+                                role: (user.rows[0].role).toString(),
                               };
                       }else{
                         // if the admin is not exists then send this message to frontend
@@ -187,9 +187,9 @@ export const authOptions = {
                     }
 
                     return {
-                              name: ST.rows[0].student_name,
-                              email: ST.rows[0].student_name,
-                              role: user.rows[0].role,
+                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                              email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                              role: (user.rows[0].role).toString(),
                             };
                     }else{
                       // if the student is not exists then send this message to frontend
@@ -225,7 +225,7 @@ export const authOptions = {
                     return {
                               name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                               email: PM.rows[0].pm_email,
-                              role: user.rows[0].role,
+                              role: (user.rows[0].role).toString(),
                             };
                     }else{
                       // if the program manager is not exists then send this message to frontend
@@ -261,7 +261,7 @@ export const authOptions = {
                   return {
                             name: `${AS.rows[0].pm_ass_firstname} ${AS.rows[0].pm_ass_lastname}`,
                             email: AS.rows[0].pm_ass_email,
-                            role: user.rows[0].role,
+                            role: (user.rows[0].role).toString(),
                           };
                   }else{
                     // if the admin is not exists then send this message to frontend

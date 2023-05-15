@@ -48,7 +48,7 @@ export default function LoginScreen() {
 
 
   useEffect(() => {
-    // console.log(session);
+    console.log(session);
     if (session?.user && !userState.user.isLogOut) {
       session?.user.role === '1'
         ? router.push(redirect || '/user/sis/main')
