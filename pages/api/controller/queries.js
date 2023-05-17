@@ -85,6 +85,46 @@ async function getAll(connection, table){
   }
 }
 
+// filter search of student
+// async function filterStudent(connection, id, firstname, lastname, major, promotion, status){
+//   try{
+//     const result = connection.query(`SELECT * from student WHERE student_id = '${id}' AND student_firstname = '${firstname}' AND student_lastname = '${lastname}' AND major_id = ${major} AND promotion = '${promotion}' AND status ='${status}'`)
+//     return result;
+//   }catch(err){
+//     return err
+//   }
+// }
+async function filterStudent(connection, id, firstname, lastname, major, promotion, status) {
+  try {
+    let query = `SELECT * FROM student WHERE 1=1`;
+
+    if (id != 'all') {
+      query += ` AND student_id = '${id}'`;
+    }
+    if (firstname != 'all') {
+      query += ` AND student_firstname = '${firstname}'`;
+    }
+    if (lastname != 'all') {
+      query += ` AND student_lastname = '${lastname}'`;
+    }
+    if (major != 'all') {
+      query += ` AND major_id = ${major}`;
+    }
+    if (promotion != 'all') {
+      query += ` AND promotion = '${promotion}'`;
+    }
+    if (status != 'all') {
+      query += ` AND status = '${status}'`;
+    }
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+
 
 /* End Postegresql */
 /**
@@ -626,6 +666,7 @@ async function UpdateAny(
 }
 
 module.exports = {
+  filterStudent,
   getAll,
   insertData,
   UpdateUserpassword,
