@@ -59,7 +59,7 @@ const AdminView = () => {
         <TableCellsIcon className='h-5 w-5' />
       </div>
       <div>
-        <p>Create View</p>
+        <p>Create</p>
       </div>
     </div>
   </Link>
@@ -75,10 +75,10 @@ const AdminView = () => {
       }`}
     >
       <div className='mr-2'>
-        <UserGroupIcon className='h-5 w-5' />
+        <ClipboardDocumentListIcon className='h-5 w-5' />
       </div>
       <div>
-        <p>Report View</p>
+        <p>Report</p>
       </div>
     </div>
   </Link>
@@ -94,7 +94,7 @@ const AdminView = () => {
       }`}
     >
       <div className='mr-2'>
-        <AcademicCapIcon  className='h-5 w-5' />
+        <PencilIcon  className='h-5 w-5' />
       </div>
       <div>
         <p>Edit Profile</p>

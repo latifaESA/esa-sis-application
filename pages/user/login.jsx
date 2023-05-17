@@ -45,14 +45,14 @@ export default function LoginScreen() {
     (state) => state.persistedReducer.user_state.userState
   );
 
-
+    console.log(errorMessage)
 
   useEffect(() => {
     console.log(session);
     if (session?.user && !userState.user.isLogOut) {
-      if(session?.user.role === 1){router.push(redirect || '/user/sis/main')}
-        else if(session?.user.role === 2) {router.push(redirect || '/programManager/main')}
-        else if(session?.user.role === 0){router.push(redirect || '/admin/main')}
+      if(session?.user.role === '1'){router.push(redirect || '/user/sis/main')}
+        else if(session?.user.role === '2') {router.push(redirect || '/programManager/main')}
+        else if(session?.user.role === '0'){router.push(redirect || '/admin/main')}
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
@@ -173,7 +173,9 @@ export default function LoginScreen() {
                         </div>
                         <div className='formDiv mt-3'>
                             <label className='text-[#707070] text-[18px]' htmlFor="password">Password</label><br />
-                            <input className='bg-white inputT focus:outline-none  ml-2' type="password" data-testid='password'
+                            <input className='bg-white inputT focus:outline-none  ml-2'
+                              type={showPassword === false ? 'password' : 'text'}
+                             data-testid='password'
                              {...register('password', {
                                 required: 'Please enter password',
                                 minLength: {
@@ -182,6 +184,19 @@ export default function LoginScreen() {
                                 },
                               })}
                             />
+                            <div className='absolute passwordVisibility text-[#707070] cursor-pointer'>
+                            {showPassword === false ? (
+                              <VisibilityOffIcon
+                                fontSize='small'
+                                onClick={showPasswordHandler}
+                              />
+                            ) : (
+                              <VisibilityIcon
+                                fontSize='small'
+                                onClick={showPasswordHandler}
+                              />
+                            )}
+                           </div>
                         </div>
                         <Link href='/user/password/forgetpassword' legacyBehavior>
                         <p className='text-[10px] tracking-normal ml-11 text-[#707070] cursor-pointer mt-1 text-center '>

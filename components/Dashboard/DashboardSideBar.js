@@ -33,7 +33,7 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
     (state) => state.persistedReducer.app_state.appState
   );
 
-
+    console.log(session)
   return (
     <>
       <div ref={ref} className='fixed w-52 h-full overflow-auto bg-white z-10'>
@@ -48,11 +48,11 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
             </picture>
           </Link>
         </div>
-        {(session?.user.role === 0) && (<AdminView/>)}
+        {(session?.user.role === '0') && (<AdminView/>)}
 
-        {(session?.user.role === 1) &&  (<StudentView />)}
+        {(session?.user.role === '1') &&  (<StudentView />)}
 
-        {(session?.user.role === 2) && (<ProgramManagerView />)}
+        {(session?.user.role === '2') && (<ProgramManagerView />)}
 
       </div>
     </>
