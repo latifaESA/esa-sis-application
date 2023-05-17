@@ -1,16 +1,17 @@
-// /*
-//  * Created By: KANSO Adi
-//  * Project: SIS Application
-//  * File: pages\api\external_application\recieve_active_student_info_in_SIS.js
-//  * École Supérieure des Affaires (ESA)
-//  * Copyright (c) 2023 ESA
-//  */
-// console.log('it is noln0 ljkljo mlsjf')
-// const http = require('http');
+/*
+ * Created By: KANSO Adi, Ali Mroueh
+ * Project: SIS Application
+ * File: pages\api\external_application\recieve_active_student_info_in_SIS.js
+ * École Supérieure des Affaires (ESA)
+ * Copyright (c) 2023 ESA
+ */
+
 const { insertData } = require('../controller/queries');
 const { connect } = require('../../../utilities/db');
 const sis_app_logger = require('../logger');
 const useragent = require('useragent');
+const { env } = require('process');
+
 // // Generate a strong KEY from an online key generator
 // const ONLINE_SIS_SECRET_KEY = 'ONLINE_SIS_SECRET_KEY';
 // // for dev mode should be localhost:3000
@@ -22,9 +23,8 @@ const useragent = require('useragent');
 //   res.setHeader('Access-Control-Allow-Origin', ONLINE_URL);
 //   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
 
-
 //   if (
-//     req.method === 'POST' 
+//     req.method === 'POST'
 //     &&
 //     req.url === '/pages/api/external_applications/recieve_active_student_info_in_SIS'
 //     // FIXME: Maybe req.url need Modification
@@ -65,7 +65,7 @@ const useragent = require('useragent');
 //         // insert the major
 //         const columns_major = ['major_id', 'major_name', 'current_promotion'];
 //         const values_major = [`${recieved_data.major}`, `${recieved_data.program}`, `${recieved_data.promotion}`];
-//         // const insertmajor = 
+//         // const insertmajor =
 //         const resMajor = await insertData(connection, 'major', columns_major, values_major);
 //         console.log('resMajor: ',resMajor)
 
@@ -90,7 +90,6 @@ const useragent = require('useragent');
 
 //         console.log('res_user_personal_address: ', res_user_personal_address)
 
-
 //         // insert the user_emergency_contact
 //         const columns_user_emergency_contact = ['userid', 'prefix', 'emerg_firstname', 'emerg_middlename', 'emerg_lastname', 'emerg_phonenumber', 'emerg_relationship', 'emerg_medicalhealth', 'emerg_diseasetype'];
 //         const values_user_emergency_contact = [`${recieved_data.UserProfileID}`, `${recieved_data.prefix}`, `${recieved_data.emerg_firstname}`, `${recieved_data.emerg_middlename}`, `${recieved_data.emerg_lastname}`,`${recieved_data.emerg_phonenumber}`, `${recieved_data.emerg_relationship}`, `${recieved_data.emerg_medicalhealth}`, `${recieved_data.emerg_diseasetype}`];
@@ -108,7 +107,6 @@ const useragent = require('useragent');
 //         }else{
 //           console.log('no student info')
 //         }
-
 
 //       // TODO: write an info log
 //       sis_app_logger.info(
@@ -140,16 +138,21 @@ const useragent = require('useragent');
 
 export default async function handler(req, res) {
   // Generate a strong KEY from an online key generator
-const ONLINE_SIS_SECRET_KEY = 'ONLINE_SIS_SECRET_KEY';
-// for dev mode should be localhost:3000
-const ONLINE_URL = 'http://localhost:3000';
-// const ONLINE_URL = 'https://online-application-url.com';
+  const ONLINE_SIS_SECRET_KEY = env.ONLINE_SIS_SECRET_KEY;
+  // for dev mode should be localhost:3001
+  const ONLINE_URL = env.ONLINE_APPLICATION_URL;
+  // Allow integration with the online application
+  // during SIS development the value should be false until the integration is done
+  // because we plan to deploy progresvly the SIS application in the production server
+  const allowIntegration = env.ALLOW_INTEGRATION;
 
-
-res.setHeader('Access-Control-Allow-Origin', ONLINE_URL);
-res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
-  if (req.method === 'POST'  && req.url === '/api/external_applications/recieve_active_student_info_in_SIS') {
-
+  res.setHeader('Access-Control-Allow-Origin', ONLINE_URL);
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  if (
+    allowIntegration &&
+    req.method === 'POST' &&
+    req.url === '/api/external_applications/recieve_active_student_info_in_SIS'
+  ) {
     // Verify authorization token
     const authHeader = req.headers['authorization'];
     if (!authHeader || authHeader !== ONLINE_SIS_SECRET_KEY) {
@@ -159,6 +162,7 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     }
     const userAgent = req.headers['user-agent'];
     const userAgentinfo = useragent.parse(userAgent);
+
     let {studentInfo} = req.body;
     if(studentInfo){
               console.log(studentInfo[0])
@@ -233,16 +237,63 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
         }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
           userAgentinfo.source
         }=${userAgentinfo.device.family}`
+
       );
-          // Send a response to the online application
-      const responseData = { message: 'Received student info' };
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(responseData));   
-  }else{
+
+      console.log('res_user_emergency_contact: ', res_user_emergency_contact);
+
+      // insert the user_education
+      const columns_user_education = [
+        'userid',
+        'degree_level',
+        'series',
+        'obtain_date',
+        'education_country',
+        'establishment',
+        'other_establishment',
+      ];
+      const values_user_education = [
+        `${recieved_data.UserProfileID}`,
+        `${recieved_data.degree_level}`,
+        `${recieved_data.series}`,
+        `${recieved_data.obtain_date}`,
+        `${recieved_data.education_country}`,
+        `${recieved_data.establishment}`,
+        `${recieved_data.other_establishment}`,
+      ];
+      const res_user_education = await insertData(
+        connection,
+        'user_education',
+        columns_user_education,
+        values_user_education
+      );
+
+      console.log('res_user_education: ', res_user_education);
+    } else {
+      console.log('no student info');
+    }
+
+    // TODO: write an info log
+    sis_app_logger.info(
+      `${new Date()}=received a new active user=${userAgentinfo.os.family}=${
+        userAgentinfo.os.major
+      }=${userAgentinfo.family}=${userAgentinfo.source}=${
+        userAgentinfo.device.family
+      }`
+    );
+    // Send a response to the online application
+    // FIXME: Dear SIS developper please handle if the student record inserted or not
+    //  if inserted send
+    const responseData = { message: 'Received student info' };
+    // else send
+    // const responseData = { message: 'Failed to insert student info' };
+    // the online application will handle the response for further actions
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(responseData));
+  } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not found');
     // TODO: Dear SIS developper
     // TODO: write an error log
   }
-
-  }
+}
