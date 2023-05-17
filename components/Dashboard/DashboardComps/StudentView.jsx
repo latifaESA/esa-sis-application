@@ -13,7 +13,8 @@ import {
     UserGroupIcon,
     NewspaperIcon,
     AcademicCapIcon,
-    WalletIcon 
+    WalletIcon ,
+    LockClosedIcon 
   } from '@heroicons/react/24/solid';
   import { useRouter } from 'next/router';
   import Link from 'next/link';
@@ -106,8 +107,8 @@ const StudentView = () => {
                 <div className='mr-2' >
                   <AcademicCapIcon  className='h-5 w-5' />
                 </div>
-                <div >
-                  <p>Grades</p>
+                <div className='flex'>
+                  <p>Grades </p><LockClosedIcon className='h-4 w-4 ml-2'/>
                 </div>
               </div>
             }
