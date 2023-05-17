@@ -34,6 +34,14 @@ const client = new Client({
 //   port: env.port,
 // });
 
+// const client = new Client({
+//   user: env.user,
+//   host: env.host,
+//   database: env.database,
+//   password: env.password,
+//   port: env.port,
+// });
+
 client.connect();
 
 // client.query("Select * from major", (err, res) => {
