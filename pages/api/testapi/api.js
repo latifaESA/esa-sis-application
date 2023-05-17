@@ -1,5 +1,5 @@
 const { connect } = require("../../../utilities/db");
-const { filterStudent } = require("../controller/queries");
+const { filterStudent, getAll } = require("../controller/queries");
 
 // const axios = require('axios')
 // import https from 'https';
@@ -7,8 +7,10 @@ const { filterStudent } = require("../controller/queries");
 async function handler(req, res) {
     try {
         const connection = await connect();
+        // filterStudent(connection, id, firstname, lastname, major, promotion, status);
+        const user = await filterStudent(connection, 'all', 'ali', 'all', 'all', 'all', 'active');
 
-        const user = await filterStudent(connection, 'all', 'all', 'all', 'all', 'all', 'active');
+        // const user = await getAll(connection, 'student');
 
         console.log(user)
         return res.status('200').send(user)
