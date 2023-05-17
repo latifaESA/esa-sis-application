@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import {
     PencilIcon,
     Cog8ToothIcon,
@@ -16,8 +17,18 @@ import {
   } from '@heroicons/react/24/solid';
   import { useRouter } from 'next/router';
   import Link from 'next/link';
+  import { useSession } from 'next-auth/react';
+
 
 const StudentView = () => {
+
+  const { data: session } = useSession();
+
+  let isLimited;
+      if(session?.user.status == 'limited'){
+        isLimited = true
+      }
+  
 
     const router = useRouter();
   return (
@@ -62,29 +73,51 @@ const StudentView = () => {
             </Link>
 
             {/* Schedule Section */}
-            <Link href='/user/sis/schedule'>
-              <div
-                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/schedule'
-                    ? 'bg-blue-100 text-blue-500'
-                    : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-                }`}
-              >
-                <div className='mr-2'>
-                  <AcademicCapIcon  className='h-5 w-5' />
-                </div>
-                <div>
-                  <p>Grades</p>
-                </div>
-              </div>
-            </Link>
-
-            {/* Grades Section */}
-
-            <Link href='/user/sis/grades'>
+          { !isLimited && <Link href='/user/sis/grades'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                   router.pathname == '/user/sis/grades'
+                    ? 'bg-blue-100 text-blue-500'
+                    : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                    
+                }`}
+                
+              >
+                <div className='mr-2' >
+                  <AcademicCapIcon  className='h-5 w-5' />
+                </div>
+                <div >
+                  <p>Grades</p>
+                </div>
+              </div>
+            </Link>}
+            
+            { isLimited &&
+
+              <div
+                className={`pl-2 py-3 mx-5 rounded pointer-events-none text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                  router.pathname == '/user/sis/grades'
+                    ? 'bg-blue-100 text-blue-500'
+                    : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                    
+                }`}
+                
+              >
+                <div className='mr-2' >
+                  <AcademicCapIcon  className='h-5 w-5' />
+                </div>
+                <div >
+                  <p>Grades</p>
+                </div>
+              </div>
+            }
+
+            {/* Grades Section */}
+
+            <Link href='/user/sis/schedule'>
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center  cursor-pointer mb-3 flex items-center transition-colors ${
+                  router.pathname == '/user/sis/schedule'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}
