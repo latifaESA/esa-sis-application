@@ -41,6 +41,11 @@ const StudentsList = ({ users, setUsers }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
+  console.log('=============')
+  console.log(users)
+  console.log('=============')
+
+
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
     setSelectedUser(user);
@@ -170,7 +175,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   const columns = [
     {
-      field: 'ID',
+      field: 'student_id',
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
@@ -183,24 +188,24 @@ const StudentsList = ({ users, setUsers }) => {
       align: 'center',
       width: 150,
       renderCell: (params) =>
-        `${params.row.fname || ''} ${params.row.lname || ''}`,
+        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
     },
+    // {
+    //   field: 'email',
+    //   headerName: 'Email',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 150,
+    // },
+    // {
+    //   field: 'mobileNumber',
+    //   headerName: 'Mobile Number',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 120,
+    // },
     {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
-    {
-      field: 'mobileNumber',
-      headerName: 'Mobile Number',
-      headerAlign: 'center',
-      align: 'center',
-      width: 120,
-    },
-    {
-      field: 'major',
+      field: 'major_name',
       headerName: 'Major',
       headerAlign: 'center',
       align: 'center',
@@ -224,52 +229,59 @@ const StudentsList = ({ users, setUsers }) => {
       width: 100,
       editable: true,
       cellClassName: (params) =>
-        params.row.status === 'complete'
+        params.row.status === 'active'
           ? 'text-green-600 font-bold'
-          : params.row.status === 'incomplete'
+          : params.row.status === 'limited'
           ? 'text-red-600 font-bold'
-          : '' || params.row.status === 'submitted'
+          : '' || params.row.status === 'Inactive'
           ? 'text-blue-600 font-bold'
           : '',
       type: 'singleSelect',
       valueOptions: statusData,
     },
     {
-      field: 'createdAt',
-      headerName: 'Initial Date',
+      field: 'academic_year',
+      headerName: 'Academic Year',
       headerAlign: 'center',
       align: 'center',
-      width: 100,
-      type: 'date',
-      valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
+      width: 110,
     },
-    {
-      field: 'updatedAt',
-      headerName: 'Submition Date',
-      headerAlign: 'center',
-      align: 'center',
-      width: 100,
-      type: 'date',
-      valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
-    },
-    {
-      field: 'reportURL',
-      headerName: 'Report',
-      headerAlign: 'center',
-      align: 'center',
-      width: 200,
-      renderCell: (params) => {
-        return params.row.status === 'incomplete' ? (
-          ''
-        ) : (
-          <Link target='_blank' href={`${params.row.reportURL}`}>
-            {params.row.reportURL
-              ? `${params.row.fname} ${params.row.lname}'s Report`
-              : ''}
-          </Link>
-        );
-      },
-    },
+    // {
+    //   field: 'createdAt',
+    //   headerName: 'Initial Date',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 100,
+    //   type: 'date',
+    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
+    // },
+    // {
+    //   field: 'updatedAt',
+    //   headerName: 'Submition Date',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 100,
+    //   type: 'date',
+    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
+    // },
+    // {
+    //   field: 'reportURL',
+    //   headerName: 'Report',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 200,
+    //   renderCell: (params) => {
+    //     return params.row.status === 'incomplete' ? (
+    //       ''
+    //     ) : (
+    //       <Link target='_blank' href={`${params.row.reportURL}`}>
+    //         {params.row.reportURL
+    //           ? `${params.row.fname} ${params.row.lname}'s Report`
+    //           : ''}
+    //       </Link>
+    //     );
+    //   },
+    // },
     {
       field: 'action',
       headerName: 'Action',
@@ -413,7 +425,7 @@ const StudentsList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.ID}
+          getRowId={(r) => r.student_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
