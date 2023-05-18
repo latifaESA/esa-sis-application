@@ -351,7 +351,8 @@ export default function Layout({ children, title }) {
         </title>
 
         {/* <meta name="description" content="ESA SIS Application Website" /> */}
-        <link rel='icon' href={appState.appVar.esa_logo} />
+        {/* <link rel='icon' href={appState.appVar.esa_logo} /> */}
+        {/* <link rel="icon" href="/public/esa.ico" /> */}
       </Head>
       <div>
         <Navbar />

@@ -7,13 +7,13 @@
  */
 
 import Head from 'next/head';
-import Image from 'next/image';
-import Carousel from 'react-material-ui-carousel';
-import selection_data from '../utilities/selection_data';
-import { useEffect, useState } from 'react';
-import { ApplyNow } from '../components/ApplyNow';
-import SocialIcons from '../components/SocialIcons';
-import LoginScreen from './user/login'
+// import Image from 'next/image';
+// import Carousel from 'react-material-ui-carousel';
+// import selection_data from '../utilities/selection_data';
+// import { useEffect, useState } from 'react';
+// import { ApplyNow } from '../components/ApplyNow';
+// import SocialIcons from '../components/SocialIcons';
+import LoginScreen from './user/login';
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -29,11 +29,11 @@ import LoginScreen from './user/login'
 // import LoginScreen from './user/login'
 
 export default function Home() {
-  const [carousel, setCarousel] = useState([]);
+  // const [carousel, setCarousel] = useState([]);
 
-  useEffect(() => {
-    setCarousel(selection_data.carouselList);
-  }, []);
+  // useEffect(() => {
+  //   setCarousel(selection_data.carouselList);
+  // }, []);
 
   //  const dispatch = useDispatch();
   // useEffect(() => {
@@ -81,6 +81,7 @@ export default function Home() {
     <>
       <Head>
         <title>ESA Business School - SIS Application</title>
+        <link rel="icon" href="/public/esa.ico" />
       </Head>
       <LoginScreen />
       {/* <Carousel
@@ -107,7 +108,7 @@ export default function Home() {
         ))}
       </Carousel>
       <ApplyNow /> */}
-        
+
       {/* <div className='relative pt-16 pb-32 h-[600px] flex content-center items-center justify-center min-h-screen-72 '>
         <div
           className='absolute top-0 w-full h-full bg-center bg-cover rounded-lg'
@@ -431,8 +432,6 @@ export default function Home() {
     </>
   );
 }
-Home.getLayout = function(page){ 
-  return (<>
-  {page}
-  </>)
-}
+Home.getLayout = function (page) {
+  return <>{page}</>;
+};
