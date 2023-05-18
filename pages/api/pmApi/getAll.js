@@ -1,5 +1,5 @@
 const { connect } = require("../../../utilities/db");
-const { filterStudent, getAll } = require("../controller/queries");
+const { getAll } = require("../controller/queries");
 
 // const axios = require('axios')
 // import https from 'https';
