@@ -2,55 +2,92 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
+
 import axios from 'axios'
 import { x64 } from 'crypto-js';
 
 
-
-
+import CustomSelectBox from "./customSelectBox";
 
 
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
+//<<<<<<< Hassan
 
-  const [status, setStatus] = useState([])
-  const [major, setMajor] = useState([])
-  const [promotion, setPromotion] = useState([])
+//  const [status, setStatus] = useState([])
+//  const [major, setMajor] = useState([])
+//  const [promotion, setPromotion] = useState([])
 
+
+//  useEffect(() => { 
+
+ //   let dataStatus = []
+ //   const getstatus = async () => { 
+ //     let student = 'status';
+ //     let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+ //     setStatus(data.data)
+ //     console.log(status)
+     
+  //  }
+  //  const getMajor = async () => { 
+  //    let student = 'major';
+  //    let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+ //     setMajor(data.data)
+ //   }
+    
+ //   const getPromotion = async () => { 
+ //     let student = 'student';
+ //     let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+//      setPromotion(data.data)
+     
+//    }
+//    getPromotion() 
+//    getMajor() 
+//    getstatus() 
+//  }, [])
+//
+//    const handleStatus = () =>{}
+ 
+//=======
+  const [inputValue, setInputValue] = useState("");
+  const [selected, setSelected] = useState("");
+  const [open, setOpen] = useState(false);
+  const [dates, setDates] = useState([]);
+  // let dates = []
 
   useEffect(() => { 
-
-    let dataStatus = []
-    const getstatus = async () => { 
-      let student = 'status';
-      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
-
-      setStatus(data.data)
-      console.log(status)
-     
-    }
-    const getMajor = async () => { 
-      let student = 'major';
-      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
-
-      setMajor(data.data)
-    }
-    
-    const getPromotion = async () => { 
+    const getStudentd = async () => { 
       let student = 'student';
-      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+      let {data} = await axios.post('http://localhost:3000/api/testapi/api', {student})
 
-      setPromotion(data.data)
-     
+      console.log(data.rows)
+      setUsers(data.rows)
+      // setDates(data.rows)
+      // data.rows.forEach(student => 
+      //   dates.push(student.student_firstname)
+      //   )
+      const datesArray = [];
+      data.rows.forEach((student) => {
+        datesArray.push(student.student_firstname);
+      });
+
+      setDates(datesArray);
+      console.log(dates,'before')
     }
-    getPromotion() 
-    getMajor() 
-    getstatus() 
+    getStudentd()
+    console.log(dates,'after')
   }, [])
 
-    const handleStatus = () =>{}
- 
+  const handleSelect = (selectedValue) => {
+    // Do something with the selected value
+    console.log("Selected Value:", selectedValue);
+  };
+
+//>>>>>>> main
   return (
     <>
       <Head>
@@ -96,12 +133,22 @@ export default function Students() {
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
           <label>
             Major:
-            <select
+                            {/* Start select box */}
+      <CustomSelectBox 
+      options={dates}
+      placeholder="select name"
+      onSelect={handleSelect}
+      />
+      {/* End select box */}
+          </label>
+
+            {/* <select
               className="ml-10 w-40 max-[850px]:ml-9"
               name="major"
               // value={formData.major}
               // onChange={handleChange}
             >
+
               <option value=''>
                   Choose a Major...
                   </option>
@@ -112,6 +159,15 @@ export default function Students() {
             })}
             </select>
           </label>
+
+              {/* {majorlist.map((major, index) => (
+                <option className="text-black" key={index}>
+                  {major.program}
+                </option>
+              ))} */}
+            {/* </select> */}
+
+
           <label className='invisible max-[850px]:visible max-[850px]:hidden'>
             From:
             <input

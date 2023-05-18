@@ -41,6 +41,7 @@ const StudentsList = ({ users, setUsers }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
+
   console.log('===============')
   console.log('=this is users=======')
   console.log(users.data)
@@ -48,6 +49,7 @@ const StudentsList = ({ users, setUsers }) => {
   // console.log(users.data[0].major_id)
   console.log('===============')
   console.log('===============')
+
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
     setSelectedUser(user);
@@ -183,15 +185,17 @@ const StudentsList = ({ users, setUsers }) => {
       align: 'center',
       width: 90,
     },
-    // {
-    //   field: 'Name',
-    //   headerName: 'Name',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 150,
-    //   renderCell: (params) =>
-    //     `${params.row.fname || ''} ${params.row.lname || ''}`,
-    // },
+
+    {
+      field: 'Name',
+      headerName: 'Name',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+      renderCell: (params) =>
+        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
+    },
+
     // {
     //   field: 'email',
     //   headerName: 'Email',
@@ -206,6 +210,7 @@ const StudentsList = ({ users, setUsers }) => {
     //   align: 'center',
     //   width: 120,
     // },
+
     // {
     //   field: 'major',
     //   headerName: 'Major',
@@ -248,6 +253,50 @@ const StudentsList = ({ users, setUsers }) => {
     //   align: 'center',
     //   width: 100,
     // },
+
+    {
+      field: 'major_name',
+      headerName: 'Major',
+      headerAlign: 'center',
+      align: 'center',
+      width: 200,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: majorData,
+    },
+    {
+      field: 'promotion',
+      headerName: 'Promotion',
+      headerAlign: 'center',
+      align: 'center',
+      width: 90,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      headerAlign: 'center',
+      align: 'center',
+      width: 100,
+      editable: true,
+      cellClassName: (params) =>
+        params.row.status === 'active'
+          ? 'text-green-600 font-bold'
+          : params.row.status === 'limited'
+          ? 'text-red-600 font-bold'
+          : '' || params.row.status === 'Inactive'
+          ? 'text-blue-600 font-bold'
+          : '',
+      type: 'singleSelect',
+      valueOptions: statusData,
+    },
+    {
+      field: 'academic_year',
+      headerName: 'Academic Year',
+      headerAlign: 'center',
+      align: 'center',
+      width: 110,
+    },
+
     // {
     //   field: 'createdAt',
     //   headerName: 'Initial Date',
@@ -284,6 +333,7 @@ const StudentsList = ({ users, setUsers }) => {
     //     );
     //   },
     // },
+
     // {
     //   field: 'action',
     //   headerName: 'Action',
@@ -344,6 +394,68 @@ const StudentsList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
+
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: `${session.user.role === '0' ? 300 : 150}`,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: false,
+      renderCell: (params) => (
+        <div className='flex gap-2'>
+          <button
+            className='primary-button hover:text-white'
+            onClick={() => {
+              const prevStatus = users.find(
+                (u) => u.ID === params.row.ID
+              )?.status;
+              if (prevStatus === 'incomplete') {
+                handleCancleIncomplete(params.row);
+              } else if (params.row.status === 'incomplete') {
+                handleConfirmIncomplete(params.row);
+              } else if (params.row.status === 'obsolete') {
+                handleConfirmObsolote(params.row);
+              } else if (prevStatus === 'obsolete') {
+                handleConfirmObsolote(params.row);
+              } else {
+                handleSave(params.row);
+              }
+            }}
+            type='button'
+          >
+            Save
+          </button>
+          <Link
+            className='text-black'
+            target='_blank'
+            href={`${params.row.reportURL}`}
+          >
+            <button
+              className='primary-button hover:text-white'
+              disabled={params.row.reportURL ? false : true}
+              type='button'
+            >
+              Print
+            </button>
+          </Link>
+          <button
+            className='primary-button hover:text-white'
+            onClick={() => handleChangeMajor(params.row)}
+            disabled={params.id !== majorEnable}
+            type='button'
+            hidden={
+              session.user.role === '2' || session.user.role === '3'
+                ? true
+                : false
+            }
+          >
+            Change Major
+          </button>
+        </div>
+      ),
+    },
+
   ];
 
   // export select to excel
@@ -427,7 +539,7 @@ const StudentsList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.ID}
+          getRowId={(r) => r.student_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
