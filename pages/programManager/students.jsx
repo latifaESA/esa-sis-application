@@ -1,11 +1,56 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios'
+import { x64 } from 'crypto-js';
+
+
+
+
+
 
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
+
+  const [status, setStatus] = useState([])
+  const [major, setMajor] = useState([])
+  const [promotion, setPromotion] = useState([])
+
+
+  useEffect(() => { 
+
+    let dataStatus = []
+    const getstatus = async () => { 
+      let student = 'status';
+      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+      setStatus(data.data)
+      console.log(status)
+     
+    }
+    const getMajor = async () => { 
+      let student = 'major';
+      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+      setMajor(data.data)
+    }
+    
+    const getPromotion = async () => { 
+      let student = 'student';
+      let data = await axios.post('http://localhost:3000/api/testapi/api', {student})
+
+      setPromotion(data.data)
+     
+    }
+    getPromotion() 
+    getMajor() 
+    getstatus() 
+  }, [])
+
+    const handleStatus = () =>{}
+ 
   return (
     <>
       <Head>
@@ -57,11 +102,14 @@ export default function Students() {
               // value={formData.major}
               // onChange={handleChange}
             >
-              {/* {majorlist.map((major, index) => (
-                <option className="text-black" key={index}>
-                  {major.program}
-                </option>
-              ))} */}
+              <option value=''>
+                  Choose a Major...
+                  </option>
+             {major.map(item => {
+                return (<option key={item.major_id} value={item.major_id}>
+                  {item.major_name}
+                  </option>);
+            })}
             </select>
           </label>
           <label className='invisible max-[850px]:visible max-[850px]:hidden'>
@@ -96,28 +144,36 @@ export default function Students() {
               // value={formData.promotion}
               // onChange={handleChange}
             >
-              {/* {promotionList.map((promotion, index) => (
-                <option className="text-black" key={index}>
-                  {promotion}
-                </option>
-              ))} */}
+              <option value=''>
+                  Choose Promotion...
+                  </option>
+              {promotion.map(item => {
+                return (<option key={item.student_id} value={item.student_id}>
+                  {item.promotion}
+                  </option>);
+            })}
             </select>
           </label>
 
           <label>
             Status:
-            <select
+            <input type='text' list="status"
               className="ml-10 w-40 max-[850px]:ml-9"
+              placeholder='Choose a value'
               name="status"
               // value={formData.status}
-              // onChange={handleChange}
-            >
-              {/* {statuelist.map((status, index) => (
-                <option className="text-black" key={index}>
-                  {status.status_name}
-                </option>
-              ))} */}
-            </select>
+              // onChange={handleStatus}
+            />
+              <datalist id='status'>
+              
+              
+              {status.map(item => {
+                return (<option key={item.status_id} value={item.status_name}>
+                  {item.status_name}
+                  </option>);
+            })}
+            </datalist>
+           
           </label>
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
