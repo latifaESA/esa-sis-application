@@ -8,10 +8,11 @@ async function handler(req, res) {
     try {
         const connection = await connect();
 
-        const data = await getAll(connection, req.body.student);
+        const {table} = req.body;
+        const data = await getAll(connection, table);
 
         console.log(data.rows)
-        return res.status('200').send(data)
+        return res.status('200').send(data.rows)
     } catch (error) {
         console.log('the error is: ', error)
         return res.status('401').send(error)

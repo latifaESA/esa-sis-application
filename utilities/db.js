@@ -114,12 +114,12 @@ async function connect() {
 // client.connect();
 
   try {
-    // const connection = mysql.createConnection({
-    //   host: env.host,
+    // const connection = new Client({
     //   user: env.user,
-    //   password: env.password,
+    //   host: env.host,
     //   database: env.database,
-    //   multipleStatements: false,
+    //   password: env.password,
+    //   port: env.port,
     // });
 
     const connection = new Client({
@@ -128,7 +128,7 @@ async function connect() {
       database: 'postgres',
       password: '0000',
       port: 5432,
-    })
+    });
 
     await new Promise((resolve, reject) => {
       connection.connect((err) => {
