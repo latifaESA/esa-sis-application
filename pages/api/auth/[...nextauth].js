@@ -50,12 +50,16 @@ export const authOptions = {
       if (user?.name) token.name = user.name;
       if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;
+      if (user?.status) token.status = user.status;
+      if (user?.ID) token.ID = user.ID;
       return token;
     },
     async session({ session, token }) {
       if (token?.name) session.user.name = token.name;
       if (token?.email) session.user.email = token.email;
       if (token?.role) session.user.role = token.role;
+      if (token?.status) session.user.status = token.status;
+      if (token?.ID) session.user.ID = token.ID;
       return session;
     },
   },
@@ -93,41 +97,90 @@ export const authOptions = {
               'userid',
               credentials.email,
             );
-            console.log(user)
+            
           //  check if there is user with the given id
           if(user.rowCount > 0){
             // check if the password is correct
             if(bcryptjs.compareSync(credentials.password.trim(),user.rows[0].userpassword)){
-               
+
               // check if the user completed the survey
               // change to 6 at last
               // 201705636
                 try {
-                let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=${credentials.email}`, {
+
+                let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=${parseInt(user.rows[0].userid)}`, {
+
+            //    let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=${credentials.email}`, {
+
                 httpsAgent: new https.Agent({
                   rejectUnauthorized: false,
                 })
                 })
                 console.log(data.blocked)
+                console.log(data)
                 // if the user did not complete the survey then send the links
-                if(data.blocked){
-                  try{
+                // if(data.blocked){
 
-                  let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${credentials.email}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
+                //   try{
 
-                    httpsAgent: new https.Agent({
-                      rejectUnauthorized: false,
-                    })
-                    })
-                    console.log(data.Tasks)
-                    // return {data};
-                    message = JSON.stringify(data);
+                //   let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${user.rows[0].userid}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
+
+                   
+                //   httpsAgent: new https.Agent({
+                //       rejectUnauthorized: false,
+                //     })
+                //     })
+                //     // console.log(data.Tasks)
+                //     console.log('==========-=-=-=-=')
+                //     console.log(data.StatusCode)
+                //     console.log('==========-=-=-=-=')
+                //     // return {data};
+                //     message = JSON.stringify(data);
+
+
+                //     const ST = await findData(
+                //       connection,
+                //       'student',
+                //       'student_id',
+                //       user.rows[0].userid,
+
+             //     let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${credentials.email}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
+
+
+                //     );
+                //     if(ST.rows){
+
+                //       await disconnect(connection);
+                //       // Write to logger
+                //       if (req) {
+                //         // Log user information
+                //         // userinfo.role ==='1'?
+                //         sis_app_logger.info(
+                //           `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                //             userAgentinfo.os.family
+                //           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                //             userAgentinfo.source
+                //           }=${userAgentinfo.device.family}`
+                //         );
+                //       }
+  
+                //       return {
+                //                 name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //                 message: message,
+                //                 email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //                 role: (user.rows[0].role).toString(),
+                //               };
+                //       }
              
-                  }catch (error) {
-                    console.log('the error is: ', error)
-                    message = JSON.stringify(error);
-                }
-                }else{
+                //   }catch (error) {
+                //     console.log('the error is: ', error)
+                //     message = JSON.stringify(error);
+                    
+                // }
+                
+                // }
+                // else
+                // {
                       // check if the user is admin
                       if(user.rows[0].role === 0){
                         // get the admin data
@@ -153,7 +206,7 @@ export const authOptions = {
                           }=${userAgentinfo.device.family}`
                         );
                       }
-
+                      console.log('user.rows[0].role==',user.rows[0].role);
                       return {
                                 name: admin.rows[0].adminname,
                                 email: admin.rows[0].adminemail,
@@ -161,7 +214,7 @@ export const authOptions = {
                               };
                       }else{
                         // if the admin is not exists then send this message to frontend
-                        message = 'Admin is not exists'
+                        message = 'Admin does not exists'
                       }
                     }else if(user.rows[0].role === 1){
                       // get the student data
@@ -171,7 +224,7 @@ export const authOptions = {
                         'student_id',
                         user.rows[0].userid,
                       );
-                      console.log(user.rows[0].userid)
+                      console.log('this is ST ')
                       console.log(ST)
                       // if the program_manager exists then send the data to frontend
                   if(ST.rows){
@@ -189,15 +242,17 @@ export const authOptions = {
                         }=${userAgentinfo.device.family}`
                       );
                     }
-
                     return {
                               name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                               email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                               role: (user.rows[0].role).toString(),
+                              status: `${data.blocked ? 'limited' : 'active'}`,
+                              ID: `${user.rows[0].userid}`,
                             };
-                    }else{
+                    }
+                    else{
                       // if the student is not exists then send this message to frontend
-                      message = 'Student is not exists'
+                      message = 'Student does not exists'
                     }
                   }else if(user.rows[0].role === 2){
                       // get the program_manager data
@@ -233,7 +288,7 @@ export const authOptions = {
                             };
                     }else{
                       // if the program manager is not exists then send this message to frontend
-                      message = 'Program manager is not exists'
+                      message = 'Program manager does not exists'
                     }
                   }else if(user.rows[0].role === 3){
                     // get the program_manager_assistance data
@@ -269,11 +324,12 @@ export const authOptions = {
                           };
                   }else{
                     // if the admin is not exists then send this message to frontend
-                    message = 'Program manager assistance is not exists'
+                    message = 'Program manager assistance does not exists'
                   }
                 }
                     
-                }
+                // }
+                // end of if data.bloked
                 console.log(data)          
                   } catch (error) {
                       console.log('the error is: ', error)
@@ -294,7 +350,7 @@ export const authOptions = {
                 );
           }
                 }else{
-                  message = "user is not exists";
+                  message = "user does not exist";
                 }
 
 
