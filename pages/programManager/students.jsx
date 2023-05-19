@@ -14,41 +14,42 @@ export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
 
-  const [inputValue, setInputValue] = useState("");
-  const [selected, setSelected] = useState("");
-  const [open, setOpen] = useState(false);
-  const [dates, setDates] = useState([]);
+  const [major, setMajor] = useState([]);
+  const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
-  // let dates = []
+
+  const [idValue, setIdValue] = useState('');
+  const [firstnameValue, setFirstnameValue] = useState('');
+  const [lastnameValue, setLastnameValue] = useState('');
+  const [majorValue, setMajorValue] = useState('');
+  const [statusValue, setStatusValue] = useState('');
+  const [promotionValue, setPromotionValue] = useState('');
 
   useEffect(() => { 
-    const getStudentd = async () => { 
-      let student = 'major';
-      let {data} = await axios.post('http://localhost:3000/api/testapi/api', {student})
+    const getMajor = async () => { 
+      let table = 'major';
+      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('data')
+      console.log('major')
       console.log(data)
-      setUsers(data)
-      // setDates(data.rows)
-      // data.rows.forEach(student => 
-      //   dates.push(student.student_firstname)
-      //   )
+      setallMajor(data)
+
       const datesArray = [];
       data.forEach((student) => {
         datesArray.push(student.major_name);
       });
 
-      setDates(datesArray);
-      console.log(dates,'before')
+      setMajor(datesArray);
+      console.log(major,'before')
     }
-    getStudentd()
-    console.log(dates,'after')
+    getMajor()
+    console.log(major,'after')
 
 
     const getStatus = async () => { 
-      let student = 'status';
-      let {data} = await axios.post('http://localhost:3000/api/testapi/api', {student})
+      let table = 'status';
+      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('status')
       console.log(data)
@@ -68,12 +69,13 @@ export default function Students() {
     getStatus();
 
     const getPromotion = async () => { 
-      let student = 'student';
-      let {data} = await axios.post('http://localhost:3000/api/testapi/api', {student})
+      let table = 'student';
+      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('promo')
       console.log(data)
       // setUsers(data)
+
       // setDates(data.rows)
       // data.rows.forEach(student => 
       //   dates.push(student.student_firstname)
@@ -90,10 +92,48 @@ export default function Students() {
     getPromotion();
   }, [])
 
-  const handleSelect = (selectedValue) => {
+  const handleMajor = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
+    if(selectedValue.trim() !== ''){
+    let majorID = allMajor.filter(major => major.major_name === selectedValue);
+    console.log(majorID[0].major_id)
+    setMajorValue(majorID[0].major_id)
+  }else{
+    setMajorValue("")
+  }
   };
+  const handleStatus = (selectedValue) => {
+    // Do something with the selected value
+    console.log("Selected Value:", selectedValue);
+    setStatusValue(selectedValue)
+
+  };
+  const handlePromotion = (selectedValue) => {
+    // Do something with the selected value
+    console.log("Selected Value:", selectedValue);
+    setPromotionValue(selectedValue)
+  };
+
+  const handleStudents = async() => {
+    console.log(idValue, firstnameValue, lastnameValue, majorValue, statusValue, promotionValue)
+    let sendData = {
+      id:idValue,
+      firstname:firstnameValue,
+      lastname:lastnameValue,
+      major:majorValue,
+      promotion:promotionValue,
+      status: statusValue
+    }
+    console.log(sendData)
+    console.log(JSON.stringify(sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+
+    console.log(data)
+    setUsers(data)
+  }
+
 
 //>>>>>>> main
   return (
@@ -111,6 +151,7 @@ export default function Students() {
               className="ml-16 w-40"
               type="number"
               name="ID"
+              onChange={(e) => setIdValue(e.target.value)}
               // value={formData.ID}
               // onChange={handleChange}
             ></input>
@@ -122,6 +163,7 @@ export default function Students() {
               className="ml-2 w-40 max-[850px]:ml-1"
               type="text"
               name="Fname"
+              onChange={(e) => setFirstnameValue(e.target.value)}
               // value={formData.Fname}
               // onChange={handleChange}
             ></input>
@@ -133,6 +175,7 @@ export default function Students() {
               className="ml-1 w-40 max-[850px]:ml-1"
               type="text"
               name="Lname"
+              onChange={(e) => setLastnameValue(e.target.value)}
               // value={formData.Lname}
               // onChange={handleChange}
             ></input>
@@ -144,9 +187,10 @@ export default function Students() {
 
               {/* Start select box */}
             <CustomSelectBox 
-            options={dates}
-            placeholder="select name"
-            onSelect={handleSelect}
+            options={major}
+            placeholder="select major"
+            onSelect={handleMajor}
+
             />
           </label>
 
@@ -175,13 +219,13 @@ export default function Students() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
      
-          <label>
+          <label className='flex'>
             Promotion:
             {
               <CustomSelectBox 
               options={promotion}
               placeholder="select promotion"
-              onSelect={handleSelect}
+              onSelect={handlePromotion}
               />
             }
           </label>
@@ -192,7 +236,7 @@ export default function Students() {
               <CustomSelectBox 
               options={status}
               placeholder="select status"
-              onSelect={handleSelect}
+              onSelect={handleStatus}
               />
             }
 
@@ -200,7 +244,8 @@ export default function Students() {
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button w-60 hover:text-white hover:font-bold"
-              type="submit"
+              type="button"
+              onClick={handleStudents}
             >
               Search
             </button>

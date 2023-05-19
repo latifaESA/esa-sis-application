@@ -139,7 +139,7 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
     if (lastname.trim() != '') {
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${lastname}%'))`;
     }
-    if (major.trim() != '') {
+    if (major != '') {
       query += ` AND student.major_id = ${major}`;
     }
     if (promotion.trim() != '') {
