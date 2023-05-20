@@ -1,52 +1,47 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
+import TeachersList from '../../components/Dashboard/TeachersList'
 
 import axios from 'axios'
-import { x64 } from 'crypto-js';
-
-
-import CustomSelectBox from "./customSelectBox";
 
 
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
 
-  const [inputValue, setInputValue] = useState("");
-  const [selected, setSelected] = useState("");
-  const [open, setOpen] = useState(false);
-  const [dates, setDates] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [promotion, setPromotion] = useState([]);
+  // const [inputValue, setInputValue] = useState("");
+  // const [selected, setSelected] = useState("");
+  // const [open, setOpen] = useState(false);
+  // const [dates, setDates] = useState([]);
+  // const [status, setStatus] = useState([]);
+  // const [promotion, setPromotion] = useState([]);
   const [fname, setFname] = useState("")
   const [lname, setLname] = useState("")
-  const [id, setID] = useState()
-  const [email, setEmail] = useState()
-  const [courseid, setCourseid] = useState()
-  // let dates = []
+  const [id, setID] = useState('')
+  const [email, setEmail] = useState('')
+  const [courseid, setCourseid] = useState('')
 
-  useEffect(() => { 
-    
-    
-  }, [])
 
-  const handlefname = (fname) => { 
-    console.log(fname)
+  const handleTeachers = async() => {
+    console.log(id, fname, lname, email, courseid)
+    let sendData = {
+      id:id,
+      firstname:fname,
+      lastname:lname,
+      email:email,
+      courseid: courseid
+    }
+    console.log(sendData)
+    console.log(JSON.stringify(sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+
+    console.log('this is data')
+    console.log(data)
+    setUsers(data)
   }
-  const handlelname = (lname) => { 
-    console.log(lname)
-  }
-  const handleID = (id) => { 
-    console.log(id)
-  }
-  const handleEmail = (email) => { 
-    console.log(email)
-  }
-  const handleCourseid = (courseid) => { 
-    console.log(courseid)
-  }
+
 
 //>>>>>>> main
   return (
@@ -68,8 +63,6 @@ export default function Students() {
               // value={formData.ID}
               onChange={(e) => { 
                 setID(e.target.value)
-                handleID(e.target.value)
-
               }}
             ></input>
           </label>
@@ -84,8 +77,6 @@ export default function Students() {
               // value={formData.Fname}
               onChange={(e) => { 
                 setFname(e.target.value)
-                handlefname(e.target.value)
-
               }}
             ></input>
           </label>
@@ -100,8 +91,6 @@ export default function Students() {
               // value={formData.Lname}
               onChange={(e) => { 
                 setLname(e.target.value)
-                handlelname(e.target.value)
-
               }}
             ></input>
           </label>
@@ -117,8 +106,6 @@ export default function Students() {
               // value={formData.Fname}
               onChange={(e) => { 
                 setEmail(e.target.value)
-                handleEmail(e.target.value)
-
               }}
             ></input>
           </label>
@@ -158,8 +145,6 @@ export default function Students() {
               // value={formData.Fname}
               onChange={(e) => { 
                 setCourseid(e.target.value)
-                handleCourseid(e.target.value)
-
               }}
             ></input>
          </label>
@@ -177,7 +162,8 @@ export default function Students() {
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-              type="submit"
+              type="button"
+              onClick={handleTeachers}
             >
               Search
             </button>
@@ -190,7 +176,7 @@ export default function Students() {
             </button>
           </div>
         </div>
-        {/* <StudentsList users={users} setUsers={setUsers} /> */}
+        <TeachersList users={users} setUsers={setUsers} />
       </form>
     </>
     </>

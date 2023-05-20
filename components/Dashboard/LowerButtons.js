@@ -10,7 +10,7 @@ export const LowerButtons = ({
   return (
     <>
       <div className='grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4'>
-        <button className='primary-button hover:text-white' type='button'>
+        <button className='primary-button btnCol text-white  hover:text-white' type='button'>
           Save Selected
         </button>
         {/* <button
@@ -23,7 +23,7 @@ export const LowerButtons = ({
           Export Selected
         </button> */}
         <button
-          className='primary-button hover:text-white'
+          className='primary-button btnCol text-white hover:text-white'
           type='button'
           onClick={exportAllButton}
           // hidden={session.user.role === '2'?true:false}

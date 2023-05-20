@@ -219,7 +219,7 @@ export default function Students() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
      
-          <label className='flex'>
+          <label className='flex w-[350px]'>
             Promotion:
             {
               <CustomSelectBox 
@@ -243,14 +243,14 @@ export default function Students() {
           </label>
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
-              className="primary-button w-60 hover:text-white hover:font-bold"
+              className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"
               onClick={handleStudents}
             >
               Search
             </button>
             <button
-              className="primary-button  w-60 hover:text-white hover:font-bold"
+              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
               type="button"
               // onClick={handleShowAll}
             >
@@ -258,7 +258,7 @@ export default function Students() {
             </button>
           </div>
         </div>
-        {/* <StudentsList users={users} setUsers={setUsers} /> */}
+        <StudentsList users={users} setUsers={setUsers} />
       </form>
     </>
     </>
