@@ -1,18 +1,42 @@
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
+import AttendanceList from '../../components/Dashboard/AttendanceList'
+import { useSession } from 'next-auth/react';
 
-export default function Courses() {
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
-  // console.log('appState.isWaiting==', appState.isWaiting);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(appIsWaiting(true));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export default function attendance() {
+
+  const { data: session } = useSession();
+  const [users, setUsers] = useState([]);
+
+  const [attendanceId, setAttendanceId] = useState('')
+  const [studentid, setStudentid] = useState('')
+  const [teacherid, setTeacherid] = useState('')
+  const [majorid, setMajorid] = useState('')
+  const [courseid, setCourseid] = useState('')
+  const [presence, setPresence] = useState()
+
+
+  const handleAttendance = async() => {
+    console.log(attendanceId, studentid, teacherid, majorid, courseid,presence)
+    let sendData = {
+      attendance_id:attendanceId,
+      student_id:studentid,
+      teacher_id:teacherid,
+      major_id:majorid,
+      courseid: courseid,
+      presence: presence
+    }
+    console.log(sendData)
+    console.log(JSON.stringify(sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+
+    console.log('this is data')
+    console.log(data)
+    setUsers(data)
+  }
 
   return (
     <>
@@ -31,7 +55,7 @@ export default function Courses() {
               name="attendance_id"
               placeholder='Attendance ID'
               // value={formData.ID}
-              // onChange={handleChange}
+              onChange={(e) => {setAttendanceId(e.target.value)}}
             ></input>
           </label>
 
@@ -43,7 +67,7 @@ export default function Courses() {
               name="student_id"
               placeholder='Student ID'
               // value={formData.Fname}
-              // onChange={handleChange}
+              onChange={(e) => {setStudentid(e.target.value)}}
             ></input>
           </label>
 
@@ -55,7 +79,7 @@ export default function Courses() {
               name="teacher_id"
               placeholder='Teacher ID'
               // value={formData.Lname}
-              // onChange={handleChange}
+              onChange={(e) => {setTeacherid(e.target.value)}}
             ></input>
           </label>
           {/* </div>
@@ -68,7 +92,7 @@ export default function Courses() {
               name="major_id"
               placeholder='Major ID'
               // value={formData.ID}
-              // onChange={handleChange}
+              onChange={(e) => {setMajorid(e.target.value)}}
             ></input>
           </label>
           <label className='w-[350px]'>
@@ -103,7 +127,7 @@ export default function Courses() {
               name="course_id"
               placeholder='Course ID'
               // value={formData.ID}
-              // onChange={handleChange}
+              onChange={(e) => {setCourseid(e.target.value)}}
             ></input>
           </label>
 
@@ -113,9 +137,9 @@ export default function Courses() {
               className="ml-5 w-40 max-[850px]:ml-[52px]"
               name="status"
               // value={formData.status}
-              // onChange={handleChange}
+              onChange={(e) => {setPresence(e.target.value)}}
             >
-              <option value={null}>Choose Value...</option>
+              <option value={''}>Choose Value...</option>
               <option value={true}>Present</option>
               <option value={false}>Absent</option>
             </select>
@@ -123,7 +147,8 @@ export default function Courses() {
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-              type="submit"
+              type="button"
+              onClick={handleAttendance}
             >
               Search
             </button>
@@ -136,11 +161,11 @@ export default function Courses() {
             </button>
           </div>
         </div>
-        {/* <StudentsList users={users} setUsers={setUsers} /> */}
+        <AttendanceList users={users} setUsers={setUsers} />
       </form>
     </>
     </>
   );
 }
-Courses.auth = true;
-Courses.adminOnly = true;
+attendance.auth = true;
+attendance.adminOnly = true;
