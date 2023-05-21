@@ -221,7 +221,19 @@ res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
               const res_user_education = await insertData(connection, 'user_education', columns_user_education, values_user_education);
       
               console.log('res_user_education: ', res_user_education)
-      
+                   
+              // insert the promotion
+              const columns_promotion = ['promotion_name'];
+              const values_promotion = [ `${recieved_data.program}`];
+              let resPromotion = await insertData(connection, 'promotions', columns_promotion, values_promotion);
+              console.log("respromotion: ", resPromotion);
+
+              // insert the user_document
+              const columns_document = ['userid', 'profileURL'];
+              const values_document = [ `${recieved_data.UserProfileID}`, `${recieved_data.profilePhotoURL}`];
+              let resDocument = await insertData(connection, 'user_document', columns_document, values_document);
+              console.log("resDocument: ", resDocument);
+
               }else{
                 console.log('no student info')
               }
