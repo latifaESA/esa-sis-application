@@ -18,27 +18,30 @@ export default function Students() {
   // const [promotion, setPromotion] = useState([]);
   const [fname, setFname] = useState("")
   const [lname, setLname] = useState("")
-  const [id, setID] = useState('')
+  const [idvalue, setIDvalue] = useState('')
   const [email, setEmail] = useState('')
   const [courseid, setCourseid] = useState('')
+  const [temp, setTemp] = useState('')
 
 
   const handleTeachers = async() => {
-    console.log(id, fname, lname, email, courseid)
+    console.log(idvalue, fname, lname, email, courseid)
     let sendData = {
-      id:id,
+      id:idvalue,
       firstname:fname,
       lastname:lname,
       email:email,
       courseid: courseid
     }
     console.log(sendData)
-    console.log(JSON.stringify(sendData))
+    console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
 
     console.log('this is data')
-    console.log(data)
+    setTemp(parseInt(idvalue))
+    // console.log(data)
+    console.log(typeof(parseInt(temp)))
     setUsers(data)
   }
 
@@ -62,7 +65,7 @@ export default function Students() {
               placeholder="Teacher's ID"
               // value={formData.ID}
               onChange={(e) => { 
-                setID(e.target.value)
+                setIDvalue(e.target.value)
               }}
             ></input>
           </label>
@@ -139,7 +142,7 @@ export default function Students() {
             Course ID:
             <input
               className="ml-3 w-40 max-[850px]:ml-2"
-              type="text"
+              type="number"
               name="course-id"
               placeholder='Enter Course ID'
               // value={formData.Fname}

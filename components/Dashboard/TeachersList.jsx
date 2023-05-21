@@ -44,7 +44,7 @@ const TeachersList = ({ users, setUsers }) => {
 
   console.log('===============')
   console.log('=this is users=======')
-  console.log(users.data)
+  console.log(users)
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
   console.log('===============')
@@ -259,7 +259,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 200,
+      width: 300,
       editable: true,
       type: 'singleSelect',
       valueOptions: majorData,
@@ -539,7 +539,7 @@ const TeachersList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.teachers_id}
+          getRowId={(r) => r.teacher_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
