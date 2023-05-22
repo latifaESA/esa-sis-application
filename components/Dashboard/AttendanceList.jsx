@@ -27,9 +27,10 @@ import {
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
+import CustomPagination from './Pagination';
 
 const AttendanceList = ({ users, setUsers }) => {
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
@@ -574,7 +575,7 @@ const AttendanceList = ({ users, setUsers }) => {
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
-          pagination
+          // pagination
           checkboxSelection
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
@@ -584,7 +585,7 @@ const AttendanceList = ({ users, setUsers }) => {
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>
             ),
-            // Pagination: CustomPagination,
+            Pagination: CustomPagination,
           }}
         />
       </Box>

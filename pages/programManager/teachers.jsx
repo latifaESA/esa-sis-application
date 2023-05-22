@@ -24,13 +24,34 @@ export default function Students() {
   const [temp, setTemp] = useState('')
 
 
-  const handleTeachers = async() => {
+  useEffect(() => { 
+    handleShowAll()
+  }, [])
+  
+  const handleShowAll = async () => {
+    let sendData = {
+      id: '',
+      firstname:'',
+      lastname:'',
+      email:'',
+      courseid: ''
+    }
+    console.log(sendData)
+    console.log((sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
+
+    setUsers(data)
+  }
+
+  const handleTeachers = async(e) => {
+    e.preventDefault()
     console.log(idvalue, fname, lname, email, courseid)
     let sendData = {
       id:idvalue,
-      firstname:fname,
-      lastname:lname,
-      email:email,
+      firstname:fname.trim(),
+      lastname:lname.trim(),
+      email:email.trim(),
       courseid: courseid
     }
     console.log(sendData)
@@ -165,15 +186,15 @@ export default function Students() {
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-              type="button"
+              type="submit"
               onClick={handleTeachers}
             >
               Search
             </button>
             <button
               className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-              type="button"
-              // onClick={handleShowAll}
+              type="reset"
+              onClick={handleShowAll}
             >
               Show All
             </button>

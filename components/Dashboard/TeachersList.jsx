@@ -27,6 +27,8 @@ import {
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
+import CustomPagination from './Pagination';
+import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(5);
@@ -40,7 +42,6 @@ const TeachersList = ({ users, setUsers }) => {
   const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
-
 
   console.log('===============')
   console.log('=this is users=======')
@@ -260,9 +261,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerAlign: 'center',
       align: 'center',
       width: 300,
-      editable: true,
       type: 'singleSelect',
-      valueOptions: majorData,
     },
     // {
     //   field: 'promotion',
@@ -546,7 +545,6 @@ const TeachersList = ({ users, setUsers }) => {
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
-          pagination
           checkboxSelection
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
@@ -556,7 +554,7 @@ const TeachersList = ({ users, setUsers }) => {
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>
             ),
-            // Pagination: CustomPagination,
+            Pagination: CustomPagination,
           }}
         />
       </Box>
