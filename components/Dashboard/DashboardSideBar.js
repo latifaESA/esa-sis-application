@@ -13,7 +13,7 @@ import {
   UserGroupIcon,
   NewspaperIcon,
   AcademicCapIcon,
-  WalletIcon 
+  WalletIcon,
 } from '@heroicons/react/24/solid';
 import StudentView from './DashboardComps/StudentView';
 import ProgramManagerView from './DashboardComps/ProgramManagerView';
@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 // import selection_data from '../../utilities/selection_data';
 import { useSession } from 'next-auth/react';
 import { useSelector } from 'react-redux';
-import esaLogo from '../../public/images/esa.png'
+import esaLogo from '../../public/images/esa.png';
 import Image from 'next/image';
 // eslint-disable-next-line no-unused-vars
 const DashboardSideBar = forwardRef(({ showNav }, ref) => {
@@ -33,27 +33,29 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
     (state) => state.persistedReducer.app_state.appState
   );
 
-    console.log(session)
+  console.log(session);
   return (
     <>
-      <div ref={ref} className='fixed w-52 h-full overflow-auto bg-white z-10'>
-        <div className='flex justify-center mt-2 mb-2'>
-          <Link href='/' className='text-lg font-bold mt-1'>
+      <div ref={ref} className="fixed w-52 h-full overflow-auto bg-white z-10">
+        <div className="flex justify-center mt-2 mb-2">
+          <Link href="/" className="text-lg font-bold mt-1">
             <picture>
               <img
-                className='w-32 h-auto'
-                src={appState.appVar.esa_logo}
-                alt='ESA logo'
+                className="w-32 h-auto"
+                src={
+                  'https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png'
+                }
+                // src={appState.appVar.esa_logo}
+                alt="ESA logo"
               />
             </picture>
           </Link>
         </div>
-        {(session?.user.role === '0') && (<AdminView/>)}
+        {session?.user.role === '0' && <AdminView />}
 
-        {(session?.user.role === '1') &&  (<StudentView />)}
+        {session?.user.role === '1' && <StudentView />}
 
-        {(session?.user.role === '2') && (<ProgramManagerView />)}
-
+        {session?.user.role === '2' && <ProgramManagerView />}
       </div>
     </>
   );

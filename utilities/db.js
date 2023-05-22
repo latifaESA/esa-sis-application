@@ -63,12 +63,6 @@ async function connect() {
       success: false,
       message: `Error establishing connection: ${result}`,
     };
-
-    //=======
-    //    console.error(`Error Establishing Connection To DB: ${err.message}`);
-    //    return { success: false, message: `Error Establishing Connection To DB: ${err.message}` };
-
-    //>>>>>>> master
   }
 }
 
