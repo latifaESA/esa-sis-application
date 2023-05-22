@@ -2,8 +2,13 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import axios from 'axios'
+import { x64 } from 'crypto-js';
+
+
 import CustomSelectBox from "./customSelectBox";
+
 
 export default function Students() {
   const { data: session } = useSession();
@@ -70,6 +75,7 @@ export default function Students() {
       console.log('promo')
       console.log(data)
       // setUsers(data)
+
       // setDates(data.rows)
       // data.rows.forEach(student => 
       //   dates.push(student.student_firstname)
@@ -129,6 +135,7 @@ export default function Students() {
   }
 
 
+//>>>>>>> main
   return (
     <>
       <Head>
@@ -181,23 +188,12 @@ export default function Students() {
               {/* Start select box */}
             <CustomSelectBox 
             options={major}
-            placeholder="select name"
+            placeholder="select major"
             onSelect={handleMajor}
+
             />
           </label>
 
-            {/* <select
-              className="ml-10 w-40 max-[850px]:ml-9"
-              name="major"
-              // value={formData.major}
-              // onChange={handleChange}
-            >
-              {/* {majorlist.map((major, index) => (
-                <option className="text-black" key={index}>
-                  {major.program}
-                </option>
-              ))} */}
-            {/* </select> */}
 
           <label className='invisible max-[850px]:visible max-[850px]:hidden'>
             From:
@@ -262,7 +258,7 @@ export default function Students() {
             </button>
           </div>
         </div>
-        <StudentsList users={users} setUsers={setUsers} />
+        {/* <StudentsList users={users} setUsers={setUsers} /> */}
       </form>
     </>
     </>
