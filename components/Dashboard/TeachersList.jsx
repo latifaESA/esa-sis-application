@@ -31,7 +31,7 @@ import CustomPagination from './Pagination';
 import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
