@@ -32,11 +32,11 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('major')
-      console.log(data)
-      setallMajor(data)
+      console.log(data.rows)
+      setallMajor(data.rows)
 
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.major_name);
       });
 
@@ -52,14 +52,14 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('status')
-      console.log(data)
+      console.log(data.rows)
       // setUsers(data)
       // setDates(data.rows)
       // data.rows.forEach(student => 
       //   dates.push(student.student_firstname)
       //   )
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.status_name);
       });
 
@@ -73,7 +73,7 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('promo')
-      console.log(data)
+      console.log(data.rows)
       // setUsers(data)
 
       // setDates(data.rows)
@@ -81,7 +81,7 @@ export default function Students() {
       //   dates.push(student.student_firstname)
       //   )
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.promotion);
       });
 
@@ -109,8 +109,8 @@ export default function Students() {
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
-
-    setUsers(data)
+console.log(sendData)
+    setUsers(data.rows)
   }
 
   const handleMajor = (selectedValue) => {
@@ -152,8 +152,8 @@ export default function Students() {
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
 
-    console.log(data)
-    setUsers(data)
+    console.log(data.rows)
+    setUsers(data.rows)
   }
 
 

@@ -45,7 +45,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   console.log('===============')
   console.log('=this is users=======')
-  console.log(users.data)
+  // console.log(users.data)
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
   console.log('===============')
