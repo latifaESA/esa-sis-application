@@ -11,7 +11,7 @@ export default function Settings() {
         <title>Dashboard - Settings</title>
       </Head>
 
-      {session?.user.role === '0' ? (
+      {session?.user.role === '2' ? (
         <>
           <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
             Settings
