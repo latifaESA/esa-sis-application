@@ -2,17 +2,18 @@
 const { env } = require('process');
 const { Client } = require('pg');
 
+
 let connected = false;
 async function connect() {
   // Create a new connection to the database
 
   try {
     const connection = new Client({
-      user: env.user,
+      user:env.user,
       host: env.host,
-      database: env.database,
+      database:env.database,
       password: env.password,
-      port: env.port,
+      port:env.port,
     });
 
     await new Promise((resolve, reject) => {
