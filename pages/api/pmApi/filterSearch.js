@@ -11,7 +11,7 @@ async function handler(req, res) {
         const {id,firstname,lastname,major,promotion,status} = req.body;
         const data = await filterStudent(connection, id,firstname,lastname,major,promotion,status);
         console.log(data.rows)
-        return res.status('200').send(data.rows)
+        return res.status('200').send(data)
         
     } catch (error) {
         console.log('the error is: ', error)
