@@ -26,7 +26,7 @@ import { useSelector } from 'react-redux';
 // import Person2Icon from '@mui/icons-material/Person2';
 // import LockIcon from '@mui/icons-material/Lock';
 import Image from 'next/image';
-// import { appSetting } from '../../redux/slices/appSlice';
+import { appSetting } from '../../redux/slices/appSlice';
 
 export default function LoginScreen() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,91 +45,100 @@ export default function LoginScreen() {
     (state) => state.persistedReducer.user_state.userState
   );
 
+  const appState = useSelector(
+    (state) => state.persistedReducer.app_state.appState
+  );
+
   console.log(errorMessage);
 
   // FIXME:Dear SIS team, please fix this useEffect to read SIS settings from the database
 
-  // useEffect(() => {
-  //   setErrorMessage('');
-  //   dispatch(appIsWaiting(false));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/controller/settingdata', {
-  //         timeout: selection_data.axios_timeout,
-  //       });
+  useEffect(() => {
+    // setErrorMessage('');
+    // dispatch(appIsWaiting(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchData = async () => {
+      try {
+        // const response = await axios.get('/api/controller/settingdata', {table:'setting'});
 
-  //       if (response.status === 200) {
-  //         const incomingData = JSON.parse(decrypt(response.data.data));
-  //         dispatch(
-  //           appSetting({
-  //             auto_Save_Timing:
-  //               incomingData.setting[0].auto_Save_Timing * 60 * 1000,
-  //             disapearing_Message_Time:
-  //               incomingData.setting[0].message_disapear_timing * 1000,
-  //             max_characters_count:
-  //               incomingData.setting[0].max_characters_count,
-  //             education_Year_of_Acquisition_Limit:
-  //               incomingData.setting[0].Year_of_Acquisition_Limit,
-  //             personalinfo_dob_min:
-  //               incomingData.setting[0].personalinfo_dob_min.split('T')[0],
-  //             personalinfo_dob_max:
-  //               incomingData.setting[0].personalinfo_dob_max.split('T')[0],
-  //             upload_file_single_size:
-  //               incomingData.setting[0].upload_file_single_size * 1024 * 1024,
-  //             upload_file_total_size:
-  //               incomingData.setting[0].upload_file_total_size * 1024 * 1024,
-  //             logger_expiry_day:
-  //               incomingData.setting[0].logger_expiry_day + 'd',
-  //             logger_max_file_size:
-  //               incomingData.setting[0].logger_max_file_size + 'm',
-  //             upload_file_directory_name:
-  //               incomingData.setting[0].upload_file_directory_name,
-  //             carouselList: incomingData.setting[0].carouselList,
-  //             esa_logo: incomingData.setting[0].esa_logo,
-  //             login_bg: incomingData.setting[0].login_bg,
-  //             MBA_recommendation_letter:
-  //               incomingData.setting[0].MBA_recommendation_letter,
-  //             EMBA_recommendation_letter:
-  //               incomingData.setting[0].EMBA_recommendation_letter,
-  //           })
-  //         );
-  //       } else {
-  //         // localStorage.clear();
-  //         sessionStorage.clear();
-  //         const encryptedBody = encrypt(
-  //           JSON.stringify({
-  //             email: '---',
-  //             role: '---',
-  //             info: 'From login page,appVar cant be readed from DB',
-  //             error: `${response.status}`,
-  //           })
-  //         );
-  //         await axios.put('/api/logger/sendErrorToLogger', {
-  //           data: encryptedBody,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //       // localStorage.clear();
-  //       sessionStorage.clear();
-  //       const encryptedBody = encrypt(
-  //         JSON.stringify({
-  //           email: '---',
-  //           role: '---',
-  //           info: 'From login page,appVar cant be fetched from DB; sessionStorage was cleared',
-  //           error: `${error}`,
-  //         })
-  //       );
-  //       await axios.put('/api/logger/sendErrorToLogger', {
-  //         data: encryptedBody,
-  //       });
-  //     }
-  //   };
-  //   fetchData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
+        let table = 'settings';
+        let response = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
+        
+        if (response.status === 200) {
+          // const incomingData = JSON.parse(decrypt(response.data.data));
+          dispatch(
+            // appSetting({
+            //   auto_Save_Timing:
+            //     incomingData.setting[0].auto_Save_Timing * 60 * 1000,
+            //   disapearing_Message_Time:
+            //     incomingData.setting[0].message_disapear_timing * 1000,
+            //   max_characters_count:
+            //     incomingData.setting[0].max_characters_count,
+            //   education_Year_of_Acquisition_Limit:
+            //     incomingData.setting[0].Year_of_Acquisition_Limit,
+            //   personalinfo_dob_min:
+            //     incomingData.setting[0].personalinfo_dob_min.split('T')[0],
+            //   personalinfo_dob_max:
+            //     incomingData.setting[0].personalinfo_dob_max.split('T')[0],
+            //   upload_file_single_size:
+            //     incomingData.setting[0].upload_file_single_size * 1024 * 1024,
+            //   upload_file_total_size:
+            //     incomingData.setting[0].upload_file_total_size * 1024 * 1024,
+            //   logger_expiry_day:
+            //     incomingData.setting[0].logger_expiry_day + 'd',
+            //   logger_max_file_size:
+            //     incomingData.setting[0].logger_max_file_size + 'm',
+            //   upload_file_directory_name:
+            //     incomingData.setting[0].upload_file_directory_name,
+            //   carouselList: incomingData.setting[0].carouselList,
+            //   esa_logo: incomingData.setting[0].esa_logo,
+            //   login_bg: incomingData.setting[0].login_bg,
+            //   MBA_recommendation_letter:
+            //     incomingData.setting[0].MBA_recommendation_letter,
+            //   EMBA_recommendation_letter:
+            //     incomingData.setting[0].EMBA_recommendation_letter,
+            // })
+            appSetting({
+              esa_logo: response.data.rows[0].esa_logo
+            })
+          );
+        } else {
+          console.log('error fetching data')
+          // localStorage.clear();
+          // sessionStorage.clear();
+          // const encryptedBody = encrypt(
+          //   JSON.stringify({
+          //     email: '---',
+          //     role: '---',
+          //     info: 'From login page,appVar cant be readed from DB',
+          //     error: `${response.status}`,
+          //   })
+          // );
+          // await axios.put('/api/logger/sendErrorToLogger', {
+          //   data: encryptedBody,
+          // });
+        }
+      } catch (error) {
+        console.error(error);
+        // localStorage.clear();
+        // sessionStorage.clear();
+        // const encryptedBody = encrypt(
+        //   JSON.stringify({
+        //     email: '---',
+        //     role: '---',
+        //     info: 'From login page,appVar cant be fetched from DB; sessionStorage was cleared',
+        //     error: `${error}`,
+        //   })
+        // );
+        // await axios.put('/api/logger/sendErrorToLogger', {
+        //   data: encryptedBody,
+        // });
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log(appState)
   useEffect(() => {
     console.log(session);
     if (session?.user && !userState.user.isLogOut) {
@@ -164,7 +173,7 @@ export default function LoginScreen() {
         email,
         password,
       });
-      console.log(result);
+      console.log("this line: ",result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();

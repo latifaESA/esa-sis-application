@@ -36,8 +36,10 @@ const { Client } = require('pg');
 //   password: env.password,
 //   port: env.port,
 // });
-
-const client = new Client({
+let connected = false;
+async function connect() {
+  try {
+const connection = new Client({
   user: process.env.user,
   host: process.env.host,
   database: process.env.database,
@@ -45,19 +47,89 @@ const client = new Client({
   port: process.env.port,
 });
 
-client.connect();
+await new Promise((resolve, reject) => {
+  connection.connect((err) => {
+    if (err) {
+      // console.error(`Error establishing connection: ${err.message}`);
+      reject(err);
+    } else {
+      resolve();
+    }
+  });
+});
+console.log('Connection To DB Established');
+connection.success = true;
+connected = true;
+connection.message = 'Connection To DB Established';
+return connection;
+} catch (err) {
+//console.error(`Error establishing connection: ${err.message}`);
+let result;
+switch (err.code) {
+  case 'ECONNREFUSED':
+    console.error(`Connection refused`);
+    result = 'Connection refused';
+    break;
+  case 'ENOTFOUND':
+    console.error(`Host not found`);
+    result = 'Host not found';
+    break;
+  case 'ENETUNREACH':
+    console.error(`No Internet connection`);
+    result = 'No Internet connection';
+    break;
+  case 'ER_ACCESS_DENIED_ERROR':
+    console.error(`Access denied, check username and password`);
+    result = 'Access denied, check username and password';
+    break;
+  case 'ER_BAD_DB_ERROR':
+    console.error(`Database not found`);
+    result = 'Error: Database not found';
+    break;
+  default:
+    console.error(`Uncaught error: ${err.message}`);
+    result = err.message;
+}
 
-// client.query("Select * from major", (err, res) => {
-//   if(!err){
-//     console.log(res.rows);
-//   }else{
-//     console.log(res.message)
-//   }
-//   client.end;
-// })
-
-// export default client;
-
-module.exports = {
-  default: client,
+return {
+  success: false,
+  message: `Error establishing connection: ${result}`,
 };
+
+//=======
+//    console.error(`Error Establishing Connection To DB: ${err.message}`);
+//    return { success: false, message: `Error Establishing Connection To DB: ${err.message}` };
+
+//>>>>>>> master
+}
+}
+
+async function disconnect(connection) {
+try {
+if (connected) {
+  await connection.end();
+  console.log('Connection To DB Released');
+} else {
+  console.error(`No connection was established to release`);
+  return { message: `No connection was established to release` };
+}
+} catch (err) {
+console.error(`Error releasing connection: ${err.message}`);
+return { message: `Error releasing connection: ${err.message}` };
+//=======
+//      console.error(`Error Releasing Connection To DB: ${err.message}`);
+//    }
+//  } catch (err) {
+//    console.error(`Error Releasing Connection To DB: ${err.message}`);
+//
+//>>>>>>> master
+}
+}
+// client.connect();
+
+// module.exports = {
+//   default: client,
+// };
+
+module.exports = { connect, disconnect };
+

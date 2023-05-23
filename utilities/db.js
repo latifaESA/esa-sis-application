@@ -50,9 +50,9 @@ async function connect() {
         console.error(`Access denied, check username and password`);
         result = 'Access denied, check username and password';
         break;
-      case 'ER_BAD_DB_ERROR':
+      case '3D000':
         console.error(`Database not found`);
-        result = 'Error: Database not found';
+        result = 'Database not found';
         break;
       default:
         console.error(`Uncaught error: ${err.message}`);
