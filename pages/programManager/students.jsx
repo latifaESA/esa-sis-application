@@ -32,11 +32,11 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('major')
-      console.log(data)
-      setallMajor(data)
+      console.log(data.rows)
+      setallMajor(data.rows)
 
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.major_name);
       });
 
@@ -52,14 +52,14 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('status')
-      console.log(data)
+      console.log(data.rows)
       // setUsers(data)
       // setDates(data.rows)
       // data.rows.forEach(student => 
       //   dates.push(student.student_firstname)
       //   )
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.status_name);
       });
 
@@ -73,7 +73,7 @@ export default function Students() {
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
       console.log('promo')
-      console.log(data)
+      console.log(data.rows)
       // setUsers(data)
 
       // setDates(data.rows)
@@ -81,7 +81,7 @@ export default function Students() {
       //   dates.push(student.student_firstname)
       //   )
       const datesArray = [];
-      data.forEach((student) => {
+      data.rows.forEach((student) => {
         datesArray.push(student.promotion);
       });
 
@@ -91,6 +91,27 @@ export default function Students() {
     }
     getPromotion();
   }, [])
+
+  useEffect(() => { 
+    handleShowAll()  
+  }, [])
+  
+  const handleShowAll = async () => {
+    let sendData = {
+      id:'',
+      firstname:'',
+      lastname:'',
+      major:'',
+      promotion:'',
+      status: ''
+    }
+    console.log(sendData)
+    console.log((sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+console.log(sendData)
+    setUsers(data.rows)
+  }
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
@@ -115,7 +136,8 @@ export default function Students() {
     setPromotionValue(selectedValue)
   };
 
-  const handleStudents = async() => {
+  const handleStudents = async(e) => {
+    e.preventDefault()
     console.log(idValue, firstnameValue, lastnameValue, majorValue, statusValue, promotionValue)
     let sendData = {
       id:idValue,
@@ -130,8 +152,8 @@ export default function Students() {
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
 
-    console.log(data)
-    setUsers(data)
+    console.log(data.rows)
+    setUsers(data.rows)
   }
 
 
@@ -152,6 +174,7 @@ export default function Students() {
               type="number"
               name="ID"
               onChange={(e) => setIdValue(e.target.value)}
+              placeholder='Select ID'
               // value={formData.ID}
               // onChange={handleChange}
             ></input>
@@ -164,6 +187,7 @@ export default function Students() {
               type="text"
               name="Fname"
               onChange={(e) => setFirstnameValue(e.target.value)}
+              placeholder='Select Name'
               // value={formData.Fname}
               // onChange={handleChange}
             ></input>
@@ -176,6 +200,7 @@ export default function Students() {
               type="text"
               name="Lname"
               onChange={(e) => setLastnameValue(e.target.value)}
+              placeholder='Select surname'
               // value={formData.Lname}
               // onChange={handleChange}
             ></input>
@@ -188,9 +213,9 @@ export default function Students() {
               {/* Start select box */}
             <CustomSelectBox 
             options={major}
-            placeholder="select major"
+            placeholder="Select Major"
             onSelect={handleMajor}
-
+            styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
             />
           </label>
 
@@ -219,13 +244,14 @@ export default function Students() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
      
-          <label className='flex w-[350px]'>
+          <label className='w-[350px]'>
             Promotion:
             {
               <CustomSelectBox 
               options={promotion}
-              placeholder="select promotion"
+              placeholder="Select Promotion"
               onSelect={handlePromotion}
+              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
               />
             }
           </label>
@@ -235,8 +261,9 @@ export default function Students() {
             {
               <CustomSelectBox 
               options={status}
-              placeholder="select status"
+              placeholder="Select Status"
               onSelect={handleStatus}
+              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
               />
             }
 
@@ -244,15 +271,15 @@ export default function Students() {
           <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-              type="button"
+              type="submit"
               onClick={handleStudents}
             >
               Search
             </button>
             <button
               className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-              type="button"
-              // onClick={handleShowAll}
+              type="reset"
+              onClick={handleShowAll}
             >
               Show All
             </button>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   PencilIcon,
-  // Cog8ToothIcon,
+  Cog8ToothIcon,
   ComputerDesktopIcon,
   // CreditCardIcon,
   TableCellsIcon,
@@ -13,6 +13,7 @@ import {
   // NewspaperIcon,
   // AcademicCapIcon,
   // WalletIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -23,7 +24,7 @@ const AdminView = () => {
   return (
     <>
       <div className="flex flex-col">
-        {/* Dashboard Section */}
+        {/* Main Board Section */}
         <Link href="/admin/main">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
@@ -40,11 +41,27 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
+        {/* Statistics Section */}
+        <Link href="/admin/statistics">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/statistics'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+          >
+            <div className="mr-2">
+              <ChartBarIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Statistics</p>
+            </div>
+          </div>
+        </Link>
 
         {/* Create Section */}
 
         <Link href="/admin/create">
-          {/* <Link href='/admin/courses'> */}
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
               router.pathname == '/admin/create'
@@ -80,9 +97,27 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
+        {/* Settings Section */}
+        <Link href="/admin/Settings/Settings">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/Settings/Settings' ||
+              router.pathname == '/admin/Settings/General' ||
+              router.pathname == '/admin/Settings/DropDownList'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+          >
+            <div className="mr-2">
+              <Cog8ToothIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Settings</p>
+            </div>
+          </div>
+        </Link>
 
         {/* Profile Section */}
-
         <Link href="/admin/profile">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${

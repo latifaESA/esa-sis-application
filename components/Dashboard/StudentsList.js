@@ -27,9 +27,10 @@ import {
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
+import CustomPagination from './Pagination';
 
 const StudentsList = ({ users, setUsers }) => {
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
@@ -44,7 +45,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   console.log('===============')
   console.log('=this is users=======')
-  console.log(users.data)
+  // console.log(users.data)
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
   console.log('===============')
@@ -196,20 +197,20 @@ const StudentsList = ({ users, setUsers }) => {
         `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
     },
 
-    // {
-    //   field: 'email',
-    //   headerName: 'Email',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 150,
-    // },
-    // {
-    //   field: 'mobileNumber',
-    //   headerName: 'Mobile Number',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 120,
-    // },
+    {
+      field: 'email',
+      headerName: 'Email',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
+    {
+      field: 'mobileNumber',
+      headerName: 'Mobile Number',
+      headerAlign: 'center',
+      align: 'center',
+      width: 120,
+    },
 
     // {
     //   field: 'major',
@@ -295,6 +296,20 @@ const StudentsList = ({ users, setUsers }) => {
       headerAlign: 'center',
       align: 'center',
       width: 110,
+    },
+    {
+      field: 'InitialDate',
+      headerName: 'Initial Date',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
+    {
+      field: 'submissionDate',
+      headerName: 'Submission Date',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
     },
 
     // {
@@ -556,7 +571,7 @@ const StudentsList = ({ users, setUsers }) => {
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>
             ),
-            // Pagination: CustomPagination,
+            Pagination: CustomPagination,
           }}
         />
       </Box>

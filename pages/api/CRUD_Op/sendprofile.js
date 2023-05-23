@@ -56,7 +56,7 @@ async function handler(req, res) {
   //console.log('Local disk path',localDiskPath);
   const directory = path.join(
     localDiskPath,
-    'esa-applicants-data',
+    'esa-SIS-data',
     'Users',
     user.ID.toString(),
     'Photo'

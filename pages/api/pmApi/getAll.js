@@ -11,8 +11,8 @@ async function handler(req, res) {
         const {table} = req.body;
         const data = await getAll(connection, table);
 
-        console.log(data.rows)
-        return res.status('200').send(data.rows)
+        // console.log(data.rows)
+        return res.status('200').send(data)
     } catch (error) {
         console.log('the error is: ', error)
         return res.status('401').send(error)
