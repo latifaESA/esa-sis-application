@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const CustomSelectBox = ({ options, placeholder, onSelect }) => {
+const CustomSelectBox = ({ options, placeholder, onSelect,styled }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("");
   const [inputValue, setInputValue] = useState("");
+
+  let menuRef = useRef()
+
+  useEffect(() => { 
+    document.addEventListener("mousedown", (e) => { 
+      if(!menuRef.current?.contains(e.target)){
+        setOpen(false)
+      }
+    })
+  }, [])
 
   const handleSelect = (option) => {
     setSelected(option);
@@ -11,13 +21,14 @@ const CustomSelectBox = ({ options, placeholder, onSelect }) => {
     setInputValue("");
     onSelect(option); // Pass the selected value back to the parent component
   };
-
+  // "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
   return (
-    <div className="font-medium h-auto items-center self-center w-40 inline-block ml-10">
+    <div className={styled}>
       <div
         onClick={() => setOpen(!open)}
-        className={`bg-white w-full p-2 flex items-center justify-between rounded ${
-          !selected && "text-gray-700"
+        
+        className={`bg-white w-full p-2 flex border-zinc-300 items-center justify-between rounded ${
+          !selected && "text-gray-400 font-normal"
         }`}
       >
         {selected
@@ -27,6 +38,7 @@ const CustomSelectBox = ({ options, placeholder, onSelect }) => {
           : placeholder}
       </div>
       <ul
+        ref={menuRef}
         className={`bg-white mt-2 overflow-y-auto absolute w-40 z-50 ${
           open ? "max-h-60" : "max-h-0"
         } `}
@@ -36,7 +48,7 @@ const CustomSelectBox = ({ options, placeholder, onSelect }) => {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value.toLowerCase())}
-            placeholder="Enter date"
+            placeholder="Search..."
             className="placeholder:text-gray-700 p-2 outline-none w-full"
           />
         </div>

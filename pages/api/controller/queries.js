@@ -156,6 +156,35 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
   }
 }
 
+async function filterTeacher(connection, id, firstname, lastname, email, courseid) {
+  try {
+    let query = `
+      SELECT * FROM teachers
+      WHERE 1=1`;
+
+    if (id != '') {
+      query += ` AND teachers.teacher_id = ${id}`;
+    }
+    if (firstname.trim() != '') {
+      query += ` AND lower(trim(teacher_firstname)) LIKE lower(trim('%${firstname}%'))`;
+    }
+    if (lastname.trim() != '') {
+      query += ` AND lower(trim(teacher_lastname)) LIKE lower(trim('%${lastname}%'))`;
+    }
+    if (email != '') {
+      query += ` AND lower(trim(teacher_mail)) LIKE lower(trim('%${email}%'))`;
+    }
+    if (courseid.trim() != '') {
+      query += ` AND lower(trim(teacher_id)) LIKE lower(trim('%${courseid}%'))'`;
+    }
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 
 
 /* End Postegresql */
@@ -166,4 +195,5 @@ module.exports = {
   getAll,
   insertData,
   findData,
+  filterTeacher
 };

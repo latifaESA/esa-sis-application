@@ -28,8 +28,9 @@ import {
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
+import { Pagination, Stack } from '@mui/material';
 
-const StudentsList = ({ users, setUsers }) => {
+const TeachersList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const statusData = selection_data.application_status_inList;
@@ -42,10 +43,9 @@ const StudentsList = ({ users, setUsers }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-
   console.log('===============')
   console.log('=this is users=======')
-  console.log(users.data)
+  console.log(users)
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
   console.log('===============')
@@ -180,7 +180,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   const columns = [
     {
-      field: 'student_id',
+      field: 'teacher_id',
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
@@ -194,23 +194,23 @@ const StudentsList = ({ users, setUsers }) => {
       align: 'center',
       width: 150,
       renderCell: (params) =>
-        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
+        `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
     },
 
-    {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
-    {
-      field: 'mobileNumber',
-      headerName: 'Mobile Number',
-      headerAlign: 'center',
-      align: 'center',
-      width: 120,
-    },
+    // {
+    //   field: 'email',
+    //   headerName: 'Email',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 150,
+    // },
+    // {
+    //   field: 'mobileNumber',
+    //   headerName: 'Mobile Number',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 120,
+    // },
 
     // {
     //   field: 'major',
@@ -256,61 +256,45 @@ const StudentsList = ({ users, setUsers }) => {
     // },
 
     {
-      field: 'major_name',
-      headerName: 'Major',
+      field: 'teacher_mail',
+      headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 200,
-      editable: true,
+      width: 300,
       type: 'singleSelect',
-      valueOptions: majorData,
     },
-    {
-      field: 'promotion',
-      headerName: 'Promotion',
-      headerAlign: 'center',
-      align: 'center',
-      width: 90,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      headerAlign: 'center',
-      align: 'center',
-      width: 100,
-      editable: true,
-      cellClassName: (params) =>
-        params.row.status === 'active'
-          ? 'text-green-600 font-bold'
-          : params.row.status === 'limited'
-          ? 'text-red-600 font-bold'
-          : '' || params.row.status === 'Inactive'
-          ? 'text-blue-600 font-bold'
-          : '',
-      type: 'singleSelect',
-      valueOptions: statusData,
-    },
-    {
-      field: 'academic_year',
-      headerName: 'Academic Year',
-      headerAlign: 'center',
-      align: 'center',
-      width: 110,
-    },
-    {
-      field: 'InitialDate',
-      headerName: 'Initial Date',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
+    // {
+    //   field: 'promotion',
+    //   headerName: 'Promotion',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 90,
+    // },
+    // {
+    //   field: 'status',
+    //   headerName: 'Status',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 100,
+    //   editable: true,
+    //   cellClassName: (params) =>
+    //     params.row.status === 'active'
+    //       ? 'text-green-600 font-bold'
+    //       : params.row.status === 'limited'
+    //       ? 'text-red-600 font-bold'
+    //       : '' || params.row.status === 'Inactive'
+    //       ? 'text-blue-600 font-bold'
+    //       : '',
+    //   type: 'singleSelect',
+    //   valueOptions: statusData,
+    // },
+    // {
+    //   field: 'academic_year',
+    //   headerName: 'Academic Year',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 110,
+    // },
 
     // {
     //   field: 'createdAt',
@@ -554,14 +538,13 @@ const StudentsList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.student_id}
+          getRowId={(r) => r.teacher_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
-          pagination
           checkboxSelection
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
@@ -589,4 +572,4 @@ const StudentsList = ({ users, setUsers }) => {
   );
 };
 
-export default StudentsList;
+export default TeachersList;

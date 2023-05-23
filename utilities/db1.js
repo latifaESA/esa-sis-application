@@ -20,6 +20,7 @@ const { Client } = require('pg');
 
 
 
+
 // const client = new Client({
 //   user: env.user,
 //   host: env.host,
@@ -45,6 +46,7 @@ const connection = new Client({
   database: process.env.database,
   password: process.env.password,
   port: process.env.port,
+
 });
 
 await new Promise((resolve, reject) => {
