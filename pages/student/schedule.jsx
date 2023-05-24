@@ -1,43 +1,47 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 
 export default function Schedule() {
   const { data: session } = useSession();
   const router = useRouter()
 
+  let std
+  let notStd 
   console.log(session?.user.role)
-  let pm
-  let notPm 
-  console.log(session?.user.role)
-    if(session?.user.role == 2){
-      pm = true
-      notPm = false
+    if(session?.user.role == 1){
+       std = true
+       notStd = false
     }else {
-      pm = false
-      notPm = true
+      std = false
+      notStd = true
     }
-    if(notPm){ 
+
+    
+
+    if(notStd){ 
       setTimeout(() => { 
         router.push('/')
       }, 3000)
     }
-
   return (
     <>
       <Head>
-        <title>SIS Admin - Schedule</title>
+        <title>SIS - Schedule</title>
       </Head>
 
-      {pm && <>
+      { std && <>
         <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Schedule</p>
 
-        <div className='grid lg:grid-cols-1 gap-5 mb-5'>Schedule Table</div>
+        <div className='grid lg:grid-cols-1 gap-5 mb-5'>
+          <CourseSchedule />
+        </div>
       </>}
       {
-        notPm && <div className='text-center text-red-500'>
+        notStd && <div className='text-center text-red-500'>
           user unauthenticated or in wrong section you will be redirected soon
           <Link href='/' legacyBehavior>
           <p className='underline cursor-pointer hover:text-blue-800'>

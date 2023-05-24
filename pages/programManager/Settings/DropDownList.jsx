@@ -10,7 +10,7 @@ export default function DropDownListPage() {
       <Head>
         <title>Dashboard Settings - DropDown Lists</title>
       </Head>
-      {session?.user.role === '0' ? (
+      {session?.user.role === '2' ? (
         <>
           <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
             DropDown Lists

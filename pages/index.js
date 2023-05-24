@@ -81,7 +81,7 @@ export default function Home() {
     <>
       <Head>
         <title>ESA Business School - SIS Application</title>
-        <link rel="icon" href="/public/esa.ico" />
+        <link rel='icon' href='/esa.ico' />
       </Head>
       <LoginScreen />
       {/* <Carousel

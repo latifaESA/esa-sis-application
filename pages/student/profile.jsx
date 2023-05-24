@@ -1,24 +1,27 @@
 import Head from 'next/head';
+import ProfileScreen from '../../components/Dashboard/profile';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 export default function Profile() {
 
   const { data: session } = useSession();
   const router = useRouter()
-
-  let admin
-  let notAdmin 
+  let std
+  let notStd 
   console.log(session?.user.role)
-    if(session?.user.role == '0'){
-      admin = true
-      notAdmin = false
+    if(session?.user.role == 1){
+       std = true
+       notStd = false
     }else {
-      admin = false
-      notAdmin = true
+      std = false
+      notStd = true
     }
-    if(notAdmin){ 
+
+    
+
+    if(notStd){ 
       setTimeout(() => { 
         router.push('/')
       }, 3000)
@@ -27,17 +30,19 @@ export default function Profile() {
   return (
     <>
       <Head>
-        <title>SIS Admin - Create Page</title>
+        <title>SIS - Profile Page</title>
       </Head>
-      {admin && <>
-      <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-        Create Account
+
+      { std && <><p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
+        Edit Profile
       </p>
 
-      <div className="grid lg:grid-cols-1 gap-5 mb-5"></div>
-      </>}
+      <div className='grid lg:grid-cols-1 gap-5 mb-5'>
+        <ProfileScreen />
+      </div>
+      </> }
       {
-        notAdmin && <div className='text-center text-red-500'>
+        notStd && <div className='text-center text-red-500'>
           user unauthenticated or in wrong section you will be redirected soon
           <Link href='/' legacyBehavior>
           <p className='underline cursor-pointer hover:text-blue-800'>
