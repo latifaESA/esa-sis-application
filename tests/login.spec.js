@@ -3,25 +3,6 @@ import { test, expect } from '@playwright/test';
 import {Eyes, Target} from '@applitools/eyes-playwright';
 
 
-
-test('checking Login', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/ESA SIS - Login/);
-
-  await page.getByTestId('username').fill('bbam@gmail.com');
-
-  await page.getByTestId('password').fill('asdasdasd');
-
-  await page.getByRole('button').click()
-
-  await expect(page).toHaveURL(/admin/)
-
-});
-
 test('checking Validation', async ({ page }) => {
 
   test.setTimeout(0)
@@ -48,7 +29,7 @@ test('checking Validation', async ({ page }) => {
 
 });
 
-test('checking Logout', async ({ page }) => {
+test('checking Logout admin', async ({ page }) => {
 
   test.setTimeout(0)
   await page.goto('http://localhost:3000');
@@ -56,9 +37,9 @@ test('checking Logout', async ({ page }) => {
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
 
-  await page.getByTestId('username').fill('bbam@gmail.com');
+  await page.getByTestId('username').fill('1');
 
-  await page.getByTestId('password').fill('asdasdasd');
+  await page.getByTestId('password').fill('shop?123');
 
   await page.getByRole('button').click()
 
@@ -114,6 +95,107 @@ test('checking Info', async ({ page }) => {
 
   const errorInfo = page.getByTestId('error')
 
-  await expect(errorInfo).toHaveText('Invalid Email:the account is not found, submit a new application')
+  await expect(errorInfo).toHaveText('user does not exist')
+
+});
+
+test('checking Login admin', async ({ page }) => {
+
+  test.setTimeout(0)
+  await page.goto('http://localhost:3000');
+
+  // Expect a title "to contain" a substring.
+  await expect(page).toHaveTitle(/ESA SIS - Login/);
+
+  await page.getByTestId('username').fill('1');
+
+  await page.getByTestId('password').fill('shop?123');
+
+  await page.getByRole('button').click()
+
+  await expect(page).toHaveURL(/admin/)
+
+});
+
+test('checking Login program Manager', async ({ page }) => {
+
+  test.setTimeout(0)
+  await page.goto('http://localhost:3000');
+
+  // Expect a title "to contain" a substring.
+  await expect(page).toHaveTitle(/ESA SIS - Login/);
+
+  await page.getByTestId('username').fill('PM1000');
+
+  await page.getByTestId('password').fill('shop?123');
+
+  await page.getByRole('button').click()
+
+  await expect(page).toHaveURL(/programManager/)
+
+});
+test('checking Logout program Manager', async ({ page }) => {
+
+  test.setTimeout(0)
+  await page.goto('http://localhost:3000');
+
+  // Expect a title "to contain" a substring.
+  await expect(page).toHaveTitle(/ESA SIS - Login/);
+
+  await page.getByTestId('username').fill('PM1000');
+
+  await page.getByTestId('password').fill('shop?123');
+
+  await page.getByRole('button').click()
+
+  await expect(page).toHaveURL(/programManager/)
+
+  await page.getByTestId('img').click()
+
+  await page.getByText('Logout').click();
+
+  await expect(page).toHaveURL('http://localhost:3000')
+
+});
+
+test('checking Login student', async ({ page }) => {
+
+  test.setTimeout(0)
+  await page.goto('http://localhost:3000');
+
+  // Expect a title "to contain" a substring.
+  await expect(page).toHaveTitle(/ESA SIS - Login/);
+
+  await page.getByTestId('username').fill('23106408');
+
+  await page.getByTestId('password').fill('shop?123');
+
+  await page.getByRole('button').click()
+
+  await expect(page).toHaveURL(/student/)
+
+});
+
+test('checking Logout Student', async ({ page }) => {
+
+  test.setTimeout(0)
+  await page.goto('http://localhost:3000');
+
+  // Expect a title "to contain" a substring.
+  await expect(page).toHaveTitle(/ESA SIS - Login/);
+
+  await page.getByTestId('username').fill('23106408');
+
+  await page.getByTestId('password').fill('shop?123');
+
+  await page.getByRole('button').click()
+
+  await expect(page).toHaveURL(/student/)
+
+  await page.getByTestId('img').click()
+
+  await page.getByText('Logout').click();
+
+  await expect(page).toHaveURL('http://localhost:3000')
 
 });
