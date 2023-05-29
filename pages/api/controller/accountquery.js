@@ -148,7 +148,7 @@ async function UpdateIsVerified(connection,user_id,isVerified){
 
 
 
-async function UpdateData(connection, table ,whereValue,...columnValuePairs) {
+async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
   try {
     let query = `UPDATE ${table} SET `;
     let values = [];
@@ -164,12 +164,14 @@ async function UpdateData(connection, table ,whereValue,...columnValuePairs) {
     query += ` WHERE user_id= ?`;
     values.push(whereValue);
     const result = await executeQuery(connection, query, values);
+   
 
     return result;
   } catch (err) {
     return err;
   }
 }
+
 
 async function findData(connection, table) {
   try {
@@ -218,10 +220,79 @@ async function FilterDataExport(connection, table, wherevalues) {
     return err;
   }
 }
+async function UpdateUserpassword(connection, password, userid) {
+  /*  user will be taken from a session userid  */
+
+  password = bcryptjs.hashSync(password);
+  try {
+    let UserData = await executeQuery(
+      connection,
+      `UPDATE users SET userpassword = '${password}' WHERE  userid = '${userid}'`,
+    );
+    return UserData;
+  } catch (err) {
+    return err;
+  }
+}
+// async function UpdateadminInfo(connection ,table , condition , em , name , email){
+//   // console.log(table);
+//   // console.log(condition);
+//   // console.log(name);
+//   // console.log(em);
+//   // console.log(email)
+//   try {
+//     let userdata = await executeQuery(connection ,
+//       `UPDATE '${table}' SET '${condition}' = '${name}' WHERE '${em}' ='${email}' `,
+//       );
+//      consolele.log(userdata)
+//     return userdata;
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+async function UpdateadminInfo(connection , name ,lname, email){
+  try {
+    let userdata = await executeQuery(connection ,
+      `UPDATE admin SET adminname = '${name} ${lname}' WHERE adminemail ='${email}' `,
+      );
+    return userdata;
+  } catch (error) {
+    return error
+  }
+}
+async function Userinfo(connection, userid) {
+  try {
+    let UserData= await executeQuery(
+      connection,
+      `select * from user_document where userid = '${userid}'`
+      
+    );
+      console.log(UserData)
+    return UserData;
+  } catch (err) {
+    return err;
+  }
+}
+async function updateUser(connection , table , condition , column ,value , id){
+  // console.log(value)
+  try {
+     let sql = `UPDATE ${table} SET ${column} = '${value}' WHERE ${condition} = '${id}'`;
+     const data = await executeQuery(connection , sql )
+     return data
+  } catch (error) {
+    return error
+  }
+}
+
 
 export {
     findUserData,
     newAccount,
+    UpdateadminInfo,
+    Userinfo,
+    updateUser,
+    UpdateUserpassword,
     findmajor_id,  
     DeleteAccountBYID,
     UpdateIsUnVerified,

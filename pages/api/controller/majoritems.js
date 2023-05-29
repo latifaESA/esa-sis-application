@@ -11,6 +11,7 @@ import { connect, disconnect } from '../../../utilities/db';
 import encrypt from '../../../utilities/encrypt_decrypt/encryptText';
 
 const handler = nextConnect().get(async (req, res) => {
+  
   const connection = await connect();
   const majors = await ReadDropdown(connection, 'major');
   const status = await ReadDropdown(connection, 'status');

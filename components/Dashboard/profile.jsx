@@ -18,6 +18,7 @@ import {
 } from '../../redux/slices/userSlice';
 
 export default function ProfileScreen() {
+  console.log("-----------profileRole")
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const { data: session } = useSession();
@@ -38,7 +39,7 @@ export default function ProfileScreen() {
   const closeModal = () => {
     setShowProfileModal(false);
   };
-  const email = session.user.email;
+  
   const {
     handleSubmit,
     register,
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
     fileList: [],
     totalSize: 0,
   });
+ 
   useEffect(() => {
     setValue('fname', session.user.name.trim().split(/\s+/)[0]);
     setValue('lname', session.user.name.trim().split(/\s+/)[1]);
@@ -68,8 +70,8 @@ export default function ProfileScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //Profile
   useEffect(() => {
+    
     if (uploadPhotoData.fileList.length !== 0) {
       setupdateProfileButtonDisable(true);
       const uploadProfiletUrl = async () => {
@@ -78,6 +80,7 @@ export default function ProfileScreen() {
           session,
           true
         );
+        
         if (secure_url) setProfileUrl(secure_url);
         if (typeof secure_url !== 'undefined') {
           dispatch(profileUrlChanged(secure_url));
@@ -99,27 +102,30 @@ export default function ProfileScreen() {
         password,
         profileUrl: userState.user.profileUrl,
       });
+      // console.log(response.data)
       // console.log('response.message=', response.data.message);
       if (response.data.message === 'User Profile Updated') {
         dispatch(userNameChanged(fname + ' ' + lname));
       }
       setMessage('Profile Updated Successfully');
-      if (password) {
-        const result = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-        // router.push(redirect || '/');
-
-        if (result.error) {
-          setMessage(result.error);
-        }
-      }
+      // if (password) {
+      //   const result = await signIn('credentials', {
+      //     redirect: false,
+      //     userid,
+      //     password,
+      //   });
+      //   // router.push(redirect || '/');
+         
+      //   if (result.error) {
+      //     setMessage(result.error);
+      //   }
+      // }
     } catch (err) {
       setMessage(getError(err));
+      console.log(err)
     }
   };
+ 
 
   return (
     <>
@@ -179,7 +185,7 @@ export default function ProfileScreen() {
             <div className='text-red-500'>{errors.fname.message}</div>
           )}
         </div>
-        <div className='mb-4'>
+         <div className='mb-4'>
           <label className='font-bold' htmlFor='lname'>
             Last Name
           </label>
@@ -193,10 +199,12 @@ export default function ProfileScreen() {
               required: 'Please enter last name',
             })}
           />
-          {errors.lname && (
+         {errors.lname &&(
             <div className='text-red-500'>{errors.lname.message}</div>
           )}
-        </div>
+          
+        </div> 
+        
 
         <div className='mb-4 relative'>
           <label className='font-bold' htmlFor='password'>

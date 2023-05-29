@@ -20,7 +20,8 @@ import { connect, disconnect } from '../../../utilities/db';
 
 import sis_app_logger from '../logger';
 import useragent from 'useragent';
-import { findData } from '../controller/queries';
+import { findData  } from '../controller/queries';
+import { Userinfo } from '../controller/accountquery';
 import axios from 'axios';
 import https from 'https';
 // import client from '../../../utilities/db1'
@@ -46,12 +47,14 @@ export const authOptions = {
   /* A callback function that is called by the `next-auth` module. */
   callbacks: {
     /* A function that is called by the `next-auth` module. */
-    async jwt({ token, user }) {
+    async jwt({ token, user}) {
       if (user?.name) token.name = user.name;
       if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;
       if (user?.status) token.status = user.status;
+      // if (user?.appisSaved) token.appisSaved = user.appisSaved;
       if (user?.ID) token.ID = user.ID;
+      if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
     },
     async session({ session, token }) {
@@ -60,13 +63,15 @@ export const authOptions = {
       if (token?.role) session.user.role = token.role;
       if (token?.status) session.user.status = token.status;
       if (token?.ID) session.user.ID = token.ID;
+      // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
+      if (token?.profileurl) session.user.image = token.image;
       return session;
     },
   },
 
   useWebSocket: false, // disable WebSocket
   providers: [
-    CredentialsProvider({
+  CredentialsProvider({
       async authorize(credentials, req) {
         let message = '';
         const userAgent = req.headers['user-agent'];
@@ -97,6 +102,22 @@ export const authOptions = {
               'userid',
               credentials.email,
             );
+            // const users = await findData(
+            //   connection,
+            //   'user_document',
+            //   'userid',
+            //   credentials.email,
+            // );
+
+            const users = await findData(
+              connection,
+              'user_document',
+              'profileurl',
+              credentials.email,
+            );  
+            const userinfo = await Userinfo(connection, credentials.email); //email from req body
+            // console.log(userinfo.rows[0].profileurl)
+            // console.log("---------------------------------")
             
           //  check if there is user with the given id
           if(user.rowCount > 0){
@@ -207,10 +228,14 @@ export const authOptions = {
                         );
                       }
                       console.log('user.rows[0].role==',user.rows[0].role);
+                      console.log(user.rows[0]);
                       return {
                                 name: admin.rows[0].adminname,
                                 email: admin.rows[0].adminemail,
                                 role: (user.rows[0].role).toString(),
+                                ID: `${user.rows[0].userid}`,
+                                image: userinfo.rows[0].profileurl,
+                               
                               };
                       }else{
                         // if the admin is not exists then send this message to frontend
@@ -248,6 +273,8 @@ export const authOptions = {
                               role: (user.rows[0].role).toString(),
                               status: `${data.blocked ? 'limited' : 'active'}`,
                               ID: `${user.rows[0].userid}`,
+                              image: userinfo.rows[0].profileurl,
+                           
                             };
                     }
                     else{
@@ -285,6 +312,9 @@ export const authOptions = {
                               name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                               email: PM.rows[0].pm_email,
                               role: (user.rows[0].role).toString(),
+                              ID: user.rows[0].userid,
+                              image: userinfo.rows[0].profileurl
+                              
                             };
                     }else{
                       // if the program manager is not exists then send this message to frontend
@@ -321,6 +351,8 @@ export const authOptions = {
                             name: `${AS.rows[0].pm_ass_firstname} ${AS.rows[0].pm_ass_lastname}`,
                             email: AS.rows[0].pm_ass_email,
                             role: (user.rows[0].role).toString(),
+                            ID: user.rows[0].userid,
+                            // image: userinfo.rows[0].profileurl,
                           };
                   }else{
                     // if the admin is not exists then send this message to frontend
