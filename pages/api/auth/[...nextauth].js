@@ -313,7 +313,7 @@ export const authOptions = {
                               email: PM.rows[0].pm_email,
                               role: (user.rows[0].role).toString(),
                               ID: user.rows[0].userid,
-                              // image: userinfo.rows[0].profileurl
+                              image: userinfo.rows[0].profileurl
                               
                             };
                     }else{
