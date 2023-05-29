@@ -1,7 +1,11 @@
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { appIsWaiting } from '../../../redux/slices/appSlice';
+import { appIsWaiting } from '../../redux/slices/appSlice';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+
 
 export default function Classes() {
   const appState = useSelector(
@@ -14,15 +18,21 @@ export default function Classes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { data: session } = useSession();
+  const router = useRouter()
+
+  const redirect = () => { 
+    router.push('/AccessDenied')
+  }
+
   return (
     <>
       <Head>
         <title>SIS - Classes</title>
       </Head>
 
-      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Classes</p>
+     {session?.user.role === '1' ? ( <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Classes</p>) : redirect()}
 
-      <div className='grid lg:grid-cols-1 gap-5 mb-5'>Classes table</div>
     </>
   );
 }

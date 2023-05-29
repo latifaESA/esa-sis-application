@@ -1,5 +1,5 @@
 import React from 'react';
-import { DashboardBtn } from './DashboardBtn';
+import { DashboardBtn } from '../components/Dashboard/accessDenied/DashboardBtn';
 
 const AccessDenied = () => {
   return (
@@ -18,8 +18,5 @@ const AccessDenied = () => {
 
 export default AccessDenied;
 
-AccessDenied.getLayout = function (page) {
-  return (<>{page}</>);
-};
-
-
+AccessDenied.auth = false;
+AccessDenied.adminOnly = false;

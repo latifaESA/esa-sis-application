@@ -16,6 +16,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import CircularProgress from '@mui/material/CircularProgress';
 import DashboardLayout from '../components/Dashboard/DashboardLayout';
 import Cookies from 'js-cookie';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
@@ -26,7 +27,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <>
         <SessionProvider session={session}>
           <Provider store={store}>
-            <Component {...props.pageProps} />
+          <Component {...props.pageProps} />
           </Provider>
         </SessionProvider>
       </>
@@ -36,6 +37,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   // try {
   return (
     <>
+    <Head>
+      <link rel='icon' href='/esa.ico' />
+    </Head>
       <SessionProvider session={session}>
         {/* {console.log('Component.auth=', Component.auth)}
         {console.log('Component.adminOnly=', Component.adminOnly)} */}

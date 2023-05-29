@@ -189,15 +189,40 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
   }
 }
 
-async function ReadDropdown(connection, table) {
+//<<<<<<< batoul
+//async function ReadDropdown(connection, table) {
+//  try {
+//    const query = `SELECT * FROM ${table}`;
+//    const result = await executeQuery(connection, query, []);
+//=======
+
+async function filterCourses(connection, course_id, course_name, course_credit, major_id) {
   try {
-    const query = `SELECT * FROM ${table}`;
-    const result = await executeQuery(connection, query, []);
+    let query = `
+      SELECT * FROM courses
+      WHERE 1=1`;
+
+    if (course_id != '') {
+      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
+    }
+    if (course_name.trim() != '') {
+      query += ` AND lower(trim(course_name)) LIKE lower(trim('%${course_name}%'))`;
+    }
+    if (course_credit != '') {
+      query += ` AND courses.course_credit = ${course_credit}`;
+    }
+    if (major_id != '') {
+      query += ` AND courses.major_id = ${major_id}`;
+    }
+
+    const result = await connection.query(query);
+
     return result;
   } catch (err) {
     return err;
   }
 }
+
 
 /* End Postegresql */
 
@@ -208,5 +233,6 @@ module.exports = {
   insertData,
   ReadDropdown,
   findData,
-  filterTeacher
+  filterTeacher,
+  filterCourses
 };

@@ -117,7 +117,7 @@ export default function LoginScreen() {
     
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
-        router.push(redirect || '/user/sis/main');
+        router.push(redirect || '/student/main');
       } else if (session?.user.role === '2') {
         router.push(redirect || '/programManager/main');
       } else if (session?.user.role === '0') {

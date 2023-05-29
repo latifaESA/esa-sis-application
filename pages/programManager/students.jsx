@@ -2,22 +2,25 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import axios from 'axios'
 import { x64 } from 'crypto-js';
 
 
 import CustomSelectBox from "./customSelectBox";
+import Link from 'next/link';
 
 
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
-
+  const router = useRouter()
   const [major, setMajor] = useState([]);
   const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
+  const [test, setTest] = useState()
 
   const [idValue, setIdValue] = useState('');
   const [firstnameValue, setFirstnameValue] = useState('');
@@ -25,6 +28,10 @@ export default function Students() {
   const [majorValue, setMajorValue] = useState('');
   const [statusValue, setStatusValue] = useState('');
   const [promotionValue, setPromotionValue] = useState('');
+
+  const redirect = () => { 
+    router.push('/AccessDenied')
+  }
 
   useEffect(() => { 
     const getMajor = async () => { 
@@ -93,8 +100,25 @@ export default function Students() {
   }, [])
 
   useEffect(() => { 
-    handleShowAll()  
+    renderValues()  
   }, [])
+
+  const renderValues = async () => {
+    let sendData = {
+      id:'',
+      firstname:'',
+      lastname:'',
+      major:'',
+      promotion:'',
+      status: ''
+    }
+    console.log(sendData)
+    console.log((sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    console.log(sendData)
+    setUsers(data.rows)
+  }
   
   const handleShowAll = async () => {
     let sendData = {
@@ -109,19 +133,29 @@ export default function Students() {
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
-console.log(sendData)
+    console.log(sendData)
     setUsers(data.rows)
+    setMajorValue("")
+    setTest(true)
   }
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
+    if(test){ 
+      selectedValue == ''
+    }
     if(selectedValue.trim() !== ''){
     let majorID = allMajor.filter(major => major.major_name === selectedValue);
     console.log(majorID[0].major_id)
     setMajorValue(majorID[0].major_id)
+    
   }else{
     setMajorValue("")
+    
+  }
+  if(test == true){ 
+    selectedValue === ' '
   }
   };
   const handleStatus = (selectedValue) => {
@@ -159,10 +193,12 @@ console.log(sendData)
 
 //>>>>>>> main
   return (
+    
     <>
       <Head>
         <title>SIS Admin - Students</title>
       </Head>
+      {session?.user.role === '2' ? (
       <>
       <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">List Of Students</p>
       <form >
@@ -287,7 +323,7 @@ console.log(sendData)
         </div>
         <StudentsList users={users} setUsers={setUsers} />
       </form>
-    </>
+    </>) : redirect()}
     </>
   );
 }

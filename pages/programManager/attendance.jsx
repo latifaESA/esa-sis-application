@@ -4,11 +4,18 @@ import { useEffect, useState } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 import AttendanceList from '../../components/Dashboard/AttendanceList'
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function attendance() {
 
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
+
+  const router = useRouter()
+  const redirect = () => { 
+    router.push('/AccessDenied')
+  }
 
   const [attendanceId, setAttendanceId] = useState('')
   const [studentid, setStudentid] = useState('')
@@ -43,7 +50,7 @@ export default function attendance() {
       <Head>
         <title>SIS Admin - Attendance</title>
       </Head>
-      <>
+     {session?.user.role === '2' ? ( <>
       <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Attendance</p>
       <form >
         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
@@ -163,7 +170,7 @@ export default function attendance() {
         </div>
         <AttendanceList users={users} setUsers={setUsers} />
       </form>
-    </>
+    </>) : redirect()}
     </>
   );
 }
