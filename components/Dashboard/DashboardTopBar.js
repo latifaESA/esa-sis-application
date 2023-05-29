@@ -121,6 +121,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   };
 
   const unSolvedWarnings = warnings.filter((warning) => warning.isSolved === 0);
+ 
 
   return (
     <>

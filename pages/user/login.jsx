@@ -6,6 +6,8 @@ import { signIn, useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
+import selection_data from '../../utilities/selection_data';
+import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import esaBuilding from '../../public/images/ESA-building.png';
@@ -59,47 +61,19 @@ export default function LoginScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchData = async () => {
       try {
-        // const response = await axios.get('/api/controller/settingdata', {table:'setting'});
-
-        let table = 'settings';
-        let response = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
-        
+        const response = await axios.get('/api/controller/settingdata');
+        // const response = await axios.get('/api/controller/settingdata');
+        // console.log("hon",response.data.data)
         if (response.status === 200) {
-          // const incomingData = JSON.parse(decrypt(response.data.data));
+          const incomingData = JSON.parse(decrypt(response.data.data));
+          // console.log("pppppppp",incomingData.upload_file_single_size)
           dispatch(
-            // appSetting({
-            //   auto_Save_Timing:
-            //     incomingData.setting[0].auto_Save_Timing * 60 * 1000,
-            //   disapearing_Message_Time:
-            //     incomingData.setting[0].message_disapear_timing * 1000,
-            //   max_characters_count:
-            //     incomingData.setting[0].max_characters_count,
-            //   education_Year_of_Acquisition_Limit:
-            //     incomingData.setting[0].Year_of_Acquisition_Limit,
-            //   personalinfo_dob_min:
-            //     incomingData.setting[0].personalinfo_dob_min.split('T')[0],
-            //   personalinfo_dob_max:
-            //     incomingData.setting[0].personalinfo_dob_max.split('T')[0],
-            //   upload_file_single_size:
-            //     incomingData.setting[0].upload_file_single_size * 1024 * 1024,
-            //   upload_file_total_size:
-            //     incomingData.setting[0].upload_file_total_size * 1024 * 1024,
-            //   logger_expiry_day:
-            //     incomingData.setting[0].logger_expiry_day + 'd',
-            //   logger_max_file_size:
-            //     incomingData.setting[0].logger_max_file_size + 'm',
-            //   upload_file_directory_name:
-            //     incomingData.setting[0].upload_file_directory_name,
-            //   carouselList: incomingData.setting[0].carouselList,
-            //   esa_logo: incomingData.setting[0].esa_logo,
-            //   login_bg: incomingData.setting[0].login_bg,
-            //   MBA_recommendation_letter:
-            //     incomingData.setting[0].MBA_recommendation_letter,
-            //   EMBA_recommendation_letter:
-            //     incomingData.setting[0].EMBA_recommendation_letter,
-            // })
             appSetting({
-              esa_logo: response.data.rows[0].esa_logo
+              esa_logo: incomingData.esa_logo,
+              out_Save_Timing : incomingData.out_Save_timing,
+              upload_file_single_size : incomingData.upload_file_single_size* 1024 * 1024,
+              upload_file_total_size : incomingData.upload_file_total_size* 1024 * 1024,
+              upload_file_directory_name : incomingData.upload_file_directory_name,
             })
           );
         } else {
@@ -138,9 +112,9 @@ export default function LoginScreen() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(appState)
+
   useEffect(() => {
-    console.log(session);
+    
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
         router.push(redirect || '/user/sis/main');
@@ -177,6 +151,7 @@ export default function LoginScreen() {
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
+        console.log("usersession=",userSession.user)
         console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
@@ -184,13 +159,19 @@ export default function LoginScreen() {
               name: userSession.user.name,
               email: userSession.user.email,
               role: userSession.user.role,
+              profileUrl:userSession.user.image,
+              appisSaved:
+              typeof userSession.user.appisSaved !== 'undefined'
+                ? userSession.user.appisSaved
+                : false,
+
             })
           );
-          console.log(userSession);
+          // console.log(userSession);
           dispatch(isLogout(false));
         }
       } else {
-        console.log(result.error);
+        // console.log(result.error);
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }

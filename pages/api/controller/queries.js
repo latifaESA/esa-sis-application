@@ -52,14 +52,18 @@
 //     }
 //   });
 // });
+
+
+
 async function findData(connection, table, where, columnName){
   try{
-    const result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
+    let result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
     return result;
   }catch(err){
     return err
   }
 }
+
 
 // insert to the database as much as you like columns and values
 async function insertData(connection, table, columns, values) {
@@ -185,7 +189,15 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
   }
 }
 
-
+async function ReadDropdown(connection, table) {
+  try {
+    const query = `SELECT * FROM ${table}`;
+    const result = await executeQuery(connection, query, []);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
 
 /* End Postegresql */
 
@@ -194,6 +206,7 @@ module.exports = {
   filterStudent,
   getAll,
   insertData,
+  ReadDropdown,
   findData,
   filterTeacher
 };
