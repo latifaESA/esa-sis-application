@@ -18,7 +18,7 @@ import {
 } from '../../redux/slices/userSlice';
 
 export default function ProfileScreen() {
-  console.log("-----------profileRole")
+  // console.log("-----------profileRole")
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const { data: session } = useSession();
@@ -108,18 +108,18 @@ export default function ProfileScreen() {
         dispatch(userNameChanged(fname + ' ' + lname));
       }
       setMessage('Profile Updated Successfully');
-      // if (password) {
-      //   const result = await signIn('credentials', {
-      //     redirect: false,
-      //     userid,
-      //     password,
-      //   });
-      //   // router.push(redirect || '/');
+      if (password ) {
+        const result = await signIn('credentials', {
+          redirect: false,
+          userid : userState.user.userid,
+          password,
+        });
+        // router.push(redirect || '/');
          
-      //   if (result.error) {
-      //     setMessage(result.error);
-      //   }
-      // }
+        if (result.error) {
+          setMessage(result.error);
+        }
+      }
     } catch (err) {
       setMessage(getError(err));
       console.log(err)

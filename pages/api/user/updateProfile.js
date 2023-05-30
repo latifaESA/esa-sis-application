@@ -120,9 +120,9 @@ async function handler(req, res) {
             'userid',
             'firstname',
             fname,
-            user.ID
+            user.userid
           );
-          // console.log(usr)
+          
         }
         if (lname) {
           await updateUser(
@@ -131,7 +131,7 @@ async function handler(req, res) {
             'userid',
             'lastname',
             lname,
-            user.ID
+            user.userid
           );
         }
          if (fname) {
@@ -141,7 +141,7 @@ async function handler(req, res) {
             'student_id',
             'student_firstname',
             fname,
-            user.ID
+            user.userid
           );
           // console.log(usr)
         }
@@ -152,9 +152,10 @@ async function handler(req, res) {
             'student_id',
             'student_lastname',
             lname,
-            user.ID
+            user.userid
           );
         }
+        console.log(user.userid)
       }else if(user.role === '2'){
         if (fname) {
           await updateUser(
@@ -163,7 +164,7 @@ async function handler(req, res) {
             'pm_id',
             'pm_firstname',
             fname,
-            user.ID
+            user.userid
           );
         }
         if (lname) {
@@ -173,18 +174,18 @@ async function handler(req, res) {
             'pm_id',
             'pm_lastname',
             lname,
-            user.ID,
+            user.userid,
             
           );
         }
       }
      
       if (password) {
-          await UpdateUserpassword(connection, password, user.ID);
+          await UpdateUserpassword(connection, password, user.userid);
         
       }
       if (profileUrl) {
-         await updateUser(connection, 'user_document', 'userid' , 'profileurl',profileUrl , user.ID);
+         await updateUser(connection, 'user_document', 'userid' , 'profileurl',profileUrl , user.userid);
       }
 
       await disconnect(connection);

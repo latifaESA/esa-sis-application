@@ -58,7 +58,7 @@ async function handler(req, res) {
     localDiskPath,
     'esa-SIS-data',
     'Users',
-    user.ID.toString(),
+    user.userid.toString(),
     'Photo'
   );
 
