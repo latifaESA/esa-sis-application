@@ -31,9 +31,9 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
     let publicId;
     // Test If the uploaded document is the photo
     isPhoto
-      ? (publicId = `SISUsers/${session.user.name}-${session.user.ID
+      ? (publicId = `SISUsers/${session.user.name}-${session.user.userid
         }/photo/${from}/${imageFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`)
-      : (publicId = `SISUsers/${session.user.name}-${session.user.ID
+      : (publicId = `SISUsers/${session.user.name}-${session.user.userid
         }/application/${from}/${imageFile.name.replace(
           /[àâäçéèêëîïôöùûü]/g,
           '-'
@@ -48,7 +48,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         const encryptedBody = encrypt(
           JSON.stringify({
             userName: session.user.name,
-            userID: session.user.ID,
+            userID: session.user.userid,
             folder: `photo/${from}`,
           })
         );
@@ -119,7 +119,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         const encryptedBody = encrypt(
           JSON.stringify({
             userName: session.user.name,
-            userID: session.user.ID,
+            userID: session.user.userid,
             folder: `application/${from}`,
           })
         );
@@ -215,7 +215,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
     formDocData.append('file', pdfFile);
 
     const publicId = `SISUsers/${session.user.name}-${
-      session.user.ID
+      session.user.userid
     }/application/${from}/${pdfFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`;
     formDocData.append('public_id', publicId);
 
@@ -225,7 +225,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
     const encryptedBody = encrypt(
       JSON.stringify({
         userName: session.user.name,
-        userID: session.user.ID,
+        userID: session.user.userid,
         folder: `application/${from}`,
       })
     );

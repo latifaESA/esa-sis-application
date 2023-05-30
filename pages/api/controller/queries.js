@@ -222,7 +222,34 @@ async function filterCourses(connection, course_id, course_name, course_credit, 
     return err;
   }
 }
-
+// //filter attendance
+// async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
+//   try {
+//     let sql = 'select * from attendance WHERE 1=1';
+//     if(student_id != ''){
+//         sql  += `AND student_id = '${student_id}'`;
+//     }
+//     if(teacher_id !=''){
+//       sql += `AND teacher_id = '${teacher_id}'`;
+//     }
+//     if(major_id != ''){
+//       sql += `AND major_id = '${major_id}'`;
+//     }
+//     if(course_id != ''){
+//       sql += `AND course_id = '${course_id}'`;
+//     }
+//     if(attendance_date != ''){
+//       sql += `AND attendance_date = '${attendance_date}'`;
+//     }
+//     if(present != ''){
+//       sql += `AND present = ${present}`
+//     }
+//     const res = await connection.query(sql);
+//     return res;
+//   } catch (error) {
+//     return error
+//   }
+// }
 
 /* End Postegresql */
 
@@ -231,8 +258,9 @@ module.exports = {
   filterStudent,
   getAll,
   insertData,
-  ReadDropdown,
+  // ReadDropdown,
   findData,
+  // filterAttendance,
   filterTeacher,
   filterCourses
 };

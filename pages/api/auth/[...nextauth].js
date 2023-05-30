@@ -53,7 +53,7 @@ export const authOptions = {
       if (user?.role) token.role = user.role;
       if (user?.status) token.status = user.status;
       // if (user?.appisSaved) token.appisSaved = user.appisSaved;
-      if (user?.ID) token.ID = user.ID;
+      if (user?.userid) token.userid = user.userid;
       if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
     },
@@ -62,7 +62,7 @@ export const authOptions = {
       if (token?.email) session.user.email = token.email;
       if (token?.role) session.user.role = token.role;
       if (token?.status) session.user.status = token.status;
-      if (token?.ID) session.user.ID = token.ID;
+      if (token?.userid) session.user.userid = token.userid;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -72,7 +72,12 @@ export const authOptions = {
   useWebSocket: false, // disable WebSocket
   providers: [
   CredentialsProvider({
+    // credentials: {
+    //   userid: { label: "userid", type: "text"},
+    //   password: { label: "Password", type: "password" }
+    // },
       async authorize(credentials, req) {
+       
         let message = '';
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
@@ -100,7 +105,7 @@ export const authOptions = {
               connection,
               'users',
               'userid',
-              credentials.email,
+              credentials.userid,
             );
             // const users = await findData(
             //   connection,
@@ -113,9 +118,9 @@ export const authOptions = {
               connection,
               'user_document',
               'profileurl',
-              credentials.email,
+              credentials.userid,
             );  
-            const userinfo = await Userinfo(connection, credentials.email); //email from req body
+            const userinfo = await Userinfo(connection, credentials.userid); //email from req body
             // console.log(userinfo.rows[0].profileurl)
             // console.log("---------------------------------")
             
@@ -220,7 +225,7 @@ export const authOptions = {
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid}=${
                             userAgentinfo.os.family
                           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
                             userAgentinfo.source
@@ -233,7 +238,7 @@ export const authOptions = {
                                 name: admin.rows[0].adminname,
                                 email: admin.rows[0].adminemail,
                                 role: (user.rows[0].role).toString(),
-                                ID: `${user.rows[0].userid}`,
+                                userid: `${user.rows[0].userid}`,
                                 image: userinfo.rows[0].profileurl,
                                
                               };
@@ -260,7 +265,7 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid}=${
                           userAgentinfo.os.family
                         }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
                           userAgentinfo.source
@@ -269,10 +274,10 @@ export const authOptions = {
                     }
                     return {
                               name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                              email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                               role: (user.rows[0].role).toString(),
                               status: `${data.blocked ? 'limited' : 'active'}`,
-                              ID: `${user.rows[0].userid}`,
+                              userid: `${user.rows[0].userid}`,
                               image: userinfo.rows[0].profileurl,
                            
                             };
@@ -300,7 +305,7 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid}=${
                           userAgentinfo.os.family
                         }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
                           userAgentinfo.source
@@ -312,7 +317,7 @@ export const authOptions = {
                               name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                               email: PM.rows[0].pm_email,
                               role: (user.rows[0].role).toString(),
-                              ID: user.rows[0].userid,
+                              userid: user.rows[0].userid,
                               image: userinfo.rows[0].profileurl
                               
                             };
@@ -351,7 +356,7 @@ export const authOptions = {
                             name: `${AS.rows[0].pm_ass_firstname} ${AS.rows[0].pm_ass_lastname}`,
                             email: AS.rows[0].pm_ass_email,
                             role: (user.rows[0].role).toString(),
-                            ID: user.rows[0].userid,
+                            userid: user.rows[0].userid,
                             // image: userinfo.rows[0].profileurl,
                           };
                   }else{
@@ -373,7 +378,7 @@ export const authOptions = {
             message = 'Invalid Password';
                 sis_app_logger.error(
                   `${new Date()}=From nextauth signin=---=${
-                    req.body.email
+                    req.body.userid
                   }=${message}=${userAgentinfo.os.family}=${
                     userAgentinfo.os.major
                   }=${userAgentinfo.family}=${userAgentinfo.source}=${

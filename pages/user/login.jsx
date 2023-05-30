@@ -36,7 +36,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
-
+   
   const dispatch = useDispatch();
 
   const showPasswordHandler = () => {
@@ -138,20 +138,19 @@ export default function LoginScreen() {
     formState: { errors },
   } = useForm();
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ userid, password }) => {
     try {
       setErrorMessage('');
       dispatch(loginRequest());
       const result = await signIn('credentials', {
         redirect: false,
-        email,
+        userid,
         password,
       });
       console.log("this line: ",result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
-        console.log("usersession=",userSession.user)
         console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
@@ -159,6 +158,7 @@ export default function LoginScreen() {
               name: userSession.user.name,
               email: userSession.user.email,
               role: userSession.user.role,
+              userid: userSession.user.userid,
               profileUrl:userSession.user.image,
               appisSaved:
               typeof userSession.user.appisSaved !== 'undefined'
@@ -180,7 +180,7 @@ export default function LoginScreen() {
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
-          email: email,
+          userid: userid,
           role: '---',
           info: 'From login page, unable to reach signIn',
           error: `${getError(err)}`,
@@ -263,9 +263,9 @@ export default function LoginScreen() {
                     <input
                       className="bg-white inputT ml-2"
                       type="text"
-                      data-testid="username"
-                      {...register('email', {
-                        required: 'Please Enter Email',
+                      data-testid="userid"
+                      {...register('userid', {
+                        required: 'Please Enter username',
                         // pattern: {
                         //   value: /\S+@\S+\.\S+/,
                         //   message: 'Please Enter Valid Email',
