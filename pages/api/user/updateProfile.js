@@ -9,7 +9,11 @@
 
 import bcryptjs from 'bcryptjs';
 
-import {  UpdateUserpassword, UpdateadminInfo ,updateUser} from '../controller/accountquery';
+import {
+  UpdateUserpassword,
+  UpdateadminInfo,
+  updateUser,
+} from '../controller/accountquery';
 import { connect, disconnect } from '../../../utilities/db';
 import selection_data from '../../../utilities/selection_data';
 import { getServerSession } from 'next-auth/next';
@@ -32,7 +36,7 @@ async function handler(req, res) {
 
   const { user } = session;
   // console.log(user)
-  const { fname, lname, password ,profileUrl} = req.body;
+  const { fname, lname, password, profileUrl } = req.body;
 
   // console.log("profile" , profileUrl)
   // const profileUrl = req.body.profileUrl;
@@ -64,7 +68,7 @@ async function handler(req, res) {
       await toUpdateUser.save();
     }
     if (profileUrl) {
-      const updateProfileImage = await UserInfo.findOne({ userid: user.ID});
+      const updateProfileImage = await UserInfo.findOne({ userid: user.ID });
       updateProfileImage.profileUrl = profileUrl;
       await updateProfileImage.save();
       // sis_app_logger.info(
@@ -100,19 +104,11 @@ async function handler(req, res) {
       });
     } else {
       // const connection = await connect();
-      if(user.role === '0'){
-
+      if (user.role === '0') {
         if (fname) {
-          await UpdateadminInfo(
-            connection,
-            fname,
-            lname , 
-            user.email,
-            
-          );
+          await UpdateadminInfo(connection, fname, lname, user.email);
         }
-
-      }else if(user.role === '1'){
+      } else if (user.role === '1') {
         if (fname) {
           await updateUser(
             connection,
@@ -122,7 +118,6 @@ async function handler(req, res) {
             fname,
             user.userid
           );
-          
         }
         if (lname) {
           await updateUser(
@@ -134,7 +129,7 @@ async function handler(req, res) {
             user.userid
           );
         }
-         if (fname) {
+        if (fname) {
           await updateUser(
             connection,
             'student',
@@ -155,8 +150,8 @@ async function handler(req, res) {
             user.userid
           );
         }
-        console.log(user.userid)
-      }else if(user.role === '2'){
+        console.log(user.userid);
+      } else if (user.role === '2') {
         if (fname) {
           await updateUser(
             connection,
@@ -174,18 +169,23 @@ async function handler(req, res) {
             'pm_id',
             'pm_lastname',
             lname,
-            user.userid,
-            
+            user.userid
           );
         }
       }
-     
+
       if (password) {
-          await UpdateUserpassword(connection, password, user.userid);
-        
+        await UpdateUserpassword(connection, password, user.userid);
       }
       if (profileUrl) {
-         await updateUser(connection, 'user_document', 'userid' , 'profileurl',profileUrl , user.userid);
+        await updateUser(
+          connection,
+          'user_document',
+          'userid',
+          'profileurl',
+          profileUrl,
+          user.userid
+        );
       }
 
       await disconnect(connection);

@@ -42,7 +42,7 @@ const handler = nextConnect().get(async (req, res) => {
     console.log('successfully reading appVar');
     const setting = await getAll(connection, 'settings');
     let response = { setting: setting };
-    console.log("------",response.setting.rows[0])
+    // console.log("------",response.setting.rows[0])
     if (!response) {
       res.status(500).json({ message: 'failed' });
       await disconnect(connection);
