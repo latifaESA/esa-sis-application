@@ -74,7 +74,7 @@ const AdminView = () => {
               <TableCellsIcon className="h-5 w-5" />
             </div>
             <div>
-              <p>Create Account</p>
+              <p>Accounts</p>
             </div>
           </div>
         </Link>
@@ -98,24 +98,7 @@ const AdminView = () => {
           </div>
         </Link>
         {/* Settings Section */}
-        <Link href="/admin/Settings/Settings">
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/Settings/Settings' ||
-              router.pathname == '/admin/Settings/General' ||
-              router.pathname == '/admin/Settings/DropDownList'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <Cog8ToothIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Settings</p>
-            </div>
-          </div>
-        </Link>
+       
 
         {/* Profile Section */}
         <Link href="/admin/profile">
@@ -131,6 +114,24 @@ const AdminView = () => {
             </div>
             <div>
               <p>Edit Profile</p>
+            </div>
+          </div>
+        </Link>
+        <Link href="/admin/Settings/Settings">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/Settings/Settings' ||
+              router.pathname == '/admin/Settings/General' ||
+              router.pathname == '/admin/Settings/DropDownList'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+          >
+            <div className="mr-2">
+              <Cog8ToothIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Settings</p>
             </div>
           </div>
         </Link>

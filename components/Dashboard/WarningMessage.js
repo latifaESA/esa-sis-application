@@ -21,7 +21,7 @@ function WarningMessageIncomplete({
     >
       <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
         <p className='text-gray-700 mb-4'>
-          Are you sure you want to change the status to incomplete?
+          Are you sure you want to change the status of this User ?
         </p>
         <div className='flex justify-end'>
           <button
