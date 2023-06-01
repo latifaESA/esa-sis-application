@@ -1,18 +1,18 @@
 import React from 'react';
 
 export const LowerButtons = ({
-  exportButton,
-  selectedRows,
+  // exportButton,
+  // selectedRows,
   exportAllButton,
-  handlePrintSelected,
+  // handlePrintSelected,
   // session
 }) => {
   return (
     <>
       <div className='grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4'>
-        <button className='primary-button btnCol text-white  hover:text-white' type='button'>
+        {/* <button className='primary-button btnCol text-white  hover:text-white' type='button'>
           Save Selected
-        </button>
+        </button> */}
         {/* <button
           className='primary-button hover:text-white'
           type='button'

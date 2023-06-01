@@ -8,23 +8,23 @@
 
 import React from 'react';
 import { useState } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
-import encrypt from '../../utilities/encrypt_decrypt/encryptText';
+// import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
-import {
-  WarningMessageCancleIncomplete,
-  WarningMessageIncomplete,
-  WarningMessageObsolote,
-} from './WarningMessage';
+// import {
+//   WarningMessageCancleIncomplete,
+//   WarningMessageIncomplete,
+//   WarningMessageObsolote,
+// } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
@@ -32,14 +32,14 @@ import CustomPagination from './Pagination';
 const CourseList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const statusData = selection_data.application_status_inList;
-  const majorData = selection_data.Academic_program_inList;
-  const [majorEnable, setMajorEnable] = useState(null);
+  // const statusData = selection_data.application_status_inList;
+  // const majorData = selection_data.Academic_program_inList;
+  // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
-  const [cancleIncomplete, setCancleIncomplete] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
+  // const [cancleIncomplete, setCancleIncomplete] = useState(false);
+  // const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
 
@@ -52,70 +52,70 @@ const CourseList = ({ users, setUsers }) => {
   console.log('===============')
 
   //incomplete modal
-  const handleConfirmIncomplete = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenIncomplete(true);
-  };
+  // const handleConfirmIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenIncomplete(true);
+  // };
 
   //obsolete modal
-  const handleConfirmObsolote = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenObsolote(true);
-  };
+  // const handleConfirmObsolote = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenObsolote(true);
+  // };
 
   //cancle incomplete
-  const handleCancleIncomplete = (user) => {
-    setSelectedUser(user);
-    setCancleIncomplete(true);
-    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleCancleIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setCancleIncomplete(true);
+  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
-    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleConfirmClose = (user) => {
+  //   setConfirmOpenIncomplete(false);
+  //   setConfirmOpenObsolote(false);
+  //   setCancleIncomplete(false);
+  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
-  const handleSave = (user) => {
-    axios
-      .put('/api/admin/listusers/status', {
-        data: encrypt(
-          JSON.stringify({
-            ID: user.ID,
-            status: user.status,
-          })
-        ),
-      })
-      .then((response) => {
-        // Handle success
-        console.log(response.data);
-        setMessage('User Status Changed Succesfully!');
+  // const handleSave = (user) => {
+  //   axios
+  //     .put('/api/admin/listusers/status', {
+  //       data: encrypt(
+  //         JSON.stringify({
+  //           ID: user.ID,
+  //           status: user.status,
+  //         })
+  //       ),
+  //     })
+  //     .then((response) => {
+  //       // Handle success
+  //       console.log(response.data);
+  //       setMessage('User Status Changed Succesfully!');
 
-        //Update the user's status and major in the table
-        setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.ID === user.ID ? { ...u, status: user.status } : u
-          )
-        );
-      })
-      .catch((error) => {
-        // Handle error
-        console.log(error);
-      });
-  };
+  //       //Update the user's status and major in the table
+  //       setUsers((prevUsers) =>
+  //         prevUsers.map((u) =>
+  //           u.ID === user.ID ? { ...u, status: user.status } : u
+  //         )
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       // Handle error
+  //       console.log(error);
+  //     });
+  // };
 
   // const handleConfirm = () => {
   //   handleSave(selectedUser);
@@ -191,7 +191,7 @@ const CourseList = ({ users, setUsers }) => {
       headerName: 'Course Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
     {
       field: 'course_credit',
@@ -201,19 +201,19 @@ const CourseList = ({ users, setUsers }) => {
       width: 150,
     },
     {
-      field: 'major_id',
-      headerName: 'Major ID',
+      field: 'major_name',
+      headerName: 'Major Name',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 200,
     },
-    // {
-    //   field: 'course_id',
-    //   headerName: 'Course ID',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 90,
-    // },
+    {
+      field: 's',
+      headerName: 'type',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
 
     // {
     //   field: 'student_id',
@@ -424,66 +424,66 @@ const CourseList = ({ users, setUsers }) => {
     //   ),
     // },
 
-    {
-      field: 'action',
-      headerName: 'Action',
-      width: `${session.user.role === '0' ? 300 : 150}`,
-      headerAlign: 'center',
-      align: 'center',
-      sortable: false,
-      renderCell: (params) => (
-        <div className='flex gap-2'>
-          <button
-            className='primary-button hover:text-white'
-            onClick={() => {
-              const prevStatus = users.find(
-                (u) => u.ID === params.row.ID
-              )?.status;
-              if (prevStatus === 'incomplete') {
-                handleCancleIncomplete(params.row);
-              } else if (params.row.status === 'incomplete') {
-                handleConfirmIncomplete(params.row);
-              } else if (params.row.status === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else if (prevStatus === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else {
-                handleSave(params.row);
-              }
-            }}
-            type='button'
-          >
-            Save
-          </button>
-          <Link
-            className='text-black'
-            target='_blank'
-            href={`${params.row.reportURL}`}
-          >
-            <button
-              className='primary-button hover:text-white'
-              disabled={params.row.reportURL ? false : true}
-              type='button'
-            >
-              Print
-            </button>
-          </Link>
-          <button
-            className='primary-button hover:text-white'
-            onClick={() => handleChangeMajor(params.row)}
-            disabled={params.id !== majorEnable}
-            type='button'
-            hidden={
-              session.user.role === '2' || session.user.role === '3'
-                ? true
-                : false
-            }
-          >
-            Change Major
-          </button>
-        </div>
-      ),
-    },
+    // {
+    //   field: 'action',
+    //   headerName: 'Action',
+    //   width: `${session.user.role === '0' ? 300 : 150}`,
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   sortable: false,
+    //   renderCell: (params) => (
+    //     <div className='flex gap-2'>
+    //       <button
+    //         className='primary-button hover:text-white'
+    //         onClick={() => {
+    //           const prevStatus = users.find(
+    //             (u) => u.ID === params.row.ID
+    //           )?.status;
+    //           if (prevStatus === 'incomplete') {
+    //             handleCancleIncomplete(params.row);
+    //           } else if (params.row.status === 'incomplete') {
+    //             handleConfirmIncomplete(params.row);
+    //           } else if (params.row.status === 'obsolete') {
+    //             handleConfirmObsolote(params.row);
+    //           } else if (prevStatus === 'obsolete') {
+    //             handleConfirmObsolote(params.row);
+    //           } else {
+    //             handleSave(params.row);
+    //           }
+    //         }}
+    //         type='button'
+    //       >
+    //         Save
+    //       </button>
+    //       <Link
+    //         className='text-black'
+    //         target='_blank'
+    //         href={`${params.row.reportURL}`}
+    //       >
+    //         <button
+    //           className='primary-button hover:text-white'
+    //           disabled={params.row.reportURL ? false : true}
+    //           type='button'
+    //         >
+    //           Print
+    //         </button>
+    //       </Link>
+    //       <button
+    //         className='primary-button hover:text-white'
+    //         onClick={() => handleChangeMajor(params.row)}
+    //         disabled={params.id !== majorEnable}
+    //         type='button'
+    //         hidden={
+    //           session.user.role === '2' || session.user.role === '3'
+    //             ? true
+    //             : false
+    //         }
+    //       >
+    //         Change Major
+    //       </button>
+    //     </div>
+    //   ),
+    // },
 
   ];
 
@@ -543,7 +543,7 @@ const CourseList = ({ users, setUsers }) => {
 
   return (
     <>
-      {confirmOpenIncomplete && (
+      {/* {confirmOpenIncomplete && (
         <WarningMessageIncomplete
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
@@ -564,7 +564,7 @@ const CourseList = ({ users, setUsers }) => {
           cancleIncomplete={cancleIncomplete}
           handleConfirmClose={handleConfirmClose}
         />
-      )}
+      )} */}
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
@@ -580,7 +580,7 @@ const CourseList = ({ users, setUsers }) => {
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
-          onCellEditCommit={(params) => setMajorEnable(params.id)}
+          // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>

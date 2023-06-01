@@ -34,6 +34,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
+  const [userInactive, setUserInactive] = useState('')
 
   const dispatch = useDispatch();
 
@@ -140,14 +141,17 @@ export default function LoginScreen() {
   }, []);
   console.log(appState)
   useEffect(() => {
-    console.log(session);
+    console.log('this is session')
+    console.log(session?.user.status);
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
         router.push(redirect || '/student/main');
-      } else if (session?.user.role === '2') {
+      } else if (session?.user.role === '2' && session?.user.status == 'active') {
         router.push(redirect || '/programManager/main');
       } else if (session?.user.role === '0') {
         router.push(redirect || '/admin/main');
+      }else if (session?.user.role === '2' && session?.user.status == 'inactive'){
+        setUserInactive('Account Inactive')
       }
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
@@ -247,6 +251,13 @@ export default function LoginScreen() {
             <div>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <div>
+                  {userInactive && (
+                    <div
+                      className="text-red-500 error text-center w-full ml-2"
+                    >
+                      {userInactive}
+                    </div>
+                  )}
                   {errors.email && (
                     <div
                       data-testid="errorEmail"

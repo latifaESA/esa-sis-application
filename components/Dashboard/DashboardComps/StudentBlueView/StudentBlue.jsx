@@ -10,7 +10,7 @@ const StudentBlue = () => {
   const { data: session } = useSession();
 
   let userid = parseInt(session?.user.ID);
-  console.log(userid);
+
   useEffect(() => {
     const BlueData = async () => {
       let { data } = await axios.get(

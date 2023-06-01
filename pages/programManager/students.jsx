@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import axios from 'axios'
-import { x64 } from 'crypto-js';
+// import { x64 } from 'crypto-js';
 
 
 import CustomSelectBox from "./customSelectBox";
-import Link from 'next/link';
+// import Link from 'next/link';
 
 
 export default function Students() {
@@ -38,8 +38,7 @@ export default function Students() {
       let table = 'major';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('major')
-      console.log(data.rows)
+
       setallMajor(data.rows)
 
       const datesArray = [];
@@ -48,18 +47,17 @@ export default function Students() {
       });
 
       setMajor(datesArray);
-      console.log(major,'before')
+
     }
     getMajor()
-    console.log(major,'after')
+
 
 
     const getStatus = async () => { 
       let table = 'status';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('status')
-      console.log(data.rows)
+
       // setUsers(data)
       // setDates(data.rows)
       // data.rows.forEach(student => 
@@ -71,7 +69,7 @@ export default function Students() {
       });
 
       setStatus(datesArray);
-      console.log(status,'before')
+
     }
     getStatus();
 
@@ -79,8 +77,7 @@ export default function Students() {
       let table = 'student';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('promo')
-      console.log(data.rows)
+
       // setUsers(data)
 
       // setDates(data.rows)
@@ -93,8 +90,7 @@ export default function Students() {
       });
 
       setPromotion(datesArray);
-      console.log('pro')
-      console.log(promotion,'before')
+
     }
     getPromotion();
   }, [])

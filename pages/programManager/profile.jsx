@@ -2,7 +2,7 @@ import Head from 'next/head';
 import ProfileScreen from '../../components/Dashboard/profile';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 
 export default function Profile() {
   const { data: session } = useSession();

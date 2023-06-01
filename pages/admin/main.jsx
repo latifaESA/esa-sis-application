@@ -7,8 +7,8 @@ import { appIsWaiting } from '../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import AccessDenied from '../../components/Dashboard/accessDenied/AccessDenied';
+// import Link from 'next/link';
+// import AccessDenied from '../../components/Dashboard/accessDenied/AccessDenied';
 
 export default function Main() {
   const dispatch = useDispatch();

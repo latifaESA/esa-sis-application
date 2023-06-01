@@ -262,6 +262,9 @@ export const authOptions = {
                         'pm_id',
                         user.rows[0].userid,
                       );
+                      console.log('this user . row for status')
+                      console.log(user.rows[0])
+                      console.log('this user . row for status')
                       console.log(user.rows[0].userid)
                       console.log(PM)
                       // if the program_manager exists then send the data to frontend
@@ -285,6 +288,7 @@ export const authOptions = {
                               name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                               email: PM.rows[0].pm_email,
                               role: (user.rows[0].role).toString(),
+                              status: (PM.rows[0].pm_status)
                             };
                     }else{
                       // if the program manager is not exists then send this message to frontend

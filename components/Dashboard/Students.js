@@ -6,7 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 // import selection_data from '../../utilities/selection_data';
 import axios from 'axios';
 // import CustomPagination from './Pagination';
@@ -17,8 +17,8 @@ export const Students = () => {
   const [users, setUsers] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState('');
-  const [majorlist, setmajorList] = useState([]);
-  const [statuelist, setStatueList] = useState([]);
+  const [majorlist] = useState([]);
+  const [statuelist] = useState([]);
   const [formData, setFormData] = useState({
     ID: '',
     // Name: '',

@@ -6,42 +6,42 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import selection_data from '../../utilities/selection_data';
-import encrypt from '../../utilities/encrypt_decrypt/encryptText';
+// import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
-  WarningMessageCancleIncomplete,
+  // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
-  WarningMessageObsolote,
+  // WarningMessageObsolote,
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
-import { Pagination, Stack } from '@mui/material';
+// import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const statusData = selection_data.application_status_inList;
-  const majorData = selection_data.Academic_program_inList;
-  const [majorEnable, setMajorEnable] = useState(null);
+  // const statusData = selection_data.application_status_inList;
+  // const majorData = selection_data.Academic_program_inList;
+  // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
-  const [cancleIncomplete, setCancleIncomplete] = useState(false);
+  // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
+  // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
@@ -61,28 +61,28 @@ const TeachersList = ({ users, setUsers }) => {
   };
 
   //obsolete modal
-  const handleConfirmObsolote = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenObsolote(true);
-  };
+  // const handleConfirmObsolote = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenObsolote(true);
+  // };
 
   //cancle incomplete
-  const handleCancleIncomplete = (user) => {
-    setSelectedUser(user);
-    setCancleIncomplete(true);
-    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleCancleIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setCancleIncomplete(true);
+  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
     const prevStatus = users.find((u) => u.ID === user.ID)?.status;
     // console.log("prevStatus",prevStatus)
     setUsers((prevUsers) =>
@@ -130,8 +130,8 @@ const TeachersList = ({ users, setUsers }) => {
   const handleConfirm = () => {
     handleSave(selectedUser);
     setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
     };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
@@ -552,7 +552,7 @@ const TeachersList = ({ users, setUsers }) => {
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
-          onCellEditCommit={(params) => setMajorEnable(params.id)}
+          // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>
