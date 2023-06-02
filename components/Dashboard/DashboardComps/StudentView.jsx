@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import React from 'react'
+// import axios from 'axios';
 import {
     PencilIcon,
-    Cog8ToothIcon,
+    // Cog8ToothIcon,
     ComputerDesktopIcon,
     CreditCardIcon,
     TableCellsIcon,
     CalendarDaysIcon,
-    ClipboardDocumentListIcon,
-    PencilSquareIcon,
-    HandRaisedIcon,
-    UserGroupIcon,
-    NewspaperIcon,
+    // ClipboardDocumentListIcon,
+    // PencilSquareIcon,
+    // HandRaisedIcon,
+    // UserGroupIcon,
+    // NewspaperIcon,
     AcademicCapIcon,
-    WalletIcon ,
+    // WalletIcon ,
     LockClosedIcon 
   } from '@heroicons/react/24/solid';
   import { useRouter } from 'next/router';

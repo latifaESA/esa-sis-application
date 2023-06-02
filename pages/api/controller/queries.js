@@ -129,9 +129,10 @@ async function getAll(connection, table){
 async function filterStudent(connection, id, firstname, lastname, major, promotion, status) {
   try {
     let query = `
-      SELECT student.*, major.major_name
+      SELECT student.*, major.major_name, user_contact.email, user_contact.mobile_number
       FROM student
       LEFT JOIN major ON student.major_id = major.major_id
+      LEFT JOIN user_contact ON student_id = user_contact.userid
       WHERE 1=1`;
 
     if (id.trim() != '') {
@@ -144,7 +145,7 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${lastname}%'))`;
     }
     if (major != '') {
-      query += ` AND student.major_id = ${major}`;
+      query += ` AND major.major_name = ${major}`;
     }
     if (promotion.trim() != '') {
       query += ` AND promotion = '${promotion}'`;
@@ -152,6 +153,9 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
     if (status.trim() != '') {
       query += ` AND status = '${status}'`;
     }
+    // if (phoneNumber.trim() != '') {
+    //   query += ` AND user_contact.mobile_number = '${phoneNumber}'`;
+    // }
 
     const result = await connection.query(query);
     return result;
@@ -179,7 +183,7 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
       query += ` AND lower(trim(teacher_mail)) LIKE lower(trim('%${email}%'))`;
     }
     if (courseid.trim() != '') {
-      query += ` AND lower(trim(teacher_id)) LIKE lower(trim('%${courseid}%'))'`;
+      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${courseid}%'))'`;
     }
 
     const result = await connection.query(query);
@@ -199,8 +203,10 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
 async function filterCourses(connection, course_id, course_name, course_credit, major_id) {
   try {
     let query = `
-      SELECT * FROM courses
-      WHERE 1=1`;
+    SELECT courses.*, major.major_name
+    FROM courses
+    LEFT JOIN major ON courses.major_id = major.major_id
+    WHERE 1=1;`;
 
     if (course_id != '') {
       query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;

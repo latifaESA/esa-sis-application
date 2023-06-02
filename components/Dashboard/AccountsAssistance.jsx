@@ -8,13 +8,13 @@
 
 import React from 'react';
 import { useState } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
-import encrypt from '../../utilities/encrypt_decrypt/encryptText';
+// import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 // import major_code from '../../utilities/major_code';
@@ -23,25 +23,25 @@ import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
-  WarningMessageCancleIncomplete,
+  // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
-  WarningMessageObsolote,
+  // WarningMessageObsolote,
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
-import { Pagination, Stack } from '@mui/material';
+// import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ assistance, setAssistance }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const statusData = selection_data.application_status_inList;
-  const majorData = selection_data.Academic_program_inList;
-  const [majorEnable, setMajorEnable] = useState(null);
+  // const statusData = selection_data.application_status_inList;
+  // const majorData = selection_data.Academic_program_inList;
+  // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
-  const [cancleIncomplete, setCancleIncomplete] = useState(false);
+  const [ setConfirmOpenObsolote] = useState(false);
+  const [setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
@@ -59,23 +59,23 @@ const TeachersList = ({ assistance, setAssistance }) => {
   };
 
   //obsolete modal
-  const handleConfirmObsolote = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenObsolote(true);
-  };
+  // const handleConfirmObsolote = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenObsolote(true);
+  // };
 
   //cancle incomplete
-  const handleCancleIncomplete = (user) => {
-    setSelectedUser(user);
-    setCancleIncomplete(true);
-    const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setAssistance((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleCancleIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setCancleIncomplete(true);
+  //   const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setAssistance((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
@@ -96,9 +96,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active'
     }
   axios
-    .put
-      ('http://localhost:3000/api/admin/adminApi/updateAssistance', sendData
-  )
+    .put('http://localhost:3000/api/admin/adminApi/updateAssistance', sendData)
   .then((response) => {
     // Handle success
     console.log(response.data);
@@ -107,9 +105,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     //Update the user's status and major in the table
     setAssistance((prevUsers) =>
       prevUsers.map((u) =>
-        u.pm_ass_id === user.pm_ass_id ? { ...u, pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active' } : u
-      )
-    );
+        u.pm_ass_id === user.pm_ass_id ? { ...u, pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active' } : u));
   })
   .catch((error) => {
     // Handle error
@@ -406,9 +402,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
           <button
             className='primary-button hover:text-white'
             onClick={() => {
-              const prevStatus = assistance.find(
-                (u) => u.pm_ass_id === params.row.pm_ass_id
-              )?.pm_ass_status;
+              // const prevStatus = assistance.find(
+              //   (u) => u.pm_ass_id === params.row.pm_ass_id
+              // )?.pm_ass_status;
               // handleSave(params.row)
               handleConfirmIncomplete(params.row)
               
@@ -419,8 +415,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
                params.row.pm_ass_status == 'active' ? (<LockOpenOutlinedIcon/>) : (<LockPersonOutlinedIcon/>)
             }
           </button>
-        </div>
-      ),
+        </div>),
     },
 
   ];
@@ -502,7 +497,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
-          onCellEditCommit={(params) => setMajorEnable(params.id)}
+          // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
               <div className='grid h-[100%] place-items-center'>No Data</div>

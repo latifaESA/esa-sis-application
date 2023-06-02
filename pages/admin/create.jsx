@@ -6,8 +6,9 @@ import AccountsAssistance from '../../components/Dashboard/AccountsAssistance'
 import axios from 'axios'
 import { useRouter } from 'next/router';
 
-import Link from 'next/link';
-import TeachersList from '../../components/Dashboard/TeachersList'
+// import Link from 'next/link';
+// import TeachersList from '../../components/Dashboard/TeachersList'
+
 
 
 export default function Create() {
@@ -25,7 +26,6 @@ export default function Create() {
   const [lname, setLname] = useState("")
   const [idvalue, setIDvalue] = useState('')
   const [email, setEmail] = useState('')
-  const [temp, setTemp] = useState('')
   const [status, setStatus] = useState('')
   const [role, setRole] = useState('2')
 
@@ -44,12 +44,13 @@ export default function Create() {
     // pm_id, pm_firstname, pm_lastname, pm_email
     setRole('2')
     let sendpmData = {
-      pm_id: '',
-      pm_firstname:'',
-      pm_lastname:'',
-      pm_email:'',
-      pm_status:''
+      pm_id: ''.trim(),
+      pm_firstname:''.trim(),
+      pm_lastname:''.trim(),
+      pm_email:''.trim(),
+      pm_status:''.trim()
     }
+    console.log('this is pm data')
     console.log(sendpmData)
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/admin/adminApi/filterpm', sendpmData)
@@ -63,20 +64,18 @@ export default function Create() {
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
     let sendData = {
-      pm_ass_id:'',
-      pm_ass_firstname:'',
-      pm_ass_lastname:'',
-      pm_ass_email:'',
-      pm_ass_status: ''
+      pm_ass_id:''.trim(),
+      pm_ass_firstname:''.trim(),
+      pm_ass_lastname:''.trim(),
+      pm_ass_email:''.trim(),
+      pm_ass_status: ''.trim()
     }
     console.log(sendData)
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/admin/adminApi/filterassistance', sendData)
 
-
-    console.log(data)
-    console.log(typeof(parseInt(temp)))
-    setAssistance(data.rows)
+    console.log(sendData)
+    setAssistance(data.rows)  
   }
 
   const handleAccounts = async(e) => {
@@ -94,9 +93,6 @@ export default function Create() {
       // id,firstname,lastname,major,promotion,status
       let {data} = await axios.post('http://localhost:3000/api/admin/adminApi/filterassistance', sendData)
   
-
-      console.log(data)
-      console.log(typeof(parseInt(temp)))
       setAssistance(data.rows)
     }else{ 
        let sendpmData = {

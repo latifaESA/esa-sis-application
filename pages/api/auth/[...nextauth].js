@@ -275,31 +275,42 @@ export const authOptions = {
                           userAgentinfo.device.family
                         }`
                       );
-                    }
-                    return {
-                      name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      role: user.rows[0].role.toString(),
-                      status: `${data.blocked ? 'limited' : 'active'}`,
-                      userid: `${user.rows[0].userid}`,
-                      image: userinfo.rows[0].profileurl,
-                    };
-                  } else {
-                    // if the student is not exists then send this message to frontend
-                    message = 'Student does not exists';
-                  }
-                } else if (user.rows[0].role === 2) {
-                  // get the program_manager data
-                  const PM = await findData(
-                    connection,
-                    'program_manager',
-                    'pm_id',
-                    user.rows[0].userid
-                  );
-                  console.log(user.rows[0].userid);
-                  console.log(PM);
-                  // if the program_manager exists then send the data to frontend
-                  if (PM.rows) {
+//<<<<<<< Hassan
+                      console.log('this user . row for status')
+                      console.log(user.rows[0])
+                      console.log('this user . row for status')
+                      console.log(user.rows[0].userid)
+                      console.log(PM)
+                      // if the program_manager exists then send the data to frontend
+                  if(PM.rows){
+
+//=======
+//                    }
+//                    return {
+  //                    name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+//                      // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+ //                     role: user.rows[0].role.toString(),
+  //                    status: `${data.blocked ? 'limited' : 'active'}`,
+  //                    userid: `${user.rows[0].userid}`,
+  //                    image: userinfo.rows[0].profileurl,
+  //                  };
+   //               } else {
+    //                // if the student is not exists then send this message to frontend
+     //               message = 'Student does not exists';
+      //            }
+       //         } else if (user.rows[0].role === 2) {
+        //          // get the program_manager data
+         //         const PM = await findData(
+          //          connection,
+           //         'program_manager',
+            //        'pm_id',
+             //       user.rows[0].userid
+              //    );
+               //   console.log(user.rows[0].userid);
+                //  console.log(PM);
+                  //// if the program_manager exists then send the data to frontend
+                  //if (PM.rows) {
+//>>>>>>> main
                     await disconnect(connection);
                     // Write to logger
                     if (req) {
@@ -317,15 +328,52 @@ export const authOptions = {
                     }
 
                     return {
-                      name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
-                      email: PM.rows[0].pm_email,
-                      role: user.rows[0].role.toString(),
-                      userid: user.rows[0].userid,
-                      image: userinfo.rows[0].profileurl,
-                    };
-                  } else {
-                    // if the program manager is not exists then send this message to frontend
-                    message = 'Program manager does not exists';
+
+                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
+                              email: PM.rows[0].pm_email,
+                              role: (user.rows[0].role).toString(),
+                              status: (PM.rows[0].pm_status)
+                            };
+                    }else{
+                      // if the program manager is not exists then send this message to frontend
+                      message = 'Program manager does not exists'
+                    }
+                  }else if(user.rows[0].role === 3){
+                    // get the program_manager_assistance data
+                    const AS = await findData(
+                      connection,
+                      'program_manager_assistance',
+                      'pm_ass_id',
+                      user.rows[0].userid,
+                    );
+                    console.log(user.rows[0].userid)
+                    console.log(AS)
+                    // if the program_manager_assistance exists then send the data to frontend
+                if(AS.rows){
+
+                  await disconnect(connection);
+                  // Write to logger
+                  if (req) {
+                    // Log user information
+                    // userinfo.role ==='1'?
+                    sis_app_logger.info(
+                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                        userAgentinfo.os.family
+                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                        userAgentinfo.source
+                      }=${userAgentinfo.device.family}`
+                    );
+//=======
+//                      name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
+ //                     email: PM.rows[0].pm_email,
+ //                     role: user.rows[0].role.toString(),
+ //                     userid: user.rows[0].userid,
+ //                     image: userinfo.rows[0].profileurl,
+  //                  };
+ //                 } else {
+ //                   // if the program manager is not exists then send this message to frontend
+ //                   message = 'Program manager does not exists';
+/>>>>>>> main
                   }
                 } else if (user.rows[0].role === 3) {
                   // get the program_manager_assistance data

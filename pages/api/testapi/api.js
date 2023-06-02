@@ -1,12 +1,12 @@
-const { connect } = require('../../../utilities/db');
-const { getAll } = require('../controller/queries');
+// const { connect } = require('../../../utilities/db');
+// const { getAll } = require('../controller/queries');
 
 // const axios = require('axios')
 // import https from 'https';
 
 async function handler(req, res) {
   try {
-    const connection = await connect();
+    // const connection = await connect();
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
     //
     // const user = await filterStudent(connection, 'all', 'all', 'all', 'all', 'all', 'active');

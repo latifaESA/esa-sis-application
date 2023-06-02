@@ -42,9 +42,9 @@ export const Navbar = () => {
     (state) => state.persistedReducer.user_state.userState
   );
 
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
+  //const appState = useSelector(
+    //(state) => state.persistedReducer.app_state.appState
+  //);
 
   const logoutClickHandler = async () => {
     dispatch(isLogout(true));

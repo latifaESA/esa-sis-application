@@ -2,16 +2,16 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import SearchCourse from '../../components/Dashboard/Courses/SearchCourse';
+// import SearchCourse from '../../components/Dashboard/Courses/SearchCourse';
 // import { LowerButtons } from '../../components/Admin/LowerButtons';
 import { appIsWaiting } from '../../redux/slices/appSlice';
-import axios from 'axios';
+// import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 // import { Home } from '../../components/GOToHome';
-import https from 'https';
+// import https from 'https';
 import StudentBlue from '../../components/Dashboard/DashboardComps/StudentBlueView/StudentBlue';
-import Link from 'next/link';;
+// import Link from 'next/link';;
 export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Main() {
     }
     }, []);
 
-  console.log(limited)
+
   return (
     <>
       <Head>

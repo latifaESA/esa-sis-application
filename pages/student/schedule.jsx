@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 
