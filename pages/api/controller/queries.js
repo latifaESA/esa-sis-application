@@ -52,14 +52,18 @@
 //     }
 //   });
 // });
+
+
+
 async function findData(connection, table, where, columnName){
   try{
-    const result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
+    let result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
     return result;
   }catch(err){
     return err
   }
 }
+
 
 // insert to the database as much as you like columns and values
 async function insertData(connection, table, columns, values) {
@@ -189,6 +193,12 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
   }
 }
 
+//<<<<<<< batoul
+//async function ReadDropdown(connection, table) {
+//  try {
+//    const query = `SELECT * FROM ${table}`;
+//    const result = await executeQuery(connection, query, []);
+//=======
 
 async function filterCourses(connection, course_id, course_name, course_credit, major_id) {
   try {
@@ -212,11 +222,13 @@ async function filterCourses(connection, course_id, course_name, course_credit, 
     }
 
     const result = await connection.query(query);
+
     return result;
   } catch (err) {
     return err;
   }
 }
+
 async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status) {
   try {
     let query = `
@@ -301,6 +313,36 @@ async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
 }
 
 
+// //filter attendance
+// async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
+//   try {
+//     let sql = 'select * from attendance WHERE 1=1';
+//     if(student_id != ''){
+//         sql  += `AND student_id = '${student_id}'`;
+//     }
+//     if(teacher_id !=''){
+//       sql += `AND teacher_id = '${teacher_id}'`;
+//     }
+//     if(major_id != ''){
+//       sql += `AND major_id = '${major_id}'`;
+//     }
+//     if(course_id != ''){
+//       sql += `AND course_id = '${course_id}'`;
+//     }
+//     if(attendance_date != ''){
+//       sql += `AND attendance_date = '${attendance_date}'`;
+//     }
+//     if(present != ''){
+//       sql += `AND present = ${present}`
+//     }
+//     const res = await connection.query(sql);
+//     return res;
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+
 /* End Postegresql */
 
 
@@ -308,7 +350,9 @@ module.exports = {
   filterStudent,
   getAll,
   insertData,
+  // ReadDropdown,
   findData,
+  // filterAttendance,
   filterTeacher,
   filterCourses,
   filterpm,

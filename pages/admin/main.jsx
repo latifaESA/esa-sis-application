@@ -18,14 +18,12 @@ export default function Main() {
   }, []);
 
   const { data: session } = useSession();
-  const router = useRouter()
-  
-  const redirect = () => { 
-    router.push('/AccessDenied')
-  }
+  const router = useRouter();
 
+  const redirect = () => {
+    router.push('/AccessDenied');
+  };
 
-  
   return (
     <>
       <Head>
@@ -33,13 +31,13 @@ export default function Main() {
       </Head>
       {session?.user.role === '0' ? (
         <>
-          <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Main</p>
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Main</p>
 
-          <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-            Main
-          </div>
+          <div className="grid lg:grid-cols-1 gap-5 mb-5">Main</div>
         </>
-      ) : redirect()}
+      ) : (
+        redirect()
+      )}
     </>
   );
 }

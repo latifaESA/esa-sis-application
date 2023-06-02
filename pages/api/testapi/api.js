@@ -15,8 +15,8 @@ async function handler(req, res) {
 
     // const user = await getAll(connection, req.body.student);
 
-    // console.log(user.rows)
-    // return res.status('200').send(user.rows)
+    // // console.log(user.rows)
+    // // return res.status('200').send(user.rows)
 
     // console.log(user.rows);
     // return res.status('200').send(user.rows);

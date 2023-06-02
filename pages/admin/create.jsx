@@ -5,8 +5,10 @@ import AccountsList from '../../components/Dashboard/AccountsList'
 import AccountsAssistance from '../../components/Dashboard/AccountsAssistance'
 import axios from 'axios'
 import { useRouter } from 'next/router';
+
 // import Link from 'next/link';
 // import TeachersList from '../../components/Dashboard/TeachersList'
+
 
 
 export default function Create() {
@@ -28,9 +30,10 @@ export default function Create() {
   const [role, setRole] = useState('2')
 
 
-  const redirect = () => { 
-    router.push('/AccessDenied')
-  }
+
+  const redirect = () => {
+    router.push('/AccessDenied');
+  };
 
   useEffect(() => { 
     handleShowAll()
@@ -111,12 +114,13 @@ export default function Create() {
     }
     
   }
-//>>>>>>> main
+
   return (
     <>
       <Head>
         <title>SIS Admin - Accounts</title>
       </Head>
+
      {session?.user.role === '0' ? ( <>
       <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">List Of Accounts</p>
       <form >
@@ -242,6 +246,7 @@ export default function Create() {
           }
       </form>
     </>) : redirect()}
+
     </>
   );
 }
