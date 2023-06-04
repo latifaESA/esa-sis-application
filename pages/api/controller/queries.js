@@ -171,7 +171,7 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
       WHERE 1=1`;
 
     if (id != '') {
-      query += ` AND teachers.teacher_id = ${id}`;
+      query += ` AND teacher_id = '${id}'`;
     }
     if (firstname.trim() != '') {
       query += ` AND lower(trim(teacher_firstname)) LIKE lower(trim('%${firstname}%'))`;
@@ -206,7 +206,7 @@ async function filterCourses(connection, course_id, course_name, course_credit, 
     SELECT courses.*, major.major_name
     FROM courses
     LEFT JOIN major ON courses.major_id = major.major_id
-    WHERE 1=1;`;
+    WHERE 1=1`;
 
     if (course_id != '') {
       query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
@@ -342,6 +342,44 @@ async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
 //   }
 // }
 
+async function enableUserpm(connection, pm_id, userpassword) {
+  try {
+    let query = `
+      INSERT INTO users(userid ,role , userpassword)
+        VALUES('${pm_id}', 2, '${userpassword}')`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function enableUserAs(connection, pm_ass_id, userpassword) {
+  try {
+    let query = `
+      INSERT INTO users(userid ,role , userpassword)
+        VALUES('${pm_ass_id}', 3, '${userpassword}')`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function deleteUserpm(connection, pm_id) {
+  try {
+    let query = `
+    DELETE FROM users
+    WHERE userid = '${pm_id}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+
 
 /* End Postegresql */
 
@@ -358,5 +396,8 @@ module.exports = {
   filterpm,
   filterassistance,
   updateStatusPM,
-  updateStatusAssistance
+  updateStatusAssistance,
+  enableUserpm,
+  deleteUserpm,
+  enableUserAs
 };

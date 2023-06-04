@@ -5,7 +5,8 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import React from 'react';
 import { useState } from 'react';
 // import Link from 'next/link';
@@ -16,20 +17,25 @@ import axios from 'axios';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import selection_data from '../../utilities/selection_data';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
 import { LowerButtons } from './LowerButtons';
+import AddIcon from '@mui/icons-material/Add';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
+import generatePasswod from '../../utilities/generatePassword';
+import bcryptjs from 'bcryptjs'
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
-  // WarningMessageObsolote,
+  WarningMessageObsolote,
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
+
 // import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
@@ -40,6 +46,7 @@ const TeachersList = ({ users, setUsers }) => {
   // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -58,6 +65,10 @@ const TeachersList = ({ users, setUsers }) => {
   const handleConfirmIncomplete = (user) => {
     setSelectedUser(user);
     setConfirmOpenIncomplete(true);
+  };
+  const handleConfirmDel = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenDelete(true);
   };
 
   //obsolete modal
@@ -81,6 +92,7 @@ const TeachersList = ({ users, setUsers }) => {
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
+    setConfirmOpenDelete(false)
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
     const prevStatus = users.find((u) => u.ID === user.ID)?.status;
@@ -92,10 +104,12 @@ const TeachersList = ({ users, setUsers }) => {
     );
   };
 
-  const handleSave = (user) => {
+  const handleSave = async (user) => {
+ 
     let sendData = { 
           pm_id: user.pm_id,
-          pm_status: user.pm_status == 'active'? 'inactive' : 'active'
+          pm_status: user.pm_status == 'active'? 'inactive' : 'active',
+          note: 'test'
         }
     axios
       .put('http://localhost:3000/api/admin/adminApi/updatePm', sendData
@@ -126,10 +140,92 @@ const TeachersList = ({ users, setUsers }) => {
         console.log(error);
       });
   };
+  const handleEnable = async (user) => {
+    let genPass = generatePasswod(10)
+    const salt = await bcryptjs.genSalt(10);
+    genPass = await bcryptjs.hash(genPass, salt)
+    let sendData = { 
+          pm_id: user.pm_id,
+          userpassword: genPass,
+        }
+    axios
+      .post('http://localhost:3000/api/admin/adminApi/enablepm', sendData
+      // {
+      //   data: encrypt(
+      //     JSON.stringify({
+      //       pm_id: user.pm_id,
+      //       pm_status: 'inactive',
+      //     }
+      //     )
+      //   ),
+      // }
+      )
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User Status Changed Succesfully!');
+
+        //Update the user's status and major in the table
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
+  const handleDelete =  (user) => {
+   
+    let sendData = { 
+          pm_id: user.pm_id,
+        }
+      
+    axios
+      .post('http://localhost:3000/api/admin/adminApi/deletePm', sendData
+      // {
+      //   data: encrypt(
+      //     JSON.stringify({
+      //       pm_id: user.pm_id,
+      //       pm_status: 'inactive',
+      //     }
+      //     )
+      //   ),
+      // }
+      )
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User deleted Succesfully!');
+        console.log('send data')
+        console.log(sendData)
+
+        //Update the user's status and major in the table
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
 
   const handleConfirm = () => {
+    handleEnable(selectedUser)
     handleSave(selectedUser);
     setConfirmOpenIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+    };
+  const handleConfirmDelete = () => {
+    handleDelete(selectedUser)
+    handleSave(selectedUser);
+    setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
     };
@@ -280,6 +376,13 @@ const TeachersList = ({ users, setUsers }) => {
       align: 'center',
       width: 90,
     },
+    {
+      field: 'note',
+      headerName: 'Notes',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
     // {
     //   field: 'status',
     //   headerName: 'Status',
@@ -416,17 +519,33 @@ const TeachersList = ({ users, setUsers }) => {
       renderCell: (params) => (
         <div className='flex gap-2'>
           <button
+          disabled={params.row.pm_status == 'active' ? true : false}
             className='primary-button hover:text-white'
             onClick={() => {
+              
               // handleSave(params.row)
               handleConfirmIncomplete(params.row)
-              
+              console.log('asdasdasdasd')
+              console.log(params.row)
             }}
             type='button'
           >
-            {
-              params.row.pm_status == 'active' ? (<LockOpenOutlinedIcon/>) : (<LockPersonOutlinedIcon/>)
-            }
+          
+            <PersonAddAlt1Icon/>
+          
+          </button>
+          <button
+            className='primary-button hover:text-white'
+            disabled={params.row.pm_status == 'inactive' ? true : false}
+            onClick={() => {
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleConfirmDel(params.row)
+              // handleDelete(params.row)
+            }}
+            type='button'
+          >
+            <PersonRemoveIcon/>
           </button>
           {/* <Link
             className='text-black'
@@ -536,6 +655,13 @@ const TeachersList = ({ users, setUsers }) => {
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirm}
+        />
+      )}
+      {confirmOpenDelete && (
+        <WarningMessageObsolote
+        confirmOpenObsolote={confirmOpenDelete}
+          handleConfirmClose={handleConfirmClose}
+          handleConfirm={handleConfirmDelete}
         />
       )}
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>

@@ -18,14 +18,18 @@ import selection_data from '../../utilities/selection_data';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 // import major_code from '../../utilities/major_code';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import bcryptjs from 'bcryptjs'
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
+import generatePasswod from '../../utilities/generatePassword';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
-  // WarningMessageObsolote,
+  WarningMessageObsolote,
 } from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
@@ -42,6 +46,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [ setConfirmOpenObsolote] = useState(false);
   const [setCancleIncomplete] = useState(false);
+  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
@@ -57,7 +62,13 @@ const TeachersList = ({ assistance, setAssistance }) => {
     setSelectedUser(user);
     setConfirmOpenIncomplete(true);
   };
-
+  const handleConfirmDelete = () => {
+    handleDelete(selectedUser)
+    handleSave(selectedUser);
+    setConfirmOpenDelete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+    };
   //obsolete modal
   // const handleConfirmObsolote = (user) => {
   //   setSelectedUser(user);
@@ -79,8 +90,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    setConfirmOpenDelete(false)
+    // setCancleIncomplete(false);
     const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
     // console.log("prevStatus",prevStatus)
     setAssistance((prevUsers) =>
@@ -112,12 +124,75 @@ const TeachersList = ({ assistance, setAssistance }) => {
     console.log(error);
   });
   };
+  const handleEnable = async (user) => {
+    let genPass = generatePasswod(10)
+    const salt = await bcryptjs.genSalt(10);
+    genPass = await bcryptjs.hash(genPass, salt)
+    let sendData = { 
+      pm_ass_id: user.pm_ass_id,
+      userpassword: genPass
+    }
+  axios
+    .post('http://localhost:3000/api/admin/adminApi/enableAs', sendData)
+  .then((response) => {
+    // Handle success
+    console.log(response.data);
+    setMessage('User Status Changed Succesfully!');
 
+    //Update the user's status and major in the table
+    setAssistance((prevUsers) =>
+      prevUsers.map((u) =>
+        u.pm_ass_id === user.pm_ass_id ? { ...u, pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active' } : u));
+  })
+  .catch((error) => {
+    // Handle error
+    console.log(error);
+  });
+  };
+  const handleDelete = async (user) => {
+   
+    let sendData = { 
+          pm_id: user.pm_ass_id,
+        }
+    axios
+      .post('http://localhost:3000/api/admin/adminApi/deletePm', sendData
+      // {
+      //   data: encrypt(
+      //     JSON.stringify({
+      //       pm_id: user.pm_id,
+      //       pm_status: 'inactive',
+      //     }
+      //     )
+      //   ),
+      // }
+      )
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User deleted Succesfully!');
+
+        //Update the user's status and major in the table
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
+  const handleConfirmDel = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenDelete(true);
+  };
   const handleConfirm = () => {
     handleSave(selectedUser);
+    handleEnable(selectedUser)
     setConfirmOpenIncomplete(false);
-    setConfirmOpenObsolote(false);
-    setCancleIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
     };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
@@ -401,19 +476,36 @@ const TeachersList = ({ assistance, setAssistance }) => {
         <div className='flex gap-2'>
           <button
             className='primary-button hover:text-white'
+            disabled={params.row.pm_ass_status == 'active' ? true : false}
             onClick={() => {
               // const prevStatus = assistance.find(
               //   (u) => u.pm_ass_id === params.row.pm_ass_id
               // )?.pm_ass_status;
               // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
               handleConfirmIncomplete(params.row)
               
             }}
             type='button'
           >
-            {
-               params.row.pm_ass_status == 'active' ? (<LockOpenOutlinedIcon/>) : (<LockPersonOutlinedIcon/>)
-            }
+            <PersonAddAlt1Icon/>
+        
+          </button>
+          <button
+            className='primary-button hover:text-white'
+            disabled={params.row.pm_ass_status == 'inactive' ? true : false}
+            onClick={() => {
+              // const prevStatus = assistance.find(
+              //   (u) => u.pm_ass_id === params.row.pm_ass_id
+              // )?.pm_ass_status;
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleConfirmDel(params.row)
+            }}
+            type='button'
+          >
+            <PersonRemoveIcon/>
+           
           </button>
         </div>),
     },
@@ -481,6 +573,13 @@ const TeachersList = ({ assistance, setAssistance }) => {
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirm}
+        />
+      )}
+     {confirmOpenDelete && (
+        <WarningMessageObsolote
+        confirmOpenObsolote={confirmOpenDelete}
+          handleConfirmClose={handleConfirmClose}
+          handleConfirm={handleConfirmDelete}
         />
       )}
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>

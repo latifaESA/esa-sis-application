@@ -60,6 +60,12 @@ export default function Create() {
     setUsers(data)
     // console.log('this is users')
     // console.log(users)
+    setFname('')
+    setLname('')
+    setIDvalue('')
+    setEmail('')
+    setStatus('')
+    setRole('')
   }
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
