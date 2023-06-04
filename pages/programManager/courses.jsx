@@ -29,7 +29,7 @@ export default function Courses() {
   const handleCourses = async() => {
     // console.log(courseid, courseName, courseCredit, majorid)
     let sendData = {
-      course_id:courseid,
+      course_id:courseid.trim(),
       course_name:courseName,
       course_credit:courseCredit,
       major_id:majorid,
@@ -40,7 +40,7 @@ export default function Courses() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
 
     console.log('this is data')
-    console.log(data)
+    console.log(sendData)
     setUsers(data)
   }
   useEffect(() => { 
@@ -60,6 +60,10 @@ export default function Courses() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
 
     setUsers(data)
+    setMajorid('')
+    setCourseid('')
+    setcourseName('')
+    setcourseCredit('')
   }
 
   return (

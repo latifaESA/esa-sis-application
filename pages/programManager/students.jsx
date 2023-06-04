@@ -20,7 +20,7 @@ export default function Students() {
   const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
-  const [test, setTest] = useState()
+  const [test, setTest] = useState(false)
 
   const [idValue, setIdValue] = useState('');
   const [firstnameValue, setFirstnameValue] = useState('');
@@ -133,6 +133,11 @@ export default function Students() {
     setUsers(data.rows)
     setMajorValue("")
     setTest(true)
+    setIdValue('')
+    setFirstnameValue('')
+    setLastnameValue('')
+    setStatusValue('')
+    setPromotionValue('')
   }
 
   const handleMajor = (selectedValue) => {
@@ -150,15 +155,12 @@ export default function Students() {
     setMajorValue("")
     
   }
-  if(test == true){ 
-    selectedValue === ' '
-  }
+
   };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
     setStatusValue(selectedValue)
-
   };
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value

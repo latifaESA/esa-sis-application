@@ -47,6 +47,11 @@ export default function Students() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
 
     setUsers(data)
+    setFname('')
+    setLname('')
+    setIDvalue('')
+    setEmail('')
+    setCourseid('')
   }
 
   const handleTeachers = async(e) => {
