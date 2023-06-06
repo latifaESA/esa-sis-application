@@ -6,23 +6,25 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 const StudentBlue = () => {
+  
   const [survey, setSurvey] = useState([]);
   const { data: session } = useSession();
 
-  let userid = parseInt(session?.user.ID);
-  console.log(userid);
+  let userid = parseInt(session?.user.userid);
+  console.log("userID",userid);
   useEffect(() => {
     const BlueData = async () => {
       let { data } = await axios.get(
-        `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${userid}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`
+        `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid="${userid}"&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`
         //   , {
 
         //   // httpsAgent: new https.Agent({
         //   //     rejectUnauthorized: false,
         //   //   })
         //   }
+       
       );
-
+      console.log("dataTask",data.Tasks)    
       setSurvey(data.Tasks);
     };
     BlueData();

@@ -54,6 +54,8 @@ export const authOptions = {
       if (user?.status) token.status = user.status;
       // if (user?.appisSaved) token.appisSaved = user.appisSaved;
       if (user?.userid) token.userid = user.userid;
+      if (user?.ID) token.ID = user.ID;
+      if (user?.majorid) token.majorid = user.majorid;
       if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
     },
@@ -63,6 +65,8 @@ export const authOptions = {
       if (token?.role) session.user.role = token.role;
       if (token?.status) session.user.status = token.status;
       if (token?.userid) session.user.userid = token.userid;
+      if (token?.ID) session.user.ID = token.ID;
+      if (token?.majorid) session.user.majorid = token.majorid;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -114,12 +118,12 @@ export const authOptions = {
             //   credentials.email,
             // );
 
-            const users = await findData(
-              connection,
-              'user_document',
-              'profileurl',
-              credentials.userid,
-            );  
+            // const users = await findData(
+            //   connection,
+            //   'user_document',
+            //   'profileurl',
+            //   credentials.userid,
+            // );  
             const userinfo = await Userinfo(connection, credentials.userid); //email from req body
             // console.log(userinfo.rows[0].profileurl)
             // console.log("---------------------------------")
@@ -278,6 +282,7 @@ export const authOptions = {
                               role: (user.rows[0].role).toString(),
                               status: `${data.blocked ? 'limited' : 'active'}`,
                               userid: `${user.rows[0].userid}`,
+                              // ID: `${user.rows[0].userid}`,
                               image: userinfo.rows[0].profileurl,
                            
                             };
@@ -316,6 +321,7 @@ export const authOptions = {
                     return {
                               name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                               email: PM.rows[0].pm_email,
+                              majorid: PM.rows[0].major_id,
                               role: (user.rows[0].role).toString(),
                               userid: user.rows[0].userid,
                               image: userinfo.rows[0].profileurl

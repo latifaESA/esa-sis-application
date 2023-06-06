@@ -55,11 +55,11 @@
 
 
 
-async function findData(connection, table, where, columnName){
-  try{
+async function findData(connection, table, where, columnName) {
+  try {
     let result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
     return result;
-  }catch(err){
+  } catch (err) {
     return err
   }
 }
@@ -78,11 +78,11 @@ async function insertData(connection, table, columns, values) {
 }
 
 // get all data from specific column
-async function getAll(connection, table){
-  try{
+async function getAll(connection, table) {
+  try {
     const result = connection.query(`SELECT * from ${table}`)
     return result;
-  }catch(err){
+  } catch (err) {
     return err
   }
 }
@@ -216,51 +216,155 @@ async function filterCourses(connection, course_id, course_name, course_credit, 
     }
 
     const result = await connection.query(query);
-
+    console.log(result)
     return result;
   } catch (err) {
     return err;
   }
 }
-// //filter attendance
-// async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
-//   try {
-//     let sql = 'select * from attendance WHERE 1=1';
-//     if(student_id != ''){
-//         sql  += `AND student_id = '${student_id}'`;
-//     }
-//     if(teacher_id !=''){
-//       sql += `AND teacher_id = '${teacher_id}'`;
-//     }
-//     if(major_id != ''){
-//       sql += `AND major_id = '${major_id}'`;
-//     }
-//     if(course_id != ''){
-//       sql += `AND course_id = '${course_id}'`;
-//     }
-//     if(attendance_date != ''){
-//       sql += `AND attendance_date = '${attendance_date}'`;
-//     }
-//     if(present != ''){
-//       sql += `AND present = ${present}`
-//     }
-//     const res = await connection.query(sql);
-//     return res;
-//   } catch (error) {
-//     return error
-//   }
-// }
 
+
+
+//filter attendance
+async function filterAttendances(connection, attendance_id, teacher_id, major_id, course_id, attendance_date, present, teacher_firstname, teacher_lastname, major_name) {
+  try {
+    let query = `SELECT attendance_report .* ,  major.major_name , teachers.teacher_firstname , teachers.teacher_lastname ,courses.course_name
+    FROM attendance_report
+    INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id
+    INNER JOIN major ON attendance_report.major_id = major.major_id 
+    INNER JOIN courses ON attendance_report.course_id = courses.course_id
+    WHERE 1=1  
+    `
+
+    if (attendance_id != '') {
+      query += ` AND attendance_id = '${attendance_id}'`;
+    }
+    if (teacher_id != '') {
+      query += ` AND teachers.teacher_id = '${teacher_id}'`;
+    }
+    if (teacher_firstname) {
+      query += ` AND lower(trim(teachers.teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%')) `
+    }
+    if (teacher_lastname) {
+      query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`
+    }
+    if (major_id != '') {
+      query += ` AND major.major_id= '${major_id}'`;
+
+    }
+    if (major_name) {
+      query += ` AND lower(trim(major.major_name) LIKE lower(trim('%${major_name}%'))`
+    }
+    if (course_id != '') {
+      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
+    }
+    if (attendance_date != '') {
+      query += ` AND attendance_date = '${attendance_date}'`;
+
+    }
+    if (present != '') {
+      query += ` AND present = '${present}'  `
+    }
+
+    const res = await connection.query(query);
+
+    return res;
+  } catch (error) {
+    return error
+  }
+}
+
+async function getCourse(connection, table, where, id) {
+  try {
+    let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`
+    const response = await connection.query(query);
+    return response
+  } catch (error) {
+    return error
+  }
+}
+
+async function getTeachersByMajorCourse(connection, major_id) {
+  try {
+    let query = `SELECT  teachers.teacher_id ,teachers.teacher_firstname, teachers.teacher_lastname , courses.major_id , major.current_promotion , courses.course_id
+
+    from teachers 
+    INNER JOIN courses ON teachers.course_id = courses.course_id 
+    INNER JOIN major ON courses.major_id = major.major_id
+    WHERE major.major_id = '${major_id}'
+    `
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function updatePresent(connection, present, student_id, attendance_id) {
+  console.log(attendance_id)
+  try {
+    const query = `UPDATE attendance SET present = ${present} WHERE student_id = '${student_id}' AND attendance_id = '${attendance_id}'`
+    const res = await connection.query(query)
+
+    return res
+  } catch (error) {
+    return error
+
+  }
+
+}
+
+async function getAllStudent(connection, major_id) {
+  try {
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function createAttendance(connection, teacher_id, course_id, major_id, attendance_date) {
+
+  try {
+
+    const query = ` INSERT INTO attendance_report (teacher_id , course_id , major_id, attendance_date) VALUES ('${teacher_id}','${course_id}','${major_id}','${attendance_date}') `
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function AttendanceView(connection, attendance_id) {
+  try {
+    const query = ` SELECT attendance .* ,  student.student_firstname , student.student_lastname, courses.course_name
+    FROM attendance 
+    INNER JOIN student ON attendance.student_id = student.student_id 
+	  INNER JOIN attendance_report ON attendance.attendance_id = attendance_report.attendance_id
+	  INNER JOIN courses ON attendance_report.course_id = courses.course_id
+    WHERE attendance.attendance_id = '${attendance_id}'`
+    const res = await connection.query(query)
+    return res
+
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 
 module.exports = {
+  AttendanceView,
+  filterAttendances,
   filterStudent,
+  getTeachersByMajorCourse,
+  getAllStudent,
   getAll,
+  createAttendance,
+  updatePresent,
   insertData,
-  // ReadDropdown,
+  getCourse,
   findData,
-  // filterAttendance,
   filterTeacher,
   filterCourses
 };

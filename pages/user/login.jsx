@@ -6,7 +6,7 @@ import { signIn, useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
-import selection_data from '../../utilities/selection_data';
+// import selection_data from '../../utilities/selection_data';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -47,9 +47,9 @@ export default function LoginScreen() {
     (state) => state.persistedReducer.user_state.userState
   );
 
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
+  // const appState = useSelector(
+  //   (state) => state.persistedReducer.app_state.appState
+  // );
 
   console.log(errorMessage);
 
