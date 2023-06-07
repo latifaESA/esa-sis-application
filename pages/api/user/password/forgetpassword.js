@@ -12,8 +12,8 @@ import {
   findDataForResetPassword,
   newEmailToken,
   Userinfo,
-  UpdateData,
-  UpdateActivityTime,
+  // UpdateData,
+  // UpdateActivityTime,
 } from '../../controller/queries';
 import { connect, disconnect } from '../../../../utilities/db';
 // import crypto from 'crypto';

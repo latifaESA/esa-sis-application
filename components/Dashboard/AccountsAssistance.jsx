@@ -189,6 +189,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
         setMessage('User deleted Succesfully!');
 
         //Update the user's status and major in the table
+        // eslint-disable-next-line no-undef
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
             u.pm_id === user.pm_id
