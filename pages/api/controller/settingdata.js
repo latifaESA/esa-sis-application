@@ -16,7 +16,7 @@ import useragent from 'useragent';
 // // Add CORS middleware
 // handler.use(
 //   cors({
-//     origin: 'http://localhost:3000',
+//     origin: `${process.env.NEXTAUTH_URL}`,
 //   })
 // );
 

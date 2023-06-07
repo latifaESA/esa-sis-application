@@ -22,7 +22,7 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
 
       console.log("attendance", present.attendance_id)
       console.log("student", present.student_id)
-      const { data } = await axios.put('http://localhost:3000/api/pmApi/presentupdate', { present, student_id, attendance_id })
+      const { data } = await axios.put('/api/pmApi/presentupdate', { present, student_id, attendance_id })
 
     } catch (error) {
       return error

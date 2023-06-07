@@ -15,7 +15,7 @@ const { env } = require('process');
 // // Generate a strong KEY from an online key generator
 // const ONLINE_SIS_SECRET_KEY = 'ONLINE_SIS_SECRET_KEY';
 // // for dev mode should be localhost:3000
-// const ONLINE_URL = 'http://localhost:3000';
+// const ONLINE_URL = `${process.env.NEXTAUTH_URL}`;
 // // const ONLINE_URL = 'https://online-application-url.com';
 
 // // TODO: Dear SIS developer,I prefer to use another method, but in a quick search, I did not find an integrated approach other than creating a new server
@@ -215,7 +215,6 @@ export default async function handler(req, res) {
       // console.log('resstudent: ', resstudent.rowCount > 0);
       isSuccess = isSuccess && resstudent.rowCount > 0;
 
-
       // insert the major
       const columns_major = ['major_id', 'major_name', 'current_promotion'];
       const values_major = [
@@ -231,7 +230,6 @@ export default async function handler(req, res) {
         values_major
       );
       // console.log('resMajor: ', resMajor);
-      
 
       // insert the user_personal_info
       const columns_user_personal_info = [
@@ -277,7 +275,6 @@ export default async function handler(req, res) {
 
       // console.log('resUserPersonalInfo: ', resUserPersonalInfo.rowCount > 0);
       isSuccess = isSuccess && resUserPersonalInfo.rowCount > 0;
-
 
       // insert the user_contact
       const columns_user_contact = [
@@ -335,7 +332,6 @@ export default async function handler(req, res) {
       // console.log('res_user_personal_address: ', res_user_personal_address.rowCount > 0);
       isSuccess = isSuccess && res_user_personal_address.rowCount > 0;
 
-
       // insert the user_emergency_contact
       const columns_user_emergency_contact = [
         'userid',
@@ -369,7 +365,6 @@ export default async function handler(req, res) {
       // console.log('res_user_emergency_contact: ', res_user_emergency_contact.rowCount > 0);
       isSuccess = isSuccess && res_user_emergency_contact.rowCount > 0;
 
-
       // insert the user_education
       const columns_user_education = [
         'userid',
@@ -398,26 +393,39 @@ export default async function handler(req, res) {
 
       // console.log('res_user_education: ', res_user_education.rowCount > 0);
       isSuccess = isSuccess && res_user_education.rowCount > 0;
-      
 
       // insert the promotion
       const columns_promotion = ['promotion_name'];
-      const values_promotion = [ `${recieved_data.program}`];
-      let resPromotion = await insertData(connection, 'promotions', columns_promotion, values_promotion);
+      const values_promotion = [`${recieved_data.program}`];
+      let resPromotion = await insertData(
+        connection,
+        'promotions',
+        columns_promotion,
+        values_promotion
+      );
       // console.log("respromotion: ", resPromotion);
 
       // insert the user_document
       const columns_document = ['userid', 'profileURL'];
-      const values_document = [ `${recieved_data.UserProfileID}`, `${recieved_data.profilePhotoURL}`];
-      let resDocument = await insertData(connection, 'user_document', columns_document, values_document);
+      const values_document = [
+        `${recieved_data.UserProfileID}`,
+        `${recieved_data.profilePhotoURL}`,
+      ];
+      let resDocument = await insertData(
+        connection,
+        'user_document',
+        columns_document,
+        values_document
+      );
       // console.log("resDocument: ", resDocument.rowCount > 0);
       isSuccess = isSuccess && resDocument.rowCount > 0;
 
-
       // inseFIXME:Dear SIS team, please fix this useEffect to read SIS settings from the databasee.log("resDocument: ", resDocument);
 
-      if(!isSuccess){
-        const responseData = { message: 'The data did not save in the sis database' };
+      if (!isSuccess) {
+        const responseData = {
+          message: 'The data did not save in the sis database',
+        };
         // else send
         // const responseData = { message: 'Failed to insert student info' };
         // the online application will handle the response for further actions

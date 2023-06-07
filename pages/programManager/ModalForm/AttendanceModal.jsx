@@ -8,10 +8,10 @@ import moment from 'moment';
 export default function AttendanceModal({ promotion, allpromotion, allcourses, courses, setisModal, teachers, allteachers, student, session, setMessage }) {
 
 
-    const [promotionValue, setPromotionValue] = useState('')
+    // const [promotionValue, setPromotionValue] = useState('')
     const [test, setTest] = useState()
-    const [coursesValue, setCoursesValue] = useState('')
-    const [teacherValue, setTeachersValue] = useState('')
+    // const [coursesValue, setCoursesValue] = useState('')
+    // const [teacherValue, setTeachersValue] = useState('')
     const [promotionName, setPromotionName] = useState('')
     const [courseName, setCourseName] = useState('')
     const [teachersName, setTeachersName] = useState('')
@@ -100,7 +100,7 @@ export default function AttendanceModal({ promotion, allpromotion, allcourses, c
     //             attendance_date: selectedDate,
     //             major_id: session.user.majorid
     //         }
-    //         const { data } = await axios.post('http://localhost:3000/api/pmApi/createAttendanceReport', payload)
+    //         const { data } = await axios.post('/api/pmApi/createAttendanceReport', payload)
     //         setData(data.data)
     //         console.log("data",data.data)
     //     } catch (error) {
