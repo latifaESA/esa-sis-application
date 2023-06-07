@@ -9,7 +9,7 @@
 // import db from '../../../../utilities/connectToDb';
 // import selection_data from '../../../../utilities/selection_data';
 import {
-  findData,
+  findDataForResetPassword,
   newEmailToken,
   Userinfo,
   UpdateData,
@@ -50,18 +50,18 @@ async function handler(req, res) {
       message: message,
     });
   } else {
-    const validateUserEmail = await findData(
+    const validateUserEmail = await findDataForResetPassword(
       connection,
+      'users',
       'email',
-      'user_profile',
       email
     );
     // console.log(validateUserEmail)
     // const validateUserEmail = await UserProfile.findOne({ email });
-    // console.log(validateUserEmail.result)
-    if (validateUserEmail.result) {
+    // console.log(validateUserEmail.rows[0].userid)
+    if (validateUserEmail.rows[0] != null) {
       // Set the emailToken
-      await newEmailToken(connection, email);
+      await newEmailToken(connection, validateUserEmail.rows[0].userid);
       //validateUserEmail.emailToken = crypto.randomBytes(64).toString('hex');
       //await validateUserEmail.save();
 
@@ -75,14 +75,18 @@ async function handler(req, res) {
 
     // Disconnect From DB and send message and user authentication to front end
     const userinfo = await Userinfo(connection, email); //email from req body
-    await UpdateData(connection, 'user_profile', userinfo.user_id, [
-      'isreset',
-      true,
-    ]);
+    console.log('userinfo')
+    console.log(userinfo.rows[0].token)
+    // await UpdateData(connection, 'user_profile', userinfo.user_id, [
+    //   'isreset',
+    //   true,
+    // ]);
     /** Updates Activity Time */
     //Update Activity time
 
-    await UpdateActivityTime(userinfo.user_id, connection);
+    // await UpdateActivityTime(userinfo.rows[0].userid, connection);
+    // console.log('timeAct')
+    // console.log(UpdateActivityTime)
     await disconnect(connection);
     // console.log(UpdateData)
     // console.log(email);
@@ -93,10 +97,10 @@ async function handler(req, res) {
     res.status(201).send({
       message: 'Ready To send Reset Password Email',
       email: email,
-      emailToken: userinfo.emailToken,
-      ID: userinfo.user_id,
-      fname: userinfo.firstname,
-      lname: userinfo.lastname,
+      emailToken: userinfo.rows[0].token,
+      ID: userinfo.rows[0].userid,
+      // fname: userinfo.firstname,
+      // lname: userinfo.lastname,
       //emailToken: validateUserEmail.emailToken,
       //ID: validateUserEmail.ID,
       //fname: validateUserEmail.fname,

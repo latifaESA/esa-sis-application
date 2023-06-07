@@ -53,19 +53,30 @@ const ForgetPassword = () => {
       const res = await axios.post('/api/user/password/forgetpassword', {
         email,
       });
+      console.log('=======res.data======')
+      // console.log(errorMessage)
+      console.log(res.data)
       const emailToken = res.data.emailToken;
-      const lname = res.data.lname;
-      const fname = res.data.fname;
+      // const lname = res.data.lname;
+      // const fname = res.data.fname;
       const ID = res.data.ID;
+      // console.log(emailToken)
+      
+      console.log('before email')
+      console.log(router)
       await EmailForResetPassword({
         emailToken,
-        lname,
-        fname,
         ID,
         email,
         router,
       });
+      console.log('after email')
+      console.log('asd===asd===asd')
+      console.log(emailToken)
+      console.log(ID)
+      console.log(email)
     } catch (err) {
+      console.log(err)
       setErrorMessage(getError(err));
     }
   };
@@ -91,7 +102,7 @@ const ForgetPassword = () => {
             className='mt-2 mb-5 mx-auto max-w-screen-md flex-col bg-blue-800  rounded-lg p-8 text-center text-white'
           >
             <h1 className='mb-4 text-3xl font-bold'>
-              Forget Your Student Account Password?
+              Forget Your Account Password?
             </h1>
             <h1 className='mb-4 text-xl'>Please Enter Your Email Address.</h1>
             {errors && (

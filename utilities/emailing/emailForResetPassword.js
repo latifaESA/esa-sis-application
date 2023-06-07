@@ -14,17 +14,27 @@ import decrypt from '../encrypt_decrypt/decryptText';
 // import axios from 'axios';
 async function EmailForResetPassword({
   emailToken,
-  lname,
-  fname,
+  // lname,
+  // fname,
   ID,
   email,
   router,
 }) {
-  const apiUrl = '/api/controller/settingdata'; 
-  const response = await fetch(apiUrl);
+  console.log('resetemail')
+  console.log(emailToken)
+  console.log(ID)
+  console.log(email)
+  // const apiUrl = '/api/controller/settingdata';
+  const response = await fetch('/api/controller/settingdata');
   const data = await response.json();
+  
   const decryptedData = JSON.parse(decrypt(data.data));
-  const esa_logo = decryptedData.setting[0].esa_logo
+  console.log('decryptedData:',decryptedData);
+  console.log('descrypt setts')
+  console.log('hello.set')
+  console.log(decryptedData.esa_logo)
+  const esa_logo = decryptedData.esa_logo
+  // console.log(esa_logo)
   //console.log(data.data)JSON.parse(decrypt(response.data.data)
   //const data = await JSON.parse(decrypt(response.json())); 
   //console.log(data)
@@ -39,12 +49,18 @@ async function EmailForResetPassword({
     )
   );
   const link = `${window.location.origin}/api/user/password/resetpassword?query=${encryptedQuery}`;
+  console.log("link")
+  console.log(link)
   // const link = `${window.location.origin}/api/user/password/resetpassword?token=${emailToken}&email=${email}`;
   const itServiceDeskEmail = emailing_data.itServiceDeskEmail;
+  console.log(itServiceDeskEmail)
   const fromEmail = emailing_data.fromEmail;
+  console.log(fromEmail)
   const ccEmail = emailing_data.ccEmail;
-  const bccEmail = emailing_data.bccEamil;
+  // const bccEmail = emailing_data.bccEamil;
   const subject = `New mail for Reset Password from ${fromEmail}`;
+  console.log('this is subject')
+  console.log(subject)
 
   // const link = emailing_data.link;
   // const appState = useSelector(
@@ -57,6 +73,8 @@ async function EmailForResetPassword({
       cid: 'esalogo',
     },
   ];
+  console.log('this attachments')
+  console.log(attachments)
   const emailBody =
     '<!DOCTYPE html>' +
     '<html><head><title>Appointment</title>' +
@@ -65,7 +83,7 @@ async function EmailForResetPassword({
     `<div style="text-align: center;">
         <img src="cid:esalogo" alt="" width = "120">
         </div>` +
-    `<p>Dear <span style="font-weight: bold"> ${lname} ${fname}</span>,</p>` +
+    // `<p>Dear <span style="font-weight: bold"> ${lname} ${fname}</span>,</p>` +
     `<p>Application ID: <span style="font-weight: bold"> ${ID}</span>,</p>` +
     `</br>` +
     `<p>We have received a password reset request for your SIS Application at ESA Business School.</p>
@@ -88,7 +106,7 @@ async function EmailForResetPassword({
     from: fromEmail,
     to: email,
     cc: ccEmail,
-    bcc: bccEmail,
+    // bcc: bccEmail,
     subject: subject,
     emailBody: emailBody,
     attachments: attachments,

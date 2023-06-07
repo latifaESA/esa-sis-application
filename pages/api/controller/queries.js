@@ -6,9 +6,9 @@
  * Copyright (c) 2023 ESA
  */
 
-// import { executeQuery } from '../../../utilities/db';
-// import crypto from 'crypto';
-// import bcryptjs from 'bcryptjs';
+import { executeQuery } from '../../../utilities/db';
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
 // const { executeQuery } = require('../../../utilities/db');
 
 
@@ -55,6 +55,16 @@
 
 
 
+async function findDataForResetPassword(connection, table, where, columnName){
+  try{
+    let result = connection.query(`SELECT users.*, user_contact.email from ${table} 
+    LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`)
+    return result;
+  }catch(err){
+    return err
+  }
+}
+
 async function findData(connection, table, where, columnName){
   try{
     let result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
@@ -63,6 +73,99 @@ async function findData(connection, table, where, columnName){
     return err
   }
 }
+
+async function newEmailToken(connection, userid) {
+  let emailToken = crypto.randomBytes(64).toString('hex');
+  try {
+    let query = `
+    UPDATE users
+    SET token = '${emailToken}'
+    WHERE userid = '${userid}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function UpdateToken(connection, emailToken) {
+  try {
+    let UserData = await executeQuery(
+      connection,
+      'UPDATE users set token=null where token=?;',
+      [emailToken]
+    );
+
+    return UserData;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function Userinfo(connection, email) {
+  try {
+    let result = connection.query(`SELECT users.*, user_contact.* from users 
+    LEFT JOIN user_contact ON
+	user_contact.userid = users.userid WHERE user_contact.email = '${email}'`)
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function newpassword(connection, email, newPassword) {
+  let password = bcryptjs.hashSync(newPassword);
+  try {
+    let query = `
+    UPDATE users
+    SET userpassword = '${password}'
+    WHERE userid = '${email}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
+  // try {
+  //   let query = `UPDATE ${table} SET `;
+  //   let values = [];
+
+  //   columnValuePairs.forEach((pair, index) => {
+  //     query += `${pair[0]} = ?`;
+  //     if (index !== columnValuePairs.length - 1) {
+  //       query += ', ';
+  //     }
+  //     values.push(pair[1]);
+  //   });
+
+  //   query += ` WHERE user_id= ?`;
+  //   values.push(whereValue);
+  //   const result = await executeQuery(connection, query, values);
+
+  //   return result;
+  // } catch (err) {
+  //   return err;
+  // }
+}
+
+async function UpdateActivityTime(userid, connection) {
+  // try {
+  //   const result = await executeQuery(
+  //     connection,
+  //     'UPDATE users SET users.update_time = CURRENT_TIMESTAMP WHERE userid = ?',
+  //     [userid]
+  //   );
+
+  //   return result;
+  // } catch (err) {
+  //   return err;
+  // }
+}
+
 
 
 // insert to the database as much as you like columns and values
@@ -399,5 +502,12 @@ module.exports = {
   updateStatusAssistance,
   enableUserpm,
   deleteUserpm,
-  enableUserAs
+  enableUserAs,
+  newEmailToken,
+  Userinfo,
+  UpdateData,
+  UpdateActivityTime,
+  findDataForResetPassword,
+  UpdateToken,
+  newpassword
 };
