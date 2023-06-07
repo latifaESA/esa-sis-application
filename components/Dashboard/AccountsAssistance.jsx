@@ -108,10 +108,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
     };
     axios
-      .put(
-        'http://localhost:3000/api/admin/adminApi/updateAssistance',
-        sendData
-      )
+      .put('/api/admin/adminApi/updateAssistance', sendData)
       .then((response) => {
         // Handle success
         console.log(response.data);
@@ -144,7 +141,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       userpassword: genPass,
     };
     axios
-      .post('http://localhost:3000/api/admin/adminApi/enableAs', sendData)
+      .post('/api/admin/adminApi/enableAs', sendData)
       .then((response) => {
         // Handle success
         console.log(response.data);
@@ -174,7 +171,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     };
     axios
       .post(
-        'http://localhost:3000/api/admin/adminApi/deletePm',
+        '/api/admin/adminApi/deletePm',
         sendData
         // {
         //   data: encrypt(

@@ -65,7 +65,7 @@ const AttendanceList = ({ users, setUsers }) => {
     const getAllPromotion = async () => {
       try {
         let table = 'promotions';
-        let { data } = await axios.post('http://localhost:3000/api/pmApi/getAll', { table })
+        let { data } = await axios.post('/api/pmApi/getAll', { table })
         console.log(data.rows)
         setAllPromotions(data.rows)
 
@@ -89,7 +89,7 @@ const AttendanceList = ({ users, setUsers }) => {
         let table = 'courses';
         let Where = 'major_id'
         let id = session.user.majorid
-        let { data } = await axios.post('http://localhost:3000/api/pmApi/getAllCourses', { table, Where, id })
+        let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
         console.log("course", data.data)
         setAllCourses(data.data)
 
@@ -112,7 +112,7 @@ const AttendanceList = ({ users, setUsers }) => {
 
         let major_id = session.user.majorid;
         // let course_id = coursesValue ;
-        const { data } = await axios.post("http://localhost:3000/api/pmApi/getTeachersByMajorCourse", { major_id })
+        const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
         setAllTeachers(data.data)
         console.log('allteacher', allteachers)
 
@@ -133,7 +133,7 @@ const AttendanceList = ({ users, setUsers }) => {
     const getStudent = async () => {
       try {
         let major_id = session.user.majorid
-        const { data } = await axios.post('http://localhost:3000/api/pmApi/getAllStudent', { major_id })
+        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
         console.log(data.data)
         console.log(data.data)
         setStudent(data.data)
@@ -197,7 +197,7 @@ const AttendanceList = ({ users, setUsers }) => {
     try {
       // setEditModal(true)
       console.log(attendance_id)
-      const {data} = await axios.post(`http://localhost:3000/api/pmApi/getAllAttendance`,attendance_id)
+      const {data} = await axios.post(`/api/pmApi/getAllAttendance`,attendance_id)
       setAttendance(data.data)
 
     } catch (error) {
