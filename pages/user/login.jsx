@@ -65,39 +65,7 @@ export default function LoginScreen() {
         let response = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
         
         if (response.status === 200) {
-          // const incomingData = JSON.parse(decrypt(response.data.data));
           dispatch(
-            // appSetting({
-            //   auto_Save_Timing:
-            //     incomingData.setting[0].auto_Save_Timing * 60 * 1000,
-            //   disapearing_Message_Time:
-            //     incomingData.setting[0].message_disapear_timing * 1000,
-            //   max_characters_count:
-            //     incomingData.setting[0].max_characters_count,
-            //   education_Year_of_Acquisition_Limit:
-            //     incomingData.setting[0].Year_of_Acquisition_Limit,
-            //   personalinfo_dob_min:
-            //     incomingData.setting[0].personalinfo_dob_min.split('T')[0],
-            //   personalinfo_dob_max:
-            //     incomingData.setting[0].personalinfo_dob_max.split('T')[0],
-            //   upload_file_single_size:
-            //     incomingData.setting[0].upload_file_single_size * 1024 * 1024,
-            //   upload_file_total_size:
-            //     incomingData.setting[0].upload_file_total_size * 1024 * 1024,
-            //   logger_expiry_day:
-            //     incomingData.setting[0].logger_expiry_day + 'd',
-            //   logger_max_file_size:
-            //     incomingData.setting[0].logger_max_file_size + 'm',
-            //   upload_file_directory_name:
-            //     incomingData.setting[0].upload_file_directory_name,
-            //   carouselList: incomingData.setting[0].carouselList,
-            //   esa_logo: incomingData.setting[0].esa_logo,
-            //   login_bg: incomingData.setting[0].login_bg,
-            //   MBA_recommendation_letter:
-            //     incomingData.setting[0].MBA_recommendation_letter,
-            //   EMBA_recommendation_letter:
-            //     incomingData.setting[0].EMBA_recommendation_letter,
-            // })
             appSetting({
               esa_logo: response.data.rows[0].esa_logo
             })
