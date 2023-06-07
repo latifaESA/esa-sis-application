@@ -14,17 +14,17 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 // import moment from 'moment';
 import axios from 'axios';
-import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+// import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
+// import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import selection_data from '../../utilities/selection_data';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+// import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
 import { LowerButtons } from './LowerButtons';
-import AddIcon from '@mui/icons-material/Add';
+// import AddIcon from '@mui/icons-material/Add';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import generatePasswod from '../../utilities/generatePassword';
-import bcryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
@@ -52,14 +52,13 @@ const TeachersList = ({ users, setUsers }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-
-  console.log('===============')
-  console.log('=this is users=======')
-  console.log(users)
+  console.log('===============');
+  console.log('=this is users=======');
+  console.log(users);
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
-  console.log('===============')
-  console.log('===============')
+  console.log('===============');
+  console.log('===============');
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
@@ -92,7 +91,7 @@ const TeachersList = ({ users, setUsers }) => {
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false)
+    setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
     const prevStatus = users.find((u) => u.ID === user.ID)?.status;
@@ -105,23 +104,24 @@ const TeachersList = ({ users, setUsers }) => {
   };
 
   const handleSave = async (user) => {
- 
-    let sendData = { 
-          pm_id: user.pm_id,
-          pm_status: user.pm_status == 'active'? 'inactive' : 'active',
-          note: 'test'
-        }
+    let sendData = {
+      pm_id: user.pm_id,
+      pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+      note: 'test',
+    };
     axios
-      .put('http://localhost:3000/api/admin/adminApi/updatePm', sendData
-      // {
-      //   data: encrypt(
-      //     JSON.stringify({
-      //       pm_id: user.pm_id,
-      //       pm_status: 'inactive',
-      //     }
-      //     )
-      //   ),
-      // }
+      .put(
+        'http://localhost:3000/api/admin/adminApi/updatePm',
+        sendData
+        // {
+        //   data: encrypt(
+        //     JSON.stringify({
+        //       pm_id: user.pm_id,
+        //       pm_status: 'inactive',
+        //     }
+        //     )
+        //   ),
+        // }
       )
       .then((response) => {
         // Handle success
@@ -131,7 +131,12 @@ const TeachersList = ({ users, setUsers }) => {
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
-            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+            u.pm_id === user.pm_id
+              ? {
+                  ...u,
+                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
           )
         );
       })
@@ -141,24 +146,26 @@ const TeachersList = ({ users, setUsers }) => {
       });
   };
   const handleEnable = async (user) => {
-    let genPass = generatePasswod(10)
-    const salt = await bcryptjs.genSalt(10);
-    genPass = await bcryptjs.hash(genPass, salt)
-    let sendData = { 
-          pm_id: user.pm_id,
-          userpassword: genPass,
-        }
+    let genPassword = generatePasswod(8);
+    const salt = await bcryptjs.genSalt(8);
+    const genPass = await bcryptjs.hash(genPassword, salt);
+    let sendData = {
+      pm_id: user.pm_id,
+      userpassword: genPass,
+    };
     axios
-      .post('http://localhost:3000/api/admin/adminApi/enablepm', sendData
-      // {
-      //   data: encrypt(
-      //     JSON.stringify({
-      //       pm_id: user.pm_id,
-      //       pm_status: 'inactive',
-      //     }
-      //     )
-      //   ),
-      // }
+      .post(
+        '/api/admin/adminApi/enablepm',
+        sendData
+        // {
+        //   data: encrypt(
+        //     JSON.stringify({
+        //       pm_id: user.pm_id,
+        //       pm_status: 'inactive',
+        //     }
+        //     )
+        //   ),
+        // }
       )
       .then((response) => {
         // Handle success
@@ -168,7 +175,13 @@ const TeachersList = ({ users, setUsers }) => {
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
-            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+            u.pm_id === user.pm_id
+              ? {
+                  ...u,
+                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                  note: `the current password is: ${genPassword}`,
+                }
+              : u
           )
         );
       })
@@ -177,35 +190,41 @@ const TeachersList = ({ users, setUsers }) => {
         console.log(error);
       });
   };
-  const handleDelete =  (user) => {
-   
-    let sendData = { 
-          pm_id: user.pm_id,
-        }
-      
+  const handleDelete = (user) => {
+    let sendData = {
+      pm_id: user.pm_id,
+    };
+
     axios
-      .post('http://localhost:3000/api/admin/adminApi/deletePm', sendData
-      // {
-      //   data: encrypt(
-      //     JSON.stringify({
-      //       pm_id: user.pm_id,
-      //       pm_status: 'inactive',
-      //     }
-      //     )
-      //   ),
-      // }
+      .post(
+        '/api/admin/adminApi/deletePm',
+        sendData
+        // {
+        //   data: encrypt(
+        //     JSON.stringify({
+        //       pm_id: user.pm_id,
+        //       pm_status: 'inactive',
+        //     }
+        //     )
+        //   ),
+        // }
       )
       .then((response) => {
         // Handle success
         console.log(response.data);
         setMessage('User deleted Succesfully!');
-        console.log('send data')
-        console.log(sendData)
+        console.log('send data');
+        console.log(sendData);
 
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
-            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+            u.pm_id === user.pm_id
+              ? {
+                  ...u,
+                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
           )
         );
       })
@@ -216,19 +235,19 @@ const TeachersList = ({ users, setUsers }) => {
   };
 
   const handleConfirm = () => {
-    handleEnable(selectedUser)
+    handleEnable(selectedUser);
     handleSave(selectedUser);
     setConfirmOpenIncomplete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
-    };
+  };
   const handleConfirmDelete = () => {
-    handleDelete(selectedUser)
+    handleDelete(selectedUser);
     handleSave(selectedUser);
     setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
-    };
+  };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
   //     (major) => major.major === user.major
@@ -376,13 +395,7 @@ const TeachersList = ({ users, setUsers }) => {
       align: 'center',
       width: 90,
     },
-    {
-      field: 'note',
-      headerName: 'Notes',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
+
     // {
     //   field: 'status',
     //   headerName: 'Status',
@@ -506,8 +519,6 @@ const TeachersList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
-    
- 
 
     {
       field: 'action',
@@ -517,35 +528,32 @@ const TeachersList = ({ users, setUsers }) => {
       align: 'center',
       sortable: false,
       renderCell: (params) => (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <button
-          disabled={params.row.pm_status == 'active' ? true : false}
-            className='primary-button hover:text-white'
+            disabled={params.row.pm_status == 'active' ? true : false}
+            className="primary-button hover:text-white"
             onClick={() => {
-              
               // handleSave(params.row)
-              handleConfirmIncomplete(params.row)
-              console.log('asdasdasdasd')
-              console.log(params.row)
+              handleConfirmIncomplete(params.row);
+              console.log('asdasdasdasd');
+              console.log(params.row);
             }}
-            type='button'
+            type="button"
           >
-          
-            <PersonAddAlt1Icon/>
-          
+            <PersonAddAlt1Icon />
           </button>
           <button
-            className='primary-button hover:text-white'
+            className="primary-button hover:text-white"
             disabled={params.row.pm_status == 'inactive' ? true : false}
             onClick={() => {
               // handleSave(params.row)
               // handleConfirmIncomplete(params.row)
-              handleConfirmDel(params.row)
+              handleConfirmDel(params.row);
               // handleDelete(params.row)
             }}
-            type='button'
+            type="button"
           >
-            <PersonRemoveIcon/>
+            <PersonRemoveIcon />
           </button>
           {/* <Link
             className='text-black'
@@ -592,6 +600,13 @@ const TeachersList = ({ users, setUsers }) => {
       ),
     },
 
+    {
+      field: 'note',
+      headerName: 'Notes',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
   ];
 
   // export select to excel
@@ -659,12 +674,12 @@ const TeachersList = ({ users, setUsers }) => {
       )}
       {confirmOpenDelete && (
         <WarningMessageObsolote
-        confirmOpenObsolote={confirmOpenDelete}
+          confirmOpenObsolote={confirmOpenDelete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirmDelete}
         />
       )}
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.pm_id}
@@ -681,14 +696,14 @@ const TeachersList = ({ users, setUsers }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
