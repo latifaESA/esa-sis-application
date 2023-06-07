@@ -54,6 +54,8 @@ export const authOptions = {
       if (user?.status) token.status = user.status;
       // if (user?.appisSaved) token.appisSaved = user.appisSaved;
       if (user?.userid) token.userid = user.userid;
+      if (user?.ID) token.ID = user.ID;
+      if (user?.majorid) token.majorid = user.majorid;
       if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
     },
@@ -63,6 +65,8 @@ export const authOptions = {
       if (token?.role) session.user.role = token.role;
       if (token?.status) session.user.status = token.status;
       if (token?.userid) session.user.userid = token.userid;
+      if (token?.ID) session.user.ID = token.ID;
+      if (token?.majorid) session.user.majorid = token.majorid;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -101,27 +105,29 @@ export const authOptions = {
 
           // get the user info
           const user = await findData(
-            connection,
-            'users',
-            'userid',
-            credentials.userid
-          );
-          // const users = await findData(
-          //   connection,
-          //   'user_document',
-          //   'userid',
-          //   credentials.email,
-          // );
 
-          // const users = await findData(
-          //   connection,
-          //   'user_document',
-          //   'profileurl',
-          //   credentials.userid,
-          // );
-          const userinfo = await Userinfo(connection, credentials.userid); //email from req body
-          // console.log(userinfo.rows[0].profileurl)
-          // console.log("---------------------------------")
+              connection,
+              'users',
+              'userid',
+              credentials.userid,
+            );
+            // const users = await findData(
+            //   connection,
+            //   'user_document',
+            //   'userid',
+            //   credentials.email,
+            // );
+
+            // const users = await findData(
+            //   connection,
+            //   'user_document',
+            //   'profileurl',
+            //   credentials.userid,
+            // );  
+            const userinfo = await Userinfo(connection, credentials.userid); //email from req body
+            // console.log(userinfo.rows[0].profileurl)
+            // console.log("---------------------------------")
+            
 
           //  check if there is user with the given id
           if (user.rowCount > 0) {
@@ -242,6 +248,29 @@ export const authOptions = {
                     console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
+//<<<<<<< batoul
+//                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+//                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+//                              role: (user.rows[0].role).toString(),
+//                              status: `${data.blocked ? 'limited' : 'active'}`,
+//                              userid: `${user.rows[0].userid}`,
+//                              // ID: `${user.rows[0].userid}`,
+//                              image: userinfo.rows[0].profileurl,
+//                           
+//                            };
+//                    }
+//                    else{
+//                      // if the student is not exists then send this message to frontend
+//                      message = 'Student does not exists'
+//                    }
+//                  }else if(user.rows[0].role === 2){
+//                      // get the program_manager data
+//                      const PM = await findData(
+//                        connection,
+//                        'program_manager',
+//                        'pm_id',
+//                        user.rows[0].userid,
+//=======
                       name: admin.rows[0].adminname,
                       email: admin.rows[0].adminemail,
                       role: user.rows[0].role.toString(),
@@ -277,6 +306,7 @@ export const authOptions = {
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${
                           userAgentinfo.device.family
                         }`
+
                       );
 
                       return {
@@ -337,6 +367,45 @@ export const authOptions = {
                     }
 
                     return {
+//<<<<<<< batoul
+//                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
+//                              email: PM.rows[0].pm_email,
+//                              majorid: PM.rows[0].major_id,
+//                              role: (user.rows[0].role).toString(),
+//                              userid: user.rows[0].userid,
+//                              image: userinfo.rows[0].profileurl
+//                              
+//                            };
+//                    }else{
+//                      // if the program manager is not exists then send this message to frontend
+//                      message = 'Program manager does not exists'
+//                    }
+//                  }else if(user.rows[0].role === 3){
+//                    // get the program_manager_assistance data
+//                    const AS = await findData(
+//                      connection,
+//                      'program_manager_assistance',
+//                      'pm_ass_id',
+//                      user.rows[0].userid,
+//                    );
+//                    console.log(user.rows[0].userid)
+//                    console.log(AS)
+//                    // if the program_manager_assistance exists then send the data to frontend
+//                if(AS.rows){
+//
+//                  await disconnect(connection);
+//                  // Write to logger
+//                  if (req) {
+//                    // Log user information
+//                    // userinfo.role ==='1'?
+//                    sis_app_logger.info(
+//                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+//                        userAgentinfo.os.family
+//                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+//                        userAgentinfo.source
+//                      }=${userAgentinfo.device.family}`
+//                    );
+//=======
                       name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                       email: PM.rows[0].pm_email,
                       role: user.rows[0].role.toString(),
@@ -346,6 +415,7 @@ export const authOptions = {
                   } else {
                     // if the program manager is not exists then send this message to frontend
                     message = 'Program manager does not exists';
+
                   }
                 } else if (user.rows[0].role === 3) {
                   // get the program_manager_assistance data
