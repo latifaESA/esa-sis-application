@@ -111,7 +111,7 @@ const TeachersList = ({ users, setUsers }) => {
     };
     axios
       .put(
-        'http://localhost:3000/api/admin/adminApi/updatePm',
+        '/api/admin/adminApi/updatePm',
         sendData
         // {
         //   data: encrypt(
