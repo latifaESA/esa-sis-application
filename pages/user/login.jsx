@@ -6,6 +6,8 @@ import { signIn, useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
+// import selection_data from '../../utilities/selection_data';
+import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import esaBuilding from '../../public/images/ESA-building.png';
@@ -35,6 +37,8 @@ export default function LoginScreen() {
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
 
+  const [userInactive, setUserInactive] = useState('');
+
   const dispatch = useDispatch();
 
   const showPasswordHandler = () => {
@@ -45,9 +49,9 @@ export default function LoginScreen() {
     (state) => state.persistedReducer.user_state.userState
   );
 
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
+  // const appState = useSelector(
+  //   (state) => state.persistedReducer.app_state.appState
+  // );
 
   console.log(errorMessage);
 
@@ -59,19 +63,28 @@ export default function LoginScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchData = async () => {
       try {
-        // const response = await axios.get('/api/controller/settingdata', {table:'setting'});
-
-        let table = 'settings';
-        let response = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
-        
+        const response = await axios.get('/api/controller/settingdata');
+        // const response = await axios.get('/api/controller/settingdata');
+        // console.log("hon",response.data.data)
         if (response.status === 200) {
+
+          const incomingData = JSON.parse(decrypt(response.data.data));
+          // console.log("pppppppp",incomingData.upload_file_single_size)
+
           dispatch(
             appSetting({
-              esa_logo: response.data.rows[0].esa_logo
+              esa_logo: incomingData.esa_logo,
+              out_Save_Timing: incomingData.out_Save_timing,
+              upload_file_single_size:
+                incomingData.upload_file_single_size * 1024 * 1024,
+              upload_file_total_size:
+                incomingData.upload_file_total_size * 1024 * 1024,
+              upload_file_directory_name:
+                incomingData.upload_file_directory_name,
             })
           );
         } else {
-          console.log('error fetching data')
+          console.log('error fetching data');
           // localStorage.clear();
           // sessionStorage.clear();
           // const encryptedBody = encrypt(
@@ -106,16 +119,26 @@ export default function LoginScreen() {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(appState)
+
   useEffect(() => {
-    console.log(session);
+    console.log('this is session');
+    console.log(session?.user.status);
+
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
-        router.push(redirect || '/user/sis/main');
-      } else if (session?.user.role === '2') {
+        router.push(redirect || '/student/main');
+      } else if (
+        session?.user.role === '2' &&
+        session?.user.status == 'active'
+      ) {
         router.push(redirect || '/programManager/main');
       } else if (session?.user.role === '0') {
         router.push(redirect || '/admin/main');
+      } else if (
+        session?.user.role === '2' &&
+        session?.user.status == 'inactive'
+      ) {
+        setUserInactive('Account Inactive');
       }
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
@@ -132,16 +155,16 @@ export default function LoginScreen() {
     formState: { errors },
   } = useForm();
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ userid, password }) => {
     try {
       setErrorMessage('');
       dispatch(loginRequest());
       const result = await signIn('credentials', {
         redirect: false,
-        email,
+        userid,
         password,
       });
-      console.log("this line: ",result);
+      console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
@@ -152,13 +175,19 @@ export default function LoginScreen() {
               name: userSession.user.name,
               email: userSession.user.email,
               role: userSession.user.role,
+              userid: userSession.user.userid,
+              profileUrl: userSession.user.image,
+              appisSaved:
+                typeof userSession.user.appisSaved !== 'undefined'
+                  ? userSession.user.appisSaved
+                  : false,
             })
           );
-          console.log(userSession);
+          // console.log(userSession);
           dispatch(isLogout(false));
         }
       } else {
-        console.log(result.error);
+        // console.log(result.error);
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }
@@ -167,7 +196,7 @@ export default function LoginScreen() {
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
-          email: email,
+          userid: userid,
           role: '---',
           info: 'From login page, unable to reach signIn',
           error: `${getError(err)}`,
@@ -215,6 +244,11 @@ export default function LoginScreen() {
             <div>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <div>
+                  {userInactive && (
+                    <div className="text-red-500 error text-center w-full ml-2">
+                      {userInactive}
+                    </div>
+                  )}
                   {errors.email && (
                     <div
                       data-testid="errorEmail"
@@ -250,9 +284,9 @@ export default function LoginScreen() {
                     <input
                       className="bg-white inputT ml-2"
                       type="text"
-                      data-testid="username"
-                      {...register('email', {
-                        required: 'Please Enter Email',
+                      data-testid="userid"
+                      {...register('userid', {
+                        required: 'Please Enter username',
                         // pattern: {
                         //   value: /\S+@\S+\.\S+/,
                         //   message: 'Please Enter Valid Email',

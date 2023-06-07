@@ -2,22 +2,25 @@ import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import axios from 'axios'
-import { x64 } from 'crypto-js';
+// import { x64 } from 'crypto-js';
 
 
 import CustomSelectBox from "./customSelectBox";
+// import Link from 'next/link';
 
 
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
-
+  const router = useRouter()
   const [major, setMajor] = useState([]);
   const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
+  const [test, setTest] = useState(false)
 
   const [idValue, setIdValue] = useState('');
   const [firstnameValue, setFirstnameValue] = useState('');
@@ -26,13 +29,16 @@ export default function Students() {
   const [statusValue, setStatusValue] = useState('');
   const [promotionValue, setPromotionValue] = useState('');
 
+  const redirect = () => { 
+    router.push('/AccessDenied')
+  }
+
   useEffect(() => { 
     const getMajor = async () => { 
       let table = 'major';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('major')
-      console.log(data.rows)
+
       setallMajor(data.rows)
 
       const datesArray = [];
@@ -41,18 +47,17 @@ export default function Students() {
       });
 
       setMajor(datesArray);
-      console.log(major,'before')
+
     }
     getMajor()
-    console.log(major,'after')
+
 
 
     const getStatus = async () => { 
       let table = 'status';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('status')
-      console.log(data.rows)
+
       // setUsers(data)
       // setDates(data.rows)
       // data.rows.forEach(student => 
@@ -64,7 +69,7 @@ export default function Students() {
       });
 
       setStatus(datesArray);
-      console.log(status,'before')
+
     }
     getStatus();
 
@@ -72,8 +77,7 @@ export default function Students() {
       let table = 'student';
       let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
 
-      console.log('promo')
-      console.log(data.rows)
+
       // setUsers(data)
 
       // setDates(data.rows)
@@ -86,15 +90,31 @@ export default function Students() {
       });
 
       setPromotion(datesArray);
-      console.log('pro')
-      console.log(promotion,'before')
+
     }
     getPromotion();
   }, [])
 
   useEffect(() => { 
-    handleShowAll()  
+    renderValues()  
   }, [])
+
+  const renderValues = async () => {
+    let sendData = {
+      id:'',
+      firstname:'',
+      lastname:'',
+      major:'',
+      promotion:'',
+      status: ''
+    }
+    console.log(sendData)
+    console.log((sendData))
+    // id,firstname,lastname,major,promotion,status
+    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    console.log(sendData)
+    setUsers(data.rows)
+  }
   
   const handleShowAll = async () => {
     let sendData = {
@@ -109,26 +129,38 @@ export default function Students() {
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
-console.log(sendData)
+    console.log(sendData)
     setUsers(data.rows)
+    setMajorValue("")
+    setTest(true)
+    setIdValue('')
+    setFirstnameValue('')
+    setLastnameValue('')
+    setStatusValue('')
+    setPromotionValue('')
   }
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
+    if(test){ 
+      selectedValue == ''
+    }
     if(selectedValue.trim() !== ''){
     let majorID = allMajor.filter(major => major.major_name === selectedValue);
     console.log(majorID[0].major_id)
     setMajorValue(majorID[0].major_id)
+    
   }else{
     setMajorValue("")
+    
   }
+
   };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
     setStatusValue(selectedValue)
-
   };
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value
@@ -159,10 +191,12 @@ console.log(sendData)
 
 //>>>>>>> main
   return (
+    
     <>
       <Head>
         <title>SIS Admin - Students</title>
       </Head>
+      {session?.user.role === '2' ? (
       <>
       <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">List Of Students</p>
       <form >
@@ -287,7 +321,7 @@ console.log(sendData)
         </div>
         <StudentsList users={users} setUsers={setUsers} />
       </form>
-    </>
+    </>) : redirect()}
     </>
   );
 }

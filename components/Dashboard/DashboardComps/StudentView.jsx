@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import React from 'react'
+// import axios from 'axios';
 import {
     PencilIcon,
-    Cog8ToothIcon,
+    // Cog8ToothIcon,
     ComputerDesktopIcon,
     CreditCardIcon,
     TableCellsIcon,
     CalendarDaysIcon,
-    ClipboardDocumentListIcon,
-    PencilSquareIcon,
-    HandRaisedIcon,
-    UserGroupIcon,
-    NewspaperIcon,
+    // ClipboardDocumentListIcon,
+    // PencilSquareIcon,
+    // HandRaisedIcon,
+    // UserGroupIcon,
+    // NewspaperIcon,
     AcademicCapIcon,
-    WalletIcon ,
+    // WalletIcon ,
     LockClosedIcon 
   } from '@heroicons/react/24/solid';
   import { useRouter } from 'next/router';
@@ -36,10 +36,10 @@ const StudentView = () => {
     <>
      <div className='flex flex-col'>
             {/* Main Section */}
-            <Link href='/user/sis/main'>
+            <Link href='/student/main'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/main'
+                  router.pathname == '/student/main'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}
@@ -55,10 +55,10 @@ const StudentView = () => {
 
             {/* Classes Section */}
 
-            <Link href='/user/sis/classes'>
+            <Link href='/student/classes'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/classes'
+                  router.pathname == '/student/classes'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}
@@ -74,10 +74,10 @@ const StudentView = () => {
             </Link>
 
             {/* Schedule Section */}
-          { !isLimited && <Link href='/user/sis/grades'>
+          { !isLimited && <Link href='/student/grades'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/grades'
+                  router.pathname == '/student/grades'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                     
@@ -97,7 +97,7 @@ const StudentView = () => {
 
               <div
                 className={`pl-2 py-3 mx-5 rounded pointer-events-none text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/grades'
+                  router.pathname == '/student/grades'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                     
@@ -115,10 +115,10 @@ const StudentView = () => {
 
             {/* Grades Section */}
 
-            <Link href='/user/sis/schedule'>
+            <Link href='/student/schedule'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center  cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/schedule'
+                  router.pathname == '/student/schedule'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}
@@ -133,10 +133,10 @@ const StudentView = () => {
             </Link>
 
             {/* Attendance Section */}
-            <Link href='/user/sis/attendance'>
+            <Link href='/student/attendance'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/attendance'
+                  router.pathname == '/student/attendance'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}
@@ -189,10 +189,10 @@ const StudentView = () => {
 
             {/* Edit Profile */}
 
-            <Link href='/user/sis/profile'>
+            <Link href='/student/profile'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/user/sis/profile'
+                  router.pathname == '/student/profile'
                     ? 'bg-blue-100 text-blue-500'
                     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                 }`}

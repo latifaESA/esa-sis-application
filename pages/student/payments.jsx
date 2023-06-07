@@ -1,8 +1,16 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
+// import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Payments() {
+
   const { data: session } = useSession();
+  const router = useRouter()
+
+  const redirect = () => { 
+    router.push('/AccessDenied')
+  }
   return (
     <>
       <Head>
@@ -10,9 +18,9 @@ export default function Payments() {
       </Head>
 
       <>
-        <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Payments</p>
+      {session?.user.role === '1' ? ( <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Classes</p>) : redirect()}
 
-        <div className='grid lg:grid-cols-1 gap-5 mb-5'>Payments Table</div>
+       
       </>
     </>
   );

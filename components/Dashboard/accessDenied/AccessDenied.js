@@ -17,3 +17,9 @@ const AccessDenied = () => {
 };
 
 export default AccessDenied;
+
+AccessDenied.getLayout = function (page) {
+  return (<>{page}</>);
+};
+
+

@@ -5,6 +5,10 @@ import { useDispatch } from 'react-redux';
 // import { LowerButtons } from '../../components/Admin/LowerButtons';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+// import Link from 'next/link';
+// import AccessDenied from '../../components/Dashboard/accessDenied/AccessDenied';
 
 export default function Main() {
   const dispatch = useDispatch();
@@ -12,27 +16,28 @@ export default function Main() {
     dispatch(appIsWaiting(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const redirect = () => {
+    router.push('/AccessDenied');
+  };
+
   return (
     <>
       <Head>
         <title>SIS Admin - Main Board</title>
       </Head>
-      <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Admin SIS</p>
+      {session?.user.role === '0' ? (
+        <>
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Main</p>
 
-      {/* <div className="grid lg:grid-cols-2 gap-5 mb-5">
-        <div className="rounded bg-white h-20 shadow-sm">Notifications</div>
-        <div className="rounded bg-white h-20 shadow-sm">Messages</div>
-      </div> */}
-      <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-        {/* <ListUsersDetail /> */}
-        Admin Main View
-      </div>
-      {/* <div className="grid lg:grid-cols-1 gap-5 mb-5">
-        <div className="grid col-1 bg-white h-96 shadow-sm">Candidate List</div>
-      </div> */}
-      {/* <div className='grid lg:grid-cols-1 bg-white p-5 shadow-sm'>
-        <LowerButtons />
-      </div> */}
+          <div className="grid lg:grid-cols-1 gap-5 mb-5">Main</div>
+        </>
+      ) : (
+        redirect()
+      )}
     </>
   );
 }
