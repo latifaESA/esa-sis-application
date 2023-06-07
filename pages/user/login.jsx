@@ -67,8 +67,10 @@ export default function LoginScreen() {
         // const response = await axios.get('/api/controller/settingdata');
         // console.log("hon",response.data.data)
         if (response.status === 200) {
+
           const incomingData = JSON.parse(decrypt(response.data.data));
           // console.log("pppppppp",incomingData.upload_file_single_size)
+
           dispatch(
             appSetting({
               esa_logo: incomingData.esa_logo,
