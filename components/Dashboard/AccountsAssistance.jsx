@@ -15,11 +15,11 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
-import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+// import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
+// import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 // import major_code from '../../utilities/major_code';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import bcryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
@@ -44,18 +44,18 @@ const TeachersList = ({ assistance, setAssistance }) => {
   // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  const [ setConfirmOpenObsolote] = useState(false);
-  const [setCancleIncomplete] = useState(false);
+  // const [ setConfirmOpenObsolote] = useState(false);
+  // const [setCancleIncomplete] = useState(false);
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-  console.log('===============')
-  console.log(assistance)
+  console.log('===============');
+  console.log(assistance);
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
-  console.log('===============')
-  console.log('===============')
+  console.log('===============');
+  console.log('===============');
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
@@ -63,12 +63,12 @@ const TeachersList = ({ assistance, setAssistance }) => {
     setConfirmOpenIncomplete(true);
   };
   const handleConfirmDelete = () => {
-    handleDelete(selectedUser)
+    handleDelete(selectedUser);
     handleSave(selectedUser);
     setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
-    };
+  };
   //obsolete modal
   // const handleConfirmObsolote = (user) => {
   //   setSelectedUser(user);
@@ -91,7 +91,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
     // setConfirmOpenObsolote(false);
-    setConfirmOpenDelete(false)
+    setConfirmOpenDelete(false);
     // setCancleIncomplete(false);
     const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
     // console.log("prevStatus",prevStatus)
@@ -103,68 +103,85 @@ const TeachersList = ({ assistance, setAssistance }) => {
   };
 
   const handleSave = (user) => {
-    let sendData = { 
+    let sendData = {
       pm_ass_id: user.pm_ass_id,
-      pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active'
-    }
-  axios
-    .put('http://localhost:3000/api/admin/adminApi/updateAssistance', sendData)
-  .then((response) => {
-    // Handle success
-    console.log(response.data);
-    setMessage('User Status Changed Succesfully!');
+      pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
+    };
+    axios
+      .put('/api/admin/adminApi/updateAssistance', sendData)
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User Status Changed Succesfully!');
 
-    //Update the user's status and major in the table
-    setAssistance((prevUsers) =>
-      prevUsers.map((u) =>
-        u.pm_ass_id === user.pm_ass_id ? { ...u, pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active' } : u));
-  })
-  .catch((error) => {
-    // Handle error
-    console.log(error);
-  });
+        //Update the user's status and major in the table
+        setAssistance((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_ass_id === user.pm_ass_id
+              ? {
+                  ...u,
+                  pm_ass_status:
+                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
   };
   const handleEnable = async (user) => {
-    let genPass = generatePasswod(10)
-    const salt = await bcryptjs.genSalt(10);
-    genPass = await bcryptjs.hash(genPass, salt)
-    let sendData = { 
+    let genPass = generatePasswod(8);
+    const salt = await bcryptjs.genSalt(8);
+    genPass = await bcryptjs.hash(genPass, salt);
+    let sendData = {
       pm_ass_id: user.pm_ass_id,
-      userpassword: genPass
-    }
-  axios
-    .post('http://localhost:3000/api/admin/adminApi/enableAs', sendData)
-  .then((response) => {
-    // Handle success
-    console.log(response.data);
-    setMessage('User Status Changed Succesfully!');
+      userpassword: genPass,
+    };
+    axios
+      .post('/api/admin/adminApi/enableAs', sendData)
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User Status Changed Succesfully!');
 
-    //Update the user's status and major in the table
-    setAssistance((prevUsers) =>
-      prevUsers.map((u) =>
-        u.pm_ass_id === user.pm_ass_id ? { ...u, pm_ass_status: user.pm_ass_status == 'active'? 'inactive' : 'active' } : u));
-  })
-  .catch((error) => {
-    // Handle error
-    console.log(error);
-  });
+        //Update the user's status and major in the table
+        setAssistance((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_ass_id === user.pm_ass_id
+              ? {
+                  ...u,
+                  pm_ass_status:
+                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
   };
   const handleDelete = async (user) => {
-   
-    let sendData = { 
-          pm_id: user.pm_ass_id,
-        }
+    let sendData = {
+      pm_id: user.pm_ass_id,
+    };
     axios
-      .post('http://localhost:3000/api/admin/adminApi/deletePm', sendData
-      // {
-      //   data: encrypt(
-      //     JSON.stringify({
-      //       pm_id: user.pm_id,
-      //       pm_status: 'inactive',
-      //     }
-      //     )
-      //   ),
-      // }
+      .post(
+        '/api/admin/adminApi/deletePm',
+        sendData
+        // {
+        //   data: encrypt(
+        //     JSON.stringify({
+        //       pm_id: user.pm_id,
+        //       pm_status: 'inactive',
+        //     }
+        //     )
+        //   ),
+        // }
       )
       .then((response) => {
         // Handle success
@@ -174,7 +191,12 @@ const TeachersList = ({ assistance, setAssistance }) => {
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
-            u.pm_id === user.pm_id ? { ...u, pm_status: user.pm_status == 'active'? 'inactive' : 'active' } : u
+            u.pm_id === user.pm_id
+              ? {
+                  ...u,
+                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
           )
         );
       })
@@ -189,11 +211,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
   };
   const handleConfirm = () => {
     handleSave(selectedUser);
-    handleEnable(selectedUser)
+    handleEnable(selectedUser);
     setConfirmOpenIncomplete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
-    };
+  };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
   //     (major) => major.major === user.major
@@ -265,7 +287,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
       align: 'center',
       width: 150,
       renderCell: (params) =>
-        `${params.row.pm_ass_firstname || ''} ${params.row.pm_ass_lastname || ''}`,
+        `${params.row.pm_ass_firstname || ''} ${
+          params.row.pm_ass_lastname || ''
+        }`,
     },
 
     // {
@@ -473,9 +497,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
       align: 'center',
       sortable: false,
       renderCell: (params) => (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <button
-            className='primary-button hover:text-white'
+            className="primary-button hover:text-white"
             disabled={params.row.pm_ass_status == 'active' ? true : false}
             onClick={() => {
               // const prevStatus = assistance.find(
@@ -483,16 +507,14 @@ const TeachersList = ({ assistance, setAssistance }) => {
               // )?.pm_ass_status;
               // handleSave(params.row)
               // handleConfirmIncomplete(params.row)
-              handleConfirmIncomplete(params.row)
-              
+              handleConfirmIncomplete(params.row);
             }}
-            type='button'
+            type="button"
           >
-            <PersonAddAlt1Icon/>
-        
+            <PersonAddAlt1Icon />
           </button>
           <button
-            className='primary-button hover:text-white'
+            className="primary-button hover:text-white"
             disabled={params.row.pm_ass_status == 'inactive' ? true : false}
             onClick={() => {
               // const prevStatus = assistance.find(
@@ -500,16 +522,15 @@ const TeachersList = ({ assistance, setAssistance }) => {
               // )?.pm_ass_status;
               // handleSave(params.row)
               // handleConfirmIncomplete(params.row)
-              handleConfirmDel(params.row)
+              handleConfirmDel(params.row);
             }}
-            type='button'
+            type="button"
           >
-            <PersonRemoveIcon/>
-           
+            <PersonRemoveIcon />
           </button>
-        </div>),
+        </div>
+      ),
     },
-
   ];
 
   // export select to excel
@@ -553,7 +574,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
     console.log('selectedIDs', selectedIDs);
-    const selectedUsers = assistance.filter((user) => selectedIDs.includes(user.ID));
+    const selectedUsers = assistance.filter((user) =>
+      selectedIDs.includes(user.ID)
+    );
     console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
@@ -575,14 +598,14 @@ const TeachersList = ({ assistance, setAssistance }) => {
           handleConfirm={handleConfirm}
         />
       )}
-     {confirmOpenDelete && (
+      {confirmOpenDelete && (
         <WarningMessageObsolote
-        confirmOpenObsolote={confirmOpenDelete}
+          confirmOpenObsolote={confirmOpenDelete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirmDelete}
         />
       )}
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.pm_ass_id}
@@ -599,14 +622,14 @@ const TeachersList = ({ assistance, setAssistance }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}

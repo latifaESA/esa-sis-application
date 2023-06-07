@@ -3326,6 +3326,10 @@ const selection_data = {
     'submit',
     `switch to`,
   ],
+  presence:[
+    'Present',
+    'Absent'
+  ]
 };
 
 export default selection_data;

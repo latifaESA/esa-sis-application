@@ -36,7 +36,7 @@ export default function Students() {
   useEffect(() => { 
     const getMajor = async () => { 
       let table = 'major';
-      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
+      let {data} = await axios.post('/api/pmApi/getAll', {table})
 
 
       setallMajor(data.rows)
@@ -55,7 +55,7 @@ export default function Students() {
 
     const getStatus = async () => { 
       let table = 'status';
-      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
+      let {data} = await axios.post('/api/pmApi/getAll', {table})
 
 
       // setUsers(data)
@@ -75,7 +75,7 @@ export default function Students() {
 
     const getPromotion = async () => { 
       let table = 'student';
-      let {data} = await axios.post('http://localhost:3000/api/pmApi/getAll', {table})
+      let {data} = await axios.post('/api/pmApi/getAll', {table})
 
 
       // setUsers(data)
@@ -111,7 +111,7 @@ export default function Students() {
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    let {data} = await axios.post('/api/pmApi/filterSearch', sendData)
     console.log(sendData)
     setUsers(data.rows)
   }
@@ -128,7 +128,7 @@ export default function Students() {
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    let {data} = await axios.post('/api/pmApi/filterSearch', sendData)
     console.log(sendData)
     setUsers(data.rows)
     setMajorValue("")
@@ -182,7 +182,7 @@ export default function Students() {
     console.log(sendData)
     console.log(JSON.stringify(sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterSearch', sendData)
+    let {data} = await axios.post('/api/pmApi/filterSearch', sendData)
 
     console.log(data.rows)
     setUsers(data.rows)
