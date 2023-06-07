@@ -33,6 +33,8 @@ const Message = () => {
   let email = null;
   let isSignedIn = false;
   // let countsign = 0;
+  console.log('asdasd')
+  console.log(router.query.userid)
   if (router.query.message) {
     message = router.query.message;
   }

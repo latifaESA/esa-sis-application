@@ -38,7 +38,7 @@ const PreSignIn = () => {
   console.log(message);
   const dispatch = useDispatch();
   let password = null;
-  let email = null;
+  let userid = null;
   // let isSignedIn = false;
   // let countsign = 0;
   // if (router.query.password) {
@@ -61,7 +61,7 @@ const testSession = async () => {
     // console.log('encryptedQuery=', encryptedQuery);
     const query = JSON.parse(decrypt(encryptedQuery));
     // console.log('query=', query);
-    email = query.email;
+    userid = query.userid;
     password = query.password;
     testSession();
     // console.log('email=', email);
@@ -95,11 +95,11 @@ const signinHandler = async () => {
       dispatch(loginRequest());
       const result = await signIn('credentials', {
         redirect: false,
-        email,
+        userid,
         password,
       });
       setisSignedIn(true);
-      // console.log('result inside signinHandler==',result);
+      console.log('result inside signinHandler==',result);
       if (!result.error) {
         const userSession = await getSession();
         setsessionExist(true);
@@ -122,9 +122,12 @@ const signinHandler = async () => {
       } else {
         dispatch(loginFailed(result.error));
         setMessage(result.error);
+        console.log('error from else')
       }
     } catch (err) {
       setMessage(getError(err));
+      console.log(err)
+      console.log('error from catch')
     }
   };
 
@@ -140,10 +143,10 @@ useEffect(() => {
       // router.push('/user/studentapplication/routetoapp');
        router.push(
         redirect ||
-          `/user/password/resetpassword?email=${email}&password=${password}`
+          `/user/password/resetpassword?userid=${userid}&password=${password}`
       );
     }
-    if (!password && !email && session?.user) {
+    if (!password && !userid && session?.user) {
       // console.log('!password && !email && session?.user');
       router.push(redirect || selection_data.where_going_after_signin);
     }
