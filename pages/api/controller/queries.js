@@ -129,9 +129,10 @@ async function getAll(connection, table) {
 async function filterStudent(connection, id, firstname, lastname, major, promotion, status) {
   try {
     let query = `
-      SELECT student.*, major.major_name
+      SELECT student.*, major.major_name, user_contact.email, user_contact.mobile_number
       FROM student
       LEFT JOIN major ON student.major_id = major.major_id
+      LEFT JOIN user_contact ON student_id = user_contact.userid
       WHERE 1=1`;
 
     if (id.trim() != '') {
@@ -144,7 +145,7 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${lastname}%'))`;
     }
     if (major != '') {
-      query += ` AND student.major_id = ${major}`;
+      query += ` AND major.major_name = ${major}`;
     }
     if (promotion.trim() != '') {
       query += ` AND promotion = '${promotion}'`;
@@ -152,6 +153,9 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
     if (status.trim() != '') {
       query += ` AND status = '${status}'`;
     }
+    // if (phoneNumber.trim() != '') {
+    //   query += ` AND user_contact.mobile_number = '${phoneNumber}'`;
+    // }
 
     const result = await connection.query(query);
     return result;
@@ -167,7 +171,7 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
       WHERE 1=1`;
 
     if (id != '') {
-      query += ` AND teachers.teacher_id = ${id}`;
+      query += ` AND teacher_id = '${id}'`;
     }
     if (firstname.trim() != '') {
       query += ` AND lower(trim(teacher_firstname)) LIKE lower(trim('%${firstname}%'))`;
@@ -179,7 +183,7 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
       query += ` AND lower(trim(teacher_mail)) LIKE lower(trim('%${email}%'))`;
     }
     if (courseid.trim() != '') {
-      query += ` AND lower(trim(teacher_id)) LIKE lower(trim('%${courseid}%'))'`;
+      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${courseid}%'))'`;
     }
 
     const result = await connection.query(query);
@@ -199,8 +203,10 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
 async function filterCourses(connection, course_id, course_name, course_credit, major_id) {
   try {
     let query = `
-      SELECT * FROM courses
-      WHERE 1=1`;
+    SELECT courses.*, major.major_name
+    FROM courses
+    LEFT JOIN major ON courses.major_id = major.major_id
+    WHERE 1=1`;
 
     if (course_id != '') {
       query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
@@ -350,6 +356,161 @@ async function AttendanceView(connection, attendance_id) {
     return error
   }
 }
+
+
+async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status) {
+  try {
+    let query = `
+      SELECT * FROM program_manager
+      WHERE 1=1`;
+
+    if (pm_id != '') {
+      query += ` AND lower(trim(pm_id)) LIKE lower(trim('%${pm_id}%'))`;
+    }
+    if (pm_firstname.trim() != '') {
+      query += ` AND lower(trim(pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
+    }
+    if (pm_lastname.trim() != '') {
+      query += ` AND lower(trim(pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
+    }
+    if (pm_email != '') {
+      query += ` AND lower(trim(pm_email)) LIKE lower(trim('%${pm_email}%'))`;
+    }
+    if (pm_status.trim() != '') {
+      query += ` AND program_manager.pm_status = '${pm_status}'`;
+    }
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function filterassistance(connection, pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status) {
+  try {
+    let query = `
+      SELECT * FROM program_manager_assistance
+      WHERE 1=1`;
+
+    if (pm_ass_id.trim() != '') {
+      query += ` AND lower(trim(pm_ass_id)) LIKE lower(trim('%${pm_ass_id}%'))`;
+    }
+    if (pm_ass_firstname.trim() != '') {
+      query += ` AND lower(trim(pm_ass_firstname)) LIKE lower(trim('%${pm_ass_firstname}%'))`;
+    }
+    if (pm_ass_lastname.trim() != '') {
+      query += ` AND lower(trim(pm_ass_lastname)) LIKE lower(trim('%${pm_ass_lastname}%'))`;
+    }
+    if (pm_ass_email != '') {
+      query += ` AND lower(trim(pm_ass_email)) LIKE lower(trim('%${pm_ass_email}%'))`;
+    }
+    if (pm_ass_status.trim() != '') {
+      query += ` AND program_manager_assistance.pm_ass_status = '${pm_ass_status}'`;
+    }
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function updateStatusPM(connection, pm_id, pm_status) {
+  try {
+    let query = `
+    UPDATE program_manager
+    SET pm_status = '${pm_status}'
+    WHERE pm_id = '${pm_id}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
+  try {
+    let query = `
+    UPDATE program_manager_assistance
+    SET pm_ass_status = '${pm_ass_status}'
+    WHERE pm_ass_id = '${pm_ass_id}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+
+// //filter attendance
+// async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
+//   try {
+//     let sql = 'select * from attendance WHERE 1=1';
+//     if(student_id != ''){
+//         sql  += `AND student_id = '${student_id}'`;
+//     }
+//     if(teacher_id !=''){
+//       sql += `AND teacher_id = '${teacher_id}'`;
+//     }
+//     if(major_id != ''){
+//       sql += `AND major_id = '${major_id}'`;
+//     }
+//     if(course_id != ''){
+//       sql += `AND course_id = '${course_id}'`;
+//     }
+//     if(attendance_date != ''){
+//       sql += `AND attendance_date = '${attendance_date}'`;
+//     }
+//     if(present != ''){
+//       sql += `AND present = ${present}`
+//     }
+//     const res = await connection.query(sql);
+//     return res;
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+async function enableUserpm(connection, pm_id, userpassword) {
+  try {
+    let query = `
+      INSERT INTO users(userid ,role , userpassword)
+        VALUES('${pm_id}', 2, '${userpassword}')`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function enableUserAs(connection, pm_ass_id, userpassword) {
+  try {
+    let query = `
+      INSERT INTO users(userid ,role , userpassword)
+        VALUES('${pm_ass_id}', 3, '${userpassword}')`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function deleteUserpm(connection, pm_id) {
+  try {
+    let query = `
+    DELETE FROM users
+    WHERE userid = '${pm_id}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+
+
+
 /* End Postegresql */
 
 
@@ -366,5 +527,12 @@ module.exports = {
   getCourse,
   findData,
   filterTeacher,
-  filterCourses
+  filterCourses,
+  filterpm,
+  filterassistance,
+  updateStatusPM,
+  updateStatusAssistance,
+  enableUserpm,
+  deleteUserpm,
+  enableUserAs
 };

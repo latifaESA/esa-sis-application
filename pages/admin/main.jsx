@@ -7,8 +7,8 @@ import { appIsWaiting } from '../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import AccessDenied from '../../components/Dashboard/accessDenied/AccessDenied';
+// import Link from 'next/link';
+// import AccessDenied from '../../components/Dashboard/accessDenied/AccessDenied';
 
 export default function Main() {
   const dispatch = useDispatch();
@@ -18,14 +18,12 @@ export default function Main() {
   }, []);
 
   const { data: session } = useSession();
-  const router = useRouter()
-  
-  const redirect = () => { 
-    router.push('/AccessDenied')
-  }
+  const router = useRouter();
 
+  const redirect = () => {
+    router.push('/AccessDenied');
+  };
 
-  
   return (
     <>
       <Head>
@@ -33,13 +31,13 @@ export default function Main() {
       </Head>
       {session?.user.role === '0' ? (
         <>
-          <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Main</p>
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Main</p>
 
-          <div className='grid lg:grid-cols-1 gap-5 mb-5'>
-            Main
-          </div>
+          <div className="grid lg:grid-cols-1 gap-5 mb-5">Main</div>
         </>
-      ) : redirect()}
+      ) : (
+        redirect()
+      )}
     </>
   );
 }

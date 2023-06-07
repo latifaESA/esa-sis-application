@@ -1,14 +1,14 @@
 import Head from 'next/head';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { appIsWaiting } from '../../redux/slices/appSlice';
+// import { appIsWaiting } from '../../redux/slices/appSlice';
 import CourseList from '../../components/Dashboard/CourseList'
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 import axios from 'axios'
 
-export default function courses() {
+export default function Courses() {
 
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
@@ -29,7 +29,7 @@ export default function courses() {
   const handleCourses = async() => {
     // console.log(courseid, courseName, courseCredit, majorid)
     let sendData = {
-      course_id:courseid,
+      course_id:courseid.trim(),
       course_name:courseName,
       course_credit:courseCredit,
       major_id:majorid,
@@ -40,7 +40,7 @@ export default function courses() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
 
     console.log('this is data')
-    console.log(data)
+    console.log(sendData)
     setUsers(data)
   }
   useEffect(() => { 
@@ -60,6 +60,10 @@ export default function courses() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
 
     setUsers(data)
+    setMajorid('')
+    setCourseid('')
+    setcourseName('')
+    setcourseCredit('')
   }
 
   return (
@@ -74,10 +78,10 @@ export default function courses() {
           <label className='w-[350px]'>
             Course ID:       
             <input
-              className="ml-3 w-40 max-[850px]:ml-8" 
+              className="ml-10 w-40 max-[850px]:ml-8" 
               type="text"
               name="attendance_id"
-              placeholder='Attendance ID'
+              placeholder='Course ID'
               // value={formData.ID}
               onChange={(e) => {setCourseid(e.target.value)}}
             ></input>
@@ -89,7 +93,7 @@ export default function courses() {
               className="ml-3 w-40 max-[850px]:ml-1"
               type="text"
               name="course_name"
-              placeholder='Student ID'
+              placeholder='Course Name'
               // value={formData.Fname}
               onChange={(e) => {setcourseName(e.target.value)}}
             ></input>
@@ -101,7 +105,7 @@ export default function courses() {
               className="ml-3 w-40 max-[850px]:ml-1"
               type="number"
               name="course_credit"
-              placeholder='Teacher ID'
+              placeholder='Course Credit'
               // value={formData.Lname}
               onChange={(e) => {setcourseCredit(e.target.value)}}
             ></input>
@@ -109,12 +113,12 @@ export default function courses() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
           <label className='w-[350px]'>
-            Major ID:
+            Major Name:
             <input
-              className="ml-5 w-40 max-[850px]:ml-10"  
+              className="ml-5 w-40 max-[850px]:ml-3"  
               type="number"
               name="major_id"
-              placeholder='Major ID'
+              placeholder='Major Name'
               // value={formData.ID}
               onChange={(e) => {setMajorid(e.target.value)}}
             ></input>
@@ -143,13 +147,13 @@ export default function courses() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
      
-          <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>
-            Course ID:
+          <label className='w-[350px] '>
+            Type:
             <input
-              className="ml-[45px] w-40 invisible max-[850px]:visible max-[850px]:hidden" 
+              className="ml-[75px] max-[850px]:ml-[67px] w-40 " 
               type="number"
               name="course_id"
-              placeholder='Course ID'
+              placeholder='Course Type'
               // value={formData.ID}
               onChange={(e) => {setCourseid(e.target.value)}}
             ></input>
@@ -161,7 +165,7 @@ export default function courses() {
               className="ml-5 w-40 max-[850px]:ml-[52px] invisible max-[850px]:visible max-[850px]:hidden"
               name="status"
               // value={formData.status}
-              onChange={(e) => {setPresence(e.target.value)}}
+              // onChange={(e) => {setPresence(e.target.value)}}
             >
               <option value={''}>Choose Value...</option>
               <option value={true}>Present</option>
@@ -191,5 +195,5 @@ export default function courses() {
     </>
   );
 }
-courses.auth = true;
-courses.adminOnly = true;
+Courses.auth = true;
+Courses.adminOnly = true;

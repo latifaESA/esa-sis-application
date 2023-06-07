@@ -15,48 +15,60 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
+// import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
+// import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 // import major_code from '../../utilities/major_code';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import bcryptjs from 'bcryptjs';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { LowerButtons } from './LowerButtons';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
+import generatePasswod from '../../utilities/generatePassword';
 import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
-// import {
-//   WarningMessageCancleIncomplete,
-//   WarningMessageIncomplete,
-//   WarningMessageObsolote,
-// } from './WarningMessage';
+import {
+  // WarningMessageCancleIncomplete,
+  WarningMessageIncomplete,
+  WarningMessageObsolote,
+} from './WarningMessage';
 import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
+// import { Pagination, Stack } from '@mui/material';
 
-const StudentsList = ({ users, setUsers }) => {
+const TeachersList = ({ assistance, setAssistance }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const statusData = selection_data.application_status_inList;
-  const majorData = selection_data.Academic_program_inList;
+  // const statusData = selection_data.application_status_inList;
+  // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
-  // const [cancleIncomplete, setCancleIncomplete] = useState(false);
-  // const [selectedUser, setSelectedUser] = useState(null);
+  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  // const [ setConfirmOpenObsolote] = useState(false);
+  // const [setCancleIncomplete] = useState(false);
+  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-
-  console.log('===============')
-  console.log('=this is users=======')
-  // console.log(users.data)
+  console.log('===============');
+  console.log(assistance);
   // console.log('====this is setUsers====')
   // console.log(users.data[0].major_id)
-  console.log('===============')
-  console.log('===============')
+  console.log('===============');
+  console.log('===============');
 
   //incomplete modal
-  // const handleConfirmIncomplete = (user) => {
-  //   setSelectedUser(user);
-  //   setConfirmOpenIncomplete(true);
-  // };
-
+  const handleConfirmIncomplete = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenIncomplete(true);
+  };
+  const handleConfirmDelete = () => {
+    handleDelete(selectedUser);
+    handleSave(selectedUser);
+    setConfirmOpenDelete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+  };
   //obsolete modal
   // const handleConfirmObsolote = (user) => {
   //   setSelectedUser(user);
@@ -67,62 +79,146 @@ const StudentsList = ({ users, setUsers }) => {
   // const handleCancleIncomplete = (user) => {
   //   setSelectedUser(user);
   //   setCancleIncomplete(true);
-  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+  //   const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
   //   // console.log("prevStatus",prevStatus)
-  //   setUsers((prevUsers) =>
+  //   setAssistance((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
   //     )
   //   );
   // };
 
-  // const handleConfirmClose = (user) => {
-  //   setConfirmOpenIncomplete(false);
-  //   setConfirmOpenObsolote(false);
-  //   setCancleIncomplete(false);
-  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((u) =>
-  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
-  //     )
-  //   );
-  // };
+  const handleConfirmClose = (user) => {
+    setConfirmOpenIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    setConfirmOpenDelete(false);
+    // setCancleIncomplete(false);
+    const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
+    // console.log("prevStatus",prevStatus)
+    setAssistance((prevUsers) =>
+      prevUsers.map((u) =>
+        u.ID === user.ID ? { ...u, status: prevStatus } : u
+      )
+    );
+  };
 
-  // const handleSave = (user) => {
-  //   axios
-  //     .put('/api/admin/listusers/status', {
-  //       data: encrypt(
-  //         JSON.stringify({
-  //           ID: user.ID,
-  //           status: user.status,
-  //         })
-  //       ),
-  //     })
-  //     .then((response) => {
-  //       // Handle success
-  //       console.log(response.data);
-  //       setMessage('User Status Changed Succesfully!');
+  const handleSave = (user) => {
+    let sendData = {
+      pm_ass_id: user.pm_ass_id,
+      pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
+    };
+    axios
+      .put(
+        'http://localhost:3000/api/admin/adminApi/updateAssistance',
+        sendData
+      )
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User Status Changed Succesfully!');
 
-  //       //Update the user's status and major in the table
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((u) =>
-  //           u.ID === user.ID ? { ...u, status: user.status } : u
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       console.log(error);
-  //     });
-  // };
+        //Update the user's status and major in the table
+        setAssistance((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_ass_id === user.pm_ass_id
+              ? {
+                  ...u,
+                  pm_ass_status:
+                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
+  const handleEnable = async (user) => {
+    let genPass = generatePasswod(8);
+    const salt = await bcryptjs.genSalt(8);
+    genPass = await bcryptjs.hash(genPass, salt);
+    let sendData = {
+      pm_ass_id: user.pm_ass_id,
+      userpassword: genPass,
+    };
+    axios
+      .post('http://localhost:3000/api/admin/adminApi/enableAs', sendData)
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User Status Changed Succesfully!');
 
-  // const handleConfirm = () => {
-  //   handleSave(selectedUser);
-  //   setConfirmOpenIncomplete(false);
-  //   setConfirmOpenObsolote(false);
-  //   setCancleIncomplete(false);
-  //   };
+        //Update the user's status and major in the table
+        setAssistance((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_ass_id === user.pm_ass_id
+              ? {
+                  ...u,
+                  pm_ass_status:
+                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
+  const handleDelete = async (user) => {
+    let sendData = {
+      pm_id: user.pm_ass_id,
+    };
+    axios
+      .post(
+        'http://localhost:3000/api/admin/adminApi/deletePm',
+        sendData
+        // {
+        //   data: encrypt(
+        //     JSON.stringify({
+        //       pm_id: user.pm_id,
+        //       pm_status: 'inactive',
+        //     }
+        //     )
+        //   ),
+        // }
+      )
+      .then((response) => {
+        // Handle success
+        console.log(response.data);
+        setMessage('User deleted Succesfully!');
+
+        //Update the user's status and major in the table
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u.pm_id === user.pm_id
+              ? {
+                  ...u,
+                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                }
+              : u
+          )
+        );
+      })
+      .catch((error) => {
+        // Handle error
+        console.log(error);
+      });
+  };
+  const handleConfirmDel = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenDelete(true);
+  };
+  const handleConfirm = () => {
+    handleSave(selectedUser);
+    handleEnable(selectedUser);
+    setConfirmOpenIncomplete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+  };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
   //     (major) => major.major === user.major
@@ -180,7 +276,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   const columns = [
     {
-      field: 'student_id',
+      field: 'pm_ass_id',
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
@@ -188,22 +284,15 @@ const StudentsList = ({ users, setUsers }) => {
     },
 
     {
-      field: 'student_lastname',
-      headerName: 'Last Name',
+      field: 'Name',
+      headerName: 'Name',
       headerAlign: 'center',
       align: 'center',
       width: 150,
-      // renderCell: (params) =>
-      //   `${params.row.student_lastname || ''}`,
-    },
-    {
-      field: 'student_firstname',
-      headerName: 'First Name',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-      // renderCell: (params) =>
-      //   `${params.row.student_firstname || ''}`,
+      renderCell: (params) =>
+        `${params.row.pm_ass_firstname || ''} ${
+          params.row.pm_ass_lastname || ''
+        }`,
     },
 
     // {
@@ -265,60 +354,44 @@ const StudentsList = ({ users, setUsers }) => {
     // },
 
     {
-      field: 'major_name',
-      headerName: 'Major',
+      field: 'pm_ass_email',
+      headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 200,
-      editable: true,
+      width: 300,
       type: 'singleSelect',
-      valueOptions: majorData,
     },
     {
-      field: 'promotion',
-      headerName: 'Promotion',
+      field: 'pm_ass_status',
+      headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
       width: 90,
     },
-    {
-      field: 'status',
-      headerName: 'Status',
-      headerAlign: 'center',
-      align: 'center',
-      width: 100,
-      editable: true,
-      cellClassName: (params) =>
-        params.row.status === 'active'
-          ? 'text-green-600 font-bold'
-          : params.row.status === 'limited'
-          ? 'text-red-600 font-bold'
-          : '' || params.row.status === 'Inactive'
-          ? 'text-blue-600 font-bold'
-          : '',
-      type: 'singleSelect',
-      valueOptions: statusData,
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
-    {
-      field: 'mobile_number',
-      headerName: 'Mobile Number',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
     // {
-    //   field: 'submissionDate',
-    //   headerName: 'Submission Date',
+    //   field: 'status',
+    //   headerName: 'Status',
     //   headerAlign: 'center',
     //   align: 'center',
-    //   width: 150,
+    //   width: 100,
+    //   editable: true,
+    //   cellClassName: (params) =>
+    //     params.row.status === 'active'
+    //       ? 'text-green-600 font-bold'
+    //       : params.row.status === 'limited'
+    //       ? 'text-red-600 font-bold'
+    //       : '' || params.row.status === 'Inactive'
+    //       ? 'text-blue-600 font-bold'
+    //       : '',
+    //   type: 'singleSelect',
+    //   valueOptions: statusData,
+    // },
+    // {
+    //   field: 'academic_year',
+    //   headerName: 'Academic Year',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 110,
     // },
 
     // {
@@ -419,73 +492,54 @@ const StudentsList = ({ users, setUsers }) => {
     //   ),
     // },
 
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: `${session.user.role === '0' ? 300 : 150}`,
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <div className='flex gap-2'>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => {
-    //           const prevStatus = users.find(
-    //             (u) => u.ID === params.row.ID
-    //           )?.status;
-    //           if (prevStatus === 'incomplete') {
-    //             handleCancleIncomplete(params.row);
-    //           } else if (params.row.status === 'incomplete') {
-    //             handleConfirmIncomplete(params.row);
-    //           } else if (params.row.status === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else if (prevStatus === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else {
-    //             handleSave(params.row);
-    //           }
-    //         }}
-    //         type='button'
-    //       >
-    //         Save
-    //       </button>
-    //       <Link
-    //         className='text-black'
-    //         target='_blank'
-    //         href={`${params.row.reportURL}`}
-    //       >
-    //         <button
-    //           className='primary-button hover:text-white'
-    //           disabled={params.row.reportURL ? false : true}
-    //           type='button'
-    //         >
-    //           Print
-    //         </button>
-    //       </Link>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => handleChangeMajor(params.row)}
-    //         disabled={params.id !== majorEnable}
-    //         type='button'
-    //         hidden={
-    //           session.user.role === '2' || session.user.role === '3'
-    //             ? true
-    //             : false
-    //         }
-    //       >
-    //         Change Major
-    //       </button>
-    //     </div>
-    //   ),
-    // },
-
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: `${session.user.role === '0' ? 300 : 150}`,
+      headerAlign: 'center',
+      align: 'center',
+      sortable: false,
+      renderCell: (params) => (
+        <div className="flex gap-2">
+          <button
+            className="primary-button hover:text-white"
+            disabled={params.row.pm_ass_status == 'active' ? true : false}
+            onClick={() => {
+              // const prevStatus = assistance.find(
+              //   (u) => u.pm_ass_id === params.row.pm_ass_id
+              // )?.pm_ass_status;
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleConfirmIncomplete(params.row);
+            }}
+            type="button"
+          >
+            <PersonAddAlt1Icon />
+          </button>
+          <button
+            className="primary-button hover:text-white"
+            disabled={params.row.pm_ass_status == 'inactive' ? true : false}
+            onClick={() => {
+              // const prevStatus = assistance.find(
+              //   (u) => u.pm_ass_id === params.row.pm_ass_id
+              // )?.pm_ass_status;
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleConfirmDel(params.row);
+            }}
+            type="button"
+          >
+            <PersonRemoveIcon />
+          </button>
+        </div>
+      ),
+    },
   ];
 
   // export select to excel
 
   const exportButton = async () => {
-    if (users.length > 0) {
+    if (assistance.length > 0) {
       try {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
@@ -494,7 +548,7 @@ const StudentsList = ({ users, setUsers }) => {
           console.log('incomingData', incomingData);
           await exportSelect(selectedRows, incomingData, session);
         } else {
-          setUsers([]);
+          setAssistance([]);
         }
       } catch (error) {
         console.error(error);
@@ -504,7 +558,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   // export all to excel
   const exportAllButton = async () => {
-    if (users.length > 0) {
+    if (assistance.length > 0) {
       try {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
@@ -513,7 +567,7 @@ const StudentsList = ({ users, setUsers }) => {
           console.log('incomingData', incomingData);
           await exportAll(incomingData, session);
         } else {
-          setUsers([]);
+          setAssistance([]);
         }
       } catch (error) {
         console.error(error);
@@ -523,7 +577,9 @@ const StudentsList = ({ users, setUsers }) => {
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
     console.log('selectedIDs', selectedIDs);
-    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+    const selectedUsers = assistance.filter((user) =>
+      selectedIDs.includes(user.ID)
+    );
     console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
@@ -538,39 +594,30 @@ const StudentsList = ({ users, setUsers }) => {
 
   return (
     <>
-      {/* {confirmOpenIncomplete && (
+      {confirmOpenIncomplete && (
         <WarningMessageIncomplete
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirm}
         />
       )}
-
-      {confirmOpenObsolote && (
+      {confirmOpenDelete && (
         <WarningMessageObsolote
-          confirmOpenObsolote={confirmOpenObsolote}
+          confirmOpenObsolote={confirmOpenDelete}
           handleConfirmClose={handleConfirmClose}
-          handleConfirm={handleConfirm}
+          handleConfirm={handleConfirmDelete}
         />
       )}
-
-      {cancleIncomplete && (
-        <WarningMessageCancleIncomplete
-          cancleIncomplete={cancleIncomplete}
-          handleConfirmClose={handleConfirmClose}
-        />
-      )} */}
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.student_id}
-          rows={users}
+          getRowId={(r) => r.pm_ass_id}
+          rows={assistance}
           getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
-          pagination
           checkboxSelection
           onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
@@ -578,14 +625,14 @@ const StudentsList = ({ users, setUsers }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
@@ -598,4 +645,4 @@ const StudentsList = ({ users, setUsers }) => {
   );
 };
 
-export default StudentsList;
+export default TeachersList;

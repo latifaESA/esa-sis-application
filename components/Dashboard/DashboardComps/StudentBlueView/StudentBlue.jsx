@@ -10,8 +10,10 @@ const StudentBlue = () => {
   const [survey, setSurvey] = useState([]);
   const { data: session } = useSession();
 
+
   let userid = parseInt(session?.user.userid);
   console.log("userID",userid);
+
   useEffect(() => {
     const BlueData = async () => {
       let { data } = await axios.get(

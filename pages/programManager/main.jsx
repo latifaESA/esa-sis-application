@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 // import { Home } from '../../components/GOToHome';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 export default function Main() {

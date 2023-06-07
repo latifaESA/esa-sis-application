@@ -1,14 +1,14 @@
 import Head from 'next/head';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 export default function Attendance() {
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
+  // const appState = useSelector(
+  //   (state) => state.persistedReducer.app_state.appState
+  // );
 
   const { data: session } = useSession();
   const router = useRouter()

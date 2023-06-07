@@ -36,7 +36,9 @@ export default function LoginScreen() {
   const router = useRouter();
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
-   
+
+  const [userInactive, setUserInactive] = useState('');
+
   const dispatch = useDispatch();
 
   const showPasswordHandler = () => {
@@ -70,14 +72,17 @@ export default function LoginScreen() {
           dispatch(
             appSetting({
               esa_logo: incomingData.esa_logo,
-              out_Save_Timing : incomingData.out_Save_timing,
-              upload_file_single_size : incomingData.upload_file_single_size* 1024 * 1024,
-              upload_file_total_size : incomingData.upload_file_total_size* 1024 * 1024,
-              upload_file_directory_name : incomingData.upload_file_directory_name,
+              out_Save_Timing: incomingData.out_Save_timing,
+              upload_file_single_size:
+                incomingData.upload_file_single_size * 1024 * 1024,
+              upload_file_total_size:
+                incomingData.upload_file_total_size * 1024 * 1024,
+              upload_file_directory_name:
+                incomingData.upload_file_directory_name,
             })
           );
         } else {
-          console.log('error fetching data')
+          console.log('error fetching data');
           // localStorage.clear();
           // sessionStorage.clear();
           // const encryptedBody = encrypt(
@@ -114,14 +119,24 @@ export default function LoginScreen() {
   }, []);
 
   useEffect(() => {
-    
+    console.log('this is session');
+    console.log(session?.user.status);
+
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
         router.push(redirect || '/student/main');
-      } else if (session?.user.role === '2') {
+      } else if (
+        session?.user.role === '2' &&
+        session?.user.status == 'active'
+      ) {
         router.push(redirect || '/programManager/main');
       } else if (session?.user.role === '0') {
         router.push(redirect || '/admin/main');
+      } else if (
+        session?.user.role === '2' &&
+        session?.user.status == 'inactive'
+      ) {
+        setUserInactive('Account Inactive');
       }
     }
     // console.log('userState.user.isLogOut==', userState.user.isLogOut);
@@ -147,7 +162,7 @@ export default function LoginScreen() {
         userid,
         password,
       });
-      console.log("this line: ",result);
+      console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
@@ -159,12 +174,11 @@ export default function LoginScreen() {
               email: userSession.user.email,
               role: userSession.user.role,
               userid: userSession.user.userid,
-              profileUrl:userSession.user.image,
+              profileUrl: userSession.user.image,
               appisSaved:
-              typeof userSession.user.appisSaved !== 'undefined'
-                ? userSession.user.appisSaved
-                : false,
-
+                typeof userSession.user.appisSaved !== 'undefined'
+                  ? userSession.user.appisSaved
+                  : false,
             })
           );
           // console.log(userSession);
@@ -228,6 +242,11 @@ export default function LoginScreen() {
             <div>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <div>
+                  {userInactive && (
+                    <div className="text-red-500 error text-center w-full ml-2">
+                      {userInactive}
+                    </div>
+                  )}
                   {errors.email && (
                     <div
                       data-testid="errorEmail"

@@ -1,15 +1,15 @@
 import Head from 'next/head';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 
 export default function Courses() {
-  const appState = useSelector(
-    (state) => state.persistedReducer.app_state.appState
-  );
+  // const appState = useSelector(
+  //   (state) => state.persistedReducer.app_state.appState
+  // );
   // console.log('appState.isWaiting==', appState.isWaiting);
   const dispatch = useDispatch();
   useEffect(() => {

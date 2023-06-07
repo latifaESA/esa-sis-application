@@ -21,7 +21,7 @@ function WarningMessageIncomplete({
     >
       <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
         <p className='text-gray-700 mb-4'>
-          Are you sure you want to change the status to incomplete?
+          Are you sure you want to Activate this User ?
         </p>
         <div className='flex justify-end'>
           <button
@@ -57,7 +57,7 @@ function WarningMessageObsolote({
     >
       <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
         <p className='text-gray-700 mb-4'>
-          Are you sure you want to change the status?
+          Are you sure you want to Delete this User?
         </p>
         <div className='flex justify-end'>
           <button

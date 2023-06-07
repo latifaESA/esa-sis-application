@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import TeachersList from '../../components/Dashboard/TeachersList'
 import axios from 'axios'
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+// import Link from 'next/link';
 
 
 
@@ -47,6 +47,11 @@ export default function Students() {
     let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
 
     setUsers(data)
+    setFname('')
+    setLname('')
+    setIDvalue('')
+    setEmail('')
+    setCourseid('')
   }
 
   const handleTeachers = async(e) => {
