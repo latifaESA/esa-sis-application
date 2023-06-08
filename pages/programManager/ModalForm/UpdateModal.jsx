@@ -1,34 +1,36 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import selection_data from '../../../utilities/selection_data';
-import axios from "axios";
+import axios from 'axios';
 // import CustomPagination from '../../';
 export default function Modal({ setEditModal, attendance, setAttendance }) {
-  console.log("att", attendance)
+  console.log('att', attendance);
 
   const presence = selection_data.presence;
-  const [Present, setPresent] = useState('');
+  // const [Present, setPresent] = useState('');
   const [pageSize, setPageSize] = useState(10);
 
   const handleUpdate = async (event) => {
-    console.log(event)
+    console.log(event);
 
     try {
-
       const present = 'false';
       const attendance_id = event.attendance_id;
       const student_id = event.student_id;
 
-      console.log("attendance", present.attendance_id)
-      console.log("student", present.student_id)
-      const { data } = await axios.put('/api/pmApi/presentupdate', { present, student_id, attendance_id })
-
+      console.log('attendance', present.attendance_id);
+      console.log('student', present.student_id);
+      // eslint-disable-next-line no-unused-vars
+      const { data } = await axios.put('/api/pmApi/presentupdate', {
+        present,
+        student_id,
+        attendance_id,
+      });
     } catch (error) {
-      return error
+      return error;
     }
-
-  }
+  };
 
   const columns = [
     {
@@ -38,9 +40,9 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
       align: 'center',
       width: 120,
       renderCell: (params) =>
-        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
-
-
+        `${params.row.student_firstname || ''} ${
+          params.row.student_lastname || ''
+        }`,
     },
     {
       field: 'present',
@@ -50,27 +52,19 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
       width: 100,
       editable: true,
 
-
       renderCell: (params) => {
-        return params.value ? (
-          <>  Present</>
-        ) : (<>Absent</>);
+        return params.value ? <> Present</> : <>Absent</>;
       },
-
 
       cellClassName: (params) =>
         params.row.present === false
           ? 'text-red-600 font-bold'
           : params.row.present === true
-            ? 'text-green-600 font-bold'
-            : '',
+          ? 'text-green-600 font-bold'
+          : '',
       type: 'singleSelect',
       valueOptions: presence,
-
-
-
     },
-
 
     {
       field: 'action',
@@ -80,32 +74,31 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
       align: 'center',
       sortable: false,
       renderCell: (params) => (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <button
-            className='primary-button hover:text-white'
-            onClick={() => { handleUpdate(params.row) }}
+            className="primary-button hover:text-white"
+            onClick={() => {
+              handleUpdate(params.row);
+            }}
             // disabled={params.id !== presentEnable}
-            type='button'
-          // hidden={
-          //   // session.user.role === '1' || session.user.role === '3'
-          //     ? true
-          //     : false
-          // }
+            type="button"
+            // hidden={
+            //   // session.user.role === '1' || session.user.role === '3'
+            //     ? true
+            //     : false
+            // }
           >
             Edit
           </button>
         </div>
       ),
     },
-
   ];
   // const [showModal, setShowModal] = React.useState(false);
   return (
     <>
       <>
-        <div
-          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-12"
-        >
+        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-12">
           <div className="relative w-auto my-6 mx-auto max-w-3xl">
             {/*content*/}
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -133,12 +126,14 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
                 <div>
                   <Box sx={{ height: 400, width: '100%' }}>
                     <DataGrid
-                      getRowId={r => r.student_id}
+                      getRowId={(r) => r.student_id}
                       rows={attendance}
                       getRowHeight={() => 'auto'}
                       columns={columns}
                       pageSize={pageSize}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      onPageSizeChange={(newPageSize) =>
+                        setPageSize(newPageSize)
+                      }
                       rowsPerPageOptions={[5, 10, 15, 20]}
                       // pagination
                       // checkboxSelection
@@ -148,11 +143,12 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
                       // onCellEditCommit={(params) => setMajorEnable(params.id)}
                       components={{
                         NoRowsOverlay: () => (
-                          <div className='grid h-[100%] place-items-center'>No Data</div>
+                          <div className="grid h-[100%] place-items-center">
+                            No Data
+                          </div>
                         ),
                         // Pagination: CustomPagination,
                       }}
-
                     />
                   </Box>
                 </div>
@@ -162,7 +158,9 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
                 <button
                   className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  onClick={() => { setEditModal(false), setAttendance([]) }}
+                  onClick={() => {
+                    setEditModal(false), setAttendance([]);
+                  }}
                 >
                   Close
                 </button>
@@ -179,7 +177,6 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
         </div>
         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
       </>
-
     </>
   );
 }
