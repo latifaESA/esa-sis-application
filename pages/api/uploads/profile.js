@@ -30,6 +30,9 @@ async function handler(req, res) {
     return res.status(401).send({ message: 'Signin Required To Save Data' });
   }
   const { user } = session;
+
+  console.log('user from profile: ', user)
+  console.log('userId from profile: ', user.userid)
   const readFile = (file, saveLocally, place) => {
     const options = {};
     if (saveLocally) {
@@ -85,7 +88,7 @@ async function handler(req, res) {
     localDiskPath, 
     'sis-application-data', 
     'Users',
-    `${user._id}`,
+    `${user.userid}`,
     'photo');
 
   if (!fs.existsSync(directory)) {
@@ -97,7 +100,7 @@ async function handler(req, res) {
   let allimages = await fs.readdirSync(directory);
   // Return a response
   // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
-  return res.status(200).send({ secure_url: `${env.ONLINE_APPLICATION_URL}file/sis/Users/${user._id}/photo/${allimages[0]}` });
+  return res.status(200).send({ secure_url: `${env.ONLINE_APPLICATION_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}` });
 
 // return res.status(200).send(req)
 

@@ -223,6 +223,8 @@ export default async function handler(req, res) {
         `${recieved_data.promotion}`,
       ];
       // const insertmajor =
+
+      // eslint-disable-next-line no-unused-vars
       const resMajor = await insertData(
         connection,
         'major',
@@ -397,6 +399,7 @@ export default async function handler(req, res) {
       // insert the promotion
       const columns_promotion = ['promotion_name'];
       const values_promotion = [`${recieved_data.program}`];
+      // eslint-disable-next-line no-unused-vars
       let resPromotion = await insertData(
         connection,
         'promotions',

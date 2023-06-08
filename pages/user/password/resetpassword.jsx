@@ -40,15 +40,20 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // const [message, setMessage] = useState('');
   let generatedPassword = null;
-  let email = null;
+  let userid = null;
   // canceled as per owner request, don't generate a password and singin with it only take the user choose one
+
+
   if (router.query.password) {
     generatedPassword = router.query.password;
   }
-  if (router.query.email) {
-    email = router.query.email;
+  console.log('password')
+  console.log(generatedPassword)
+  if (router.query.userid) {
+    userid = router.query.userid;
   }
-
+  console.log('user')
+  console.log(userid)
   const appState = useSelector(
     (state) => state.persistedReducer.app_state.appState
   );
@@ -57,10 +62,10 @@ const ResetPassword = () => {
 
   // canceled as per owner request, don't generate a password and singin with it only take the user choose one
   useEffect(() => {
-    if (!generatedPassword && !email && session?.user) {
+    if (!generatedPassword && !userid && session?.user) {
       router.push(redirect || '/');
     }
-  }, [router, session, redirect, generatedPassword, email]);
+  }, [router, session, redirect, generatedPassword, userid]);
 
   const showPasswordHandler = () => {
     setShowPassword(!showPassword);
@@ -75,14 +80,14 @@ const ResetPassword = () => {
     if (password) {
       try {
         await axios.put('/api/user/password/changepassword', {
-          email,
+          userid,
           password,
         });
         console.log('Password Updated Successfully');
         dispatch(loginRequest());
         const result = await signIn('credentials', {
           redirect: false,
-          email,
+          userid,
           password,
         });
         setErrorMessage('Password Updated Successfully');
