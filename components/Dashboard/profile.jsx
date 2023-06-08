@@ -70,6 +70,7 @@ export default function ProfileScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // profile
   useEffect(() => {
     
     if (uploadPhotoData.fileList.length !== 0) {
@@ -91,6 +92,35 @@ export default function ProfileScreen() {
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadPhotoData]);
+
+  // useEffect(() => {
+  //   if (uploadPhotoData.fileList.length !== 0) {
+  //     setupdateProfileButtonDisable(true);
+  //     const handleUpload = async () => {
+  //       let secure_url = 'undefined';
+  //       try {
+  //         const formData = new FormData();
+  //         formData.append('myImage', uploadPhotoData.fileList[0]);
+  //         // console.log(uploadPhotoData.fileList[0])
+  //         // console.log(formData)
+  //         const { data } = await axios.post('/api/uploads/profile', formData);
+  //         secure_url = data.secure_url;
+  //         console.log('data.secure_url: ', data.secure_url);
+  //         console.log('secure_url: ', secure_url);
+
+  //       if (secure_url) setProfileUrl(secure_url);
+  //       if (typeof secure_url !== 'undefined') {
+  //         dispatch(profileUrlChanged(secure_url));
+  //       }
+  //       setupdateProfileButtonDisable(false);
+  //       } catch (error) {
+  //         console.log(error.response?.data);
+  //       }
+  //     };
+  //     handleUpload();
+  //   }
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [uploadPhotoData]);
 
   const submitHandler = async ({ fname, lname, password }) => {
     setMessage('');
