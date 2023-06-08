@@ -67,7 +67,6 @@ export default function LoginScreen() {
         // const response = await axios.get('/api/controller/settingdata');
         // console.log("hon",response.data.data)
         if (response.status === 200) {
-
           const incomingData = JSON.parse(decrypt(response.data.data));
           // console.log("pppppppp",incomingData.upload_file_single_size)
 
@@ -121,8 +120,8 @@ export default function LoginScreen() {
   }, []);
 
   useEffect(() => {
-    console.log('this is session');
-    console.log(session?.user.status);
+    // console.log('this is session');
+    // console.log(session?.user.status);
 
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === '1') {
@@ -164,11 +163,11 @@ export default function LoginScreen() {
         userid,
         password,
       });
-      console.log('this line: ', result);
+      // console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
-        console.log('userSession==>', userSession);
+        // console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
             loginSuccess({

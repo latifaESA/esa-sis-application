@@ -4,7 +4,7 @@ import {
   Cog8ToothIcon,
   ComputerDesktopIcon,
   // CreditCardIcon,
-  TableCellsIcon,
+  // TableCellsIcon,
   // CalendarDaysIcon,
   ClipboardDocumentListIcon,
   // PencilSquareIcon,
@@ -14,6 +14,8 @@ import {
   // AcademicCapIcon,
   // WalletIcon,
   ChartBarIcon,
+  UserGroupIcon,
+  UserPlusIcon,
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -59,6 +61,26 @@ const AdminView = () => {
           </div>
         </Link>
 
+        {/* Account Managment */}
+
+        <Link href="/admin/create">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/create'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+            disabled={true}
+          >
+            <div className="mr-2">
+              <UserGroupIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Accounts</p>
+            </div>
+          </div>
+        </Link>
+
         {/* Create Section */}
 
         <Link href="/admin/create">
@@ -71,10 +93,10 @@ const AdminView = () => {
             disabled={true}
           >
             <div className="mr-2">
-              <TableCellsIcon className="h-5 w-5" />
+              <UserPlusIcon className="h-5 w-5" />
             </div>
             <div>
-              <p>Accounts</p>
+              <p>Create Accounts</p>
             </div>
           </div>
         </Link>
@@ -98,7 +120,6 @@ const AdminView = () => {
           </div>
         </Link>
         {/* Settings Section */}
-       
 
         {/* Profile Section */}
         <Link href="/admin/profile">
