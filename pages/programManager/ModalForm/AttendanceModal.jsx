@@ -1,7 +1,7 @@
 import React  from 'react'
 import { useState, useRef } from 'react'
 import CustomSelectBox from '../customSelectBox'
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
 // import axios from 'axios';
 import moment from 'moment';
 
