@@ -18,7 +18,7 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
             try {
                 
                 const attendance_id = details[0].attendance_id
-                const data = await axios.post('http://localhost:3000/api/pmApi/getStudentPromotions', { attendance_id })
+                const data = await axios.post('/api/pmApi/getStudentPromotions', { attendance_id })
                 setPromotion(data.data.data[0].promotion_name)
                 //   setStudent(data.data)
 

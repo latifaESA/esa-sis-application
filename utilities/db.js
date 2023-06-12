@@ -11,11 +11,11 @@ async function connect() {
 
   try {
     const connection = new Client({
-      user:env.user,
-      host:env.host,
-      database:env.database,
-      password: env.password,
-      port:env.databasePort,
+      user:'postgres',
+      host:'localhost',
+      database:'esa-sis-application',
+      password: 'postgres',
+      port:5432,
      
     });
 

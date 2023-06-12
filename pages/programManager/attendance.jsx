@@ -39,7 +39,7 @@ export default function attendance() {
     const getMajor = async () => {
       let table = 'major';
 
-      let { data } = await axios.post('http://localhost:3000/api/pmApi/getAll', { table })
+      let { data } = await axios.post('/api/pmApi/getAll', { table })
 
 
       console.log('major')
@@ -72,7 +72,7 @@ export default function attendance() {
 
 
         }
-        const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
+        const result = await axios.post("/api/pmApi/filterAttendance", payload)
         console.log("data", result.data.data)
 
         setUsers(result.data.data)
@@ -101,7 +101,7 @@ export default function attendance() {
         major_name: "",
 
       }
-      const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
+      const result = await axios.post("/api/pmApi/filterAttendance", payload)
       setUsers(result.data.data)
       setAttendanceId('')
       setCourseid('')
@@ -138,7 +138,7 @@ export default function attendance() {
 
 
       }
-      const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
+      const result = await axios.post('/api/pmApi/filterAttendance', payload)
       setUsers(result.data.data)
     } catch (error) {
       return error
