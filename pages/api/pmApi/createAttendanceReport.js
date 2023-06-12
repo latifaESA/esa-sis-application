@@ -1,5 +1,6 @@
 const { connect } = require("../../../utilities/db");
-const { createAttendance } = require('../controller/queries')
+const { createAttendance } = require('../controller/queries');
+const { default: attendanceExist } = require("./exist/getAttendance");
 
 async function handler(req , res){
 
@@ -12,17 +13,29 @@ async function handler(req , res){
            major_id,
            attendance_date
         }=req.body;
-        const response = await createAttendance(connection , teacher_id,
-            course_id,
-            major_id,
-            attendance_date);
-            console.log(response)
-    
-            return res.status(201).json({
-                success:true,
-                code:201,
-                message : 'attendance create successfully',
+        const exist = await attendanceExist( connection , teacher_id , course_id , attendance_date)
+       
+        if(exist){
+            return res.status(200).json({
+                code : 200 ,
+                success: true,
+                message: `Attendance Report is already Exist !`
             })
+        }
+            const response = await createAttendance(connection , teacher_id,
+                course_id,
+                major_id,
+                attendance_date);
+                console.log(response)
+        
+                return res.status(201).json({
+                    success:true,
+                    code:201,
+                    message : 'Attendance Sheet Created Successfully !',
+                    data:response.rows[0].attendance_id
+                })
+        
+      
 
         
         } catch (error) {

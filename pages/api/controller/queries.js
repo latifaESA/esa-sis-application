@@ -392,10 +392,13 @@ async function filterAttendances(
       query += ` AND lower(trim(major.major_name) LIKE lower(trim('%${major_name}%'))`;
     }
     if (course_id != '') {
-      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
+      query += ` AND lower(trim(attendance_report.course_id)) LIKE lower(trim('%${course_id}%'))`;
     }
     if (attendance_date != '') {
-      query += ` AND attendance_date = '${attendance_date}'`;
+
+      query += ` AND attendance_report.attendance_date = '${attendance_date}'`;
+
+
     }
     if (present != '') {
       query += ` AND present = '${present}'  `;
@@ -408,7 +411,7 @@ async function filterAttendances(
     return error;
   }
 }
-
+//get courses assignment in a major
 async function getCourse(connection, table, where, id) {
   try {
     let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
@@ -418,23 +421,26 @@ async function getCourse(connection, table, where, id) {
     return error;
   }
 }
-
+//get first and last name of teacher in a major
 async function getTeachersByMajorCourse(connection, major_id) {
+  
   try {
-    let query = `SELECT  teachers.teacher_id ,teachers.teacher_firstname, teachers.teacher_lastname , courses.major_id , major.current_promotion , courses.course_id
+    let query = `SELECT  teachers.teacher_id ,concat(teachers.teacher_firstname, ' ', teachers.teacher_lastname) AS teacher_fullName ,courses.major_id , major.current_promotion , courses.course_id
 
     from teachers 
     INNER JOIN courses ON teachers.course_id = courses.course_id 
     INNER JOIN major ON courses.major_id = major.major_id
-    WHERE major.major_id = '${major_id}'
-    `;
-    const res = await connection.query(query);
-    return res;
+
+    WHERE major.major_id = '${major_id}'`
+    const res = await connection.query(query)
+   
+    return res
+
   } catch (error) {
     return error;
   }
 }
-
+//update the status of attendance to student
 async function updatePresent(connection, present, student_id, attendance_id) {
   console.log(attendance_id);
   try {
@@ -446,55 +452,126 @@ async function updatePresent(connection, present, student_id, attendance_id) {
     return error;
   }
 }
-
-async function getAllStudent(connection, major_id) {
+//get student assignment in the promotion in a major 
+async function getAllStudent(connection, major_id , promotion_id) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}'`;
-    const res = await connection.query(query);
-    return res;
+
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion_id ='${promotion_id}'`
+    const res = await connection.query(query)
+    return res
+
   } catch (error) {
     return error;
   }
 }
 
-async function createAttendance(
-  connection,
-  teacher_id,
-  course_id,
-  major_id,
-  attendance_date
-) {
+//insert the attendance report and get the primary key
+async function createAttendance(connection, teacher_id, course_id, major_id, attendance_date) {
+
   try {
-    const query = ` INSERT INTO attendance_report (teacher_id , course_id , major_id, attendance_date) VALUES ('${teacher_id}','${course_id}','${major_id}','${attendance_date}') `;
-    const res = await connection.query(query);
-    return res;
+
+    const query = ` INSERT INTO attendance_report (teacher_id , course_id , major_id, attendance_date) VALUES ('${teacher_id}','${course_id}','${major_id}','${attendance_date}') RETURNING attendance_id `
+    const res = await connection.query(query)
+    // console.log('pppppppppppp' , res)
+    return res
+
   } catch (error) {
     return error;
   }
 }
+// get the student in the attendance table by attendance id
 async function AttendanceView(connection, attendance_id) {
   try {
-    const query = ` SELECT attendance .* ,  student.student_firstname , student.student_lastname, courses.course_name
+    const query = ` SELECT attendance .* ,  student.student_firstname , student.student_lastname 
     FROM attendance 
     INNER JOIN student ON attendance.student_id = student.student_id 
 	  INNER JOIN attendance_report ON attendance.attendance_id = attendance_report.attendance_id
-	  INNER JOIN courses ON attendance_report.course_id = courses.course_id
-    WHERE attendance.attendance_id = '${attendance_id}'`;
-    const res = await connection.query(query);
-    return res;
+    WHERE attendance.attendance_id = '${attendance_id}'`
+    const res = await connection.query(query)
+    return res
+
+
   } catch (error) {
     return error;
   }
 }
+//get details of attendance by attendance_id
+async function AttendanceDetails (connection , attendance_id){
+  
+  try {
 
-async function filterpm(
-  connection,
-  pm_id,
-  pm_firstname,
-  pm_lastname,
-  pm_email,
-  pm_status
-) {
+    const query = `SELECT attendance_report.* , teachers.teacher_firstname , teachers.teacher_lastname , courses.course_name
+    FROM attendance_report 
+    INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id 
+    INNER JOIN courses  ON attendance_report.course_id = courses.course_id
+    WHERE attendance_id = '${attendance_id}'
+    `
+    const res = await connection.query(query)
+ 
+    return res
+    
+  } catch (error) {
+    return error
+  }
+}
+//insert data to attendance_table
+async function createAttendanceStudent (connection , student_id , attendance_id ){
+  console.log(attendance_id)
+   
+  try {
+    const  query = `INSERT INTO attendance (attendance_id , student_id) 
+    VALUES ('${attendance_id}' , '${student_id}')`;
+    const res = await connection.query(query);
+    // console.log("[[[[[[[[[[[[[[[",res.lastrowid)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
+//get attendance_report by course ,teacher and date 
+async function getAttendanceByCTD(connection , teacher_id , course_id , attendance_date){
+  try {
+    const query = `SELECT * FROM attendance_report 
+    WHERE teacher_id = '${teacher_id}' AND course_id = '${course_id}' AND attendance_date = '${attendance_date}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+//get student fullname and promotion by attendance_id
+async function getStudentPromotion(connection , attendance_id){
+  try {
+    const query = `SELECT attendance .* , concat(student_firstname ,' ',student_lastname) AS student_fullname ,promotions.promotion_id , promotions.promotion_name 
+    from attendance 
+    INNER JOIN student ON attendance.student_id = student.student_id
+    INNER JOIN promotions ON student.promotion_id = promotions.promotion_id
+    WHERE attendance_id = '${attendance_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error 
+    
+  }
+}
+// // update query to upload url 
+// async function uploadFile (connection , Url , attendance_id){
+
+//   try {
+//     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id = '${attendance_id}'`
+//     const res = await connection.query(query)
+//     console.log(query)
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+
+//ProgramManager
+async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status) {
+
   try {
     let query = `
       SELECT * FROM program_manager
@@ -655,10 +732,15 @@ async function deleteUserpm(connection, pm_id) {
 module.exports = {
   AttendanceView,
   filterAttendances,
+  getAttendanceByCTD,
+  // uploadFile,
   filterStudent,
   getTeachersByMajorCourse,
+  createAttendanceStudent,
   getAllStudent,
   getAll,
+  getStudentPromotion,
+  AttendanceDetails,
   createAttendance,
   updatePresent,
   insertData,

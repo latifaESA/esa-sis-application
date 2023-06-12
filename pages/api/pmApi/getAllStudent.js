@@ -6,10 +6,11 @@ async function handler(req , res){
     try {
         const connection = await connect();
         const {
-           major_id
+           major_id,
+           promotion_id
           
         }=req.body;
-        const response = await getAllStudent(connection , major_id);
+        const response = await getAllStudent(connection , major_id , promotion_id);
        console.log(response.data)
         if(response.rows.length === 0){
             return res.status(404).json({

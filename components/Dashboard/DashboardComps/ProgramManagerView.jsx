@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   PencilIcon,
   // Cog8ToothIcon,
@@ -119,9 +120,9 @@ const ProgramManagerView = () => {
 
         {/* Payment Section */}
 
-        <Link href="/programManager/attendance">
+        {/* <Link href="/programManager/attendance"> */}
           {/* <Link href='/admin/payments'> */}
-          <div
+          {/* <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
               router.pathname == '/programManager/attendance'
                 ? // router.pathname == '/admin/Payments'
@@ -134,6 +135,47 @@ const ProgramManagerView = () => {
             </div>
             <div>
               <p>Attendance</p>
+            </div>
+          </div> */}
+        {/* </Link> */}
+        {/*create in PM */}
+        <Link href="/programManager/Create/PMmain">
+          {/* <Link href='/admin/payments'> */}
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/programManager/Create/mainPM' 
+              // router.pathname == '/programManager/Create/createAttendance'
+                ? // router.pathname == '/admin/Payments'
+                  'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+          >
+            <div className="mr-2">
+              <CreditCardIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Attendance</p>
+            </div>
+          </div>
+        </Link>
+
+        {/* course Management system */}
+        <Link href="/programManager/">
+          {/* <Link href='/admin/payments'> */}
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/programManager/' 
+              // router.pathname == '/programManager/Create/createAttendance'
+                ? // router.pathname == '/admin/Payments'
+                  'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+          >
+            <div className="mr-2">
+              <UserGroupIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Assignment</p>
             </div>
           </div>
         </Link>
