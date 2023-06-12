@@ -44,7 +44,7 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
 
       console.log("attendance", event.attendance_id)
       console.log("student", event.present)
-      const { data } = await axios.put('http://localhost:3000/api/pmApi/presentupdate', { present, student_id, attendance_id })
+      const { data } = await axios.put('/api/pmApi/presentupdate', { present, student_id, attendance_id })
       // console.log("updateeeeeeeeeeeeeeeeeeeeeee" , attendance)
       setMessage(data.message)
 
@@ -73,7 +73,7 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
         const present=attendance[i].present
         console.log("present",present)
         console.log("student",student_id)
-        const { data } = await axios.put('http://localhost:3000/api/pmApi/presentupdate', { present, student_id, attendance_id })
+        const { data } = await axios.put('/pmApi/presentupdate', { present, student_id, attendance_id })
         setMessage(data.message)
       }
 
