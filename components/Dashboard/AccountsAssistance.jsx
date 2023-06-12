@@ -108,13 +108,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
       pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
     };
     axios
-      .put(
-        'http://localhost:3000/api/admin/adminApi/updateAssistance',
-        sendData
-      )
+      .put('/api/admin/adminApi/updateAssistance', sendData)
+      // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        // console.log(response.data);
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -144,10 +142,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
       userpassword: genPass,
     };
     axios
-      .post('http://localhost:3000/api/admin/adminApi/enableAs', sendData)
+      .post('/api/admin/adminApi/enableAs', sendData)
+      // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        // console.log(response.data);
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -174,7 +173,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     };
     axios
       .post(
-        'http://localhost:3000/api/admin/adminApi/deletePm',
+        '/api/admin/adminApi/deletePm',
         sendData
         // {
         //   data: encrypt(
@@ -186,12 +185,14 @@ const TeachersList = ({ assistance, setAssistance }) => {
         //   ),
         // }
       )
+      // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        // console.log(response.data);
         setMessage('User deleted Succesfully!');
 
         //Update the user's status and major in the table
+        // eslint-disable-next-line no-undef
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
             u.pm_id === user.pm_id
@@ -544,8 +545,8 @@ const TeachersList = ({ assistance, setAssistance }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+          // console.log('response', response);
+          // console.log('incomingData', incomingData);
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setAssistance([]);
@@ -563,8 +564,8 @@ const TeachersList = ({ assistance, setAssistance }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+          // console.log('response', response);
+          // console.log('incomingData', incomingData);
           await exportAll(incomingData, session);
         } else {
           setAssistance([]);
@@ -576,11 +577,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
   };
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
-    console.log('selectedIDs', selectedIDs);
+    // console.log('selectedIDs', selectedIDs);
     const selectedUsers = assistance.filter((user) =>
       selectedIDs.includes(user.ID)
     );
-    console.log('selectedUsersbefore', selectedUsers);
+    // console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
         window.open(user.reportURL);
@@ -589,7 +590,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       }
     });
 
-    console.log('selectedUsers', selectedUsers);
+    // console.log('selectedUsers', selectedUsers);
   };
 
   return (

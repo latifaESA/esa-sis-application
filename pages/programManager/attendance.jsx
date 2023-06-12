@@ -38,7 +38,9 @@ export default function attendance() {
   useEffect(() => {
     const getMajor = async () => {
       let table = 'major';
+
       let { data } = await axios.post('http://localhost:3000/api/pmApi/getAll', { table })
+
 
       console.log('major')
       console.log(data.rows)
@@ -53,6 +55,7 @@ export default function attendance() {
       console.log(major, 'before')
     }
     getMajor()
+
     const fetchData = async () => {
       try {
         const payload = {
@@ -71,6 +74,7 @@ export default function attendance() {
         }
         const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
         console.log("data", result.data.data)
+
         setUsers(result.data.data)
       } catch (error) {
         return error
@@ -80,6 +84,7 @@ export default function attendance() {
 
   }, [])
   console.log(session.user.majorid)
+
 
   const handleShowAll = async () => {
     try {
@@ -113,11 +118,13 @@ export default function attendance() {
       return error
     }
 
+
   }
 
 
   const handleAttendance = async () => {
     try {
+
       const payload = {
         attendanceId: attendance_id,
         studentId: student_id,
@@ -128,6 +135,7 @@ export default function attendance() {
         present: present,
         teacher_firstname: teacher_firstname,
         teacher_lastname: teacher_lastname,
+
 
       }
       const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)

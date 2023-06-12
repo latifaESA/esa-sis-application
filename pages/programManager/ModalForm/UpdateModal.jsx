@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import selection_data from '../../../utilities/selection_data';
+
 import axios from "axios";
 import moment from "moment";
 // import CustomPagination from '../../../components/Dashboard/Pagination';
@@ -12,17 +13,29 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
   // console.log("attendance", attendance)
   // const presence = selection_data.presence;
   const { data: session } = useSession();
+//=======
+//import axios from 'axios';
+//// import CustomPagination from '../../';
+//export default function Modal({ setEditModal, attendance, setAttendance }) {
+//  console.log('att', attendance);
+
+  //const presence = selection_data.presence;
+  //// const [Present, setPresent] = useState('');
+
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('')
   const [update, setUpdate] = useState([])
+
 
   setTimeout(() => {
     setMessage('');
   }, selection_data.message_disapear_timing)
 
+
   const handleUpdate = async (event) => {
     // console.log('evennnnnnt', event)
     try {
+
 
       const present = event.present;
       console.log("presenttttttttt" , present)
@@ -35,11 +48,11 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       // console.log("updateeeeeeeeeeeeeeeeeeeeeee" , attendance)
       setMessage(data.message)
 
-    } catch (error) {
-      return error
-    }
 
-  }
+    } catch (error) {
+      return error;
+    }
+  };
 
   const presence = [
     { value: true, label: 'Present' },
@@ -78,9 +91,9 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       align: 'center',
       width: 120,
       renderCell: (params) =>
-        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
-
-
+        `${params.row.student_firstname || ''} ${
+          params.row.student_lastname || ''
+        }`,
     },
     {
       field: 'present',
@@ -91,23 +104,21 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       editable: true,
 
       renderCell: (params) => {
+
         return params.value ? <>
           Present
         </> : <>Absent</>
       },
+
       cellClassName: (params) =>
         params.row.present === false
           ? 'text-red-600 font-bold'
           : params.row.present === true
-            ? 'text-green-600 font-bold'
-            : '',
+          ? 'text-green-600 font-bold'
+          : '',
       type: 'singleSelect',
       valueOptions: presence,
-
-
-
     },
-
 
     {
       field: 'action',
@@ -117,29 +128,33 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       align: 'center',
       sortable: false,
       renderCell: (params) => (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <button
-            className='primary-button hover:text-white'
-            onClick={() => { handleUpdate(params.row) }}
+            className="primary-button hover:text-white"
+            onClick={() => {
+              handleUpdate(params.row);
+            }}
             // disabled={params.id !== presentEnable}
+
             type='button'
             hidden={
               session.user.role === '1' || session.user.role === '3'
                 ? true
                 : false
             }
+
           >
             Save
           </button>
         </div>
       ),
     },
-
   ];
  console.log("update",update)
   // const [showModal, setShowModal] = React.useState(false);
   return (
     <>
+
       <div
         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none "
       >
@@ -149,6 +164,7 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
             {/*header*/}
             <div className="flex items-start justify-between p-2">
               {/* <h3 className="text-3xl font-semibold">
+
                     Modal Title
                   </h3> */}
 
@@ -179,12 +195,14 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
                 <div className="p-4">
                   <Box sx={{ height: 280, width: '100%' }}>
                     <DataGrid
-                      getRowId={r => r.student_id}
+                      getRowId={(r) => r.student_id}
                       rows={attendance}
                       getRowHeight={() => 'auto'}
                       columns={columns}
                       pageSize={pageSize}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      onPageSizeChange={(newPageSize) =>
+                        setPageSize(newPageSize)
+                      }
                       rowsPerPageOptions={[5, 10, 15, 20]}
                       pagination
 
@@ -195,11 +213,12 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
                       // onCellEditCommit={(params) => handleAll(params.row)}
                       components={{
                         NoRowsOverlay: () => (
-                          <div className='grid h-[100%] place-items-center'>No Data</div>
+                          <div className="grid h-[100%] place-items-center">
+                            No Data
+                          </div>
                         ),
                         // Pagination: CustomPagination,
                       }}
-
                     />
                   </Box>
                 </div>
@@ -207,8 +226,10 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
               </div>
               <div className="flex items-center justify-end p-6 border-solid border-slate-200 rounded-b">
                 <button
+
                   className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5" type="button"
                   onClick={()=>handleAll()}
+
                 >
                   Save ALL
                 </button>
@@ -223,7 +244,9 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
 
           </div>
         </div>
+
       </div>
     </>
   )
+
 }

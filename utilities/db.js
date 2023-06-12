@@ -15,7 +15,7 @@ async function connect() {
       host:env.host,
       database:env.database,
       password: env.password,
-      port:env.port,
+      port:env.databasePort,
      
     });
 

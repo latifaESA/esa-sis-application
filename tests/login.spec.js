@@ -1,12 +1,10 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import {Eyes, Target} from '@applitools/eyes-playwright';
-
+// import {Eyes, Target} from '@applitools/eyes-playwright';
 
 test('checking Validation', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -15,24 +13,22 @@ test('checking Validation', async ({ page }) => {
 
   await page.getByTestId('password').fill('');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).not.toHaveURL(/admin/)
+  await expect(page).not.toHaveURL(/admin/);
 
-  const errorEmail = page.getByTestId('errorEmail')
+  const errorEmail = page.getByTestId('errorEmail');
 
-  const errPassword = page.getByTestId('errorPassword')
+  const errPassword = page.getByTestId('errorPassword');
 
-  await expect(errorEmail).toBeTruthy()
+  await expect(errorEmail).toBeTruthy();
 
-  await expect(errPassword).toBeTruthy()
-
+  await expect(errPassword).toBeTruthy();
 });
 
 test('checking Logout admin', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -41,22 +37,20 @@ test('checking Logout admin', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/admin/)
+  await expect(page).toHaveURL(/admin/);
 
-  await page.getByTestId('img').click()
+  await page.getByTestId('img').click();
 
   await page.getByText('Logout').click();
 
-  await expect(page).toHaveURL('http://localhost:3000')
-
+  await expect(page).toHaveURL(`${process.env.NEXTAUTH_URL}`);
 });
 
 test('checking Password Validation', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -65,22 +59,20 @@ test('checking Password Validation', async ({ page }) => {
 
   await page.getByTestId('password').fill('asd');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).not.toHaveURL(/admin/)
+  await expect(page).not.toHaveURL(/admin/);
 
-  const errorEmail = page.getByTestId('errorEmail')
+  // const errorEmail = page.getByTestId('errorEmail')
 
-  const errPassword = page.getByTestId('errorPassword')
+  const errPassword = page.getByTestId('errorPassword');
 
-  await expect(errPassword).toHaveText('password is more than 6 chars')
-
+  await expect(errPassword).toHaveText('password is more than 6 chars');
 });
 
 test('checking Info', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -89,20 +81,18 @@ test('checking Info', async ({ page }) => {
 
   await page.getByTestId('password').fill('asdasdasd');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).not.toHaveURL(/admin/)
+  await expect(page).not.toHaveURL(/admin/);
 
-  const errorInfo = page.getByTestId('error')
+  const errorInfo = page.getByTestId('error');
 
-  await expect(errorInfo).toHaveText('user does not exist')
-
+  await expect(errorInfo).toHaveText('user does not exist');
 });
 
 test('checking Login admin', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -111,16 +101,14 @@ test('checking Login admin', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/admin/)
-
+  await expect(page).toHaveURL(/admin/);
 });
 
 test('checking Login program Manager', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -129,15 +117,13 @@ test('checking Login program Manager', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/programManager/)
-
+  await expect(page).toHaveURL(/programManager/);
 });
 test('checking Logout program Manager', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -146,22 +132,20 @@ test('checking Logout program Manager', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/programManager/)
+  await expect(page).toHaveURL(/programManager/);
 
-  await page.getByTestId('img').click()
+  await page.getByTestId('img').click();
 
   await page.getByText('Logout').click();
 
-  await expect(page).toHaveURL('http://localhost:3000')
-
+  await expect(page).toHaveURL(`${process.env.NEXTAUTH_URL}`);
 });
 
 test('checking Login student', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -170,16 +154,14 @@ test('checking Login student', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/student/)
-
+  await expect(page).toHaveURL(/student/);
 });
 
 test('checking Logout Student', async ({ page }) => {
-
-  test.setTimeout(0)
-  await page.goto('http://localhost:3000');
+  test.setTimeout(0);
+  await page.goto(`${process.env.NEXTAUTH_URL}`);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/ESA SIS - Login/);
@@ -188,14 +170,13 @@ test('checking Logout Student', async ({ page }) => {
 
   await page.getByTestId('password').fill('shop?123');
 
-  await page.getByRole('button').click()
+  await page.getByRole('button').click();
 
-  await expect(page).toHaveURL(/student/)
+  await expect(page).toHaveURL(/student/);
 
-  await page.getByTestId('img').click()
+  await page.getByTestId('img').click();
 
   await page.getByText('Logout').click();
 
-  await expect(page).toHaveURL('http://localhost:3000')
-
+  await expect(page).toHaveURL(`${process.env.NEXTAUTH_URL}`);
 });

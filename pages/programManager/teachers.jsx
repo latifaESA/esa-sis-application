@@ -44,7 +44,7 @@ export default function Students() {
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
+    let {data} = await axios.post('/api/pmApi/filterTeach', sendData)
 
     setUsers(data)
     setFname('')
@@ -67,7 +67,7 @@ export default function Students() {
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterTeach', sendData)
+    let {data} = await axios.post('/api/pmApi/filterTeach', sendData)
 
     console.log('this is data')
     setTemp(parseInt(idvalue))

@@ -12,6 +12,16 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
     const [data, setData] = useState([])
     const [showModal, setShowModal] = useState(false)
 
+
+    // const [promotionValue, setPromotionValue] = useState('')
+    const [test, setTest] = useState()
+    // const [coursesValue, setCoursesValue] = useState('')
+    // const [teacherValue, setTeachersValue] = useState('')
+    const [promotionName, setPromotionName] = useState('')
+    const [courseName, setCourseName] = useState('')
+    const [teachersName, setTeachersName] = useState('')
+    const [teachersLastName, setTeachersLastName] = useState('')
+
     const componentRef = useRef();
     //  setTimeout(() => {
     //     setMessage('');
@@ -48,7 +58,9 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
         } catch (error) {
             return error
         }
+
     }
+
     return (
         <div>
 

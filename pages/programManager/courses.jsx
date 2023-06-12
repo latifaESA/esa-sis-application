@@ -37,7 +37,7 @@ export default function Courses() {
     // console.log(sendData)
     // console.log(JSON.stringify(sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
+    let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
 
     console.log('this is data')
     console.log(sendData)
@@ -57,7 +57,7 @@ export default function Courses() {
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
-    let {data} = await axios.post('http://localhost:3000/api/pmApi/filterCourse', sendData)
+    let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
 
     setUsers(data)
     setMajorid('')

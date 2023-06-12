@@ -42,6 +42,7 @@ const AttendanceList = ({ users, setUsers }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   const [editModal, setEditModal] = useState(false)
+
   const [attendance, setAttendance] = useState([])
   const[details , setDetails]= useState([])
   const [courseName , setCourseName]= useState('');
@@ -52,7 +53,50 @@ const AttendanceList = ({ users, setUsers }) => {
   const [archive,setShowArchive] = useState(false)
 
 
- 
+
+        setCourses(datesArray);
+
+
+      } catch (error) {
+        return error
+      }
+    }
+    getCourses();
+
+    const handleTeacher = async () => {
+      try {
+
+        let major_id = session.user.majorid;
+        // let course_id = coursesValue ;
+        const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
+        setAllTeachers(data.data)
+        console.log('allteacher', allteachers)
+
+        const datesArray = [];
+        data.data.forEach((teachers) => {
+          datesArray.push(teachers.teacher_firstname);
+
+        });
+        setTeachers(datesArray)
+
+
+      } catch (error) {
+        return error
+      }
+    }
+    handleTeacher()
+
+    const getStudent = async () => {
+      try {
+        let major_id = session.user.majorid
+        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
+        console.log(data.data)
+        console.log(data.data)
+        setStudent(data.data)
+      } catch (error) {
+        return error
+      }
+
 
 
   const getDetails = async (event) =>{
@@ -120,8 +164,10 @@ const AttendanceList = ({ users, setUsers }) => {
 
     try {
       // setEditModal(true)
+
       const attendance_id = event.attendance_id
       const { data } = await axios.post(`http://localhost:3000/api/pmApi/getAllAttendance`, {attendance_id})
+
       setAttendance(data.data)
 
     } catch (error) {

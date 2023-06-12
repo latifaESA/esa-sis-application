@@ -6,11 +6,10 @@
  * Copyright (c) 2023 ESA
  */
 
-// import { executeQuery } from '../../../utilities/db';
-// import crypto from 'crypto';
-// import bcryptjs from 'bcryptjs';
+import { executeQuery } from '../../../utilities/db';
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
 // const { executeQuery } = require('../../../utilities/db');
-
 
 // async function current_applicant_promotion(major_id, user_id, connection) {
 //   try {
@@ -53,24 +52,126 @@
 //   });
 // });
 
-
-
-async function findData(connection, table, where, columnName) {
+async function findDataForResetPassword(connection, table, where, columnName) {
   try {
-    let result = connection.query(`SELECT * from ${table} WHERE ${where} = '${columnName}'`)
+    let result =
+      connection.query(`SELECT users.*, user_contact.email from ${table} 
+    LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`);
     return result;
   } catch (err) {
-    return err
+    return err;
   }
 }
 
+async function findData(connection, table, where, columnName) {
+  try {
+    let result = connection.query(
+      `SELECT * from ${table} WHERE ${where} = '${columnName}'`
+    );
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function newEmailToken(connection, userid) {
+  let emailToken = crypto.randomBytes(64).toString('hex');
+  try {
+    let query = `
+    UPDATE users
+    SET token = '${emailToken}'
+    WHERE userid = '${userid}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function UpdateToken(connection, emailToken) {
+  try {
+    let UserData = await executeQuery(
+      connection,
+      'UPDATE users set token=null where token=?;',
+      [emailToken]
+    );
+
+    return UserData;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function Userinfo(connection, email) {
+  try {
+    let result = connection.query(`SELECT users.*, user_contact.* from users 
+    LEFT JOIN user_contact ON
+	user_contact.userid = users.userid WHERE user_contact.email = '${email}'`);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function newpassword(connection, email, newPassword) {
+  let password = bcryptjs.hashSync(newPassword);
+  try {
+    let query = `
+    UPDATE users
+    SET userpassword = '${password}'
+    WHERE userid = '${email}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
+  // try {
+  //   let query = `UPDATE ${table} SET `;
+  //   let values = [];
+  //   columnValuePairs.forEach((pair, index) => {
+  //     query += `${pair[0]} = ?`;
+  //     if (index !== columnValuePairs.length - 1) {
+  //       query += ', ';
+  //     }
+  //     values.push(pair[1]);
+  //   });
+  //   query += ` WHERE user_id= ?`;
+  //   values.push(whereValue);
+  //   const result = await executeQuery(connection, query, values);
+  //   return result;
+  // } catch (err) {
+  //   return err;
+  // }
+}
+
+// eslint-disable-next-line no-unused-vars
+async function UpdateActivityTime(userid, connection) {
+  // try {
+  //   const result = await executeQuery(
+  //     connection,
+  //     'UPDATE users SET users.update_time = CURRENT_TIMESTAMP WHERE userid = ?',
+  //     [userid]
+  //   );
+  //   return result;
+  // } catch (err) {
+  //   return err;
+  // }
+}
 
 // insert to the database as much as you like columns and values
 async function insertData(connection, table, columns, values) {
   try {
-    const columnList = columns.join(", ");
-    const valueList = values.map(val => `'${val}'`).join(", ");
-    const result = await connection.query(`INSERT INTO ${table} (${columnList}) VALUES (${valueList})`);
+    const columnList = columns.join(', ');
+    const valueList = values.map((val) => `'${val}'`).join(', ');
+    const result = await connection.query(
+      `INSERT INTO ${table} (${columnList}) VALUES (${valueList})`
+    );
     return result;
   } catch (err) {
     return err;
@@ -80,10 +181,10 @@ async function insertData(connection, table, columns, values) {
 // get all data from specific column
 async function getAll(connection, table) {
   try {
-    const result = connection.query(`SELECT * from ${table}`)
+    const result = connection.query(`SELECT * from ${table}`);
     return result;
   } catch (err) {
-    return err
+    return err;
   }
 }
 
@@ -126,7 +227,15 @@ async function getAll(connection, table) {
 //   }
 // }
 
-async function filterStudent(connection, id, firstname, lastname, major, promotion, status) {
+async function filterStudent(
+  connection,
+  id,
+  firstname,
+  lastname,
+  major,
+  promotion,
+  status
+) {
   try {
     let query = `
       SELECT student.*, major.major_name, user_contact.email, user_contact.mobile_number
@@ -164,7 +273,14 @@ async function filterStudent(connection, id, firstname, lastname, major, promoti
   }
 }
 
-async function filterTeacher(connection, id, firstname, lastname, email, courseid) {
+async function filterTeacher(
+  connection,
+  id,
+  firstname,
+  lastname,
+  email,
+  courseid
+) {
   try {
     let query = `
       SELECT * FROM teachers
@@ -200,7 +316,13 @@ async function filterTeacher(connection, id, firstname, lastname, email, coursei
 //    const result = await executeQuery(connection, query, []);
 //=======
 
-async function filterCourses(connection, course_id, course_name, course_credit, major_id) {
+async function filterCourses(
+  connection,
+  course_id,
+  course_name,
+  course_credit,
+  major_id
+) {
   try {
     let query = `
     SELECT courses.*, major.major_name
@@ -222,17 +344,26 @@ async function filterCourses(connection, course_id, course_name, course_credit, 
     }
 
     const result = await connection.query(query);
-    console.log(result)
+    console.log(result);
     return result;
   } catch (err) {
     return err;
   }
 }
 
-
-
 //filter attendance
-async function filterAttendances(connection, attendance_id, teacher_id, major_id, course_id, attendance_date, present, teacher_firstname, teacher_lastname, major_name) {
+async function filterAttendances(
+  connection,
+  attendance_id,
+  teacher_id,
+  major_id,
+  course_id,
+  attendance_date,
+  present,
+  teacher_firstname,
+  teacher_lastname,
+  major_name
+) {
   try {
     let query = `SELECT attendance_report .* ,  major.major_name , teachers.teacher_firstname , teachers.teacher_lastname ,courses.course_name
     FROM attendance_report
@@ -240,7 +371,7 @@ async function filterAttendances(connection, attendance_id, teacher_id, major_id
     INNER JOIN major ON attendance_report.major_id = major.major_id 
     INNER JOIN courses ON attendance_report.course_id = courses.course_id
     WHERE 1=1  
-    `
+    `;
 
     if (attendance_id != '') {
       query += ` AND attendance_id = '${attendance_id}'`;
@@ -249,44 +380,45 @@ async function filterAttendances(connection, attendance_id, teacher_id, major_id
       query += ` AND teachers.teacher_id = '${teacher_id}'`;
     }
     if (teacher_firstname) {
-      query += ` AND lower(trim(teachers.teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%')) `
+      query += ` AND lower(trim(teachers.teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%')) `;
     }
     if (teacher_lastname) {
-      query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`
+      query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`;
     }
     if (major_id != '') {
       query += ` AND major.major_id= '${major_id}'`;
-
     }
     if (major_name) {
-      query += ` AND lower(trim(major.major_name) LIKE lower(trim('%${major_name}%'))`
+      query += ` AND lower(trim(major.major_name) LIKE lower(trim('%${major_name}%'))`;
     }
     if (course_id != '') {
       query += ` AND lower(trim(attendance_report.course_id)) LIKE lower(trim('%${course_id}%'))`;
     }
     if (attendance_date != '') {
+
       query += ` AND attendance_report.attendance_date = '${attendance_date}'`;
+
 
     }
     if (present != '') {
-      query += ` AND present = '${present}'  `
+      query += ` AND present = '${present}'  `;
     }
 
     const res = await connection.query(query);
 
     return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //get courses assignment in a major
 async function getCourse(connection, table, where, id) {
   try {
-    let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`
+    let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
     const response = await connection.query(query);
-    return response
+    return response;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //get first and last name of teacher in a major
@@ -298,38 +430,41 @@ async function getTeachersByMajorCourse(connection, major_id) {
     from teachers 
     INNER JOIN courses ON teachers.course_id = courses.course_id 
     INNER JOIN major ON courses.major_id = major.major_id
+
     WHERE major.major_id = '${major_id}'`
     const res = await connection.query(query)
    
     return res
+
   } catch (error) {
-    return error
+    return error;
   }
 }
 //update the status of attendance to student
 async function updatePresent(connection, present, student_id, attendance_id) {
-  console.log(attendance_id)
+  console.log(attendance_id);
   try {
-    const query = `UPDATE attendance SET present = ${present} WHERE student_id = '${student_id}' AND attendance_id = '${attendance_id}'`
-    const res = await connection.query(query)
+    const query = `UPDATE attendance SET present = ${present} WHERE student_id = '${student_id}' AND attendance_id = '${attendance_id}'`;
+    const res = await connection.query(query);
 
-    return res
+    return res;
   } catch (error) {
-    return error
-
+    return error;
   }
-
 }
 //get student assignment in the promotion in a major 
 async function getAllStudent(connection, major_id , promotion_id) {
   try {
+
     const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion_id ='${promotion_id}'`
     const res = await connection.query(query)
     return res
+
   } catch (error) {
-    return error
+    return error;
   }
 }
+
 //insert the attendance report and get the primary key
 async function createAttendance(connection, teacher_id, course_id, major_id, attendance_date) {
 
@@ -339,8 +474,9 @@ async function createAttendance(connection, teacher_id, course_id, major_id, att
     const res = await connection.query(query)
     // console.log('pppppppppppp' , res)
     return res
+
   } catch (error) {
-    return error
+    return error;
   }
 }
 // get the student in the attendance table by attendance id
@@ -354,8 +490,9 @@ async function AttendanceView(connection, attendance_id) {
     const res = await connection.query(query)
     return res
 
+
   } catch (error) {
-    return error
+    return error;
   }
 }
 //get details of attendance by attendance_id
@@ -434,6 +571,7 @@ async function getStudentPromotion(connection , attendance_id){
 
 //ProgramManager
 async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status) {
+
   try {
     let query = `
       SELECT * FROM program_manager
@@ -461,7 +599,14 @@ async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, 
     return err;
   }
 }
-async function filterassistance(connection, pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status) {
+async function filterassistance(
+  connection,
+  pm_ass_id,
+  pm_ass_firstname,
+  pm_ass_lastname,
+  pm_ass_email,
+  pm_ass_status
+) {
   try {
     let query = `
       SELECT * FROM program_manager_assistance
@@ -515,7 +660,6 @@ async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
     return err;
   }
 }
-
 
 // //filter attendance
 // async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
@@ -583,11 +727,7 @@ async function deleteUserpm(connection, pm_id) {
   }
 }
 
-
-
-
 /* End Postegresql */
-
 
 module.exports = {
   AttendanceView,
@@ -614,5 +754,12 @@ module.exports = {
   updateStatusAssistance,
   enableUserpm,
   deleteUserpm,
-  enableUserAs
+  enableUserAs,
+  newEmailToken,
+  Userinfo,
+  UpdateData,
+  UpdateActivityTime,
+  findDataForResetPassword,
+  UpdateToken,
+  newpassword,
 };

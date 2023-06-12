@@ -36,8 +36,8 @@ async function handler(req, res) {
   const password = req.body.password;
   // const email = req.body.email;
 
-  // console.log('Password=', password);
-  // console.log('email=', email);
+  console.log('Password=', password);
+  console.log('userid=', user.userid);
 
   const regularExpression =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
@@ -56,7 +56,7 @@ async function handler(req, res) {
       const message = connection.message;
       sis_app_logger.error(
         `${new Date()}=From changepassword page,connection unsuccess=1=${
-          user.email
+          user.userid
         }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
           userAgentinfo.family
         }=${userAgentinfo.source}=${userAgentinfo.device.family}`
@@ -65,7 +65,7 @@ async function handler(req, res) {
         message: message,
       });
     } else {
-      await newpassword(connection, user.email, password);
+      await newpassword(connection, user.userid, password);
       // console.log(update);
       await disconnect(connection);
     }
