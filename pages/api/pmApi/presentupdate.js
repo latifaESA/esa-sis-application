@@ -32,7 +32,7 @@ async function handler(req , res){
                return res.status(201).json({
                 success:true,
                 code:201,
-                message: `attendance update Successfully`
+                message: `Attendance Updated Successfully`
 
                })
           }

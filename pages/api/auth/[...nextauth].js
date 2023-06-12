@@ -410,6 +410,8 @@ export const authOptions = {
                       email: PM.rows[0].pm_email,
                       role: user.rows[0].role.toString(),
                       status: PM.rows[0].pm_status,
+                      userid: user.rows[0].userid,
+                      majorid: PM.rows[0].major_id,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {
