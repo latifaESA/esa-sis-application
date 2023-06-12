@@ -1,21 +1,19 @@
 const { connect } = require("../../../utilities/db");
-const { getTeachersByMajorCourse } = require('../controller/queries')
+const { AttendanceDetails } = require("../controller/queries");
 
-async function handler(req , res){
 
+
+async function handler(req, res) {
     try {
         const connection = await connect();
-        const {
-           major_id
-          
-        }=req.body;
-        const response = await getTeachersByMajorCourse(connection , major_id);
-      
+        
+        const {attendance_id} = req.body;
+        const response = await AttendanceDetails(connection, attendance_id);
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,
                 code:404,
-                message:"teacher Not found"
+                message:"attendance Not found"
             })
         }else{
             return res.status(201).json({
@@ -23,14 +21,17 @@ async function handler(req , res){
                 code:201,
                 data:response.rows
             })
-
+        
         }
-    } catch (error) {
+    }
+    catch (error) {
         return res.status(500).json({
             success:false,
             code:500,
             message: error.message
         })
     }
+
+
 }
 module.exports = handler;

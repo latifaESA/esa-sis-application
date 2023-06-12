@@ -14,7 +14,7 @@ import {
   newpassword,
   UpdateToken,
   findDataForResetPassword,
-  Userrole,
+  // Userrole,
 } from '../../controller/queries';
 import { connect, disconnect } from '../../../../utilities/db';
 import sis_app_logger from '../../../api/logger';
@@ -40,7 +40,7 @@ function generatPassword(length) {
 }
 
 async function handler(req, res) {
-  console.log('head of handler')
+  console.log('head of handler');
   if (req.method !== 'GET') {
     return res
       .status(500)
@@ -48,7 +48,7 @@ async function handler(req, res) {
   }
   /* Checking if the request is coming from a secure connection or not. */
 
-  // change one to https in protocol 
+  // change one to https in protocol
 
   const protocol =
     req.headers['x-forwarded-proto'] || req.connection.encrypted
@@ -56,16 +56,16 @@ async function handler(req, res) {
       : 'http';
   // eslint-disable-next-line no-unused-vars
   const session = await getServerSession(req, res, authOptions);
-  console.log('after session')
+  console.log('after session');
   const encryptedBody = req.query.query;
   const query = JSON.parse(decrypt(encryptedBody));
   const emailToken = query.token;
   const email = query.email;
   // const password = req.query.password;
-  console.log('quesries')
-  console.log(emailToken)
-  console.log(email)
-  console.log('quesries')
+  console.log('quesries');
+  console.log(emailToken);
+  console.log(email);
+  console.log('quesries');
   if (!emailToken) {
     res.status(422).json({
       message: 'Pass an email Token',
@@ -102,26 +102,29 @@ async function handler(req, res) {
       'email',
       email
     );
-    console.log('this is existing email user smthng')
-    console.log(existingUserEmail.rows[0].email == 1)
+    console.log('this is existing email user smthng');
+    console.log(existingUserEmail.rows[0].email == 1);
     const existingUserToken = await findDataForResetPassword(
       connection,
       'users',
       'token',
       emailToken
     );
-    console.log('this is existing token user smthng')
-    console.log(existingUserToken.rows[0])
+    console.log('this is existing token user smthng');
+    console.log(existingUserToken.rows[0]);
     // const user= await Userinfo(connection,email);
     //const updateToken=await UpdateToken(connection,emailToken);
 
     // FIXME: Verify the emailToken validation (time validation)
     // Email Verification
     // if (existingUserToken !== null) {
-    if (existingUserEmail.rows[0].email != null && existingUserToken.rows[0].token != null) {
-      const role = existingUserToken.rows[0].role
+    if (
+      existingUserEmail.rows[0].email != null &&
+      existingUserToken.rows[0].token != null
+    ) {
+      const role = existingUserToken.rows[0].role;
       const newPassword = generatPassword(8);
-      const userid = existingUserEmail.rows[0].userid
+      const userid = existingUserEmail.rows[0].userid;
       // console.log('newPassword=', newPassword);
       //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
       // existingUserToken.password = bcryptjs.hashSync(newPassword);
@@ -129,7 +132,11 @@ async function handler(req, res) {
       // if (existingUserToken.isVerified)
       await UpdateToken(connection, emailToken);
 
-      await newpassword(connection, existingUserToken.rows[0].userid, newPassword);
+      await newpassword(
+        connection,
+        existingUserToken.rows[0].userid,
+        newPassword
+      );
       const encryptedQuery = encodeURIComponent(
         encrypt(
           JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
@@ -150,8 +157,11 @@ async function handler(req, res) {
       );
       return;
     } else {
-      if (existingUserEmail.rows[0].email != null && existingUserToken.rows[0].token != null) {
-        const role = existingUserToken.rows[0].role
+      if (
+        existingUserEmail.rows[0].email != null &&
+        existingUserToken.rows[0].token != null
+      ) {
+        const role = existingUserToken.rows[0].role;
         res.writeHead(302, {
           Location: `${protocol}://${req.headers.host}/user/login`,
           // TODO: change the location to the next link Signin after go to home or to filling application

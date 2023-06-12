@@ -223,6 +223,8 @@ export default async function handler(req, res) {
         `${recieved_data.promotion}`,
       ];
       // const insertmajor =
+
+      // eslint-disable-next-line no-unused-vars
       const resMajor = await insertData(
         connection,
         'major',
@@ -397,6 +399,7 @@ export default async function handler(req, res) {
       // insert the promotion
       const columns_promotion = ['promotion_name'];
       const values_promotion = [`${recieved_data.program}`];
+      // eslint-disable-next-line no-unused-vars
       let resPromotion = await insertData(
         connection,
         'promotions',
@@ -424,7 +427,7 @@ export default async function handler(req, res) {
 
       if (!isSuccess) {
         const responseData = {
-          message: 'The data did not save in the sis database',
+          message: 'The data did not save in the sis database'
         };
         // else send
         // const responseData = { message: 'Failed to insert student info' };
@@ -453,7 +456,8 @@ export default async function handler(req, res) {
     // Send a response to the online application
     // FIXME: Dear SIS developper please handle if the student record inserted or not
     //  if inserted send
-    const responseData = { message: 'Received student info' };
+    const responseData = { message: 'Received student info'
+   };
     // else send
     // const responseData = { message: 'Failed to insert student info' };
     // the online application will handle the response for further actions
