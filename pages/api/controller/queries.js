@@ -607,18 +607,18 @@ async function getStudentPromotion(connection , attendance_id){
     
   }
 }
-// // update query to upload url 
-// async function uploadFile (connection , Url , attendance_id){
+// update query to upload url 
+async function uploadFile (connection , Url , attendance_id){
 
-//   try {
-//     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id = '${attendance_id}'`
-//     const res = await connection.query(query)
-//     console.log(query)
-//     return res
-//   } catch (error) {
-//     return error
-//   }
-// }
+  try {
+    const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id ='${attendance_id}'`
+    const res = await connection.query(query)
+    console.log(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
 
 //ProgramManager
@@ -785,7 +785,7 @@ module.exports = {
   AttendanceView,
   filterAttendances,
   getAttendanceByCTD,
-  // uploadFile,
+  uploadFile,
   filterStudent,
   getTeachersByMajorCourse,
   createAttendanceStudent,
