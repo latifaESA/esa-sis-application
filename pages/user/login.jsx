@@ -53,7 +53,7 @@ export default function LoginScreen() {
   //   (state) => state.persistedReducer.app_state.appState
   // );
 
-  console.log(errorMessage);
+  // console.log(errorMessage);
 
   // FIXME:Dear SIS team, please fix this useEffect to read SIS settings from the database
 

@@ -1,18 +1,18 @@
 /*
  * Created By: Ali Mroueh
  * Project: Online Application
- * File: pages\api\uploads\profile.js
+ * File: pages\api\CRUD_Op\sendreport.js
  * École Supérieure des Affaires (ESA)
- * Copyright (c) 2023 ESA
+ * Copyright (c) 2022 ESA
  */
-
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 
-import { env } from 'process';
+import { env } from "process";
+
 
 export const config = {
   api: {
@@ -21,6 +21,8 @@ export const config = {
 };
 
 async function handler(req, res) {
+  console.log("upload" , req)
+
   if (req.method !== 'POST') {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
@@ -31,31 +33,40 @@ async function handler(req, res) {
   }
   const { user } = session;
 
-  console.log('user from profile: ', user);
-  console.log('userId from profile: ', user.userid);
+
   const readFile = (file, saveLocally, place) => {
+
+   
     const options = {};
     if (saveLocally) {
       options.uploadDir = place;
+      
 
       // eslint-disable-next-line no-unused-vars
       options.filename = (name, ext, path1, form) => {
+        console.log("name",name)
+        
         if (
+          path1.mimetype === 'application/pdf' ||
+          path1.mimetype === 'application/x-pdf' ||
           path1.mimetype === 'image/png' ||
           path1.mimetype === 'image/jpeg' ||
           path1.mimetype === 'image/jpg'
         ) {
+
           let sourceDir = fs.readdirSync(place);
+          
 
           sourceDir.forEach((file) => {
             const filePath = path.join(place, file);
             const stats = fs.statSync(filePath);
             if (stats.isFile()) {
-              fs.unlinkSync(filePath);
+              // fs.unlinkSync(filePath);
               // console.log('Deleted file:', filePath);
             }
           });
-          return Date.now().toString() + '_' + path1.originalFilename;
+          const name = 'batoul'
+          return 'attendance-' + Date.now().toString() + '_' + path1.name;
         } else {
           return res
             .status(200)
@@ -66,47 +77,39 @@ async function handler(req, res) {
 
     // options.maxFileSize = 4000 * 1024 * 1024;
     const form = formidable(options);
+    
     return new Promise((resolve, reject) => {
+     
       form.parse(file, (err, fields, files) => {
         if (err) reject(err);
+        console.log("fields" , fields)
+       
         resolve({ fields, files });
       });
+      
     });
+
   };
 
   const localDiskPath = path.parse(require('os').homedir()).root;
-  // const directory = path.join(
-  //   localDiskPath,
-  //   'esa-applicants-data',
-  //   'onlineUsers',
-  //   `${user.name}-${user._id}`,
-  //   'photo',
-  //   'profile'
-  // );
-  const directory = path.join(
-    localDiskPath,
-    'sis-application-data',
-    'Users',
-    `${user.userid}`,
-    'photo'
-  );
+
+  const directory = localDiskPath + '/sis-application-data/Sis-documents/attendance';
 
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
   }
 
   await readFile(req, true, directory);
+  console.log(directory)
 
-  let allimages = await fs.readdirSync(directory);
+  let attendance_file = await fs.readdirSync(directory);
+ 
+ 
   // Return a response
-  // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
+  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${attendance_file.slice(-1)}` });
 
-  return res.status(200).send({
-    secure_url: `${env.ONLINE_APPLICATION_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
-  });
+// return res.status(200).send(req)
 
-
-  // return res.status(200).send(req)
 }
 
 export default handler;

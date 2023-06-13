@@ -19,14 +19,14 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
     const [showModal, setShowModal] = useState(false)
 
 
-    // const [promotionValue, setPromotionValue] = useState('')
-    const [test, setTest] = useState()
-    // const [coursesValue, setCoursesValue] = useState('')
-    // const [teacherValue, setTeachersValue] = useState('')
-    const [promotionName, setPromotionName] = useState('')
-    const [courseName, setCourseName] = useState('')
-    const [teachersName, setTeachersName] = useState('')
-    const [teachersLastName, setTeachersLastName] = useState('')
+    // // const [promotionValue, setPromotionValue] = useState('')
+    // const [test, setTest] = useState()
+    // // const [coursesValue, setCoursesValue] = useState('')
+    // // const [teacherValue, setTeachersValue] = useState('')
+    // const [promotionName, setPromotionName] = useState('')
+    // const [courseName, setCourseName] = useState('')
+    // const [teachersName, setTeachersName] = useState('')
+    // const [teachersLastName, setTeachersLastName] = useState('')
 
     const componentRef = useRef();
     //  setTimeout(() => {
@@ -44,7 +44,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                 major_id: session.user.majorid
             }
             console.log('payload')
-            const data = await axios.post('http://localhost:3000/api/pmApi/createAttendanceReport', payload)
+            const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
             // console.log(data.data)
             setData(data.data);
             // console.log("data",data.data)
@@ -54,7 +54,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
             if (attendance_id) {
                 for (let i = 0; i < student.length; i++) {
                     const student_id = student[i].student_id
-                    const data2 = await axios.post('http://localhost:3000/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
+                    const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
                     // console.log("dataaa", data2.data)
                 }
 
@@ -82,7 +82,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                   </h3> */}
                             <button
                                 className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                onClick={ setIsModal(false)}
+                                onClick={e=> setIsModal(false)}
                             >
                                 <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
                                     <BsX className=' text-gray-700' />

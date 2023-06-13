@@ -36,7 +36,7 @@ export default function createAttendance() {
             try {
 
                 let table = 'promotions';
-                let { data } = await axios.post('http://localhost:3000/api/pmApi/getAll', { table })
+                let { data } = await axios.post('/api/pmApi/getAll', { table })
                 console.log("promotion", data.rows)
                 setAllPromotions(data.rows)
 
@@ -62,7 +62,7 @@ export default function createAttendance() {
                 let table = 'courses';
                 let Where = 'major_id'
                 let id = session.user.majorid
-                let { data } = await axios.post('http://localhost:3000/api/pmApi/getAllCourses', { table, Where, id })
+                let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
                 console.log("course", data.data)
                 setAllCourses(data.data)
 
@@ -85,7 +85,7 @@ export default function createAttendance() {
 
                 let major_id = session.user.majorid;
                 // let course_id = coursesValue ;
-                const { data } = await axios.post("http://localhost:3000/api/pmApi/getTeachersByMajorCourse", { major_id })
+                const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
                 setAllTeachers(data.data)
                 // console.log("teacher",data.data.teacher_fullname)
 
@@ -184,7 +184,7 @@ export default function createAttendance() {
             setIsModal(true)
             let major_id = session.user.majorid
             let promotion_id = promotionValue
-            const { data } = await axios.post('http://localhost:3000/api/pmApi/getAllStudent', { major_id, promotion_id })
+            const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion_id })
             // console.log(data.data)
             // console.log(data.data)
             setStudent(data.data)
@@ -265,14 +265,6 @@ export default function createAttendance() {
                     Add
                 </button>
             </div>
-
-
-
-
-
-
-
-
 
             {isModal && <AttendanceModal setIsModal={setIsModal} student={student} selectedDate={selectedDate} promotionName={promotionName} teachersName={teachersName} courseName={courseName} session={session} teacherValue={teacherValue} coursesValue={coursesValue} />}
 
