@@ -60,27 +60,22 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
   
   ]
  
-
   const handleAll = async () => {
-    console.log("event")
-    // console.log("valurrr",attendance.present)
     try {
-     
-      const attendance_id = attendance[0].attendance_id;
-      console.log('attendance', attendance_id)
-      for (let i = 0; i < attendance.length; i++) {
-        const student_id = attendance[i].student_id
-        const present=attendance[i].present
-        console.log("present",present)
-        console.log("student",student_id)
-        const { data } = await axios.put('/pmApi/presentupdate', { present, student_id, attendance_id })
-        setMessage(data.message)
-      }
-
+      const attendanceUpdates = attendance.map((record) => ({
+        student_id: record.student_id,
+        attendance_id: record.attendance_id,
+        present: record.present,
+      }));
+  
+      const { data } = await axios.put('/api/pmApi/presentupdate', attendanceUpdates);
+  
+      setMessage(data.message);
     } catch (error) {
-      return error
+      console.error('Error updating attendance:', error);
+      // Handle error
     }
-  }
+  };
   
 
   const columns = [

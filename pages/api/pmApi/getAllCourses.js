@@ -12,6 +12,7 @@ async function handler(req , res){
         }=req.body;
         const response = await getCourse(connection , table ,Where, id);
         
+        
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,

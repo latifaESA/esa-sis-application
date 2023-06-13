@@ -413,9 +413,12 @@ async function filterAttendances(
 }
 //get courses assignment in a major
 async function getCourse(connection, table, where, id) {
+  console.log(where)
   try {
     let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
+    console.log(query)
     const response = await connection.query(query);
+    console.log(query)
     return response;
   } catch (error) {
     return error;
@@ -567,6 +570,47 @@ async function uploadFile (connection , Url , attendance_id){
     return error
   }
 }
+//filter teacher-course 
+
+async function teacherCourse(connection , course_id , courseex_id,  teacher_firstname , teacher_lastname ){
+// console.log(courseex_id)
+  try {
+    let  query = `SELECT teachers.* , teacher_extra_course.course_id 
+    from teachers 
+    INNER JOIN teacher_extra_course ON teachers.teacher_id = teacher_extra_course.teacher_id
+    where 1=1`
+    if (teacher_firstname.trim() != '') {
+      query += ` AND lower(trim(teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%'))`;
+    }
+    if (teacher_lastname.trim() != '') {
+      query += ` AND lower(trim(teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`;
+    }
+    if (course_id.trim() != '') {
+      query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
+    }
+    if (courseex_id.trim() != '') {
+      query += ` AND lower(trim(teacher_extra_course.course_id)) LIKE lower(trim('%${courseex_id}%'))`;
+    }
+    const res = await connection.query(query)
+    console.log(query)
+    return res
+    
+  } catch (error) {
+    return error
+  }
+}
+// assignment  course to teacher 
+
+async function assignmentTeacherCourse (connection , course_id , teacher_id , coursex_id){
+  try {
+    const query = `insert into teacher_course (teacher_id , course_id , coursex_id) VALUES ('${teacher_id}','${course_id}','${coursex_id}')`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
 
 
 //ProgramManager
@@ -578,19 +622,19 @@ async function filterpm(connection, pm_id, pm_firstname, pm_lastname, pm_email, 
       WHERE 1=1`;
 
     if (pm_id != '') {
-      query += ` AND lower(trim(pm_id)) LIKE lower(trim('%${pm_id}%'))`;
+      query += `AND lower(trim(pm_id)) LIKE lower(trim('%${pm_id}%'))`;
     }
     if (pm_firstname.trim() != '') {
-      query += ` AND lower(trim(pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
+      query += `AND lower(trim(pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
     }
     if (pm_lastname.trim() != '') {
-      query += ` AND lower(trim(pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
+      query += `AND lower(trim(pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
     }
     if (pm_email != '') {
-      query += ` AND lower(trim(pm_email)) LIKE lower(trim('%${pm_email}%'))`;
+      query += `AND lower(trim(pm_email)) LIKE lower(trim('%${pm_email}%'))`;
     }
     if (pm_status.trim() != '') {
-      query += ` AND program_manager.pm_status = '${pm_status}'`;
+      query += `AND program_manager.pm_status = '${pm_status}'`;
     }
 
     const result = await connection.query(query);
@@ -732,6 +776,8 @@ async function deleteUserpm(connection, pm_id) {
 module.exports = {
   AttendanceView,
   filterAttendances,
+  assignmentTeacherCourse,
+  teacherCourse,
   getAttendanceByCTD,
   uploadFile,
   filterStudent,
