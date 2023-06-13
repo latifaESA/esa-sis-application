@@ -779,6 +779,59 @@ async function deleteUserpm(connection, pm_id) {
   }
 }
 
+async function createPMAccount(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status, userpassword) {
+  try {
+    let query = `
+    insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status)
+    values ('${pm_id}', '${pm_firstname}', '${pm_lastname}', '${pm_email}', '${pm_status}') on conflict (pm_id) do nothing
+    RETURNING CASE
+    WHEN pm_id = '${pm_id}' THEN 'ID already exists'
+    ELSE 'Conflict occurred'
+    END AS message; 
+    insert into users(userid, role, userpassword)
+    values ('${pm_id}', '2', '${userpassword}') on conflict (userid) do nothing;
+
+    INSERT INTO user_document(userid)
+      VALUES('${pm_id}') on conflict (userid) do nothing
+      RETURNING CASE
+      WHEN userid = '${pm_id}' THEN 'ID already exists'
+      ELSE 'Conflict occurred'
+      END AS message; 
+    `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function createASAccount(connection, pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status, userpassword) {
+  try {
+    let query = `
+    insert into program_manager_assistance(pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status)
+    values ('${pm_ass_id}', '${pm_ass_firstname}', '${pm_ass_lastname}', '${pm_ass_email}', '${pm_ass_status}') on conflict (pm_ass_id) do nothing
+    RETURNING CASE
+    WHEN pm_ass_id = '${pm_ass_id}' THEN 'ID already exists'
+    ELSE 'Conflict occurred'
+    END AS message; 
+    insert into users(userid, role, userpassword)
+    values ('${pm_ass_id}', '3', '${userpassword}') on conflict (userid) do nothing;
+
+    INSERT INTO user_document(userid)
+      VALUES('${pm_ass_id}') on conflict (userid) do nothing
+      RETURNING CASE
+      WHEN userid = '${pm_ass_id}' THEN 'ID already exists'
+      ELSE 'Conflict occurred'
+      END AS message; 
+    `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -814,7 +867,10 @@ module.exports = {
   findDataForResetPassword,
   UpdateToken,
   newpassword,
+  createPMAccount,
+  createASAccount
   getCourseMajor,
   updateCourse,
   filterCourseMajor
+
 };
