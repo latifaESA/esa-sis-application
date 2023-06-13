@@ -727,11 +727,11 @@ async function deleteUserpm(connection, pm_id) {
   }
 }
 
-async function createPMAccount(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status, userpassword) {
+async function createPMAccount(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status, userpassword, major_id) {
   try {
     let query = `
-    insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status)
-    values ('${pm_id}', '${pm_firstname}', '${pm_lastname}', '${pm_email}', '${pm_status}') on conflict (pm_id) do nothing
+    insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status, major_id)
+    values ('${pm_id}', '${pm_firstname}', '${pm_lastname}', '${pm_email}', '${pm_status}', '${major_id}') on conflict (pm_id) do nothing
     RETURNING CASE
     WHEN pm_id = '${pm_id}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
@@ -753,11 +753,11 @@ async function createPMAccount(connection, pm_id, pm_firstname, pm_lastname, pm_
     return err;
   }
 }
-async function createASAccount(connection, pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status, userpassword) {
+async function createASAccount(connection, pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status, userpassword, major_id) {
   try {
     let query = `
-    insert into program_manager_assistance(pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status)
-    values ('${pm_ass_id}', '${pm_ass_firstname}', '${pm_ass_lastname}', '${pm_ass_email}', '${pm_ass_status}') on conflict (pm_ass_id) do nothing
+    insert into program_manager_assistance(pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status, major_id)
+    values ('${pm_ass_id}', '${pm_ass_firstname}', '${pm_ass_lastname}', '${pm_ass_email}', '${pm_ass_status}', '${major_id}') on conflict (pm_ass_id) do nothing
     RETURNING CASE
     WHEN pm_ass_id = '${pm_ass_id}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
@@ -772,6 +772,18 @@ async function createASAccount(connection, pm_ass_id, pm_ass_firstname, pm_ass_l
       ELSE 'Conflict occurred'
       END AS message; 
     `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function getAllMajor(connection) {
+  try {
+    let query = `
+      SELECT major_name, major_id FROM major`;
 
     const result = await connection.query(query);
     return result;
@@ -816,5 +828,6 @@ module.exports = {
   UpdateToken,
   newpassword,
   createPMAccount,
-  createASAccount
+  createASAccount,
+  getAllMajor
 };

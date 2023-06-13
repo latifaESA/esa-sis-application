@@ -27,14 +27,21 @@ export default function Create() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
   const [role, setRole] = useState('');
+  const [major, setMajor] = useState()
+  const [majorValue, setMajorValue] = useState('')
 
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
+  const getAllMajors = async () => { 
+    let majorData = await axios.get('/api/admin/adminApi/getMajor')
+
+    setMajor(majorData.data)
+  }
   useEffect(() => {
-    // console.log(role)
-  }, [role]);
+    getAllMajors()
+  }, []);
 
 let generatedPass = generatePasswod(10)
   const handleSubmit = async (e) => { 
@@ -43,7 +50,7 @@ let generatedPass = generatePasswod(10)
     const genPass = await bcryptjs.hash(generatedPass, salt)
     
     // if(role == '')
-    if(role == '2' && fname != '' && lname != '' && email != '')
+    if(role == '2' && fname != '' && lname != '' && email != '' && majorValue != '')
     {  
         const prefix = 'PM';
          let gen = generateID(prefix)
@@ -53,7 +60,8 @@ let generatedPass = generatePasswod(10)
             pm_lastname: lname.trim(),
             pm_email: email.trim(),
             pm_status: 'active'.trim(),
-            userpassword: genPass
+            userpassword: genPass,
+            major_id: majorValue.trim()
           };
     
           // id,firstname,lastname,major,promotion,status
@@ -65,7 +73,7 @@ let generatedPass = generatePasswod(10)
           }else{ 
             setMessage(`user Created Successfully with a password : ${generatedPass}`)
           }
-        }else if(role == '3'  && fname != '' && lname != '' && email != ''){ 
+        }else if(role == '3'  && fname != '' && lname != '' && email != '' && majorValue != ''){ 
             const prefix = 'AS';
             let gen = generateID(prefix)
            let sendASData = {
@@ -74,7 +82,8 @@ let generatedPass = generatePasswod(10)
                pm_ass_lastname: lname.trim(),
                pm_ass_email: email.trim(),
                pm_ass_status: 'active'.trim(),
-               userpassword: genPass
+               userpassword: genPass,
+               major_id: majorValue.trim()
              };
        
              // id,firstname,lastname,major,promotion,status
@@ -87,11 +96,14 @@ let generatedPass = generatePasswod(10)
              }
         }
 
-        if(fname == '' && lname == '' && email == ''){
+        if(fname == '' && lname == '' && email == '' ){
             setMessage('Please Fill all the required Fields')
         }
         if(role == ''){ 
             setMessage('Please choose a role')
+        }
+        if( majorValue == ''){ 
+            setMessage('Please choose a Major')
         }
         console.log('msg')
         console.log(message.includes('Successfully'))
@@ -156,18 +168,19 @@ let generatedPass = generatePasswod(10)
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                asd:
-                <input
-                  className="invisible max-[850px]:visible max-[850px]:hidden"
-                  type="asd"
-                  name="asd"
-                  placeholder="asd"
-                  // value={formData.Fname}
-                //   onChange={(e) => {
-                //     console.log(e.target.value);
-                //   }}
-                ></input>
+             <label>
+                Major:
+                <select 
+                onChange={e => setMajorValue(e.target.value)}
+                className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0">
+                  
+                  <option key={'uu2isdvf'} value=''>Choose a Major</option>
+                  {
+                    major && major.map((major) => (<>
+                    <option key={major.major_name} value={major.major_id}>{major.major_name}</option>
+                    </>))
+                  }
+                </select>
               </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
@@ -231,6 +244,7 @@ let generatedPass = generatePasswod(10)
          {message == 'Please choose a role' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
          {message == 'Please Fill all the required Fields' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
          {message == 'ID Already Exist' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
+         {message == 'Please choose a Major' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
          {message.includes('Successfully') ? <div className='text-center text-green-700 text-xl'>{message}</div> : null}
 
         </>
