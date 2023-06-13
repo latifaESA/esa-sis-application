@@ -54,55 +54,55 @@ const AttendanceList = ({ users, setUsers }) => {
 
 
 
-        setCourses(datesArray);
+    //     setCourses(datesArray);
 
 
-      } catch (error) {
-        return error
-      }
-    }
-    getCourses();
+    //   } catch (error) {
+    //     return error
+    //   }
+    // }
+    // getCourses();
 
-    const handleTeacher = async () => {
-      try {
+    // const handleTeacher = async () => {
+    //   try {
 
-        let major_id = session.user.majorid;
-        // let course_id = coursesValue ;
-        const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
-        setAllTeachers(data.data)
-        console.log('allteacher', allteachers)
+    //     let major_id = session.user.majorid;
+    //     // let course_id = coursesValue ;
+    //     const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
+    //     setAllTeachers(data.data)
+    //     console.log('allteacher', allteachers)
 
-        const datesArray = [];
-        data.data.forEach((teachers) => {
-          datesArray.push(teachers.teacher_firstname);
+    //     const datesArray = [];
+    //     data.data.forEach((teachers) => {
+    //       datesArray.push(teachers.teacher_firstname);
 
-        });
-        setTeachers(datesArray)
+    //     });
+    //     setTeachers(datesArray)
 
 
-      } catch (error) {
-        return error
-      }
-    }
-    handleTeacher()
+    //   } catch (error) {
+    //     return error
+    //   }
+    // }
+    // handleTeacher()
 
-    const getStudent = async () => {
-      try {
-        let major_id = session.user.majorid
-        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
-        console.log(data.data)
-        console.log(data.data)
-        setStudent(data.data)
-      } catch (error) {
-        return error
-      }
+    // const getStudent = async () => {
+    //   try {
+    //     let major_id = session.user.majorid
+    //     const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
+    //     console.log(data.data)
+    //     console.log(data.data)
+    //     setStudent(data.data)
+    //   } catch (error) {
+    //     return error
+    //   }
 
 
 
   const getDetails = async (event) =>{
     try {
       const attendance_id = event.attendance_id
-      const { data } = await axios.post(`http://localhost:3000/api/pmApi/attendanceDetails`, {attendance_id})
+      const { data } = await axios.post(`/api/pmApi/attendanceDetails`, {attendance_id})
       // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
       setTeacherFirstName(data.data[0].teacher_firstname)
       setTeacherlastname(data.data[0].teacher_lastname)
@@ -166,7 +166,7 @@ const AttendanceList = ({ users, setUsers }) => {
       // setEditModal(true)
 
       const attendance_id = event.attendance_id
-      const { data } = await axios.post(`http://localhost:3000/api/pmApi/getAllAttendance`, {attendance_id})
+      const { data } = await axios.post(`/api/pmApi/getAllAttendance`, {attendance_id})
 
       setAttendance(data.data)
 
@@ -308,7 +308,7 @@ const AttendanceList = ({ users, setUsers }) => {
             <button
               className='primary-button hover:text-white'
               type='button'
-              onClick={()=>setShowArchive(true)}
+              onClick={()=>{ handleShowAll(params.row),getDetails(params.row) , setShowArchive(true)}}
             >
               Archive
             </button>
@@ -377,7 +377,7 @@ const AttendanceList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} />}
       {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} />}
-      {archive && <Archive  archive={archive} setShowArchive={setShowArchive}/>}
+      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details}/>}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.attendance_id}
