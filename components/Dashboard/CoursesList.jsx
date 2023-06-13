@@ -192,7 +192,7 @@ console.log("params.row.major_name  ",params.row.major_name)
       datesArray.push(major.major_name);
     });
 
-    // setAllMajor(datesArray,'');
+    
     setAllMajor(['',...datesArray]);
     console.log('AllMjor:  ',datesArray)
 

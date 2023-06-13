@@ -56,10 +56,20 @@ export default function Create() {
 
     setIds(datesArray);
 
-    const datesArray1 = [];
+    // const datesArray1 = [];
+    // data.rows.forEach((course) => {
+    //   course.major_name !== '' && datesArray1.push(course.major_name);
+    // });
+    const datesSet = new Set();
     data.rows.forEach((course) => {
-      course.major_name !== '' && datesArray1.push(course.major_name);
+      course.major_name !== '' && datesSet.add(course.major_name);
     });
+    console.log('datesSet:   :', datesSet)
+    
+    // Convert the Set back to an array, if needed
+    const datesArray1 = Array.from(datesSet);
+    
+    console.log('datesArray:   :', datesArray1)
 
     setMajorName(datesArray1);
 
