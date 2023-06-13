@@ -9,11 +9,9 @@ async function handler(req, res) {
         const connection = await connect();
         const {course_id, major_name} = req.body;
         const data = await filterCourseMajor(connection,course_id, major_name);
-        console.log(data.rows)
         return res.status('200').send(data.rows)
         
     } catch (error) {
-        console.log('the error is: ', error)
         return res.status('401').send(error)
         // return error;
     }

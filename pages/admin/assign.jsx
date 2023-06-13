@@ -23,13 +23,11 @@ export default function Create() {
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
     setTheMName(selectedValue)
   };
 
   const handleId = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
     setCourseId(selectedValue)
   };
 
@@ -46,7 +44,6 @@ export default function Create() {
   const handleShowAll = async () => {
     let {data} = await axios.post('/api/admin/adminApi/courses')
 
-    console.log("the courses ====>> ",data.rows)
     setUsers(data.rows)
 
     const datesArray = [];
@@ -64,17 +61,11 @@ export default function Create() {
     data.rows.forEach((course) => {
       course.major_name !== '' && datesSet.add(course.major_name);
     });
-    console.log('datesSet:   :', datesSet)
     
     // Convert the Set back to an array, if needed
     const datesArray1 = Array.from(datesSet);
-    
-    console.log('datesArray:   :', datesArray1)
 
     setMajorName(datesArray1);
-
-    console.log('ids ===> ',ids)
-    console.log('majorName ===> ',majorName)
 
   };
 //   const handleShow = async () => {
@@ -103,7 +94,6 @@ export default function Create() {
         course_id: courseId.trim(),
         major_name: theMName.trim()
       };
-      console.log(sendData);
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
         '/api/admin/adminApi/filterCourse',

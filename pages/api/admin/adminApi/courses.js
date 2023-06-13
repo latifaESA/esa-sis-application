@@ -9,7 +9,6 @@ async function handler(req, res) {
         const connection = await connect();
 
         const data = await getCourseMajor(connection);
-        console.log(data)
         return res.status('200').send(data)
         
     } catch (error) {

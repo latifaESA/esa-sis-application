@@ -59,7 +59,6 @@ const CoursesList = ({ users, setUsers }) => {
     // );
   };
   const handleEnable = async (user) => {
-    console.log('make the query here ===> ', user)
     let sendData = {
       course_id: user.course_id,
       major_name: user.major_name,
@@ -71,7 +70,6 @@ const CoursesList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log('the response data: ===> ',response);
         setMessage('Course Major Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -108,19 +106,12 @@ const CoursesList = ({ users, setUsers }) => {
 const handleMajorNameChange = (event, params) => {
   const { value } = event.target;
 params.row.major_name = event.target.value;
-console.log("params.row.major_name  ",params.row.major_name)
   // Update the majorNameChanges object with the new value for the specific course_id
   setMajorNameChanges((prevChanges) => ({
     ...prevChanges,
     [params.row.course_id]: value,
   }));
 };
-
-  console.log('===============');
-  console.log('=this is users=======');
-  console.log(users);
-  console.log('===============');
-  console.log('===============');
 
     //incomplete modal
     const handleConfirmIncomplete = (user) => {
@@ -168,7 +159,6 @@ console.log("params.row.major_name  ",params.row.major_name)
         }))
       )
     );
-    console.log('selected Major ===>>> ', selectedMajorMap);
   }
   useEffect(() => {
     setTheMajor();
@@ -176,15 +166,9 @@ console.log("params.row.major_name  ",params.row.major_name)
     handleShowAll();
   }, []);
 
-  useEffect(() => {
-    console.log('selected Major ===>>> ', selectedMajorMap);
-  }, [selectedMajorMap]);
-
   const handleShowAll = async () => {
     let table = 'major';
     let {data} = await axios.post('/api/pmApi/getAll', {table})
-
-    console.log("the majors ====>> ",data.rows)
     setMajor(data.rows)
 
     const datesArray = [];
@@ -194,7 +178,6 @@ console.log("params.row.major_name  ",params.row.major_name)
 
     
     setAllMajor(['',...datesArray]);
-    console.log('AllMjor:  ',datesArray)
 
 
 
@@ -339,8 +322,6 @@ console.log("params.row.major_name  ",params.row.major_name)
             onClick={() => {
               // handleSave(params.row)
               handleConfirmIncomplete(params.row);
-              console.log('asdasdasdasd');
-              console.log(params.row);
             }}
             type="button"
           >
