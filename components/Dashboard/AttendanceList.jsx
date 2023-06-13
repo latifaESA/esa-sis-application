@@ -308,7 +308,7 @@ const AttendanceList = ({ users, setUsers }) => {
             <button
               className='primary-button hover:text-white'
               type='button'
-              onClick={()=>setShowArchive(true)}
+              onClick={()=>{ handleShowAll(params.row),getDetails(params.row) , setShowArchive(true)}}
             >
               Archive
             </button>
@@ -377,7 +377,7 @@ const AttendanceList = ({ users, setUsers }) => {
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} />}
       {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} />}
-      {archive && <Archive  archive={archive} setShowArchive={setShowArchive}/>}
+      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details}/>}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.attendance_id}

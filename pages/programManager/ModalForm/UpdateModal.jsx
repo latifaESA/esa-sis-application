@@ -10,7 +10,7 @@ import { useSession } from 'next-auth/react';
 import { BsX } from "react-icons/bs";
 
 export default function Modal({ setEditModal, attendance, setAttendance, courseName, teachersFirstname, teacherslastname, date }) {
-  // console.log("attendance", attendance)
+  console.log("attendance", attendance)
   // const presence = selection_data.presence;
   const { data: session } = useSession();
 //=======

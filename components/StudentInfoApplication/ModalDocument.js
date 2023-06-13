@@ -9,13 +9,27 @@ import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Image from "next/image"
 import { Document, Page,pdfjs } from 'react-pdf';
+import { Link } from '@mui/material';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
 
-function ProfileModal({ closeModal, profileUrl }) {
+function ProfileModal({ closeModal, profileUrl ,docUrl }) {
   return (
 <>
+{
+  docUrl &&(
+    <div className="modal">
+    <div className="modal-content">
+      <button className="modal-close" onClick={closeModal}>
+        <FaTimes />
+      </button>
+      <a  width="400" height="400"
+    className="w-full h-auto  cursor-pointer" href={`${docUrl}`}>{docUrl}</a>
+    </div>
+  </div>
+  )
+}
       {profileUrl && (
       <div className="modal">
         <div className="modal-content">
@@ -35,29 +49,29 @@ function ProfileModal({ closeModal, profileUrl }) {
 
 
 
-function CVModal({ closeModal, docCVUrl }) {
+function CVModal({ closeModal, docUrl }) {
  return (
     <>
-     {docCVUrl && (
+     {docUrl && (
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="modal-close" onClick={closeModal}>
           <FaTimes />
         </button>
-        {docCVUrl.endsWith('.pdf') ? (
-          
+        {docUrl.endsWith('.pdf') ? (
+          <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
           <Document
-            file={docCVUrl}
+            file={docUrl}
             renderMode="canvas"
             onLoadSuccess={() => console.log('PDF rendered successfully')}
             onLoadError={error => console.error(error)}
-            loading={<a>Loading CV...</a> }
+            loading={<a>Loading ....</a> }
           >
            <Page  pageNumber={1} scale={1} renderTextLayer={false} renderAnnotationLayer={false} renderInteractiveForms={false}/>
-          </Document>
+          </Document></div>
           
         ) : (
-          <Image src={docCVUrl} alt="Modal image" width="600" height="600"
+          <Image src={docUrl} alt="Modal image" width="600" height="600"
     className="w-full h-auto" />
         )}
       </div>
