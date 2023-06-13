@@ -44,6 +44,42 @@ function WarningMessageIncomplete({
   );
 }
 
+function WarningMessageUpdateCourse({
+  confirmOpenIncomplete,
+  handleConfirmClose,
+  handleConfirm,
+}) {
+  return (
+    <Modal
+      open={confirmOpenIncomplete}
+      onClose={handleConfirmClose}
+      className='top-0 left-0 w-full h-full flex items-center justify-center'
+    >
+      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
+        <p className='text-gray-700 mb-4'>
+          Are you sure you want to Update this Course ?
+        </p>
+        <div className='flex justify-end'>
+          <button
+            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            onClick={handleConfirmClose}
+          >
+            Cancel
+          </button>
+          <button
+            className='bg-blue-500 text-white px-4 py-2 rounded'
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 function WarningMessageObsolote({
   confirmOpenObsolote,
   handleConfirmClose,
@@ -278,6 +314,7 @@ function WarningMessageVerified({
 
 export {
   WarningMessageIncomplete,
+  WarningMessageUpdateCourse,
   WarningMessageObsolote,
   WarningMessageCancleIncomplete,
   ErrorMessage,

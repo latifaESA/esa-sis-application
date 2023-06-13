@@ -129,6 +129,58 @@ async function newpassword(connection, email, newPassword) {
   }
 }
 
+async function getCourseMajor(connection){
+  try{
+    let result = connection.query(`SELECT courses.course_id, courses.course_name, courses.course_credit, COALESCE(major.major_name, '') AS major_name
+    FROM courses
+    LEFT JOIN major ON courses.major_id = major.major_id;`);
+    return result;
+  }catch(error){
+    return error;
+  }
+}
+// course
+async function updateCourse(connection, course_id, major_name){
+  try{
+    let result = connection.query(`UPDATE courses
+    SET major_id = (
+      SELECT major_id
+      FROM major
+      WHERE major_name = '${major_name}'
+    )
+    WHERE course_id = '${course_id}'`)
+    return result;
+  }catch(error){
+    return error;
+  }
+}
+
+// GET course based on course_id and major_name
+async function filterCourseMajor(
+  connection,
+  course_id,
+  major_name,
+) {
+  try {
+    let query = `
+    SELECT c.course_id, c.course_name, c.course_credit, m.major_name
+    FROM courses c
+    LEFT JOIN major m ON c.major_id = m.major_id
+    WHERE 
+      (c.course_id = '${course_id}' OR '${course_id}' = '') 
+      AND
+      (m.major_name = '${major_name}' OR '${major_name}' = '') 
+      AND
+      (m.major_name != '' OR c.major_id IS NULL);
+    ;`
+    const result = await connection.query(query);
+    return result;
+    // return `couse id: ${course_id} major name: ${major_name}`
+  } catch (err) {
+    return err;
+  }
+}
+
 // eslint-disable-next-line no-unused-vars
 async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
   // try {
@@ -762,4 +814,7 @@ module.exports = {
   findDataForResetPassword,
   UpdateToken,
   newpassword,
+  getCourseMajor,
+  updateCourse,
+  filterCourseMajor
 };
