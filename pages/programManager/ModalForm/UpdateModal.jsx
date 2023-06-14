@@ -8,10 +8,18 @@ import moment from 'moment';
 // import CustomPagination from '../../../components/Dashboard/Pagination';
 import { useSession } from 'next-auth/react';
 
-import { BsX } from "react-icons/bs";
+import { BsX } from 'react-icons/bs';
 
-export default function Modal({ setEditModal, attendance, setAttendance, courseName, teachersFirstname, teacherslastname, date }) {
-  console.log("attendance", attendance)
+export default function Modal({
+  setEditModal,
+  attendance,
+  setAttendance,
+  courseName,
+  teachersFirstname,
+  teacherslastname,
+  date,
+}) {
+  console.log('attendance', attendance);
 
   // const presence = selection_data.presence;
   const { data: session } = useSession();
@@ -129,8 +137,7 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
     //   console.log('updatedAttendance', updatedAttendance);
     //   return updatedAttendance;
     // });
-//   };
-// >>>>>>> 23c575684a0df3f700eb0af5df3f22d45cfab236
+  };
 
   const columns = [
     {
@@ -299,4 +306,5 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
         </div>
       </div>
     </>
-  );}}
+  );
+}
