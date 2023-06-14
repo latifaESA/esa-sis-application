@@ -46,8 +46,7 @@ export default function Create() {
       pm_email: ''.trim(),
       pm_status: 'active'.trim(),
     };
-    console.log('this is pm data');
-    console.log(sendpmData);
+    
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/admin/adminApi/filterpm', sendpmData);
 
@@ -115,11 +114,7 @@ export default function Create() {
         sendpmData
       );
 
-      console.log('this is data');
-      // setTemp(parseInt(idvalue))
-      console.log(data);
-      console.log(sendpmData);
-      // // console.log(typeof(parseInt(temp)))
+   
       setUsers(data);
     }
   };

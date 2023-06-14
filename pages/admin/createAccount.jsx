@@ -3,112 +3,134 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import generatePasswod from '../../utilities/generatePassword';
 import axios from 'axios';
-import bcryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs';
 import { useRouter } from 'next/router';
 
 function generateID(prefix) {
-    const prefixLength = prefix.length;
-    const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(6, '0');
-    return prefix + randomDigits.substr(prefixLength);
-  }
-
+  const prefixLength = prefix.length;
+  const randomDigits = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(6, '0');
+  return prefix + randomDigits.substr(prefixLength);
+}
 
 export default function Create() {
   const { data: session } = useSession();
-  const [users, setUsers] = useState([]);
-  const [assistance, setAssistance] = useState([]);
-  const [message, setMessage] = useState('')
+  // const [users, setUsers] = useState([]);
+  // const [assistance, setAssistance] = useState([]);
+  const [message, setMessage] = useState('');
 
   const router = useRouter();
 
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
-  const [idvalue, setIDvalue] = useState('');
+  // const [idvalue, setIDvalue] = useState('');
   const [email, setEmail] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [status, setStatus] = useState('');
   const [role, setRole] = useState('');
-  const [major, setMajor] = useState()
-  const [majorValue, setMajorValue] = useState('')
+  const [major, setMajor] = useState();
+  const [majorValue, setMajorValue] = useState('');
 
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
-  const getAllMajors = async () => { 
-    let majorData = await axios.get('/api/admin/adminApi/getMajor')
+  const getAllMajors = async () => {
+    let majorData = await axios.get('/api/admin/adminApi/getMajor');
 
-    setMajor(majorData.data)
-  }
+    setMajor(majorData.data);
+  };
   useEffect(() => {
-    getAllMajors()
+    getAllMajors();
   }, []);
 
-let generatedPass = generatePasswod(10)
-  const handleSubmit = async (e) => { 
-    e.preventDefault()
+  let generatedPass = generatePasswod(10);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const salt = await bcryptjs.genSalt(8);
-    const genPass = await bcryptjs.hash(generatedPass, salt)
-    
+    const genPass = await bcryptjs.hash(generatedPass, salt);
+
     // if(role == '')
-    if(role == '2' && fname != '' && lname != '' && email != '' && majorValue != '')
-    {  
-        const prefix = 'PM';
-         let gen = generateID(prefix)
-        let sendData = {
-            pm_id: gen.trim(),
-            pm_firstname: fname.trim(),
-            pm_lastname: lname.trim(),
-            pm_email: email.trim(),
-            pm_status: 'active'.trim(),
-            userpassword: genPass,
-            major_id: majorValue.trim()
-          };
-    
-          // id,firstname,lastname,major,promotion,status
-          let { data } = await axios.post('/api/admin/adminApi/createPMAccount', sendData);
-    
-          console.log(data[0].rowCount)
-          if(data[0].rowCount == 0){
-            setMessage('ID Already Exist')
-          }else{ 
-            setMessage(`user Created Successfully with a password : ${generatedPass}`)
-          }
-        }else if(role == '3'  && fname != '' && lname != '' && email != '' && majorValue != ''){ 
-            const prefix = 'AS';
-            let gen = generateID(prefix)
-           let sendASData = {
-               pm_ass_id: gen.trim(),
-               pm_ass_firstname: fname.trim(),
-               pm_ass_lastname: lname.trim(),
-               pm_ass_email: email.trim(),
-               pm_ass_status: 'active'.trim(),
-               userpassword: genPass,
-               major_id: majorValue.trim()
-             };
-       
-             // id,firstname,lastname,major,promotion,status
-             let { data } = await axios.post('/api/admin/adminApi/createASAccount', sendASData);
+    if (
+      role == '2' &&
+      fname != '' &&
+      lname != '' &&
+      email != '' &&
+      majorValue != ''
+    ) {
+      const prefix = 'PM';
+      let gen = generateID(prefix);
+      let sendData = {
+        pm_id: gen.trim(),
+        pm_firstname: fname.trim(),
+        pm_lastname: lname.trim(),
+        pm_email: email.trim(),
+        pm_status: 'active'.trim(),
+        userpassword: genPass,
+        major_id: majorValue.trim(),
+      };
 
-             if(data[0].rowCount == 0){
-               setMessage('ID Already Exist')
-             }else{ 
-               setMessage(`user Created Successfully with a password : ${generatedPass}`)
-             }
-        }
+      // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post(
+        '/api/admin/adminApi/createPMAccount',
+        sendData
+      );
 
-        if(fname == '' && lname == '' && email == '' ){
-            setMessage('Please Fill all the required Fields')
-        }
-        if(role == ''){ 
-            setMessage('Please choose a role')
-        }
-        if( majorValue == ''){ 
-            setMessage('Please choose a Major')
-        }
-        console.log('msg')
-        console.log(message.includes('Successfully'))
-  }
+      console.log(data[0].rowCount);
+      if (data[0].rowCount == 0) {
+        setMessage('ID Already Exist');
+      } else {
+        setMessage(
+          `user Created Successfully with a password : ${generatedPass}`
+        );
+      }
+    } else if (
+      role == '3' &&
+      fname != '' &&
+      lname != '' &&
+      email != '' &&
+      majorValue != ''
+    ) {
+      const prefix = 'AS';
+      let gen = generateID(prefix);
+      let sendASData = {
+        pm_ass_id: gen.trim(),
+        pm_ass_firstname: fname.trim(),
+        pm_ass_lastname: lname.trim(),
+        pm_ass_email: email.trim(),
+        pm_ass_status: 'active'.trim(),
+        userpassword: genPass,
+        major_id: majorValue.trim(),
+      };
 
+      // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post(
+        '/api/admin/adminApi/createASAccount',
+        sendASData
+      );
+
+      if (data[0].rowCount == 0) {
+        setMessage('ID Already Exist');
+      } else {
+        setMessage(
+          `user Created Successfully with a password : ${generatedPass}`
+        );
+      }
+    }
+
+    if (fname == '' && lname == '' && email == '') {
+      setMessage('Please Fill all the required Fields');
+    }
+    if (role == '') {
+      setMessage('Please choose a role');
+    }
+    if (majorValue == '') {
+      setMessage('Please choose a Major');
+    }
+    console.log('msg');
+    console.log(message.includes('Successfully'));
+  };
 
   return (
     <>
@@ -123,7 +145,7 @@ let generatedPass = generatePasswod(10)
           </p>
           <form>
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-              <label className='w-[350px]'>
+              <label className="w-[350px]">
                 First Name:
                 <input
                   className="ml-1 w-40"
@@ -168,18 +190,23 @@ let generatedPass = generatePasswod(10)
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-             <label>
+              <label>
                 Major:
-                <select 
-                onChange={e => setMajorValue(e.target.value)}
-                className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0">
-                  
-                  <option key={'uu2isdvf'} value=''>Choose a Major</option>
-                  {
-                    major && major.map((major) => (<>
-                    <option key={major.major_name} value={major.major_id}>{major.major_name}</option>
-                    </>))
-                  }
+                <select
+                  onChange={(e) => setMajorValue(e.target.value)}
+                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                >
+                  <option key={'uu2isdvf'} value="">
+                    Choose a Major
+                  </option>
+                  {major &&
+                    major.map((major) => (
+                      <>
+                        <option key={major.major_name} value={major.major_id}>
+                          {major.major_name}
+                        </option>
+                      </>
+                    ))}
                 </select>
               </label>
 
@@ -241,12 +268,21 @@ let generatedPass = generatePasswod(10)
               </div>
             </div>
           </form>
-         {message == 'Please choose a role' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
-         {message == 'Please Fill all the required Fields' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
-         {message == 'ID Already Exist' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
-         {message == 'Please choose a Major' ? <div className='text-center text-red-500 text-xl'>{message}</div> : null}
-         {message.includes('Successfully') ? <div className='text-center text-green-700 text-xl'>{message}</div> : null}
-
+          {message == 'Please choose a role' ? (
+            <div className="text-center text-red-500 text-xl">{message}</div>
+          ) : null}
+          {message == 'Please Fill all the required Fields' ? (
+            <div className="text-center text-red-500 text-xl">{message}</div>
+          ) : null}
+          {message == 'ID Already Exist' ? (
+            <div className="text-center text-red-500 text-xl">{message}</div>
+          ) : null}
+          {message == 'Please choose a Major' ? (
+            <div className="text-center text-red-500 text-xl">{message}</div>
+          ) : null}
+          {message.includes('Successfully') ? (
+            <div className="text-center text-green-700 text-xl">{message}</div>
+          ) : null}
         </>
       ) : (
         redirect()

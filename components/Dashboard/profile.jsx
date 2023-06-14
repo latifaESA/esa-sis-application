@@ -7,7 +7,7 @@ import Head from 'next/head';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useState } from 'react';
-import uploadDocumentToCloud from '../../utilities/uploadToCloud/uploadDocumentToCloud';
+// import uploadDocumentToCloud from '../../utilities/uploadToCloud/uploadDocumentToCloud';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
 import DropZone from '../../components/UploadDocuments/DropZone';
 import { ProfileModal } from '../../components/StudentInfoApplication/ModalDocument';

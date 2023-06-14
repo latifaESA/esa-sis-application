@@ -1,11 +1,14 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import DropZone from '../../../components/UploadDocuments/DropZone';
-import { ProfileModal, CVModal } from '../../../components/StudentInfoApplication/ModalDocument';
+import {
+  ProfileModal,
+  CVModal,
+} from '../../../components/StudentInfoApplication/ModalDocument';
 import uploadDocReducer from '../../../components/UploadDocuments/reducers/uploadDocReducer';
-import { BsX } from "react-icons/bs";
+import { BsX } from 'react-icons/bs';
 import UploadDocuments from '../../../components/UploadDocuments/UploadDocuments';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from "moment";
+import moment from 'moment';
 import selection_data from '../../../utilities/selection_data';
 import {
   profileUrlChanged,
@@ -14,13 +17,10 @@ import {
 import axios from 'axios';
 import decrypt from '../../../utilities/encrypt_decrypt/encryptText';
 
-
 export default function Archive({ setShowArchive, attendance, details }) {
-  console.log("attendance", attendance)
-  console.log("details", details)
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [message, setMessage] = useState('')
-  const [docUrl, setDocUrl] = useState(false)
+  const [message, setMessage] = useState('');
+  const [docUrl, setDocUrl] = useState(false);
   const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
     useState(false);
   const [profileUrl, setProfileUrl] = useState(null);
@@ -32,7 +32,7 @@ export default function Archive({ setShowArchive, attendance, details }) {
   });
   setTimeout(() => {
     setMessage('');
-  }, selection_data.message_disapear_timing)
+  }, selection_data.message_disapear_timing);
   const closeModal = () => {
     setShowProfileModal(false);
   };
@@ -41,31 +41,32 @@ export default function Archive({ setShowArchive, attendance, details }) {
       try {
         const table = 'attendance_report';
         const Where = 'attendance_id';
-        const id = details[0].attendance_id
+        const id = details[0].attendance_id;
 
-        const { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
-        console.log(data.data[0].url)
-        setDocUrl(data.data[0].url)
+        const { data } = await axios.post('/api/pmApi/getAllCourses', {
+          table,
+          Where,
+          id,
+        });
+        console.log(data.data[0].url);
+        setDocUrl(data.data[0].url);
       } catch (error) {
-        return error
+        return error;
       }
-
-    }
-    fetchData()
-
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
-      console.log("uploaddata", uploadPhotoData.fileList[0].name);
+      console.log('uploaddata', uploadPhotoData.fileList[0].name);
 
       setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
-         
           const formData = new FormData();
           formData.append('files', uploadPhotoData.fileList[0]);
-          
+
           formData.append('course_id', details[0].course_id);
           formData.append('teacher_id', details[0].teacher_id);
           formData.append('attendance_id', details[0].attendance_id);
@@ -76,11 +77,14 @@ export default function Archive({ setShowArchive, attendance, details }) {
           //   teacher_id: details[0].teacher_id,
           //   attendance_id: details[0].attendance_id
           // }
-          console.log('fileList', uploadPhotoData.fileList[0])
-          console.log("data", formData)
-          const { data } = await axios.post('/api/uploaddoc/uploadDoc', formData);
-          console.log("dataaaaaaa", data)
-          setDocUrl(data.url)
+          console.log('fileList', uploadPhotoData.fileList[0]);
+          console.log('data', formData);
+          const { data } = await axios.post(
+            '/api/uploaddoc/uploadDoc',
+            formData
+          );
+          console.log('dataaaaaaa', data);
+          setDocUrl(data.url);
           // setShowProfileModal(true)
           setupdateProfileButtonDisable(false);
         } catch (error) {
@@ -93,24 +97,21 @@ export default function Archive({ setShowArchive, attendance, details }) {
   }, [uploadPhotoData]);
 
   const handleFile = async () => {
-
     try {
-      const url = docUrl
-      const attendance_id = attendance[0].attendance_id
+      const url = docUrl;
+      const attendance_id = attendance[0].attendance_id;
       const { data } = await axios.put('/api/pmApi/updateURL', {
         url,
-        attendance_id
-      })
-      setMessage(data.message)
+        attendance_id,
+      });
+      setMessage(data.message);
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
   return (
     <>
-      <div
-        className="justify-center items-center p-12 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-      >
+      <div className="justify-center items-center p-12 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div className="relative w-50 my-6 mx-auto max-w-3xl">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col p-10 bg-white outline-none focus:outline-none">
@@ -121,16 +122,20 @@ export default function Archive({ setShowArchive, attendance, details }) {
                   </h3> */}
               <button
                 className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={e => setShowArchive(false)}
+                onClick={(e) => setShowArchive(false)}
               >
                 <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  <BsX className=' text-gray-700' />
+                  <BsX className=" text-gray-700" />
                 </span>
               </button>
             </div>
             {/*body*/}
             <div className="relative  flex-auto">
-              {message && <div className=' text-gray-600 item-center pt-5 mb-1 font-bold p-2'>{message}</div>}
+              {message && (
+                <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
+                  {message}
+                </div>
+              )}
               <DropZone
                 data={uploadPhotoData}
                 dispatch={uploadPhotoDispatch}
@@ -138,18 +143,26 @@ export default function Archive({ setShowArchive, attendance, details }) {
               />
 
               {docUrl && docUrl !== ' ' && (
-                <div className='flex justify-center items-center'>
+                <div className="flex justify-center items-center">
                   {!showProfileModal && (
-                    <a className='cursor-pointer' onClick={() => { setShowProfileModal(true) }}>
+                    <a
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setShowProfileModal(true);
+                      }}
+                    >
                       Preview file
                     </a>
                   )}
                   {showProfileModal && (
-                    <CVModal className='cursor-pointer' closeModal={closeModal} docUrl={docUrl} />
+                    <CVModal
+                      className="cursor-pointer"
+                      closeModal={closeModal}
+                      docUrl={docUrl}
+                    />
                   )}
                 </div>
               )}
-
             </div>
             {/*footer*/}
             <div className="flex items-center justify-center p-6">
@@ -173,5 +186,5 @@ export default function Archive({ setShowArchive, attendance, details }) {
       </div>
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
-  )
+  );
 }

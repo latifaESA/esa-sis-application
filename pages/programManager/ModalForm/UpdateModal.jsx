@@ -19,19 +19,7 @@ export default function Modal({
   teacherslastname,
   date,
 }) {
-  console.log('attendance', attendance);
-
-  // const presence = selection_data.presence;
   const { data: session } = useSession();
-  //=======
-  //import axios from 'axios';
-  //// import CustomPagination from '../../';
-  //export default function Modal({ setEditModal, attendance, setAttendance }) {
-  //  console.log('att', attendance);
-
-  //const presence = selection_data.presence;
-  //// const [Present, setPresent] = useState('');
-
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -76,17 +64,12 @@ export default function Modal({
         const row = attendance[i];
         if (row.isDirty) {
           const { student_id, attendance_id, present } = row;
-          console.log('student', student_id);
-          console.log('attendance', attendance_id);
-          console.log('present', present);
-
           const { data } = await axios.put('/api/pmApi/presentupdate', {
             present,
             student_id,
             attendance_id,
           });
 
-          console.log('data', data);
           setMessage(data.message);
         }
       }
@@ -102,41 +85,23 @@ export default function Modal({
 
   const handleCellEditChange = (params) => {
     const { id, field, value } = params;
-    // console.log('id', id);
-    // console.log('params', params);
-    // console.log('field', field);
 
     setAttendance((prevState) => {
       const updatedAttendance = prevState.map((row) => {
-        // console.log('row', row);
         if (row.student_id === id) {
           const updatedRow = {
             ...row,
             [field]: value,
             isDirty: row.present !== value,
           };
-          // console.log('updatedRow', updatedRow);
+
           return updatedRow;
         }
         return row;
       });
-      // console.log('updatedAttendance', updatedAttendance);
+
       return updatedAttendance;
     });
-
-    // setAttendance((prevState) => {
-    //   const updatedAttendance = prevState.map((row) => {
-    //     if (row.id === id) {
-    //       const updatedRow = { ...row, [field]: value };
-    //       updatedRow.isDirty = row.present !== value;
-
-    //       return updatedRow;
-    //     }
-    //     return row;
-    //   });
-    //   console.log('updatedAttendance', updatedAttendance);
-    //   return updatedAttendance;
-    // });
   };
 
   const columns = [
@@ -208,8 +173,7 @@ export default function Modal({
       ),
     },
   ];
-  console.log('update', update);
-  // const [showModal, setShowModal] = React.useState(false);
+
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
