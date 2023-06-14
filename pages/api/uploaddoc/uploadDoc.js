@@ -1,18 +1,10 @@
-/*
- * Created By: Ali Mroueh
- * Project: Online Application
- * File: pages\api\CRUD_Op\sendreport.js
- * École Supérieure des Affaires (ESA)
- * Copyright (c) 2022 ESA
- */
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 
-import { env } from "process";
-
+import { env } from 'process';
 
 export const config = {
   api: {
@@ -21,8 +13,6 @@ export const config = {
 };
 
 async function handler(req, res) {
- 
-
   if (req.method !== 'POST') {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
@@ -31,21 +21,18 @@ async function handler(req, res) {
   if (!session) {
     return res.status(401).send({ message: 'Signin Required To Save Data' });
   }
-  const { user } = session;
 
+  // const { formData, attendance } = req.body;
 
   const readFile = (file, saveLocally, place) => {
-
-   
     const options = {};
     if (saveLocally) {
       options.uploadDir = place;
-      
 
       // eslint-disable-next-line no-unused-vars
       options.filename = (name, ext, path1, form) => {
         // console.log("user",form)
-        
+
         if (
           path1.mimetype === 'application/pdf' ||
           path1.mimetype === 'application/x-pdf' ||
@@ -53,9 +40,7 @@ async function handler(req, res) {
           path1.mimetype === 'image/jpeg' ||
           path1.mimetype === 'image/jpg'
         ) {
-
           let sourceDir = fs.readdirSync(place);
-          
 
           sourceDir.forEach((file) => {
             const filePath = path.join(place, file);
@@ -65,8 +50,10 @@ async function handler(req, res) {
               // console.log('Deleted file:', filePath);
             }
           });
-          
-          return 'attendance-' + Date.now().toString() + '_' + path1.originalFilename;
+
+          return (
+            'attendance-' + Date.now().toString() + '_' + path1.originalFilename
+          );
         } else {
           return res
             .status(200)
@@ -77,39 +64,46 @@ async function handler(req, res) {
 
     // options.maxFileSize = 4000 * 1024 * 1024;
     const form = formidable(options);
-    
+
     return new Promise((resolve, reject) => {
-     
       form.parse(file, (err, fields, files) => {
         if (err) reject(err);
         resolve({ fields, files });
       });
-      
     });
-
   };
 
   const localDiskPath = path.parse(require('os').homedir()).root;
 
-  const directory = localDiskPath + '/sis-application-data/Sis-documents/attendance';
+  const directory =
+    localDiskPath + '/sis-application-data/sis-documents/attendance';
 
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
   }
-
- const {fields , files}= await readFile(req, true, directory);
-  console.log(fields)
+  // eslint-disable-next-line no-unused-vars
+  const { fields, files } = await readFile(req, true, directory);
+  console.log('fields', fields);
 
   let attendance_file = await fs.readdirSync(directory);
-//   const ext ='.pdf'
-//  const filename = `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${fields.major_id}${ext}`
-//  return res.status(200).send({ url: filename });
- 
+  const oldFilePath = path.join(directory, attendance_file.slice(-1)[0]);
+  const fileExtension = path.extname(attendance_file.slice(-1)[0]);
+  const newFileName = fields.attendance + fileExtension;
+  const newFilePath = path.join(directory, newFileName);
+
+  // Rename the file
+  fs.renameSync(oldFilePath, newFilePath);
+  // // Delete the old file if it exists
+  // if (fs.existsSync(oldFilePath)) {
+  //   fs.unlinkSync(oldFilePath);
+  // }
+
   // Return a response
-  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${attendance_file.slice(-1)}` });
+  return res.status(200).send({
+    url: `${env.NEXTAUTH_URL}/file/sis/sis-documents/attendance/${newFileName}`,
+  });
 
-// return res.status(200).send(req)
-
+  // return res.status(200).send(req)
 }
 
 export default handler;
