@@ -97,13 +97,13 @@ const CreateAccount = () => {
     try {
       setErrorMessage('');
       setIsRegistering(true);
-      console.log('major=', major);
+   
       const id_res = await axios.post('/api/user/generateID', {
         data: encrypt(JSON.stringify(major[0].label)),
       });
       const incomingID = JSON.parse(decrypt(id_res.data.data));
       ID = incomingID.ID;
-      console.log('ID=', ID);
+    
 
       const payload = {
         ID,
@@ -117,7 +117,7 @@ const CreateAccount = () => {
         mobileNumber,
         selectedOptions: selectedOptions.slice(1).map((option) => option.label),
       };
-      console.log('selectedOptions=', selectedOptions);
+   
 
       const encryptedBody = encrypt(JSON.stringify(payload));
       await axios.post('/api/admin/account', { data: encryptedBody });

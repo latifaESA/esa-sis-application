@@ -136,7 +136,7 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-        console.log('ID', user.ID);
+   
         // Handle success
         setMessage('User Account Deleted Successfully');
         console.log(response.data);
@@ -160,7 +160,7 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-        console.log('ID', user.ID);
+     
         // Handle success
         setMessage('User Account Locked.');
         console.log(response.data);
@@ -188,7 +188,7 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-        console.log('ID', user.ID);
+    
         // Handle success
         setMessage('User Account Unlocked.');
         console.log(response.data);

@@ -58,15 +58,15 @@ async function handler(req, res) {
   const selectedOptions = xss.inHTMLData(reqBody.selectedOptions);
   const selectedOptionsArray = selectedOptions.split(',');
 
-  console.log('ID=', ID);
-  console.log('role=', role);
-  console.log('email=', email);
-  console.log('password=', password);
-  console.log('major=', major);
-  console.log('fname=', fname);
-  console.log('lname=', lname);
-  console.log('mobileNumber=', mobileNumber);
-  console.log('profileUrl=', profileUrl);
+  // console.log('ID=', ID);
+  // console.log('role=', role);
+  // console.log('email=', email);
+  // console.log('password=', password);
+  // console.log('major=', major);
+  // console.log('fname=', fname);
+  // console.log('lname=', lname);
+  // console.log('mobileNumber=', mobileNumber);
+  // console.log('profileUrl=', profileUrl);
   console.log(
     'selectedOptions:',
     selectedOptions,
