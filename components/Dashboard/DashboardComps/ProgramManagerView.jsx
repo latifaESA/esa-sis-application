@@ -160,11 +160,11 @@ const ProgramManagerView = () => {
         </Link>
 
         {/* course Management system */}
-        <Link href="/programManager/">
+        <Link href="/programManager/teacherCourse">
           {/* <Link href='/admin/payments'> */}
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/' 
+              router.pathname == '/programManager/teacherCourse' 
               // router.pathname == '/programManager/Create/createAttendance'
                 ? // router.pathname == '/admin/Payments'
                   'bg-blue-100 text-blue-500'
@@ -175,7 +175,7 @@ const ProgramManagerView = () => {
               <UserGroupIcon className="h-5 w-5" />
             </div>
             <div>
-              <p>Assignment</p>
+              <p>Assigned</p>
             </div>
           </div>
         </Link>

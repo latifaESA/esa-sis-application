@@ -380,7 +380,7 @@ const AttendanceList = ({ users, setUsers }) => {
       {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details}/>}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.attendance_id}
+          getRowId={(r) => r.course_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}

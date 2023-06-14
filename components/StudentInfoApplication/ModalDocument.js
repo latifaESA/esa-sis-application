@@ -59,7 +59,7 @@ function CVModal({ closeModal, docUrl }) {
           <FaTimes />
         </button>
         {docUrl.endsWith('.pdf') ? (
-          <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
+          <div style={{ maxWidth: '500px', maxHeight: '500px' }}>
           <Document
             file={docUrl}
             renderMode="canvas"

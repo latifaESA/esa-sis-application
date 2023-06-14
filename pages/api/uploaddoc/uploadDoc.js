@@ -21,7 +21,7 @@ export const config = {
 };
 
 async function handler(req, res) {
-  console.log("upload" , req)
+ 
 
   if (req.method !== 'POST') {
     return res.status(400).send({ message: `${req.method} not supported` });
@@ -44,7 +44,7 @@ async function handler(req, res) {
 
       // eslint-disable-next-line no-unused-vars
       options.filename = (name, ext, path1, form) => {
-        console.log("name",name)
+        // console.log("user",form)
         
         if (
           path1.mimetype === 'application/pdf' ||
@@ -65,8 +65,8 @@ async function handler(req, res) {
               // console.log('Deleted file:', filePath);
             }
           });
-          const name = 'batoul'
-          return 'attendance-' + Date.now().toString() + '_' + path1.name;
+          
+          return 'attendance-' + Date.now().toString() + '_' + path1.originalFilename;
         } else {
           return res
             .status(200)
@@ -82,8 +82,6 @@ async function handler(req, res) {
      
       form.parse(file, (err, fields, files) => {
         if (err) reject(err);
-        console.log("fields" , fields)
-       
         resolve({ fields, files });
       });
       
@@ -99,11 +97,13 @@ async function handler(req, res) {
     fs.mkdirSync(directory, { recursive: true });
   }
 
-  await readFile(req, true, directory);
-  console.log(directory)
+ const {fields , files}= await readFile(req, true, directory);
+  console.log(fields)
 
   let attendance_file = await fs.readdirSync(directory);
- 
+//   const ext ='.pdf'
+//  const filename = `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${fields.major_id}${ext}`
+//  return res.status(200).send({ url: filename });
  
   // Return a response
   return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${attendance_file.slice(-1)}` });

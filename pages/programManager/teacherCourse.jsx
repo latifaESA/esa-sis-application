@@ -2,7 +2,7 @@
 // // import { useDispatch, useSelector } from 'react-redux';
 // import { useEffect, useState } from 'react';
 // // import { appIsWaiting } from '../../redux/slices/appSlice';
-// import AttendanceList from '../../components/Dashboard/AttendanceList'
+// import TeachersCourseList from '../../components/Dashboard/AttendanceList'
 // import { useSession } from 'next-auth/react';
 // import { useRouter } from 'next/router';
 // // import Link from 'next/link';
@@ -18,96 +18,43 @@
 //     router.push('/AccessDenied')
 //   }
 
-//   const [attendance_id, setAttendanceId] = useState('')
-//   const [student_id, setStudentid] = useState('')
-//   const [teacher_id, setTeacherid] = useState('')
-//   const [major_id, setMajorid] = useState('');
-//   const [major, setMajor] = useState([]);
-//   const [allMajor, setAllMajor] = useState([])
-//   const [course_id, setCourseid] = useState('')
-//   const [present, setPresent] = useState('')
-//   const [teacher_firstname, setTeacherFirstName] = useState('')
-//   const [teacher_lastname, setTeacherLastName] = useState('')
-//   const [attendance_date, setattendanceDate] = useState('')
-//   const [major_name, setMajorName] = useState('')
-//   const [allmajor, setallMajor] = useState([])
-//   const [majorValue, setMajorValue] = useState([])
+//  const [teacher_firstname , setTeacherFirstName] = useState('')
+//  const [teacher_lastname , setTeacherLastName] = useState('')
+//  const [course_id , setCourseid] = useState('')
+//  const [courseX_id , setCourseX_id] = useState('')
 //   const [test, setTest] = useState()
 //   console.log(session)
 
 //   useEffect(() => {
-//     const getMajor = async () => {
-//       let table = 'major';
-//       let { data } = await axios.post('http://localhost:3000/api/pmApi/getAll', { table })
-
-//       console.log('major')
-//       console.log(data.rows)
-//       setAllMajor(data.rows)
-
-//       const datesArray = [];
-//       data.rows.forEach((attendance) => {
-//         datesArray.push(attendance.major_name);
-//       });
-
-//       setMajor(datesArray);
-//       console.log(major, 'before')
-//     }
-//     getMajor()
-//     const fetchData = async () => {
-//       try {
+//   const fetchData = async()=>{
+//     try {
 //         const payload = {
-//           attendanceId: "",
-//           studentId: "",
-//           teacherId: "",
-//           majorId: session.user.majorid,
-//           courseId: "",
-//           attendanceDate: "",
-//           present: "",
-//           teacher_firstname: '',
-//           teacher_lastname: '',
-//           major_name: ''
-
-
+//           teacher_firstname:'',
+//          teacher_lastname:'',
+//          courseId:'',
+//          courseXId :''
 //         }
-//         const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
-//         console.log("data", result.data.data)
+//         const result = await axios.post("/api/pmApi/filterTeacherCourse", payload)
 //         setUsers(result.data.data)
+//         setTest(true)
 //       } catch (error) {
 //         return error
 //       }
-//     };
-//     fetchData();
-
+//   }
+//   fetchData()
 //   }, [])
-//   console.log(session.user.majorid)
+  
 
 //   const handleShowAll = async () => {
 //     try {
 //       const payload = {
-//         attendanceId: "",
-//         studentId: "",
-//         teacherId: "",
-//         majorId: session.user.majorid,
-//         courseId: "",
-//         attendanceDate: "",
-//         present: "",
-//         teacher_teacherfirstname: '',
-//         teacher_teacherlastname: '',
-//         major_name: "",
-
+//         teacher_firstname:'',
+//        teacher_lastname:'',
+//        courseId:'',
+//        courseXId :''
 //       }
-//       const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
+//       const result = await axios.post("api/pmApi/filterTeacherCourse", payload)
 //       setUsers(result.data.data)
-//       setAttendanceId('')
-//       setCourseid('')
-//       setTeacherid('')
-//       setStudentid('')
-//       setattendanceDate('')
-//       setPresent('')
-//       setTeacherFirstName('')
-//       setTeacherLastName('')
-//       setMajorName('')
-//       setMajorValue('')
 //       setTest(true)
 //     } catch (error) {
 //       return error
@@ -119,18 +66,14 @@
 //   const handleAttendance = async () => {
 //     try {
 //       const payload = {
-//         attendanceId: attendance_id,
-//         studentId: student_id,
-//         teacherId: teacher_id,
-//         majorId: session.user.majorid,
 //         courseId: course_id,
-//         attendanceDate: attendance_date,
-//         present: present,
+//         courseXId : courseX_id,
 //         teacher_firstname: teacher_firstname,
 //         teacher_lastname: teacher_lastname,
+        
 
 //       }
-//       const result = await axios.post("http://localhost:3000/api/pmApi/filterAttendance", payload)
+//       const result = await axios.post("/api/pmApi/filterTeacherCourse", payload)
 //       setUsers(result.data.data)
 //     } catch (error) {
 //       return error
@@ -166,34 +109,6 @@
 //         <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Attendance</p>
 //         <form >
 //           <div className="grid grid-cols-1 gap-3 min-[850px]:grid-cols-3 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-//             <div>
-//               <label className='w-[350px]'>
-//                 Date:
-//                 <input
-//                   className="ml-5 w-40 max-[850px]:ml-3 mr-5"
-//                   type="date"
-//                   name="from"
-//                   id={'date'}
-//                   value={attendance_date}
-//                   onChange={(e) => { setattendanceDate(e.target.value) }}
-//                 ></input>
-//               </label>
-//             </div>
-
-//             <div>
-//               <label className='w-[350px]'>
-//                 course ID:
-//                 <input
-//                   className="ml-5 w-40 max-[850px]:ml-3"
-//                   type="text"
-//                   name="from"
-//                   id={'text'}
-//                   placeholder='Course ID'
-//                   value={course_id}
-//                   onChange={(e) => { setCourseid(e.target.value) }}
-//                 ></input>
-//               </label>
-//             </div>
 
 //             <div>
 //               <label className='w-[350px]'>
@@ -225,6 +140,20 @@
 //                 ></input>
 //               </label>
 
+//             </div>
+//             <div>
+//               <label className='w-[350px]'>
+//                 course ID:
+//                 <input
+//                   className="ml-5 w-40 max-[850px]:ml-3"
+//                   type="text"
+//                   name="from"
+//                   id={'text'}
+//                   placeholder='Course ID'
+//                   value={course_id}
+//                   onChange={(e) => { setCourseid(e.target.value) ,setCourseX_id(e.target.value) }}
+//                 ></input>
+//               </label>
 //             </div>
 
 
@@ -285,7 +214,7 @@
 //               </button>
 //             </div>
 //           </div>
-//           <AttendanceList users={users} setUsers={setUsers} />
+//           <TeachersCourseList users={users} setUsers={setUsers} />
 //         </form>
 //       </>) : redirect()}
 //     </>

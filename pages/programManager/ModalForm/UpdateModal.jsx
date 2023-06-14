@@ -129,7 +129,8 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
     //   console.log('updatedAttendance', updatedAttendance);
     //   return updatedAttendance;
     // });
-  };
+//   };
+// >>>>>>> 23c575684a0df3f700eb0af5df3f22d45cfab236
 
   const columns = [
     {
@@ -298,5 +299,4 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
         </div>
       </div>
     </>
-  );
-}
+  );}}
