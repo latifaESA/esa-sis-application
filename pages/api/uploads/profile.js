@@ -1,18 +1,18 @@
 /*
  * Created By: Ali Mroueh
  * Project: Online Application
- * File: pages\api\CRUD_Op\sendreport.js
+ * File: pages\api\uploads\profile.js
  * École Supérieure des Affaires (ESA)
- * Copyright (c) 2022 ESA
+ * Copyright (c) 2023 ESA
  */
+
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 
-import { env } from "process";
-
+import { env } from 'process';
 
 export const config = {
   api: {
@@ -31,8 +31,8 @@ async function handler(req, res) {
   }
   const { user } = session;
 
-  console.log('user from profile: ', user)
-  console.log('userId from profile: ', user.userid)
+  console.log('user from profile: ', user);
+  console.log('userId from profile: ', user.userid);
   const readFile = (file, saveLocally, place) => {
     const options = {};
     if (saveLocally) {
@@ -45,7 +45,6 @@ async function handler(req, res) {
           path1.mimetype === 'image/jpeg' ||
           path1.mimetype === 'image/jpg'
         ) {
-
           let sourceDir = fs.readdirSync(place);
 
           sourceDir.forEach((file) => {
@@ -85,11 +84,12 @@ async function handler(req, res) {
   //   'profile'
   // );
   const directory = path.join(
-    localDiskPath, 
-    'sis-application-data', 
+    localDiskPath,
+    'sis-application-data',
     'Users',
     `${user.userid}`,
-    'photo');
+    'photo'
+  );
 
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
@@ -100,10 +100,13 @@ async function handler(req, res) {
   let allimages = await fs.readdirSync(directory);
   // Return a response
   // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
-  return res.status(200).send({ secure_url: `${env.ONLINE_APPLICATION_URL}/file/sis/Users/${user.userid}/photo/${allimages[0]}` });
 
-// return res.status(200).send(req)
+  return res.status(200).send({
+    secure_url: `${env.ONLINE_APPLICATION_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
+  });
 
+
+  // return res.status(200).send(req)
 }
 
 export default handler;

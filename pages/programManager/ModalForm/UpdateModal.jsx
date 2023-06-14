@@ -3,82 +3,142 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import selection_data from '../../../utilities/selection_data';
 
-import axios from "axios";
-import moment from "moment";
+import axios from 'axios';
+import moment from 'moment';
 // import CustomPagination from '../../../components/Dashboard/Pagination';
 import { useSession } from 'next-auth/react';
+
 import { BsX } from "react-icons/bs";
 
 export default function Modal({ setEditModal, attendance, setAttendance, courseName, teachersFirstname, teacherslastname, date }) {
   console.log("attendance", attendance)
+
   // const presence = selection_data.presence;
   const { data: session } = useSession();
-//=======
-//import axios from 'axios';
-//// import CustomPagination from '../../';
-//export default function Modal({ setEditModal, attendance, setAttendance }) {
-//  console.log('att', attendance);
+  //=======
+  //import axios from 'axios';
+  //// import CustomPagination from '../../';
+  //export default function Modal({ setEditModal, attendance, setAttendance }) {
+  //  console.log('att', attendance);
 
   //const presence = selection_data.presence;
   //// const [Present, setPresent] = useState('');
 
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('')
-  const [update, setUpdate] = useState([])
-
+  const [message, setMessage] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [update, setUpdate] = useState([]);
 
   setTimeout(() => {
     setMessage('');
-  }, selection_data.message_disapear_timing)
-
+  }, selection_data.message_disapear_timing);
 
   const handleUpdate = async (event) => {
-    // console.log('evennnnnnt', event)
     try {
-
-
       const present = event.present;
-      console.log("presenttttttttt" , present)
       const attendance_id = event.attendance_id;
       const student_id = event.student_id;
 
-      console.log("attendance", event.attendance_id)
-      console.log("student", event.present)
-      const { data } = await axios.put('/api/pmApi/presentupdate', { present, student_id, attendance_id })
-      // console.log("updateeeeeeeeeeeeeeeeeeeeeee" , attendance)
-      setMessage(data.message)
+      const { data } = await axios.put('/api/pmApi/presentupdate', {
+        present,
+        student_id,
+        attendance_id,
+      });
 
+      setMessage(data.message);
 
+      // Update the attendance state with the new present value
+      setAttendance((prevState) => {
+        const updatedAttendance = prevState.map((row) => {
+          if (row.student_id === student_id) {
+            return { ...row, present: present };
+          }
+          return row;
+        });
+        return updatedAttendance;
+      });
     } catch (error) {
-      return error;
+      console.error(error);
+    }
+  };
+
+  const handleAll = async () => {
+    try {
+      for (let i = 0; i < attendance.length; i++) {
+        const row = attendance[i];
+        if (row.isDirty) {
+          const { student_id, attendance_id, present } = row;
+          console.log('student', student_id);
+          console.log('attendance', attendance_id);
+          console.log('present', present);
+
+          const { data } = await axios.put('/api/pmApi/presentupdate', {
+            present,
+            student_id,
+            attendance_id,
+          });
+
+          console.log('data', data);
+          setMessage(data.message);
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const presence = [
     { value: true, label: 'Present' },
-    { value: false, label: 'Absent' }
-  
-  ]
- 
-  const handleAll = async () => {
-    try {
-      const attendanceUpdates = attendance.map((record) => ({
-        student_id: record.student_id,
-        attendance_id: record.attendance_id,
-        present: record.present,
-      }));
-  
-      const { data } = await axios.put('/api/pmApi/presentupdate', attendanceUpdates);
-  
-      setMessage(data.message);
-    } catch (error) {
-      console.error('Error updating attendance:', error);
-      // Handle error
-    }
-  };
-  
+    { value: false, label: 'Absent' },
+  ];
+
+  const handleCellEditChange = (params) => {
+    const { id, field, value } = params;
+    // console.log('id', id);
+    // console.log('params', params);
+    // console.log('field', field);
+
+    setAttendance((prevState) => {
+      const updatedAttendance = prevState.map((row) => {
+        // console.log('row', row);
+        if (row.student_id === id) {
+          const updatedRow = {
+            ...row,
+            [field]: value,
+            isDirty: row.present !== value,
+          };
+          // console.log('updatedRow', updatedRow);
+          return updatedRow;
+        }
+        return row;
+      });
+      // console.log('updatedAttendance', updatedAttendance);
+      return updatedAttendance;
+    });
+
+    // setAttendance((prevState) => {
+    //   const updatedAttendance = prevState.map((row) => {
+    //     if (row.id === id) {
+    //       const updatedRow = { ...row, [field]: value };
+    //       updatedRow.isDirty = row.present !== value;
+
+    //       return updatedRow;
+    //     }
+    //     return row;
+    //   });
+    //   console.log('updatedAttendance', updatedAttendance);
+    //   return updatedAttendance;
+    // });
+//   };
+// >>>>>>> 23c575684a0df3f700eb0af5df3f22d45cfab236
 
   const columns = [
+    {
+      field: 'id', // Add the id field
+      headerName: 'ID',
+      hide: true, // Hide the ID column
+    },
+
     {
       field: 'Name',
       headerName: 'Student Name',
@@ -99,10 +159,7 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       editable: true,
 
       renderCell: (params) => {
-
-        return params.value ? <>
-          Present
-        </> : <>Absent</>
+        return params.value ? <>Present</> : <>Absent</>;
       },
 
       cellClassName: (params) =>
@@ -131,13 +188,12 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
             }}
             // disabled={params.id !== presentEnable}
 
-            type='button'
+            type="button"
             hidden={
               session.user.role === '1' || session.user.role === '3'
                 ? true
                 : false
             }
-
           >
             Save
           </button>
@@ -145,14 +201,11 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
       ),
     },
   ];
- console.log("update",update)
+  console.log('update', update);
   // const [showModal, setShowModal] = React.useState(false);
   return (
     <>
-
-      <div
-        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none "
-      >
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
         <div className="relative w-auto my-6 mx-auto max-w-3xl  pr-30">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -162,31 +215,39 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
 
                     Modal Title
                   </h3> */}
-
             </div>
             {/*body*/}
             <div className="relative p-6 flex-auto">
               <button
                 className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={() => { setEditModal(false), setAttendance([]) }}
+                onClick={() => {
+                  setEditModal(false), setAttendance([]);
+                }}
               >
                 <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
                   <BsX />
                 </span>
               </button>
-              <div className="p-4" > 
-                <p className="text-gray-700 text-3xl pt-5 mb-2 font-bold">Attendance</p>
+              <div className="p-4">
+                <p className="text-gray-700 text-3xl pt-5 mb-2 font-bold">
+                  Attendance
+                </p>
                 <div>
-                  <p className="text-gray-600  pt-5 mb-1 ">Course Name :{courseName}</p>
-                  <p className="text-gray-600  pt-5 mb-1">Date:{moment(date).format('DD/MM/YYYY')}</p>
-                  <p className="text-gray-600  pt-5 mb-3">Teacher FullName :{teachersFirstname} {teacherslastname}</p>
-
-
+                  <p className="text-gray-600  pt-5 mb-1 ">
+                    Course Name :{courseName}
+                  </p>
+                  <p className="text-gray-600  pt-5 mb-1">
+                    Date:{moment(date).format('DD/MM/YYYY')}
+                  </p>
+                  <p className="text-gray-600  pt-5 mb-3">
+                    Teacher FullName :{teachersFirstname} {teacherslastname}
+                  </p>
                 </div>
-
               </div>
               <div>
-                {message && <div className=' text-green-500 font-bold p-2'>{message}</div>}
+                {message && (
+                  <div className=" text-green-500 font-bold p-2">{message}</div>
+                )}
                 <div className="p-4">
                   <Box sx={{ height: 280, width: '100%' }}>
                     <DataGrid
@@ -200,12 +261,12 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
                       }
                       rowsPerPageOptions={[5, 10, 15, 20]}
                       pagination
-
-                      // checkboxSelection
-                      // onSelectionModelChange={setSelectedRows}
-                      // disableSelectionOnClick
-                      // onSelectionModelChange={disablePrintHanlder}
-                      // onCellEditCommit={(params) => handleAll(params.row)}
+                      // onEditCellChange={(params) =>
+                      //   handleCellEditChange(params)
+                      // }
+                      onCellEditCommit={(params) =>
+                        handleCellEditChange(params)
+                      }
                       components={{
                         NoRowsOverlay: () => (
                           <div className="grid h-[100%] place-items-center">
@@ -217,14 +278,12 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
                     />
                   </Box>
                 </div>
-
               </div>
               <div className="flex items-center justify-end p-6 border-solid border-slate-200 rounded-b">
                 <button
-
-                  className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5" type="button"
-                  onClick={()=>handleAll()}
-
+                  className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5"
+                  type="button"
+                  onClick={() => handleAll()}
                 >
                   Save ALL
                 </button>
@@ -236,12 +295,8 @@ export default function Modal({ setEditModal, attendance, setAttendance, courseN
                 </button> */}
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </>
-  )
-
-}
+  );}}
