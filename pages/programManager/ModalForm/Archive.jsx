@@ -48,7 +48,7 @@ export default function Archive({ setShowArchive, attendance, details }) {
           Where,
           id,
         });
-        console.log(data.data[0].url);
+        // console.log(data.data[0].url);
         setDocUrl(data.data[0].url);
       } catch (error) {
         return error;
@@ -59,31 +59,30 @@ export default function Archive({ setShowArchive, attendance, details }) {
 
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
-      console.log('uploaddata', uploadPhotoData.fileList[0].name);
+      // console.log('uploaddata', uploadPhotoData.fileList[0].name);
 
       setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
+          const attendanceDate = new Date(details[0].attendance_date);
+          const day = attendanceDate.getDate().toString().padStart(2, '0');
+          const month = (attendanceDate.getMonth() + 1)
+            .toString()
+            .padStart(2, '0');
+          const year = attendanceDate.getFullYear().toString();
+          const formattedDate = `${day}-${month}-${year}`.replace(/-/g, '_');
+
           const formData = new FormData();
           formData.append('files', uploadPhotoData.fileList[0]);
-
-          formData.append('course_id', details[0].course_id);
-          formData.append('teacher_id', details[0].teacher_id);
-          formData.append('attendance_id', details[0].attendance_id);
-          formData.append('date', details[0].attendance_date);
-          // const payload ={
-          //   major_id : details[0].major_id,
-          //   course_id : details[0].course_id,
-          //   teacher_id: details[0].teacher_id,
-          //   attendance_id: details[0].attendance_id
-          // }
-          console.log('fileList', uploadPhotoData.fileList[0]);
-          console.log('data', formData);
+          formData.append(
+            'attendance',
+            `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
+          );
           const { data } = await axios.post(
             '/api/uploaddoc/uploadDoc',
             formData
           );
-          console.log('dataaaaaaa', data);
+          console.log('URL', data.url);
           setDocUrl(data.url);
           // setShowProfileModal(true)
           setupdateProfileButtonDisable(false);
@@ -122,7 +121,7 @@ export default function Archive({ setShowArchive, attendance, details }) {
                   </h3> */}
               <button
                 className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={(e) => setShowArchive(false)}
+                onClick={() => setShowArchive(false)}
               >
                 <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
                   <BsX className=" text-gray-700" />
