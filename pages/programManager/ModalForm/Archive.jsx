@@ -46,7 +46,7 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
           Where,
           id,
         });
-        console.log('hon', data.data[0].url);
+
         setDocUrl(data.data[0].url);
         console.log("docUrl", docUrl)
       } catch (error) {
@@ -58,33 +58,50 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
 
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
-      console.log('uploaddata', uploadPhotoData.fileList[0].name);
+      // console.log('uploaddata', uploadPhotoData.fileList[0].name);
 
       setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
-          const date = details[0].attendance_date
+//<<<<<<< batoul
+//          const date = details[0].attendance_date
+//
+//          const DateFormat = moment(date).format('DD-MM-YYYY')
+//
+//          const fileExtension = getFileExtension(uploadPhotoData.fileList[0].name);
+//          // const newFileName = `new_file_name${fileExtension}`;
+//          const newFileName = `${details[0].attendance_id}-${details[0].major_id}-${details[0].course_id}-${details[0].teacher_id}-${DateFormat}.${fileExtension}`;
+//          const formData = new FormData();
+//          formData.append('files', uploadPhotoData.fileList[0], newFileName);
+//          formData.append('major_id', details[0].major_id);
+//          formData.append('attendance_id', details[0].attendance_id);
+//          formData.append('course_id', details[0].course_id);
+//          formData.append('teacher_id', details[0].teacher_id);
+//          formData.append('attendance_date', DateFormat);
+//          formData.append('ext', fileExtension);
+//          console.log('fileList', uploadPhotoData.fileList[0].name);
 
-          const DateFormat = moment(date).format('DD-MM-YYYY')
+//=======
+          const attendanceDate = new Date(details[0].attendance_date);
+          const day = attendanceDate.getDate().toString().padStart(2, '0');
+          const month = (attendanceDate.getMonth() + 1)
+            .toString()
+            .padStart(2, '0');
+          const year = attendanceDate.getFullYear().toString();
+          const formattedDate = `${day}-${month}-${year}`.replace(/-/g, '_');
 
-          const fileExtension = getFileExtension(uploadPhotoData.fileList[0].name);
-          // const newFileName = `new_file_name${fileExtension}`;
-          const newFileName = `${details[0].attendance_id}-${details[0].major_id}-${details[0].course_id}-${details[0].teacher_id}-${DateFormat}.${fileExtension}`;
           const formData = new FormData();
-          formData.append('files', uploadPhotoData.fileList[0], newFileName);
-          formData.append('major_id', details[0].major_id);
-          formData.append('attendance_id', details[0].attendance_id);
-          formData.append('course_id', details[0].course_id);
-          formData.append('teacher_id', details[0].teacher_id);
-          formData.append('attendance_date', DateFormat);
-          formData.append('ext', fileExtension);
-          console.log('fileList', uploadPhotoData.fileList[0].name);
+          formData.append('files', uploadPhotoData.fileList[0]);
+          formData.append(
+            'attendance',
+            `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
+          );
 
           const { data } = await axios.post(
             '/api/uploaddoc/uploadDoc',
             formData
           );
-          console.log('dataaaaaaa', data);
+          console.log('URL', data.url);
           setDocUrl(data.url);
           // setShowProfileModal(true)
           setupdateProfileButtonDisable(false);
@@ -115,36 +132,84 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
     }
   };
 
+  //<<<<<<< batoul
+//      {!showProfileModal ? <>
+//        <div
+//          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+//        >
+//          <div className="relative  w-1/2 overflow-y-auto  my-6 mx-auto max-w-3xl">
+//            {/*content*/}
+//            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+  //            {/*header*/}
+    //          <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+      //          <h3 className="text-gray-700 text-3xl font-bold">
+        //          Upload File
+          //      </h3>
+            //    <button
+              //    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                //  onClick={() => { setShowArchive(false), setDetails([]) }}
+//                >
+//                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+//                    <BsX className=" text-gray-700 font-bold" />
+//                  </span>
+//                </button>
+//              </div>
+//              {/*body*/}
+//              <div className="relative p-6 flex-auto">
+//                <div className="my-4 text-slate-500 text-lg leading-relaxed">
+//                  {message && (
+ //                   <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
+//                      {message}
+ //                   </div>
+//=======
+  
+  
   return (
     <>
-      {!showProfileModal ? <>
-        <div
-          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-        >
-          <div className="relative  w-1/2 overflow-y-auto  my-6 mx-auto max-w-3xl">
-            {/*content*/}
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              {/*header*/}
-              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                <h3 className="text-gray-700 text-3xl font-bold">
-                  Upload File
-                </h3>
-                <button
-                  className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                  onClick={() => { setShowArchive(false), setDetails([]) }}
-                >
-                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                    <BsX className=" text-gray-700 font-bold" />
-                  </span>
-                </button>
-              </div>
-              {/*body*/}
-              <div className="relative p-6 flex-auto">
-                <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                  {message && (
-                    <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
-                      {message}
-                    </div>
+
+      <div className="justify-center items-center p-12 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="relative w-50 my-6 mx-auto max-w-3xl">
+          {/*content*/}
+          <div className="border-0 rounded-lg shadow-lg relative flex flex-col p-10 bg-white outline-none focus:outline-none">
+            {/*header*/}
+            <div className="flex items-start justify-between p-2">
+              {/* <h3 className="text-3xl font-semibold">
+                    Modal Title
+                  </h3> */}
+              <button
+                className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={() => setShowArchive(false)}
+              >
+                <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                  <BsX className=" text-gray-700" />
+                </span>
+              </button>
+            </div>
+            {/*body*/}
+            <div className="relative  flex-auto">
+              {message && (
+                <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
+                  {message}
+                </div>
+              )}
+              <DropZone
+                data={uploadPhotoData}
+                dispatch={uploadPhotoDispatch}
+                type={'file'}
+              />
+
+              {docUrl && docUrl !== ' ' && (
+                <div className="flex justify-center items-center">
+                  {!showProfileModal && (
+                    <a
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setShowProfileModal(true);
+                      }}
+                    >
+                      Preview file
+                    </a>
+
                   )}
                   <div>
                     
