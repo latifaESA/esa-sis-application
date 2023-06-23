@@ -1,15 +1,9 @@
-/*
- * Created By: Ali Mroueh
- * Project: Online Application
- * File: pages\api\CRUD_Op\sendreport.js
- * École Supérieure des Affaires (ESA)
- * Copyright (c) 2022 ESA
- */
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
+
 
 import { env } from "process";
 
@@ -31,7 +25,7 @@ async function handler(req, res) {
   if (!session) {
     return res.status(401).send({ message: 'Signin Required To Save Data' });
   }
-  const { user } = session;
+  // const { user } = session;
 
 
   const readFile = (file, saveLocally, place) => {
@@ -66,7 +60,7 @@ async function handler(req, res) {
             }
           });
           
-          return 'attendance-' + Date.now().toString() + '_' + path1.originalFilename;
+          return  path1.originalFilename;
         } else {
           return res
             .status(200)
@@ -98,15 +92,15 @@ async function handler(req, res) {
   }
 
  const {fields , files}= await readFile(req, true, directory);
-  console.log(fields)
+  console.log('fields',fields)
 
   let attendance_file = await fs.readdirSync(directory);
 //   const ext ='.pdf'
 //  const filename = `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${fields.major_id}${ext}`
 //  return res.status(200).send({ url: filename });
- 
+//  console.log(attendance_file.sort())
   // Return a response
-  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${attendance_file.slice(-1)}` });
+  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${ fields.major_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}` });
 
 // return res.status(200).send(req)
 

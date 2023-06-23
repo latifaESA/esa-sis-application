@@ -100,6 +100,23 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
+        <Link href="/admin/createCourse">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/createCourse'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+            disabled={true}
+          >
+            <div className="mr-2">
+              <UserPlusIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Create Courses</p>
+            </div>
+          </div>
+        </Link>
 
         {/* Report Section */}
 

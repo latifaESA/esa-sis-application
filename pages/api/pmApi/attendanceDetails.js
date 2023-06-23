@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect , disconnect } = require("../../../utilities/db");
 const { AttendanceDetails } = require("../controller/queries");
 
 
@@ -9,6 +9,7 @@ async function handler(req, res) {
         
         const {attendance_id} = req.body;
         const response = await AttendanceDetails(connection, attendance_id);
+        await disconnect(connection);
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,

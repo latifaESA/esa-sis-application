@@ -4,9 +4,12 @@ export const LowerButtons = ({
   // exportButton,
   // selectedRows,
   exportAllButton,
+  // setisCoursesCreate,
   // handlePrintSelected,
-  // session
-
+  session,
+  
+  assigned,
+setOpenModal
   // setisModal,
 }) => {
   return (
@@ -16,14 +19,25 @@ export const LowerButtons = ({
         Create Attendance
        </button> */}
 
-        {/* <div className="grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4">
+        {session.user.role === '2' && assigned ?<>
+        
         <button
           className="primary-button btnCol text-white  hover:text-white"
           type="button"
-          onClick={() => setisModal(true)}
+          onClick={() => setOpenModal(true)}
         >
-          Create Attendance
-        </button> */}
+          Assigned Teacher
+        </button> 
+        
+        </>:<><button
+          className="primary-button btnCol text-white hover:text-white"
+          type="button"
+          onClick={exportAllButton}
+          // hidden={session.user.role === '2'?true:false}
+        >
+          Export All
+        </button></>}
+       
 
         {/* <button
           className='primary-button hover:text-white'
@@ -34,14 +48,7 @@ export const LowerButtons = ({
         >
           Export Selected
         </button> */}
-        <button
-          className="primary-button btnCol text-white hover:text-white"
-          type="button"
-          onClick={exportAllButton}
-          // hidden={session.user.role === '2'?true:false}
-        >
-          Export All
-        </button>
+     
         {/* <button className='primary-button hover:text-white' type='button'
          disabled={selectedRows.length < 1}
         onClick={()=>handlePrintSelected(selectedRows)}
@@ -50,5 +57,6 @@ export const LowerButtons = ({
         </button> */}
       </div>
     </>
+
   );
 };

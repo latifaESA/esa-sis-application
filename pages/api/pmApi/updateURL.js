@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect , disconnect} = require("../../../utilities/db");
 const { uploadFile } = require('../controller/queries')
 
 async function handler(req , res){
@@ -11,7 +11,7 @@ async function handler(req , res){
           
         }=req.body;
         const response = await uploadFile(connection ,url ,attendance_id);
-      
+        await disconnect(connection);
             return res.status(201).json({
                 success:true,
                 code:201,
