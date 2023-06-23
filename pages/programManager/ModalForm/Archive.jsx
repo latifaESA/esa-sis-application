@@ -1,29 +1,27 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import DropZone from '../../../components/UploadDocuments/DropZone';
 import {
-  ProfileModal,
   CVModal,
 } from '../../../components/StudentInfoApplication/ModalDocument';
 import uploadDocReducer from '../../../components/UploadDocuments/reducers/uploadDocReducer';
 import { BsX } from 'react-icons/bs';
-import UploadDocuments from '../../../components/UploadDocuments/UploadDocuments';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import selection_data from '../../../utilities/selection_data';
-import {
-  profileUrlChanged,
-  userNameChanged,
-} from '../../../redux/slices/userSlice';
-import axios from 'axios';
-import decrypt from '../../../utilities/encrypt_decrypt/encryptText';
 
-export default function Archive({ setShowArchive, attendance, details }) {
+import axios from 'axios';
+
+
+export default function Archive({ setShowArchive, attendance, details, setDetails }) {
+
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [message, setMessage] = useState('');
   const [docUrl, setDocUrl] = useState(false);
   const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
     useState(false);
-  const [profileUrl, setProfileUrl] = useState(null);
+  // const [profileUrl, setProfileUrl] = useState(null);
+
+
   const dispatch = useDispatch();
   const [uploadPhotoData, uploadPhotoDispatch] = useReducer(uploadDocReducer, {
     inDropZone: false,
@@ -48,14 +46,15 @@ export default function Archive({ setShowArchive, attendance, details }) {
           Where,
           id,
         });
-        // console.log(data.data[0].url);
+
         setDocUrl(data.data[0].url);
+        console.log("docUrl", docUrl)
       } catch (error) {
         return error;
       }
     };
     fetchData();
-  }, []);
+  }, [details]);
 
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
@@ -64,6 +63,25 @@ export default function Archive({ setShowArchive, attendance, details }) {
       setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
+//<<<<<<< batoul
+//          const date = details[0].attendance_date
+//
+//          const DateFormat = moment(date).format('DD-MM-YYYY')
+//
+//          const fileExtension = getFileExtension(uploadPhotoData.fileList[0].name);
+//          // const newFileName = `new_file_name${fileExtension}`;
+//          const newFileName = `${details[0].attendance_id}-${details[0].major_id}-${details[0].course_id}-${details[0].teacher_id}-${DateFormat}.${fileExtension}`;
+//          const formData = new FormData();
+//          formData.append('files', uploadPhotoData.fileList[0], newFileName);
+//          formData.append('major_id', details[0].major_id);
+//          formData.append('attendance_id', details[0].attendance_id);
+//          formData.append('course_id', details[0].course_id);
+//          formData.append('teacher_id', details[0].teacher_id);
+//          formData.append('attendance_date', DateFormat);
+//          formData.append('ext', fileExtension);
+//          console.log('fileList', uploadPhotoData.fileList[0].name);
+
+//=======
           const attendanceDate = new Date(details[0].attendance_date);
           const day = attendanceDate.getDate().toString().padStart(2, '0');
           const month = (attendanceDate.getMonth() + 1)
@@ -78,6 +96,7 @@ export default function Archive({ setShowArchive, attendance, details }) {
             'attendance',
             `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
           );
+
           const { data } = await axios.post(
             '/api/uploaddoc/uploadDoc',
             formData
@@ -94,6 +113,10 @@ export default function Archive({ setShowArchive, attendance, details }) {
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadPhotoData]);
+  const getFileExtension = (filename) => {
+    const parts = filename.split('.');
+    return parts[parts.length - 1];
+  };
 
   const handleFile = async () => {
     try {
@@ -108,8 +131,42 @@ export default function Archive({ setShowArchive, attendance, details }) {
       return error;
     }
   };
+
+  //<<<<<<< batoul
+//      {!showProfileModal ? <>
+//        <div
+//          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+//        >
+//          <div className="relative  w-1/2 overflow-y-auto  my-6 mx-auto max-w-3xl">
+//            {/*content*/}
+//            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+  //            {/*header*/}
+    //          <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+      //          <h3 className="text-gray-700 text-3xl font-bold">
+        //          Upload File
+          //      </h3>
+            //    <button
+              //    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                //  onClick={() => { setShowArchive(false), setDetails([]) }}
+//                >
+//                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+//                    <BsX className=" text-gray-700 font-bold" />
+//                  </span>
+//                </button>
+//              </div>
+//              {/*body*/}
+//              <div className="relative p-6 flex-auto">
+//                <div className="my-4 text-slate-500 text-lg leading-relaxed">
+//                  {message && (
+ //                   <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
+//                      {message}
+ //                   </div>
+//=======
+  
+  
   return (
     <>
+
       <div className="justify-center items-center p-12 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div className="relative w-50 my-6 mx-auto max-w-3xl">
           {/*content*/}
@@ -152,38 +209,94 @@ export default function Archive({ setShowArchive, attendance, details }) {
                     >
                       Preview file
                     </a>
+
                   )}
-                  {showProfileModal && (
-                    <CVModal
-                      className="cursor-pointer"
-                      closeModal={closeModal}
-                      docUrl={docUrl}
-                    />
+                  <div>
+                    
+                  <DropZone
+                    data={uploadPhotoData}
+                    dispatch={uploadPhotoDispatch}
+                    type={'file'}
+                  />
+
+                  {docUrl && docUrl !== ' ' && (
+                    <div className="flex justify-center w-auto items-center">
+                      {!showProfileModal && (
+                        <a
+                          className="cursor-pointer"
+                          onClick={() => {
+                            setShowProfileModal(true);
+                          }}
+                        >
+                          Preview file
+                        </a>
+                      )}
+                    </div>
                   )}
+                  </div>
                 </div>
-              )}
-            </div>
-            {/*footer*/}
-            <div className="flex items-center justify-center p-6">
-              {/* <button
-              className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-              type="button"
-              onClick={() => setShowArchive(false)}
-            >
-              Close
-            </button> */}
+
+              </div>
+              {/*footer*/}
+              <div className="flex items-center p-6  rounded-b">
               <button
-                className="primary-button btnCol text-white  w-full hover:text-white hover:font-bold mr-5"
-                type="button"
-                onClick={() => handleFile()}
-              >
-                save
-              </button>
+                    className="primary-button btnCol text-white  w-screen hover:text-white hover:font-bold "
+                    type="button"
+                    onClick={() => handleFile()}
+                  >
+                    Upload
+                  </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </> :<div
+          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        >
+          <div className="relative w-auto h-auto  overflow-y-auto my-6 mx-auto max-w-3xl" >
+            {/*content*/}
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+        {/*header*/}
+        <div className="flex items-start justify-between p-5 border-b  border-slate-200 rounded-t">
+                {/* <h3 className="text-3xl font-semibold">
+                 View upload File
+                </h3> */}
+                {/* <button
+                  className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                  onClick={() => { setShowArchive(false), setDetails([]) }}
+                >
+                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    <BsX className=" text-gray-700 font-bold" />
+                  </span>
+                </button> */}
+              </div>
+              {/*body*/}
+              <div className="relative flex-auto">
+
+                <CVModal
+                  className="cursor-pointer "
+                  closeModal={closeModal}
+                  docUrl={docUrl}
+                />
+              </div>
+              {/*footer*/}
+{/*              
+              <div className="flex items-center justify-end p-6 rounded-b">
+                <button
+                  className="primary-button btnCol text-white  w-screen hover:text-white hover:font-bold "
+                  type="button"
+                  onClick={() => handleFile()}
+                >
+                  Upload
+                </button>
+              </div> */}
+            </div>
+          </div>
+        </div>}
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-    </>
+
+
+   </>
   );
 }

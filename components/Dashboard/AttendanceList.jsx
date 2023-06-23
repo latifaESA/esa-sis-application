@@ -6,7 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
@@ -52,6 +52,18 @@ const AttendanceList = ({ users, setUsers }) => {
   const [showPrint,setShowPrint] = useState(false)
   const [archive,setShowArchive] = useState(false)
 
+//sort by Teacher Firstname
+  // const [sortedRows, setSortedRows] = useState(users);
+
+  // const handleSort = (field) => {
+  //   const sorted = [...sortedRows].sort((a, b) => a[field].localeCompare(b[field]));
+  //   setSortedRows(sorted);
+  // };
+  //sort by date
+//   const sortedUsers = [...users].sort((a, b) =>
+//   moment(b.attendance_date).diff(moment(a.attendance_date))
+// );
+
 
 
     //     setCourses(datesArray);
@@ -96,8 +108,13 @@ const AttendanceList = ({ users, setUsers }) => {
     //   } catch (error) {
     //     return error
     //   }
-
-
+//sort by attendance_id
+    const [sortedRows, setSortedRows] = useState(users);
+    useEffect(() => {
+      const sorted = [...users].sort((a, b) => a.attendance_id - b.attendance_id);
+      setSortedRows(sorted);
+    }, [users]);
+  
 
   const getDetails = async (event) =>{
     try {
@@ -201,7 +218,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'teacher Name',
       headerAlign: 'center',
       align: 'center',
-      width: 100,
+      width: 150,
       renderCell: (params) =>
         `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
 
@@ -219,7 +236,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'Major Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
 
     {
@@ -227,7 +244,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'Course ID',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 120,
     },
 
     // {
@@ -265,7 +282,6 @@ const AttendanceList = ({ users, setUsers }) => {
       valueFormatter: params =>
         moment(params?.value).format("DD/MM/YYYY"),
     },
-
     {
       field: 'action',
       headerName: 'Action',
@@ -295,7 +311,7 @@ const AttendanceList = ({ users, setUsers }) => {
             onClick={()=>{getDetails(params.row),setShowPrint(true)}}
 
           >
-            print
+                Print
 
           </button>
           {/* <Link
@@ -375,17 +391,18 @@ const AttendanceList = ({ users, setUsers }) => {
   return (
     <>
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} />}
-      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} />}
-      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details}/>}
+      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname} />}
+      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} setDate={setDate} setDetails={setDetails} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
+      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details} setAttendance={setAttendance} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.course_id}
-          rows={users}
+          getRowId={(r) => r.attendance_id}
+          rows={sortedRows}
           getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          // onColumnHeaderClick={(column) => handleSort(column.field)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           // pagination
           checkboxSelection

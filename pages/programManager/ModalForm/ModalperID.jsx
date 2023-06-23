@@ -4,10 +4,8 @@ import moment from 'moment';
 import ReactToPrint from "react-to-print";
 import axios from 'axios';
 
-export default function ModalperID({ setShowPrint, courseName, teachersFirstname, teacherslastname, date, details }) {
 
-    console.log("details", details)
-    console.log("courseName", courseName)
+export default function ModalperID({ setShowPrint, courseName, teachersFirstname, teacherslastname, date, details, setDetails, setAttendance, setDate, setCourseName, setTeacherFirstName, setTeacherlastname }) {
 
     const componentRef = useRef();
     const [promotion, setPromotion] = useState([])
@@ -16,7 +14,7 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
     useEffect(() => {
         const handlePromotion = async () => {
             try {
-                
+
                 const attendance_id = details[0].attendance_id
                 const data = await axios.post('/api/pmApi/getStudentPromotions', { attendance_id })
                 setPromotion(data.data.data[0].promotion_name)
@@ -26,7 +24,7 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
                 data.data.data.forEach((student) => {
                     datesArray.push(student.student_fullname);
                 });
-
+                datesArray.sort();
                 setStudent(datesArray);
                 // console.log("ffffffffffffff", student)
 
@@ -35,28 +33,39 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
             }
         }
         handlePromotion();
-          setTimeout(() => {
+        setTimeout(() => {
             handlePromotion();
-          }, 2000);
-    }, [])
-
-
-    console.log('promotions', student)
-
+        }, 2000);
+    }, [details])
     return (
-        <div>
+        <>
 
-            <div
-                className=" print justify-center  items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-            >
-                <div className="relative w-auto my-6 mx-auto max-w-3xl p-8">
-                    {/*content*/}
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none p-12">
-                            <div ref={componentRef} className='flex flex-col bg-white justify-around'>
-                                <div className='flex flex-col pl-2 pr-4'>
+            <>
+                <div
+                    className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                >
+                    <div className="relative w-1/2 h-screen my-6 mx-auto max-w-3xl p-8">
+                        {/*content*/}
+                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                            {/*header*/}
+                            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                                <h3 className="text-gray-700 text-3xl font-bold">
+                                    Print
+                                </h3>
+                                {/* <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button> */}
+                            </div>
+                            {/*body*/}
+                            <div ref={componentRef} className="flex flex-col bg-white justify-around px-4 relative p-6 flex-auto">
+                                <div className='flex flex-col pl-2 pr-4 leading-relaxed'>
                                     <div className='flex flex-row mt-2'>
-                                        <div>
+                                        <div className=''>
                                             <picture>
                                                 <img
                                                     className="w-20 h-auto"
@@ -72,35 +81,35 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
                                         </div>
 
                                         <div className='mt-5 ml-2'>
-                                            <h1 className='font-semibold'>ESA Business School</h1>
-                                            <p>{promotion}</p>
+                                            <h1 className='text-xl'>ESA Business School</h1>
+                                            <p className='font-medium'>{promotion}</p>
                                         </div>
                                     </div>
                                     <div className='ml-2'>
                                         <div className='flex flex-row mb-1 '>
                                             <div className=' border-b-2 border-black'>
-                                                <h3 className='font-medium mr-2'>Date:{moment(date).format("DD/MM/YYYY")}</h3>
+                                                <span className='font-medium mr-2'>Date:</span>
                                             </div>
                                             <div className=' border-b-2 border-black'>
-                                                <p className='font-medium '></p>
+                                                <p className='text-base'>{moment(date).format("DD/MM/YYYY")}</p>
                                             </div>
 
                                         </div>
                                         <div className='flex flex-row mb-2 border-b-1 border-black '>
                                             <div className='border-b-2 border-black'>
-                                                <h3 className=' font-medium mr-2'>Module Name:{courseName}</h3>
+                                                <span className=' font-medium mr-2'>Module Name:</span>
                                             </div>
                                             <div className='border-b-2 border-black'>
-                                                <p className='font-medium'></p>
+                                                <p className='text-base'>{courseName}</p>
                                             </div>
 
                                         </div>
                                         <div className='flex flex-row mb-2'>
                                             <div className='border-b-2 border-black'>
-                                                <h3 className='font-medium  mr-2'>Professor Name:{teachersFirstname} {teacherslastname}</h3>
+                                                <span className='font-medium  mr-2'>Professor Name:</span>
                                             </div>
                                             <div className='border-b-2 border-black'>
-                                                <p className='font-medium'></p>
+                                                <p className='text-base'>{teachersFirstname} {teacherslastname}</p>
                                             </div>
 
                                         </div>
@@ -114,63 +123,48 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    
-                                                        {student.length > 0 ? student.map((item, index) => (
 
-                                                         <tr key={index}>
+                                                    {student.length > 0 ? student.map((item, index) => (
+
+                                                        <tr key={index}>
                                                             <td className='border border-1 border-black p-2 font-medium' >{student[index]}</td>
                                                             <td className='border border-1 border-black p-2 font-medium'></td>
-                                                            </tr>
-                                                        
-                                                        )) : <></>}
+                                                        </tr>
+
+                                                    )) : <></>}
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
 
-
                                 </div>
                             </div>
+                            {/*footer*/}
+                            <div className="flex items-center justify-end p-6 rounded-b">
+                                <ReactToPrint
 
-                            <div className='flex flex-row justify-end mt-4'>
+                                    trigger={() =>
+                                        <button
+                                            className='primary-button btnCol text-white hover:text-white mr-3'
+                                            type="button"
+                                        >
+                                            print
+                                        </button>
+                                    }
+                                    content={() => componentRef.current}
 
-                                <div>
-                                    <ReactToPrint
-
-                                        trigger={() =>
-                                            <button
-                                                className='primary-button btnCol text-white hover:text-white mr-4'
-                                                type="button"
-                                            >
-                                                print
-                                            </button>
-                                        }
-                                        content={() => componentRef.current}
-
-                                    />
-
-                                </div>
-
-                                <div>
-                                    <button
-                                        className='primary-button btnCol text-white hover:text-white mr-4' onClick={() => setShowPrint(false)}>Cancel
-                                    </button>
-                                </div>
-
+                                />
+                                <button
+                                    className='primary-button btnCol text-white hover:text-white ' onClick={() => { setShowPrint(false), setDate(''), setCourseName(''), setTeacherFirstName(''), setTeacherlastname(''), setDetails([]) }}>Cancel
+                                </button>
 
                             </div>
                         </div>
-
                     </div>
-
-
-
                 </div>
+                <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+            </>
 
-            </div>
-
-        </div>
-
-    )
+        </>
+    );
 }
-

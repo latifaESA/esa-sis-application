@@ -18,12 +18,18 @@ export default function Modal({
   teachersFirstname,
   teacherslastname,
   date,
+  setCourseName,
+  setTeacherFirstName,
+  setTeacherlastname,
+  setDetails,
+  setDate
 }) {
   const { data: session } = useSession();
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [message, setMessage] = useState('');
   // eslint-disable-next-line no-unused-vars
-  const [update, setUpdate] = useState([]);
+  const [rowCount, setRowCount] = useState(0);
+
 
   setTimeout(() => {
     setMessage('');
@@ -57,6 +63,12 @@ export default function Modal({
       console.error(error);
     }
   };
+  const sortedAttendance = [...attendance].sort((a, b) => {
+    const nameA = `${a.student_firstname} ${a.student_lastname}`.toLowerCase();
+    const nameB = `${b.student_firstname} ${b.student_lastname}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  }).map((row, index) => ({ ...row, count: index + 1 }));
+  
 
   const handleAll = async () => {
     try {
@@ -105,6 +117,20 @@ export default function Modal({
   };
 
   const columns = [
+  
+   
+      {
+        field: 'count',
+        headerName: 'No.',
+        headerAlign: 'center',
+        align: 'center',
+        width: 100,
+        renderCell: (params) => params.row.count,
+
+      },
+    
+    
+    
     {
       field: 'id', // Add the id field
       headerName: 'ID',
@@ -116,20 +142,26 @@ export default function Modal({
       headerName: 'Student Name',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 150,
+      cellClassName: (params) =>
+      params.row.student_firstname !== ''
+        ? 'text-gray-700 text-medium'
+        : params.student_lastname !== ''
+          ? 'text-green-600 font-bold'
+          : '',
+
       renderCell: (params) =>
-        `${params.row.student_firstname || ''} ${
-          params.row.student_lastname || ''
+        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''
         }`,
+        
     },
     {
       field: 'present',
       headerName: 'Presence',
       headerAlign: 'center',
       align: 'center',
-      width: 100,
+      width: 150,
       editable: true,
-
       renderCell: (params) => {
         return params.value ? <>Present</> : <>Absent</>;
       },
@@ -138,8 +170,8 @@ export default function Modal({
         params.row.present === false
           ? 'text-red-600 font-bold'
           : params.row.present === true
-          ? 'text-green-600 font-bold'
-          : '',
+            ? 'text-green-600 font-bold'
+            : '',
       type: 'singleSelect',
       valueOptions: presence,
     },
@@ -147,7 +179,7 @@ export default function Modal({
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
+      width: 200,
       headerAlign: 'center',
       align: 'center',
       sortable: false,
@@ -176,99 +208,115 @@ export default function Modal({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
-        <div className="relative w-auto my-6 mx-auto max-w-3xl  pr-30">
-          {/*content*/}
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            {/*header*/}
-            <div className="flex items-start justify-between p-2">
-              {/* <h3 className="text-3xl font-semibold">
-
-                    Modal Title
-                  </h3> */}
-            </div>
-            {/*body*/}
-            <div className="relative p-6 flex-auto">
-              <button
-                className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={() => {
-                  setEditModal(false), setAttendance([]);
-                }}
+      <>
+        <div
+          className="justify-center items-center  flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        >
+          <div className="relative w-3/4 h-screen my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*header*/}
+              <div 
+              className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t"
               >
-                <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  <BsX />
-                </span>
-              </button>
-              <div className="p-4">
-                <p className="text-gray-700 text-3xl pt-5 mb-2 font-bold">
+                <h3 className="text-gray-700 text-3xl font-bold">
                   Attendance
-                </p>
-                <div>
-                  <p className="text-gray-600  pt-5 mb-1 ">
-                    Course Name :{courseName}
-                  </p>
-                  <p className="text-gray-600  pt-5 mb-1">
-                    Date:{moment(date).format('DD/MM/YYYY')}
-                  </p>
-                  <p className="text-gray-600  pt-5 mb-3">
-                    Teacher FullName :{teachersFirstname} {teacherslastname}
-                  </p>
-                </div>
-              </div>
-              <div>
-                {message && (
-                  <div className=" text-green-500 font-bold p-2">{message}</div>
-                )}
-                <div className="p-4">
-                  <Box sx={{ height: 280, width: '100%' }}>
-                    <DataGrid
-                      getRowId={(r) => r.student_id}
-                      rows={attendance}
-                      getRowHeight={() => 'auto'}
-                      columns={columns}
-                      pageSize={pageSize}
-                      onPageSizeChange={(newPageSize) =>
-                        setPageSize(newPageSize)
-                      }
-                      rowsPerPageOptions={[5, 10, 15, 20]}
-                      pagination
-                      // onEditCellChange={(params) =>
-                      //   handleCellEditChange(params)
-                      // }
-                      onCellEditCommit={(params) =>
-                        handleCellEditChange(params)
-                      }
-                      components={{
-                        NoRowsOverlay: () => (
-                          <div className="grid h-[100%] place-items-center">
-                            No Data
-                          </div>
-                        ),
-                        // Pagination: CustomPagination,
-                      }}
-                    />
-                  </Box>
-                </div>
-              </div>
-              <div className="flex items-center justify-end p-6 border-solid border-slate-200 rounded-b">
+                </h3>
                 <button
+                  className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                  onClick={() => {
+                    setEditModal(false), setAttendance([]), setTeacherFirstName(''),
+                    setTeacherlastname(''), setDate(''), setCourseName(''), setDetails([]);
+                  }}
+                >
+                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    <BsX className=" text-gray-700 font-bold" />
+                  </span>
+                </button>
+              </div>
+              {/*body*/}
+              <div className="relative p-6 flex-auto">
+                <div className="text-slate-500 ">
+
+                  <div className="pr-3 pl-3">
+                    <div className='flex'>
+                      <p className=" font-semibold text-gray-700 pt-3 mb-1 border-b">
+                        Course Name:
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">
+                        {courseName}
+                      </p>
+
+                    </div>
+                    <div className='flex'>
+                      <p className="font-semibold text-gray-700 pt-3 mb-1 border-b">
+                        Date:
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">{moment(date).format('DD/MM/YYYY')}.</p>
+                    </div>
+                    <div className='flex'>
+                      <p className="font-semibold text-gray-700   pt-3 mb-1 border-b">
+                        Teacher FullName :
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">
+                        {teachersFirstname} {teacherslastname}.
+                      </p>
+                    </div>
+                  </div>
+
+                  {message && (
+                    <div className=" text-green-500 font-bold p-2">{message}</div>
+                  )}
+                  <div className="p-3">
+                    <Box sx={{ height: 300, width: '100%', overflowX: 'hidden' }}>
+                      <DataGrid
+                        getRowId={(r) => r.student_id}
+                        rows={sortedAttendance}
+                        getRowHeight={() => 'auto'}
+                        columns={columns}
+                        pageSize={pageSize}
+                        onPageSizeChange={(newPageSize) =>
+                          setPageSize(newPageSize)
+                        }
+                        rowsPerPageOptions={[5, 10, 15, 20]}
+                        // pagination
+
+                        // onEditCellChange={(params) =>
+                        //   handleCellEditChange(params)
+                        // }
+                        onCellEditCommit={(params) =>
+                          handleCellEditChange(params)
+                        }
+                        components={{
+                          NoRowsOverlay: () => (
+                            <div className="grid h-[100%] place-items-center">
+                              No Data
+                            </div>
+                          ),
+                          // Pagination: CustomPagination,
+                        }}
+                      />
+                    </Box>
+                  </div>
+                </div>
+
+              </div>
+              {/*footer*/}
+              <div className="flex items-center justify-center p-6  rounded-b">
+              <button
                   className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5"
                   type="button"
                   onClick={() => handleAll()}
                 >
                   Save ALL
                 </button>
-                {/* <button
-                  className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold" type="button"
-                  onClick={() => { setEditModal(false), setAttendance([]) }}
-                >
-                  Close
-                </button> */}
               </div>
             </div>
           </div>
         </div>
-      </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </>
+
     </>
   );
 }
