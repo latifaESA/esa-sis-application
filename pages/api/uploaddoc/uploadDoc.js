@@ -4,7 +4,9 @@ import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 
+
 import { env } from 'process';
+
 
 export const config = {
   api: {
@@ -21,6 +23,9 @@ async function handler(req, res) {
   if (!session) {
     return res.status(401).send({ message: 'Signin Required To Save Data' });
   }
+
+  // const { user } = session;
+
 
   // const { formData, attendance } = req.body;
 
@@ -51,9 +56,13 @@ async function handler(req, res) {
             }
           });
 
+
           return (
-            'attendance-' + Date.now().toString() + '_' + path1.originalFilename
+            // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
+            path1.originalFilename
+            
           );
+
         } else {
           return res
             .status(200)
@@ -81,6 +90,15 @@ async function handler(req, res) {
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
   }
+//<<<<<<< batoul
+
+// const {fields , files}= await readFile(req, true, directory);
+//  console.log('fields',fields)
+
+//  let attendance_file = await fs.readdirSync(directory);
+
+//  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${ fields.major_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}` });
+//=======
   // eslint-disable-next-line no-unused-vars
   const { fields, files } = await readFile(req, true, directory);
   console.log('fields', fields);
@@ -97,6 +115,7 @@ async function handler(req, res) {
   // if (fs.existsSync(oldFilePath)) {
   //   fs.unlinkSync(oldFilePath);
   // }
+
 
   // Return a response
   return res.status(200).send({
