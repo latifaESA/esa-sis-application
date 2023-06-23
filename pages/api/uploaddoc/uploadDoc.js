@@ -58,7 +58,9 @@ async function handler(req, res) {
 
 
           return (
-            'attendance-' + Date.now().toString() + '_' + path1.originalFilename
+            // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
+            path1.originalFilename
+            
           );
 
         } else {
