@@ -9,6 +9,8 @@ import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Image from 'next/image';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { BsFillCloudArrowDownFill } from "react-icons/bs";
+
 // import { Link } from '@mui/material';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -60,11 +62,18 @@ function CVModal({ closeModal, docUrl }) {
       {docUrl && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>
-              <FaTimes />
-            </button>
+            <div className='flex justify-between p-6'>
+              <a href={docUrl} download>
+                < BsFillCloudArrowDownFill className='w-10 h-10 bg-primary' />
+              </a>
+              <button className="modal-close " onClick={closeModal}>
+                <FaTimes />
+              </button>
+            </div>
+
             {docUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '500px', maxHeight: '500px' }}>
+              <div style={{ maxWidth: '800px', maxHeight: '500px' }}>
+
                 <Document
                   file={docUrl}
                   renderMode="canvas"
@@ -82,13 +91,19 @@ function CVModal({ closeModal, docUrl }) {
                 </Document>
               </div>
             ) : (
-              <Image
-                src={docUrl}
-                alt="Modal image"
-                width="600"
-                height="600"
-                className="w-full h-auto"
-              />
+              <>
+
+                <Image
+                  src={docUrl}
+                  alt="Modal image"
+                  width="600"
+                  height="600"
+                  className="w-full h-auto"
+                />
+
+
+              </>
+
             )}
           </div>
         </div>

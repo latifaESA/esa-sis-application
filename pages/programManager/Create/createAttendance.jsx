@@ -7,6 +7,7 @@ import AttendanceModal from '../ModalForm/AttendanceModal';
 export default function createAttendance() {
 
     const [promotionValue, setPromotionValue] = useState('')
+    const [formErrors, setFormErrors] = useState({});
     const [test, setTest] = useState()
     const [coursesValue, setCoursesValue] = useState('')
     const [teacherValue, setTeachersValue] = useState('')
@@ -26,8 +27,13 @@ export default function createAttendance() {
     const [teachers, setTeachers] = useState([])
     const [student, setStudent] = useState([])
     const [isModal, setIsModal] = useState(false)
-    const [error , setError] = useState(false)
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState('')
+    // console.log("selectedddd", selectedDate)
 
+    const redirect = () => {
+        router.push('/AccessDenied');
+    };
 
 
     useEffect(() => {
@@ -45,8 +51,10 @@ export default function createAttendance() {
                     datesArray.push(promotions.promotion_name);
                 });
 
+
                 setPromotions(datesArray);
                 console.log(promotion, 'before')
+                setMessage(data.data.message)
 
             } catch (error) {
                 return error
@@ -65,6 +73,7 @@ export default function createAttendance() {
                 let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
                 console.log("course", data.data)
                 setAllCourses(data.data)
+                setMessage(data.data.message)
 
                 const datesArray = [];
                 data.data.forEach((courses) => {
@@ -89,7 +98,7 @@ export default function createAttendance() {
                 setAllTeachers(data.data)
                 // console.log("teacher",data.data.teacher_fullname)
 
-
+                setMessage(data.data.message)
                 const datesArray = [];
                 data.data.forEach((teachers) => {
                     datesArray.push(teachers.teacher_fullname);
@@ -127,7 +136,7 @@ export default function createAttendance() {
         }
         if (test == true) {
             selectedValue === ' '
-            setError(true)
+
         }
     };
 
@@ -180,15 +189,30 @@ export default function createAttendance() {
 
     const getStudent = async () => {
         try {
+            const errors = {};
+            const currentDate = new Date()
+            if (teacherValue.length === 0) {
+                errors.teachers = 'At least one Teacher must be selected.';
+            }
+            if (coursesValue.length === 0) {
+                errors.courses = 'At least one course must be selected.';
+            }
+            if (promotionValue.length === 0) {
+                errors.promotion = 'At least one promotion must be selected.';
+            }
 
-            setIsModal(true)
-            let major_id = session.user.majorid
-            let promotion_id = promotionValue
-            const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion_id })
-            // console.log(data.data)
-            // console.log(data.data)
-            setStudent(data.data)
-
+            if (Object.keys(errors).length > 0) {
+                setFormErrors(errors);
+                return;
+            } else {
+                setIsModal(true)
+                let major_id = session.user.majorid
+                let promotion_id = promotionValue
+                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion_id })
+                // console.log(data.data)
+                // console.log(data.data)
+                setStudent(data.data)
+            }
         } catch (error) {
             return error
         }
@@ -196,82 +220,159 @@ export default function createAttendance() {
 
     }
 
-    const handleSave = async () => {
-        try {
-            setIsModal(true)
-            // const payload = {
-            //     teacher_id: teacherValue,
-            //     course_id: coursesValue,
-            //     attendance_date: selectedDate,
-            //     major_id: session.user.majorid
-            // }
-            // console.log(payload)
-
-            // const data = await axios.post('http://localhost:3000/api/pmApi/createAttendanceReport', payload)
-            // // console.log(data.data)
-            // // setData(data.data)
-            // console.log("data", data.data)
-        } catch (error) {
-            return error
-        }
-    }
-    //  console.log(teachers)
     return (
         <>
 
-            <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Create Attendance </p>
+            {session?.user.role === '2' ? (
+                <>
+                    <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+                        Create Attendance
+                    </p>
+                    <form>
+                        <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
+                            <label className="w-[450px]">
+                                promotion:
 
-            <div className='grid grid-cols-4 gap-4 mt-12 ml-12 mb-5'>
+                                <CustomSelectBox
+                                    options={promotion}
+                                    placeholder="Select Promotion"
+                                    onSelect={handlePromotion}
+                                    styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"}
+                                />
+                                {formErrors.promotion && <div className='text-center text-red-500 font-bold p-2'>{formErrors.promotion}</div>}
 
-                <div className=''>
-                    <p className="text-gray-600">Promotion:</p>
-                    <CustomSelectBox
-                        options={promotion}
-                        placeholder="Select Promotion"
-                        onSelect={handlePromotion}
-                        styled={"font-medium h-auto  items-center border-[1px] border-zinc-300 self-center w-40  inline-block ml-10 mb-10"}
-                    />
-                    {error ? <><p>this required is required</p></>:<></>}
-                    <p className="text-gray-600">Course Name:</p>
-                    <CustomSelectBox
-                        options={courses}
-                        placeholder="Select Courses"
-                        onSelect={handleCourses}
-                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
-                    />
-                </div>
+                            </label>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Status:
+                                <select
+                                    className="ml-10 w-40"
+                                    onChange={(e) => setStatus(e.target.value)}
+                                >
+                                    {/* <option value="">Choose Value..</option> */}
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </label>
 
-                <div className=''>
-                    <p className="text-gray-600">Professor Name:</p>
-                    <CustomSelectBox
-                        options={teachers}
+                            <label className="w-[450px]">
+                                Course Name:
+                                <CustomSelectBox
+                                    options={courses}
+                                    placeholder="Select Courses"
+                                    onSelect={handleCourses}
+                                    styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
+                                />
+                                {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
+                            </label>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Status:
+                                <select
+                                    className="ml-9 w-40"
+                                    onChange={(e) => setStatus(e.target.value)}
+                                >
+                                    {/* <option value="">Choose Value..</option> */}
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </label>
 
-                        placeholder="Select Teacher"
-                        onSelect={handleTeachers}
-                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10 mb-8"}
-                    />
-                    <p className="text-gray-600 mb-0">Date:</p>
-                    <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10 mt-3' value={selectedDate.toISOString().substring(0, 10)}
-                        onChange={(e) => setSelectedDate(new Date(e.target.value))} />
-                </div>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Role:
+                                <select
+                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option defaultValue="">Choose a Role</option>
+                                    <option value="2">Program Manager</option>
+                                    <option value="3">Assistance</option>
+                                </select>
+                            </label>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Role:
+                                <select
+                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option defaultValue="">Choose a Role</option>
+                                    <option value="2">Program Manager</option>
+                                    <option value="3">Assistance</option>
+                                </select>
+                            </label>
 
-            </div>
-            <div className='flex justify-start m-40 mt-0 mb-0'>
-                <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-48 p-2 rounded-lg"
-                    type="button"
-                    onClick={(e) => getStudent()}
-                >
-                    Add
-                </button>
-            </div>
+                            <label className="w-[450px]">
+                                Teacher
+                                FullName:
+                                {
+                                    <CustomSelectBox
+                                        options={teachers}
 
-            {isModal && <AttendanceModal setIsModal={setIsModal} student={student} selectedDate={selectedDate} promotionName={promotionName} teachersName={teachersName} courseName={courseName} session={session} teacherValue={teacherValue} coursesValue={coursesValue} />}
+                                        placeholder="Select Teacher"
+                                        onSelect={handleTeachers}
+                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
+                                    />
+                                }
+                                {formErrors.teachers && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachers}</div>}
 
+
+                            </label>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Role:
+                                <select
+                                    className="ml-5 w-40 max-[840px]:ml-[50px]"
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option defaultValue="">Choose a Role</option>
+                                    <option value="2">Program Manager</option>
+                                    <option value="3">Assistance</option>
+                                </select>
+                            </label>
+                            <label className="w-[450px] ">
+                                Date:
+                                <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5' value={selectedDate.toISOString().substring(0, 10)}
+                                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                />
+                            </label>
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Status:
+                                <select
+                                    className="ml-9 w-40"
+                                    onChange={(e) => setStatus(e.target.value)}
+                                >
+                                    {/* <option value="">Choose Value..</option> */}
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </label>
+
+                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                                Role:
+                                <select
+                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option defaultValue="">Choose a Role</option>
+                                    <option value="2">Program Manager</option>
+                                    <option value="3">Assistance</option>
+                                </select>
+                            </label>
+                            <div className="flex flex-col ml-7 min-[850px]:flex-row gap-4">
+                                <button
+                                    className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                                    type="button"
+                                    onClick={(e) => getStudent()}
+                                >
+                                    Create Attendance
+                                </button>
+                            </div>
+                        </div>
+                        {isModal && <AttendanceModal setIsModal={setIsModal} student={student} selectedDate={selectedDate} promotionName={promotionName} teachersName={teachersName} courseName={courseName} session={session} teacherValue={teacherValue} coursesValue={coursesValue} />}
+                    </form>
+                </>
+            ) : (
+                redirect()
+            )}
         </>
-
-
-    )
+    );
 }
 createAttendance.auth = true;
 createAttendance.adminOnly = true;

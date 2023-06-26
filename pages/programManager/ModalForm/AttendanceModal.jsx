@@ -71,25 +71,25 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
         <div>
 
             <div
-                className=" print justify-center  items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                className="justify-center  items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none "
             >
-                <div className="relative w-auto my-6 mx-auto max-w-3xl p-8">
+                <div className="relative w-1/2 h-screen overflow-y-auto my-6 mx-auto max-w-3xl">
                     {/*content*/}
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                        <div className="flex items-start justify-between p-2">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white p-5 outline-none focus:outline-none overflow-y-auto">
+                        <div className="flex items-start justify-between p-2 overflow-y-auto">
                             {/* <h3 className="text-3xl font-semibold">
                     Modal Title
                   </h3> */}
                             <button
                                 className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                onClick={e=> setIsModal(false)}
+                                onClick={e => setIsModal(false)}
                             >
                                 <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
                                     <BsX className=' text-gray-700' />
                                 </span>
                             </button>
                         </div>
-                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none p-12">
+                        <div className="relative flex-auto">
                             {showModal && <MessageModal showModal={showModal} setShowModal={setShowModal} data={data} />}
                             {/*body*/}
                             {/* <div className='mb-4'>
@@ -143,8 +143,8 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                         </div>
 
                                         <div className='mt-5 ml-2'>
-                                            <h1 className='font-semibold'>ESA Business School</h1>
-                                            <p>{promotionName}</p>
+                                            <h1 className='text-xl'>ESA Business School</h1>
+                                            <p className='font-medium'>{promotionName}</p>
                                         </div>
                                     </div>
                                     <div className='ml-2'>
@@ -153,7 +153,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                                 <h3 className='font-medium mr-2'>Date:</h3>
                                             </div>
                                             <div className=' border-b-2 border-black'>
-                                                <p className='font-medium '>{moment(selectedDate).format('DD/MM/YYYY')}</p>
+                                                <p className='text-base'>{moment(selectedDate).format('DD/MM/YYYY')}</p>
                                             </div>
 
                                         </div>
@@ -162,7 +162,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                                 <h3 className=' font-medium mr-2'>Module Name:</h3>
                                             </div>
                                             <div className='border-b-2 border-black'>
-                                                <p className='font-medium'>{courseName}</p>
+                                                <p className='text-base'>{courseName}</p>
                                             </div>
 
                                         </div>
@@ -170,8 +170,8 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                             <div className='border-b-2 border-black'>
                                                 <h3 className='font-medium  mr-2'>Professor Name:</h3>
                                             </div>
-                                            <div className='border-b-1 border-black'>
-                                                <p className='font-medium'>{teachersName}</p>
+                                            <div className='border-b-2 border-black'>
+                                                <p className='text-base'>{teachersName}</p>
                                             </div>
 
                                         </div>
@@ -185,15 +185,28 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {student.length > 0 ? student.map((item, index) => (
-
-                                                        <tr key={index}>
-                                                            <td className='border border-1 border-black p-2 font-medium' >{item.student_firstname}  {item.student_lastname}</td>
-                                                            <td className='border border-1 border-black p-2 font-medium'></td>
-                                                        </tr>
-
-                                                    )) : <></>}
+                                                    {student.length > 0
+                                                        ? student
+                                                            .sort((a, b) => {
+                                                                // Sort by first name
+                                                                const firstNameComparison = a.student_firstname.localeCompare(b.student_firstname);
+                                                                if (firstNameComparison !== 0) {
+                                                                    return firstNameComparison;
+                                                                }
+                                                                // If first names are equal, sort by last name
+                                                                return a.student_lastname.localeCompare(b.student_lastname);
+                                                            })
+                                                            .map((item, index) => (
+                                                                <tr key={index}>
+                                                                    <td className="border border-1 border-black p-2 font-medium">
+                                                                        {item.student_firstname} {item.student_lastname}
+                                                                    </td>
+                                                                    <td className="border border-1 border-black p-2 font-medium"></td>
+                                                                </tr>
+                                                            ))
+                                                        : <></>}
                                                 </tbody>
+
                                             </table>
                                         </div>
                                     </div>

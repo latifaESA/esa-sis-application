@@ -173,126 +173,131 @@ export default function attendance() {
       {session?.user.role === '2' ? (<>
         <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Attendance</p>
         <form >
-          <div className="grid grid-cols-1 gap-3 min-[850px]:grid-cols-3 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-            <div>
-              <label className='w-[350px]'>
-                Date:
-                <input
-                  className="ml-5 w-40 max-[850px]:ml-3 mr-5"
-                  type="date"
-                  name="from"
-                  id={'date'}
-                  value={attendance_date}
-                  onChange={(e) => { setattendanceDate(e.target.value) }}
-                ></input>
-              </label>
-            </div>
+          <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
+          <label>
+            Date:
+            <input
+              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              type="date"
+              name="date"
+              placeholder=""
+              id={'date'}
+              value={attendance_date}
+              onChange={(e) => { setattendanceDate(e.target.value) }}
+            ></input>
+          </label>
 
-            <div>
-              <label className='w-[350px]'>
-                course ID:
-                <input
-                  className="ml-5 w-40 max-[850px]:ml-3"
-                  type="text"
-                  name="from"
-                  id={'text'}
-                  placeholder='Course ID'
-                  value={course_id}
-                  onChange={(e) => { setCourseid(e.target.value) }}
-                ></input>
-              </label>
-            </div>
+          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+            First Name:
+            <input
+              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+              type="text"
+              name="Fname"
+              placeholder="Teacher's First Name"
+              // value={formData.Fname}
+              onChange={(e) => { 
+                // setFname(e.target.value)
+              }}
+            ></input>
+          </label>
 
-            <div>
-              <label className='w-[350px]'>
-                Teacher firstname:
-                <input
-                  className="ml-5 w-40 max-[850px]:ml-3"
-                  type="text"
-                  name="teacher_id"
-                  placeholder='Teacher LastName'
-                  id={'teacherId'}
-                  value={teacher_firstname}
-                  onChange={(e) => { setTeacherFirstName(e.target.value) }}
-                ></input>
-              </label>
-
-            </div>
-
-            <div>
-              <label className='w-[350px]'>
-                Teacher lastname:
-                <input
-                  className="ml-5 w-40 max-[850px]:ml-3"
-                  type="text"
-                  name="teacher_id"
-                  placeholder='Teacher FirstName'
-                  id={'teacherId'}
-                  value={teacher_lastname}
-                  onChange={(e) => { setTeacherLastName(e.target.value) }}
-                ></input>
-              </label>
-
-            </div>
-
-
-
-
-
-            {/* </div>
+          <label>
+           Course ID:
+            <input
+              className="ml-1 w-40 max-[850px]:ml-1"
+              type="text"
+              name="Lname"
+              placeholder="Course ID"
+              id={'text'}
+              value={course_id}
+              onChange={(e) => { setCourseid(e.target.value) }}
+            ></input>
+          </label>
+          {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-            {/* <label className='w-[350px]'> */}
-            {/* Major: */}
-            {/* <input
-              className="ml-[49px] w-40 max-[850px]:ml-[52px]"  
+         <label>
+            First Name:
+            <input
+              className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+              type="text"
+              name="firstname"
+              placeholder='First Name'
+              id={'teacherId'}
+              value={teacher_firstname}
+              onChange={(e) => { setTeacherFirstName(e.target.value) }}
+
+            ></input>
+          </label>
+
+
+          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+            From:
+            <input
+              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+              type="date"
+              name="from"
+              // value={formData.from}
+              // onChange={handleChange}
+            ></input>
+          </label>
+
+          <label>
+           Last Name:
+            <input
+              className="ml-1 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+              type="text"
+              name="lastname"
+              placeholder="Last Name"
+              id={'teacherId'}
+              value={teacher_lastname}
+              onChange={(e) => { setTeacherLastName(e.target.value) }}
+            ></input>
+          </label>
+          {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+     
+        <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+            Course ID:
+            <input
+              className="ml-3 w-40 max-[850px]:ml-2"
               type="number"
-              name="major_id"
-              placeholder='Major ID'
-              id={'majorId'}
-              value={major_id}
-              onChange={(e)=>{setMajorid(e.target.value)}}
-            ></input> */}
-            {/* { 
-              <CustomSelectBox 
-                options={major}
-                placeholder="Select Major"
-                onSelect={handleMajor}
-                styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
-                />
-              } */}
-            {/* </label> */}
+              name="course-id"
+              placeholder='Enter Course ID'
+              // value={formData.Fname}
+              onChange={(e) => { 
+                // setCourseid(e.target.value)
+              }}
+            ></input>
+         </label>
 
-
-            {/* <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+         <label className='invisible max-[850px]:visible max-[850px]:hidden'>
             To:
             <input
               className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
               type="date"
               name="to"
-              value={attendance_date}
-              onChange={(e)=>{setattendanceDate(e.target.value)}}
+              // value={formData.to}
+              // onChange={handleChange}
             ></input>
-          </label> */}
-            {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
-
-            <div className="flex flex-col min-[850px]:flex-row gap-4">
-              <button
-                className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-                type="button"
-                onClick={handleAttendance}
-              >
-                Search
-              </button>
-              <button
-                className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                type="button"
-                onClick={handleShowAll}
-              >
-                Show All
-              </button>
-            </div>
+          </label>
+          <div className="flex flex-col min-[850px]:flex-row gap-4">
+            <button
+              className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+              type="button"
+              onClick={handleAttendance}
+            >
+              Search
+            </button>
+            <button
+              className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+              type="button"
+              onClick={handleShowAll}
+            >
+              Show All
+            </button>
           </div>
+        </div>
+         
           <AttendanceList users={users} setUsers={setUsers} />
         </form>
       </>) : redirect()}
