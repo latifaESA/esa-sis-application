@@ -81,13 +81,6 @@ async function disconnect(connection) {
   } catch (err) {
     console.error(`Error releasing connection: ${err.message}`);
     return { message: `Error releasing connection: ${err.message}` };
-    //=======
-    //      console.error(`Error Releasing Connection To DB: ${err.message}`);
-    //    }
-    //  } catch (err) {
-    //    console.error(`Error Releasing Connection To DB: ${err.message}`);
-    //
-    //>>>>>>> master
   }
 }
 
