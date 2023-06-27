@@ -148,7 +148,7 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
                                             className='primary-button btnCol text-white hover:text-white mr-3'
                                             type="button"
                                         >
-                                            print
+                                            Print
                                         </button>
                                     }
                                     content={() => componentRef.current}

@@ -719,7 +719,7 @@ async function unassign(
 
 //create courses 
 async function createCourse(connection , course_id , course_name , course_credit ,major_id){
-  console.log(major_id)
+  // console.log(major_id)
   try {
        const query = `INSERT INTO courses (course_id , course_name , course_credit , major_id) VALUES ('${course_id}','${course_name}',${course_credit},${major_id})`
        const res = connection.query(query)
@@ -731,7 +731,7 @@ async function createCourse(connection , course_id , course_name , course_credit
 // get corses in major 
 
 async function getAllCourses(connection , course_id , major_id){
-  console.log(course_id)
+  // console.log(course_id)
   try {
   const query = `SELECT * FROM courses WHERE course_id ='${course_id}' AND major_id='${major_id}'`
   const res = connection.query(query);
@@ -765,7 +765,7 @@ async function getExistCourse(connection , course_id ,teacher_idC, major_id){
     WHERE teacher_courses.course_id ='${course_id}' AND  teacher_courses.teacher_id='${teacher_idC}' AND major_id='${major_id}'`
     const res= await connection.query(query)
     // console.log('res', res)
-    console.log('query',query)
+    // console.log('query',query)
     return res
   } catch (error) {
     return error

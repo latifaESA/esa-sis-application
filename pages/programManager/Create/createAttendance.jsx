@@ -115,12 +115,12 @@ export default function createAttendance() {
         handleTeacher()
 
     }, [null])
-    console.log('promotion', promotionValue)
+    // console.log('promotion', promotionValue)
 
 
     const handlePromotion = (selectedValue) => {
         // Do something with the selected value
-        console.log("Selected Value:", selectedValue);
+        // console.log("Selected Value:", selectedValue);
         if (test) {
             selectedValue == ''
         }
@@ -228,134 +228,65 @@ export default function createAttendance() {
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
                         Create Attendance
                     </p>
-                    <form>
-                        <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-                            <label className="w-[450px]">
-                                promotion:
-
-                                <CustomSelectBox
-                                    options={promotion}
-                                    placeholder="Select Promotion"
-                                    onSelect={handlePromotion}
-                                    styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"}
-                                />
-                                {formErrors.promotion && <div className='text-center text-red-500 font-bold p-2'>{formErrors.promotion}</div>}
-
-                            </label>
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Status:
-                                <select
-                                    className="ml-10 w-40"
-                                    onChange={(e) => setStatus(e.target.value)}
-                                >
-                                    {/* <option value="">Choose Value..</option> */}
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </label>
-
-                            <label className="w-[450px]">
-                                Course Name:
-                                <CustomSelectBox
-                                    options={courses}
-                                    placeholder="Select Courses"
-                                    onSelect={handleCourses}
-                                    styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
-                                />
-                                {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
-                            </label>
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Status:
-                                <select
-                                    className="ml-9 w-40"
-                                    onChange={(e) => setStatus(e.target.value)}
-                                >
-                                    {/* <option value="">Choose Value..</option> */}
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </label>
-
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Role:
-                                <select
-                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
-                                    onChange={(e) => setRole(e.target.value)}
-                                >
-                                    <option defaultValue="">Choose a Role</option>
-                                    <option value="2">Program Manager</option>
-                                    <option value="3">Assistance</option>
-                                </select>
-                            </label>
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Role:
-                                <select
-                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
-                                    onChange={(e) => setRole(e.target.value)}
-                                >
-                                    <option defaultValue="">Choose a Role</option>
-                                    <option value="2">Program Manager</option>
-                                    <option value="3">Assistance</option>
-                                </select>
-                            </label>
-
-                            <label className="w-[450px]">
-                                Teacher
-                                FullName:
-                                {
+                    <form className="flex flex-col justify-between flex-wrap">
+                        <div className="flex flex-col  mb-3 pb-4 border-blue-300 border-b-2 max-sm:flex">
+                            <div className='flex flex-row justify-between p-5 flex-wrap'>
+                                <div className='ml-8'>
+                                    <label>
+                                        promotion:
+                                    </label>
                                     <CustomSelectBox
-                                        options={teachers}
+                                        options={promotion}
+                                        placeholder="Select Promotion"
+                                        onSelect={handlePromotion}
+                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"}
+                                    />
+                                    {formErrors.promotion && <div className='text-center text-red-500 font-bold p-2'>{formErrors.promotion}</div>}
 
-                                        placeholder="Select Teacher"
-                                        onSelect={handleTeachers}
+                                </div>
+                                <div>
+                                    <label>
+                                        Course Name:
+
+                                    </label>
+                                    <CustomSelectBox
+                                        options={courses}
+                                        placeholder="Select Courses"
+                                        onSelect={handleCourses}
                                         styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
                                     />
-                                }
-                                {formErrors.teachers && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachers}</div>}
+                                    {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
+                                </div>
+                            </div>
+                            <div className='flex flex-row justify-between p-5 flex-wrap'>
+                                <div>
+                                    <label>
+                                        Teacher FullName:
+                                    </label>
 
+                                    {
+                                        <CustomSelectBox
+                                            options={teachers}
 
-                            </label>
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Role:
-                                <select
-                                    className="ml-5 w-40 max-[840px]:ml-[50px]"
-                                    onChange={(e) => setRole(e.target.value)}
-                                >
-                                    <option defaultValue="">Choose a Role</option>
-                                    <option value="2">Program Manager</option>
-                                    <option value="3">Assistance</option>
-                                </select>
-                            </label>
-                            <label className="w-[450px] ">
-                                Date:
-                                <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5' value={selectedDate.toISOString().substring(0, 10)}
-                                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                                />
-                            </label>
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Status:
-                                <select
-                                    className="ml-9 w-40"
-                                    onChange={(e) => setStatus(e.target.value)}
-                                >
-                                    {/* <option value="">Choose Value..</option> */}
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </label>
+                                            placeholder="Select Teacher"
+                                            onSelect={handleTeachers}
+                                            styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
+                                        />
+                                    }
+                                    {formErrors.teachers && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachers}</div>}
 
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Role:
-                                <select
-                                    className="ml-9 w-40 max-[840px]:ml-[50px]"
-                                    onChange={(e) => setRole(e.target.value)}
-                                >
-                                    <option defaultValue="">Choose a Role</option>
-                                    <option value="2">Program Manager</option>
-                                    <option value="3">Assistance</option>
-                                </select>
-                            </label>
-                            <div className="flex flex-col ml-7 min-[850px]:flex-row gap-4">
+                                </div>
+                                <div>
+                                    <label>
+                                        Date:
+                                    </label>
+                                    <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5' value={selectedDate.toISOString().substring(0, 10)}
+                                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-row justify-end ml-7 min-[850px]:flex-row gap-4">
                                 <button
                                     className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                     type="button"

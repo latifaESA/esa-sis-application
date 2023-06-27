@@ -37,7 +37,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         let Where = 'major_id';
         let id = session.user.majorid;
         let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id });
-        console.log("course", data.data);
+        // console.log("course", data.data);
         setAllCourses(data.data);
         setMessage(data.data.message);
 
@@ -103,9 +103,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       if (coursesValue.length === 0) {
         errors.courses = 'At least one course must be selected.';
       }
-      // if(teachersName.length > 1 && coursesValue.length>1){
-      //   errors.courses = 'Can not select multiple course to multiple teachers';
-      // }
+      if(teachersName.length > 1 && coursesValue.length>1){
+        errors.courses = 'Can not select multiple course to multiple teachers';
+      }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
         return;
@@ -124,9 +124,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
           };
 
-          console.log("payload", payload)
+          // console.log("payload", payload)
           const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
-          console.log('data', data.message)
+          // console.log('data', data.message)
           setMessage(data.message);
           const newRows = {
             teacher_courses_id: data.data[0].teacher_courses_id,
@@ -182,9 +182,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
           };
 
-          console.log("payload", payload)
+          // console.log("payload", payload)
           const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
-          console.log('data', data.message)
+          // console.log('data', data.message)
           setMessage(data.message);
           const newRows = {
             teacher_courses_id: data.data[0].teacher_courses_id,
@@ -270,6 +270,12 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       if (teachersName.length > 1) {
         errors.teachersName = 'only one teacher can select';
       }
+      if (teachersName.length > teachersNameC.length) {
+        errors.teachersName = 'only one teacher can select';
+      }
+      if (teachersNameC.length > teachersName.length) {
+        errors.teachersNameC = 'only one teacher can select';
+      }
        if (teachersNameC.length === 0 ) {
         errors.teachersNameC = 'At least one teacher must be selected';
       }
@@ -314,7 +320,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         teacher_lastname: teacher_nameC.split(' ')[1],
         course_name: allcourses.find((course)=> course.course_id === course_id)?.course_name
       };
-      console.log(updatedRow)
+      // console.log(updatedRow)
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.teacher_courses_id === updatedRow.teacher_courses_id ? updatedRow : user
@@ -596,7 +602,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                           placeholder="Select Teacher"
                           onChange={handleTeacher}
                         />
-                        {formErrors.teachersName && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersName}</div>}
+                        {formErrors.teachersNameC && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersNameC}</div>}
                       </label>
 
                       <label className='text-gray-700'>

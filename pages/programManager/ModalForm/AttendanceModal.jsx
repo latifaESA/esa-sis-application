@@ -43,7 +43,7 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                 attendance_date: selectedDate,
                 major_id: session.user.majorid
             }
-            console.log('payload')
+            // console.log('payload')
             const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
             // console.log(data.data)
             setData(data.data);
@@ -66,66 +66,33 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
         }
 
     }
-
     return (
-        <div>
-
-            <div
-                className="justify-center  items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none "
-            >
-                <div className="relative w-1/2 h-screen overflow-y-auto my-6 mx-auto max-w-3xl">
-                    {/*content*/}
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white p-5 outline-none focus:outline-none overflow-y-auto">
-                        <div className="flex items-start justify-between p-2 overflow-y-auto">
-                            {/* <h3 className="text-3xl font-semibold">
+        <>
+            <>
+                <div
+                    className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                >
+                    <div className="relative w-1/2 h-screen overflow-y-auto my-6 mx-auto max-w-3xl">
+                        {/*content*/}
+                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                            {/*header*/}
+                            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                                {/* <h3 className="text-3xl font-semibold">
                     Modal Title
                   </h3> */}
-                            <button
-                                className="p-1 ml-auto  border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                onClick={e => setIsModal(false)}
-                            >
-                                <span className=" text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                                    <BsX className=' text-gray-700' />
-                                </span>
-                            </button>
-                        </div>
-                        <div className="relative flex-auto">
-                            {showModal && <MessageModal showModal={showModal} setShowModal={setShowModal} data={data} />}
+                                <button
+                                    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                    onClick={e => setIsModal(false)}
+                                >
+                                    <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                                        <BsX className=' text-gray-700' />
+                                    </span>
+                                </button>
+                            </div>
                             {/*body*/}
-                            {/* <div className='mb-4'>
-                                <div>
-                                    <CustomSelectBox
-                                        options={promotion}
-                                        placeholder="Select Promotion"
-                                        onSelect={handlePromotion}
-                                        styled={"font-medium h-auto  items-center border-[1px] border-zinc-300 self-center w-40  inline-block ml-10"}
-                                    />
-                                    <CustomSelectBox
-                                        options={courses}
-                                        placeholder="Select Courses"
-                                        onSelect={handleCourses}
-                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
-                                    />
-                                </div>
-
-                                <div>
-                                    <CustomSelectBox
-                                        options={teachers}
-
-                                        placeholder="Select Teacher"
-                                        onSelect={handleTeachers}
-                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
-                                    />
-                                    <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10 mt-3' value={selectedDate.toISOString().substring(0, 10)}
-                                        onChange={(e) => setSelectedDate(new Date(e.target.value))} />
-                                </div>
-
-
-
-
-                            </div> */}
-                            <div ref={componentRef} className='flex flex-col bg-white justify-around'>
-                                <div className='flex flex-col pl-2 pr-4'>
+                            {showModal && <MessageModal showModal={showModal} setShowModal={setShowModal} data={data} />}
+                            <div ref={componentRef}  className="relative p-6  bg-white flex-auto   ">
+                              
                                     <div className='flex flex-row mt-2'>
                                         <div>
                                             <picture>
@@ -210,54 +177,47 @@ export default function AttendanceModal({ selectedDate, teachersName, session, p
                                             </table>
                                         </div>
                                     </div>
-
-
-                                </div>
+                            </div>
+                            <div className='flex flex-row justify-end mt-4 p-3'>
+                            <div>
+                                <button
+                                    className='primary-button btnCol text-white hover:text-white mr-4'
+                                    type="button" onClick={handleSave}>Save
+                                </button>
                             </div>
 
-                            <div className='flex flex-row justify-end mt-4'>
-                                <div>
-                                    <button
-                                        className='primary-button btnCol text-white hover:text-white mr-4' onClick={handleSave}>Save
-                                    </button>
-                                </div>
+                            <div>
+                                <ReactToPrint
 
-                                <div>
-                                    <ReactToPrint
+                                    trigger={() =>
+                                        <button
+                                            className='primary-button btnCol text-white hover:text-white mr-4'
+                                            type="button"
+                                        >
+                                            Print
+                                        </button>
+                                    }
+                                    content={() => componentRef.current}
 
-                                        trigger={() =>
-                                            <button
-                                                className='primary-button btnCol text-white hover:text-white mr-4'
-                                                type="button"
-                                            >
-                                                print
-                                            </button>
-                                        }
-                                        content={() => componentRef.current}
-
-                                    />
-
-                                </div>
-
-                                {/* <div>
-                                    <button
-                                        className='primary-button btnCol text-white hover:text-white mr-4' onClick={e => setIsModal(false)}>Cancel
-                                    </button>
-                                </div> */}
-
+                                />
 
                             </div>
-                        </div>
 
                     </div>
-
-
-
+                        </div>
+                      
+                      
+                    {/*footer*/}
+                    {/* <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                   
+                    </div> */}
                 </div>
-
             </div>
-
-        </div>
-
-    )
+      
+        
+            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+     
+    </>
+  );
 }
