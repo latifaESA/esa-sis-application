@@ -2,11 +2,14 @@ import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
+
 import TeachersCourseList from '../../components/Dashboard/TeachersCourseList'
+
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
+
 // import CustomSelectBox from "./customSelectBox";
 export default function teacherCourse() {
 
@@ -294,6 +297,7 @@ export default function teacherCourse() {
             </>) : redirect()}
         </>
     );
+
 }
 teacherCourse.auth = true;
 teacherCourse.adminOnly = true;
