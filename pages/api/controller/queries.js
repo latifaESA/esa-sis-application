@@ -486,6 +486,20 @@ async function getCourse(connection, table, where, id) {
     return error;
   }
 }
+//get teacher by id of courses
+async function coursesTeachers(connection , course_id){
+  try {
+    const query = `SELECT teacher_courses.* , concat(teachers.teacher_firstname, ' ', teachers.teacher_lastname) AS teacher_fullName 
+    FROM teacher_courses 
+    INNER JOIN teachers ON teacher_courses.teacher_id = teachers.teacher_id WHERE course_id = '${course_id}'
+    `
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
 //get first and last name of teacher in a major
 async function getTeachersByMajorCourse(connection, major_id) {
   try {
@@ -1080,7 +1094,7 @@ module.exports = {
   getCourseMajor,
 
   insertPromotion,
-
+  coursesTeachers,
   getTeachersCourses,
   updateAssign
   // assignmentTeacherCourse,
