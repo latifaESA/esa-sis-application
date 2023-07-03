@@ -515,6 +515,20 @@ async function getCourse(connection, table, where, id) {
     return error;
   }
 }
+//get teacher by id of courses
+async function coursesTeachers(connection , course_id){
+  try {
+    const query = `SELECT teacher_courses.* , concat(teachers.teacher_firstname, ' ', teachers.teacher_lastname) AS teacher_fullName 
+    FROM teacher_courses 
+    INNER JOIN teachers ON teacher_courses.teacher_id = teachers.teacher_id WHERE course_id = '${course_id}'
+    `
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
 //get first and last name of teacher in a major
 async function getTeachersByMajorCourse(connection, major_id) {
   try {
@@ -736,15 +750,11 @@ async function unassign(connection, teacher_id, course_id) {
   }
 }
 
-//create courses
-async function createCourse(
-  connection,
-  course_id,
-  course_name,
-  course_credit,
-  major_id
-) {
-  console.log(major_id);
+
+//create courses 
+async function createCourse(connection , course_id , course_name , course_credit ,major_id){
+  // console.log(major_id)
+
   try {
     const query = `INSERT INTO courses (course_id , course_name , course_credit , major_id) VALUES ('${course_id}','${course_name}',${course_credit},${major_id})`;
     const res = connection.query(query);
@@ -755,8 +765,9 @@ async function createCourse(
 }
 // get corses in major
 
-async function getAllCourses(connection, course_id, major_id) {
-  console.log(course_id);
+async function getAllCourses(connection , course_id , major_id){
+  // console.log(course_id)
+
   try {
     const query = `SELECT * FROM courses WHERE course_id ='${course_id}' AND major_id='${major_id}'`;
     const res = connection.query(query);
@@ -786,8 +797,10 @@ async function getExistCourse(connection, course_id, teacher_idC, major_id) {
     WHERE teacher_courses.course_id ='${course_id}' AND  teacher_courses.teacher_id='${teacher_idC}' AND major_id='${major_id}'`;
     const res = await connection.query(query);
     // console.log('res', res)
-    console.log("query", query);
-    return res;
+
+    // console.log('query',query)
+    return res
+
   } catch (error) {
     return error;
   }
@@ -1101,7 +1114,11 @@ module.exports = {
   getCourseMajor,
   PmUserinfo,
   insertPromotion,
+
+  coursesTeachers,
+
   findDataForResetPasswordPM,
+
   getTeachersCourses,
   updateAssign,
   // assignmentTeacherCourse,

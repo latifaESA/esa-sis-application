@@ -13,14 +13,14 @@ async function connect() {
   console.log(process.env.host);
   console.log(process.env.database);
   console.log(process.env.password);
-  console.log(process.env.port);
+  console.log(process.env.PORTS);
   try {
     const connection = new Client({
       user: process.env.user,
       host: process.env.host,
       database: process.env.database,
       password: process.env.password,
-      port: process.env.port,
+      port: process.env.PORTS,
     });
     await new Promise((resolve, reject) => {
       connection.connect((err) => {

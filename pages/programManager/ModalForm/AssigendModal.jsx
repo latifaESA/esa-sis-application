@@ -23,6 +23,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [isReplace, setIsReplace] = useState(false)
   const [newAssign, setNewAssign] = useState(false)
   const [multiAssign, setMultiAssign] = useState(false)
+  const [teacherCourses, setTeacherCourses] = useState([])
+  const [teacherCourse, setTeacherCourse] = useState([])
+  const [teacherFrom, setTeacherFrom] = useState('')
+  const [teacherFromValue, setTeacherFromValue] = useState('')
+  const [isSelected, setSelected] = useState(false)
 
 
 
@@ -37,7 +42,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         let Where = 'major_id';
         let id = session.user.majorid;
         let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id });
-        console.log("course", data.data);
+        // console.log("course", data.data);
         setAllCourses(data.data);
         setMessage(data.data.message);
 
@@ -66,14 +71,37 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
     handleTeacher();
 
-
   }, [users]);
+  useEffect(() => {
+    const getTeacherCourses = async () => {
+
+      try {
+        const course_id = coursesValue
+        if (course_id) {
+          let { data } = await axios.post('/api/pmApi/courseTeacher', { course_id });
+          console.log("course", data.data);
+          setTeacherCourses(data.data);
+          setMessage(data.data.message);
+
+          const datesArray = data.data.map((teacher) => teacher.teacher_fullname);
+          console.log(datesArray)
+          setTeacherCourse(datesArray);
+        }
+
+      } catch (error) {
+        return error;
+      }
+    };
+    getTeacherCourses()
+  }, [coursesValue])
+
 
   const handleCourses = (selectedOptions) => {
     const selectedCourseIds = selectedOptions.map((option) => option.value);
     const selectedName = selectedOptions.map((option) => option.label);
     setCourses(selectedName)
     setCoursesValue(selectedCourseIds);
+    setSelected(true)
   };
 
   const handleTeachers = (selectedValues) => {
@@ -81,17 +109,24 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     const selectedTeacherNames = selectedValues.map((value) => value.label);
     setTeachersValue(selectedTeacherIds);
     setTeachersName(selectedTeacherNames);
-  
+
   };
- 
+
   const handleTeacher = (selectedValues) => {
     const selectedTeacherIds = selectedValues.map((value) => value.value);
     const selectedTeacherNames = selectedValues.map((value) => value.label);
     setTeachersValueC(selectedTeacherIds);
     setTeachersNameC(selectedTeacherNames);
-   
+
   };
- 
+  const handleTeacherCourse = (selectedValues) => {
+    const selectedTeacherIds = selectedValues.map((value) => value.value);
+    const selectedTeacherNames = selectedValues.map((value) => value.label);
+    setTeacherFromValue(selectedTeacherIds);
+    setTeacherFrom(selectedTeacherNames);
+
+  };
+
 
 
   const handleAdd = async () => {
@@ -103,9 +138,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       if (coursesValue.length === 0) {
         errors.courses = 'At least one course must be selected.';
       }
-      // if(teachersName.length > 1 && coursesValue.length>1){
-      //   errors.courses = 'Can not select multiple course to multiple teachers';
-      // }
+      if (teachersName.length > 1 && coursesValue.length > 1) {
+        errors.courses = 'Can not select multiple course to multiple teachers';
+      }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
         return;
@@ -124,9 +159,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
           };
 
-          console.log("payload", payload)
+          // console.log("payload", payload)
           const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
-          console.log('data', data.message)
+          // console.log('data', data.message)
           setMessage(data.message);
           const newRows = {
             teacher_courses_id: data.data[0].teacher_courses_id,
@@ -162,49 +197,49 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         errors.courses = 'At least one course must be selected.';
       }
       if (coursesValue.length > teachersName.length) {
-       errors.courses = 'The number of courses selected must be equal to teachers'
+        errors.courses = 'The number of courses selected must be equal to teachers'
       }
-      if (teachersName.length  > coursesValue.length  ) {
+      if (teachersName.length > coursesValue.length) {
         errors.teachersName = 'The number of teachers selected must be equal to courses'
-       }
+      }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
         return;
       }
 
-        for (let i = 0; i < coursesValue.length; i++) {
-          const payload = {
-            major_id: session.user.majorid,
-            teachers_fullname: teachersName[i],
-            teacher_id: teacherValue[i],
-            course_id: coursesValue[i], // Retrieve the value property of the selected course === courseID
-            course_name: courses[i], // Retrieve the label property of the selected course === courseName
+      for (let i = 0; i < coursesValue.length; i++) {
+        const payload = {
+          major_id: session.user.majorid,
+          teachers_fullname: teachersName[i],
+          teacher_id: teacherValue[i],
+          course_id: coursesValue[i], // Retrieve the value property of the selected course === courseID
+          course_name: courses[i], // Retrieve the label property of the selected course === courseName
 
-          };
+        };
 
-          console.log("payload", payload)
-          const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
-          console.log('data', data.message)
-          setMessage(data.message);
-          const newRows = {
-            teacher_courses_id: data.data[0].teacher_courses_id,
-            teacher_id: teacherValue[i],
-            course_id: coursesValue[i], // Retrieve the value property of the selected course
-            course_name: courses[i], // Retrieve the label property of the selected course
-            major_id: session.user.majorid,
-            teacher_firstname: teachersName[i].split(' ')[0],
-            teacher_lastname: teachersName[i].split(' ')[1],
-          };
-          // console.log('newRow' ,  newRows )
-
-
-          setUsers((prevUsers) => [...prevUsers, newRows]);
-          // console.log('message',message)
-
-        }
+        // console.log("payload", payload)
+        const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
+        // console.log('data', data.message)
+        setMessage(data.message);
+        const newRows = {
+          teacher_courses_id: data.data[0].teacher_courses_id,
+          teacher_id: teacherValue[i],
+          course_id: coursesValue[i], // Retrieve the value property of the selected course
+          course_name: courses[i], // Retrieve the label property of the selected course
+          major_id: session.user.majorid,
+          teacher_firstname: teachersName[i].split(' ')[0],
+          teacher_lastname: teachersName[i].split(' ')[1],
+        };
+        // console.log('newRow' ,  newRows )
 
 
-      
+        setUsers((prevUsers) => [...prevUsers, newRows]);
+        // console.log('message',message)
+
+      }
+
+
+
     } catch (error) {
       return error;
     }
@@ -212,14 +247,14 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
   // const handleUpdate = async() =>{
   //   try {
-      
+
   //      const major_id = session.user.majorid
   //       const teacher_nameC = teachersNameC[0]
   //       const teacher_name = teachersName[0]
   //       const teacher_idC = teacherValueC[0]
   //      const course_id = coursesValue[0]
   //       const teacher_id = teacherValue[0]
-      
+
   //     const {data}  = await axios.put('/api/pmApi/ChangeAssigen',{
   //       major_id,
   //       teacher_name,
@@ -262,15 +297,21 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   //       };
 
   const handleUpdate = async () => {
-  try {
-        const errors = {};
-      if (teachersName.length === 0) {
-        errors.teachersName = 'At least one teacher must be selected';
+    try {
+      const errors = {};
+      if (teacherFrom.length === 0) {
+        errors.teacherFrom = 'At least one teacher must be selected';
       }
-      if (teachersName.length > 1) {
-        errors.teachersName = 'only one teacher can select';
+      if (teacherFrom.length > 1) {
+        errors.teacherFrom = 'only one teacher can select';
       }
-       if (teachersNameC.length === 0 ) {
+      if (teacherFrom.length > teachersNameC.length) {
+        errors.teacherFrom = 'only one teacher can select';
+      }
+      if (teachersNameC.length > teacherFrom.length) {
+        errors.teachersNameC = 'only one teacher can select';
+      }
+      if (teachersNameC.length === 0) {
         errors.teachersNameC = 'At least one teacher must be selected';
       }
       if (teachersNameC.length > 1) {
@@ -279,32 +320,32 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       if (coursesValue.length === 0) {
         errors.courses = 'At least one course must be selected.';
       }
-      if (coursesValue.length >1) {
+      if (coursesValue.length > 1) {
         errors.courses = 'only one course can be selected';
       }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
         return;
       }
-    const major_id = session.user.majorid;
-    const teacher_nameC = teachersNameC[0];
-    const teacher_name = teachersName[0];
-    const teacher_idC = teacherValueC[0];
-    const course_id = coursesValue[0];
-    const teacher_id = teacherValue[0];
-    
+      const major_id = session.user.majorid;
+      const teacher_nameC = teachersNameC[0];
+      const teacher_name = teacherFrom[0];
+      const teacher_idC = teacherValueC[0];
+      const course_id = coursesValue[0];
+      const teacher_id = teacherFromValue[0];
 
-    const { data } = await axios.put('/api/pmApi/ChangeAssigen', {
-      major_id,
-      teacher_name,
-      teacher_nameC,
-      teacher_id,
-      course_id,
-      teacher_idC,
-    });
-   
-    // console.log("data" , data.data)
-    setMessage(data.message)
+
+      const { data } = await axios.put('/api/pmApi/ChangeAssigen', {
+        major_id,
+        teacher_name,
+        teacher_nameC,
+        teacher_id,
+        course_id,
+        teacher_idC,
+      });
+
+      // console.log("data" , data.data)
+      setMessage(data.message)
       const updatedRow = {
         teacher_courses_id: data.data,
         teacher_id: teacher_idC,
@@ -312,19 +353,19 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         major_id,
         teacher_firstname: teacher_nameC.split(' ')[0],
         teacher_lastname: teacher_nameC.split(' ')[1],
-        course_name: allcourses.find((course)=> course.course_id === course_id)?.course_name
+        course_name: allcourses.find((course) => course.course_id === course_id)?.course_name
       };
-      console.log(updatedRow)
+      // console.log(updatedRow)
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.teacher_courses_id === updatedRow.teacher_courses_id ? updatedRow : user
         )
       );
-    
-  } catch (error) {
-    return error;
-  }
-};
+
+    } catch (error) {
+      return error;
+    }
+  };
 
   return (
     <>
@@ -345,14 +386,14 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
               </button>
 
             </div> */}
-            {!isReplace && !newAssign &!multiAssign ?
+            {!isReplace && !newAssign & !multiAssign ?
               <div className="flex items-start justify-between p-5  rounded-t">
                 <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
                   Assigned Teacher To Course
                 </h3>
                 <button
                   className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                  onClick={(e) => {setOpenModal(false)}}
+                  onClick={(e) => { setOpenModal(false) }}
                 >
                   <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                     <BsX className=" text-gray-700 font-bold" />
@@ -361,90 +402,90 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
               </div>
               : <></>}
             {
-            isReplace ? 
-                  <div className="flex items-start justify-between p-5 rounded-t">
+              isReplace ?
+                <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
                     Replace Course Assign
                   </h3>
                   <button
                     className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                    onClick={(e) => {setIsReplace(false),setFormErrors({})}}
+                    onClick={(e) => { setIsReplace(false), setFormErrors({}), setSelected(false) }}
                   >
                     <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                       <BsX className=" text-gray-700 font-bold" />
                     </span>
                   </button>
                 </div>
-            
-            : <></>}
+
+                : <></>}
             {
-              newAssign ? 
-             <div className="flex items-start justify-between p-5 rounded-t">
-              <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
-                Assign Teacher  To Courses
-              </h3>
-              <button
-                className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                onClick={(e) => {setNewAssign(false) , setFormErrors({})}}
-              >
-                <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  <BsX className=" text-gray-700 font-bold" />
-                </span>
-              </button>
-            </div> :<></>
+              newAssign ?
+                <div className="flex items-start justify-between p-5 rounded-t">
+                  <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                    Assign Teacher  To Courses
+                  </h3>
+                  <button
+                    className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                    onClick={(e) => { setNewAssign(false), setFormErrors({}), setSelected(false) }}
+                  >
+                    <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      <BsX className=" text-gray-700 font-bold" />
+                    </span>
+                  </button>
+                </div> : <></>
             }
-             {
-              multiAssign ? 
-             <div className="flex items-start justify-between p-4 pb-0">
-              <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
-                Assign Teachers To Courses
-              </h3>
-              <button
-                className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                onClick={(e) => {setMultiAssign(false) , setFormErrors({})}}
-              >
-                <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  <BsX className=" text-gray-700 font-bold" />
-                </span>
-              </button>
-            </div> :<></>
+            {
+              multiAssign ?
+                <div className="flex items-start justify-between p-4 pb-0">
+                  <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                    Assign Teachers To Courses
+                  </h3>
+                  <button
+                    className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                    onClick={(e) => { setMultiAssign(false), setFormErrors({}), setSelected(false) }}
+                  >
+                    <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      <BsX className=" text-gray-700 font-bold" />
+                    </span>
+                  </button>
+                </div> : <></>
             }
 
             <div className="relative flex-auto">
-              {!isReplace && !newAssign && !multiAssign? 
-              <form>
-                <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-3 min-[1100px]:grid-cols-2 mb-3 pb-4 border-blue-300 border-b-2 justify-center">
-                <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
-                  
-                  <button
-                    className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
-                    type="button"
-                    onClick={(e) => setIsReplace(true)}
-                  >
-                    Replace Teachers
-                  </button>
-                </div>
-                <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
-                  <button
-                    className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
-                    type="button"
-                    onClick={(e) => setNewAssign(true)}
-                  >
-                    New Assign
-                  </button>
-                </div>
-                <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
-                  <button
-                    className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
-                    type="button"
-                    onClick={(e) => setMultiAssign(true)}
-                  >
-                    Assign Teachers To Courses
-                  </button>
-                </div>
-              </div>
-              </form>
-               : <></>}
+              {!isReplace && !newAssign && !multiAssign ?
+                <form>
+                  <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-3 min-[1100px]:grid-cols-2 mb-3 pb-4 border-blue-300 border-b-2 justify-center">
+                    <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
+
+                      <button
+                        className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
+                        type="button"
+                        onClick={(e) => setIsReplace(true)}
+                      >
+                        Replace Teachers
+                      </button>
+                    </div>
+                    <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
+                      <button
+                        className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
+                        type="button"
+                        onClick={(e) => setNewAssign(true)}
+                      >
+                        New Assign
+                      </button>
+                    </div>
+                    <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
+                      <button
+                        className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
+                        type="button"
+                        onClick={(e) => setMultiAssign(true)}
+                      >
+                        Assign Teachers To Courses
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                : <></>}
 
 
               <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
@@ -472,7 +513,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                         options={allteachers.map((teacher) => ({
                           value: teacher.teacher_id,
                           label: teacher.teacher_fullname,
-                        }))}
+                        }))
+                        .sort((a, b) => a.label.localeCompare(b.label))
+                      }
                         placeholder="Select Teacher"
                         onChange={handleTeachers}
                       />
@@ -483,7 +526,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       Course:
                       <Select
                         isMulti
-                        options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name }))}
+                        options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
                         placeholder="Select Courses"
                         onChange={handleCourses}
                       />
@@ -497,13 +540,13 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                     type="button"
                     onClick={(e) => handleAdd()}
                   >
-                    Assigned
+                    Assign
                   </button>
                 </div>
               </div>
               : <></>
             }
-               {multiAssign ?
+            {multiAssign ?
               <div className="relative flex-auto">
                 {message && <div className="text-gray-500 font-bold p-2">{message}</div>}
                 <form className='flex items-center'>
@@ -525,7 +568,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                         options={allteachers.map((teacher) => ({
                           value: teacher.teacher_id,
                           label: teacher.teacher_fullname,
-                        }))}
+                        })).sort((a, b) => a.label.localeCompare(b.label))}
                         placeholder="Can Select More Than one teacher"
                         onChange={handleTeachers}
                       />
@@ -536,7 +579,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       Course:
                       <Select
                         isMulti
-                        options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name }))}
+                        options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
                         placeholder="Course For each teacher Selected"
                         onChange={handleCourses}
                       />
@@ -548,9 +591,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   <button
                     className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                     type="button"
-                    onClick={(e)=>handleAddMultiple()}
+                    onClick={(e) => handleAddMultiple()}
                   >
-                    Assigned set
+                    Assign set
                   </button>
                 </div>
               </div>
@@ -572,59 +615,101 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                         />}
                           {formErrors.teachersName && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersName}</div>}
                       </label> */}
-                      <label className='text-gray-700 mr-12'>
-                        from Teacher Full Name:
-                        <Select
-                          isMulti
-                          options={allteachers.map((teacher) => ({
-                            value: teacher.teacher_id,
-                            label: teacher.teacher_fullname,
-                          }))}
-                          placeholder="Select Teacher"
-                          onChange={handleTeachers}
-                        />
-                        {formErrors.teachersName && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersName}</div>}
-                      </label>
-                      <label className='text-gray-700 mr-12'>
-                        to Teacher Full Name:
-                        <Select
-                          isMulti
-                          options={allteachers.map((teacher) => ({
-                            value: teacher.teacher_id,
-                            label: teacher.teacher_fullname,
-                          }))}
-                          placeholder="Select Teacher"
-                          onChange={handleTeacher}
-                        />
-                        {formErrors.teachersName && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersName}</div>}
-                      </label>
 
                       <label className='text-gray-700'>
                         Course:
                         <Select
                           isMulti
-                          options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name }))}
+                          options={allcourses.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
                           placeholder="Select Courses"
                           onChange={handleCourses}
+                          className='place-items-center'
                         />
                         {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
                       </label>
+                      {isSelected ? <>
+
+                        <label className='text-gray-700 mr-12 invisible max-[850px]:visible max-[850px]:hidden'>
+                          from Teacher Full Name:
+                          <Select
+                            isMulti
+                            options={teacherCourses.map((teacher) => ({
+                              value: teacher.teacher_id,
+                              label: teacher.teacher_fullname,
+                            }))}
+                            placeholder="Select Teacher"
+                            onChange={handleTeacherCourse}
+                            style={{ display: 'none' }}
+                          />
+
+                          {formErrors.teacherFrom && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teacherFrom}</div>}
+                        </label>
+                        <label className='text-gray-700 mr-12'>
+                          from Teacher Full Name:
+                          <Select
+                            isMulti
+                            options={allteachers
+                              .filter((teacher) => teacherCourses.some((course) => course.teacher_id === teacher.teacher_id))
+                              .map((teacher) => ({
+                                value: teacher.teacher_id,
+                                label: teacher.teacher_fullname,
+                              }))
+                              .sort((a, b) => a.label.localeCompare(b.label))}
+                            placeholder="Select Teacher"
+                            onChange={handleTeacherCourse}
+                          />
+                          {formErrors.teacherFrom && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teacherFrom}</div>}
+                        </label>
+                        <label className='text-gray-700 mr-12'>
+                          to Teacher Full Name:
+                          <Select
+                            isMulti
+                            options={allteachers
+                              .filter((teacher) => !teacherCourses.some((course) => course.teacher_id === teacher.teacher_id))
+                              .map((teacher) => ({
+                                value: teacher.teacher_id,
+                                label: teacher.teacher_fullname,
+                              }))
+                              .sort((a, b) => a.label.localeCompare(b.label))}
+                            placeholder="Select Teacher"
+                            onChange={handleTeacher}
+                          />
+                          {formErrors.teachersNameC && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachersNameC}</div>}
+                        </label>
+
+
+
+                      </> : <></>}
                     </div>
                   </form>
-                  <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
-                    <button
-                      className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
-                      type="button"
-                      onClick={(e) => handleUpdate()}
-                    >
-                      Replace
-                    </button>
-                  </div>
+                  {isSelected ? <>
+
+                    <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
+                      <button
+                        className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
+                        type="button"
+                        onClick={(e) => handleUpdate()}
+                      >
+                        Replace
+                      </button>
+                    </div>
+                  </> : <>
+                    <div className="flex flex-col min-[850px]:flex-row gap-4 justify-center  min-[850px]:justify-center">
+                      <button
+                        disabled
+                        className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
+                        type="button"
+                        onClick={(e) => handleUpdate()}
+                      >
+                        Replace
+                      </button>
+                    </div>
+
+                  </>}
+
                 </div>
                 : <></>
             }
-
-
             <div className="flex items-center justify-center p-6"></div>
           </div>
         </div>

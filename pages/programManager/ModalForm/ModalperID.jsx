@@ -14,24 +14,33 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
     useEffect(() => {
         const handlePromotion = async () => {
             try {
-
-                const attendance_id = details[0].attendance_id
-                const data = await axios.post('/api/pmApi/getStudentPromotions', { attendance_id })
-                setPromotion(data.data.data[0].promotion_name)
-                //   setStudent(data.data)
-
-                const datesArray = [];
-                data.data.data.forEach((student) => {
-                    datesArray.push(student.student_fullname);
-                });
-                datesArray.sort();
-                setStudent(datesArray);
-                // console.log("ffffffffffffff", student)
-
+              const attendance_id = details[0].attendance_id;
+              const data = await axios.post('/api/pmApi/getStudentPromotions', { attendance_id });
+              setPromotion(data.data.data[0].promotion_name);
+          
+              const sortedStudents = data.data.data.sort((a, b) => {
+                const fullNameA = a.student_fullname.toLowerCase();
+                const fullNameB = b.student_fullname.toLowerCase();
+                
+          
+                const [firstNameA, lastNameA] = fullNameA.split(' ');
+                const [firstNameB, lastNameB] = fullNameB.split(' ');
+                  
+                if (firstNameA === firstNameB) {
+                    
+                  return   lastNameA.localeCompare(lastNameB);
+                } else {
+                  return firstNameA.localeCompare(firstNameB);
+                }
+              });
+          
+              const datesArray = sortedStudents.map((student) => student.student_fullname);
+              setStudent(datesArray);
             } catch (error) {
-                return error
+              return error;
             }
-        }
+          };
+          
         handlePromotion();
         setTimeout(() => {
             handlePromotion();
@@ -148,7 +157,7 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
                                             className='primary-button btnCol text-white hover:text-white mr-3'
                                             type="button"
                                         >
-                                            print
+                                            Print
                                         </button>
                                     }
                                     content={() => componentRef.current}
