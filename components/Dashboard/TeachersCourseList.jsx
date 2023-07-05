@@ -13,7 +13,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 
 import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+// import selection_data from '../../utilities/selection_data';
 
 import { LowerButtons } from './LowerButtons';
 
@@ -22,6 +22,7 @@ import AssigendModal from '../../pages/programManager/ModalForm/AssigendModal';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 
+import { WarningMessageObsolote } from './WarningMessage';
 
 const TeachersCourseList = ({ users, setUsers}) => {
 
@@ -32,15 +33,40 @@ const TeachersCourseList = ({ users, setUsers}) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   const [assigned , setAssigned] = useState(true)
+  // const [selectedRows, setSelectedRows] = useState([]);
+  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isAssignPage , setIsAssignPage] = useState(false)
+  const [details , setDetails] = useState([])
   
 
-console.log("users",users)
+// console.log("users",users)
   setTimeout(() => {
     setMessage('');
-  }, selection_data.message_disapear_timing);
+  },10000);
+
+  const handleConfirmClose = (user) => {
+    setConfirmOpenIncomplete(false);
+    setConfirmOpenDelete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+   
+  };
+  const handleConfirmDelete = () => {
+    unAssign(selectedUser);
+    // handleSave(selectedUser);
+    setConfirmOpenDelete(false);
+    // setConfirmOpenObsolote(false);
+    // setCancleIncomplete(false);
+  };
+  const handleConfirmDel = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenDelete(true);
+  };
+
 
   const unAssign = async(event)=>{
-    console.log('payload',event)
     
     try {
       const teacher_courses_id = event.teacher_courses_id
@@ -51,6 +77,7 @@ console.log("users",users)
       const response = await axios.post('/api/pmApi/unasigend',{ teacher_id , course_id ,teacher_firstname, teacher_lastname})
       setMessage(response.data.message)
       setUsers(users.filter((user) =>  user.teacher_courses_id !== teacher_courses_id));
+    
      
 
     } catch (error) {
@@ -112,7 +139,7 @@ console.log("users",users)
           <button
             className='primary-button hover:text-white'
             type='button'
-            onClick={()=>{unAssign(params.row)}}
+            onClick={()=>{handleConfirmDel(params.row) , setIsAssignPage(true) , setDetails(params.row)}}
           >
             unAssign
           </button>
@@ -125,6 +152,16 @@ console.log("users",users)
 
   return (
     <>
+      {confirmOpenDelete && (
+    <WarningMessageObsolote
+      isAssignPage={isAssignPage}
+      confirmOpenObsolote={confirmOpenDelete}
+      handleConfirmClose={handleConfirmClose}
+      handleConfirm={handleConfirmDelete}
+      details={details}
+     
+    />
+  )}
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       {OpenModal && <AssigendModal setOpenModal={setOpenModal} users={users} setUsers={setUsers}/>}
 

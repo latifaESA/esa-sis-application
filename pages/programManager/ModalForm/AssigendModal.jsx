@@ -3,7 +3,7 @@ import { BsX } from 'react-icons/bs';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import Select from 'react-select';
-import selection_data from '../../../utilities/selection_data';
+// import selection_data from '../../../utilities/selection_data';
 // import { getSession } from 'next-auth/react';
 
 export default function AssigendModal({ setOpenModal, setUsers, users }) {
@@ -18,7 +18,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [message, setMessage] = useState('');
   const [teachersName, setTeachersName] = useState('')
   const [teachersNameC, setTeachersNameC] = useState('')
-  const [test, setTest] = useState()
+  // const [test, setTest] = useState()
   const [formErrors, setFormErrors] = useState({});
   const [isReplace, setIsReplace] = useState(false)
   const [newAssign, setNewAssign] = useState(false)
@@ -33,7 +33,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
   setTimeout(() => {
     setMessage('');
-  }, selection_data.message_disapear_timing);
+  },10000);
 
   useEffect(() => {
     const getCourses = async () => {
