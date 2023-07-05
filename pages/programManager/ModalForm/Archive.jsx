@@ -64,42 +64,42 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
       const handleUpload = async () => {
         try {
 //<<<<<<< batoul
-//          const date = details[0].attendance_date
-//
-//          const DateFormat = moment(date).format('DD-MM-YYYY')
-//
-//          const fileExtension = getFileExtension(uploadPhotoData.fileList[0].name);
-//          // const newFileName = `new_file_name${fileExtension}`;
-//          const newFileName = `${details[0].attendance_id}-${details[0].major_id}-${details[0].course_id}-${details[0].teacher_id}-${DateFormat}.${fileExtension}`;
-//          const formData = new FormData();
-//          formData.append('files', uploadPhotoData.fileList[0], newFileName);
-//          formData.append('major_id', details[0].major_id);
-//          formData.append('attendance_id', details[0].attendance_id);
-//          formData.append('course_id', details[0].course_id);
-//          formData.append('teacher_id', details[0].teacher_id);
-//          formData.append('attendance_date', DateFormat);
-//          formData.append('ext', fileExtension);
-//          console.log('fileList', uploadPhotoData.fileList[0].name);
+         const date = details[0].attendance_date
+
+         const DateFormat = moment(date).format('DD_MM_YYYY')
+
+         const fileExtension = getFileExtension(uploadPhotoData.fileList[0].name);
+         // const newFileName = `new_file_name${fileExtension}`;
+         const newFileName = `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${DateFormat}.${fileExtension}`;
+         const formData = new FormData();
+         formData.append('files', uploadPhotoData.fileList[0], newFileName);
+         formData.append('major_id', details[0].major_id);
+         formData.append('attendance_id', details[0].attendance_id);
+         formData.append('course_id', details[0].course_id);
+         formData.append('teacher_id', details[0].teacher_id);
+         formData.append('attendance_date', DateFormat);
+         formData.append('ext', fileExtension);
+         console.log('fileList', uploadPhotoData.fileList[0].name);
 
 //=======
-          const attendanceDate = new Date(details[0].attendance_date);
-          const day = attendanceDate.getDate().toString().padStart(2, '0');
-          const month = (attendanceDate.getMonth() + 1)
-            .toString()
-            .padStart(2, '0');
-          const year = attendanceDate.getFullYear().toString();
-          const formattedDate = `${day}-${month}-${year}`.replace(/-/g, '_');
+          // const attendanceDate = new Date(details[0].attendance_date);
+          // const day = attendanceDate.getDate().toString().padStart(2, '0');
+          // const month = (attendanceDate.getMonth() + 1)
+          //   .toString()
+          //   .padStart(2, '0');
+          // const year = attendanceDate.getFullYear().toString();
+          // const formattedDate = `${day}-${month}-${year}`.replace(/-/g, '_');
 
-          const formData = new FormData();
-          formData.append('files', uploadPhotoData.fileList[0]);
-          formData.append(
-            'attendance',
-            `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
-          );
-          formData.append(
-            'files',
-            'attendance'
-          );
+          // const formData = new FormData();
+          // formData.append('files', uploadPhotoData.fileList[0]);
+          // formData.append(
+          //   'attendance',
+          //   `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
+          // );
+          // formData.append(
+          //   'files',
+          //   'attendance'
+          // );
 
           const { data } = await axios.post(
             '/api/uploaddoc/uploadDoc',

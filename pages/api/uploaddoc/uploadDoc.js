@@ -92,25 +92,25 @@ async function handler(req, res) {
   }
 //<<<<<<< batoul
 
-// const {fields , files}= await readFile(req, true, directory);
-//  console.log('fields',fields)
+const {fields , files}= await readFile(req, true, directory);
+ console.log('fields',fields)
 
-//  let attendance_file = await fs.readdirSync(directory);
+ let attendance_file = await fs.readdirSync(directory);
 
-//  return res.status(200).send({ url: `${env.ONLINE_APPLICATION_URL}/file/sis/Sis-documents/attendance/${fields.attendance_id}-${ fields.major_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}` });
+ return res.status(200).send({ url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}` });
 //=======
   // eslint-disable-next-line no-unused-vars
-  const { fields, files } = await readFile(req, true, directory);
-  console.log('fields', fields);
+  // const { fields, files } = await readFile(req, true, directory);
+  // console.log('fields', fields);
 
-  let attendance_file = await fs.readdirSync(directory);
-  const oldFilePath = path.join(directory, attendance_file.slice(-1)[0]);
-  const fileExtension = path.extname(attendance_file.slice(-1)[0]);
-  const newFileName = fields.attendance + fileExtension;
-  const newFilePath = path.join(directory, newFileName);
+  // let attendance_file = await fs.readdirSync(directory);
+  // const oldFilePath = path.join(directory, attendance_file.slice(-1)[0]);
+  // const fileExtension = path.extname(attendance_file.slice(-1)[0]);
+  // const newFileName = fields.attendance + fileExtension;
+  // const newFilePath = path.join(directory, newFileName);
 
   // Rename the file
-  fs.renameSync(oldFilePath, newFilePath);
+  // fs.renameSync(oldFilePath, newFilePath);
   // // Delete the old file if it exists
   // if (fs.existsSync(oldFilePath)) {
   //   fs.unlinkSync(oldFilePath);
@@ -118,9 +118,9 @@ async function handler(req, res) {
 
 
   // Return a response
-  return res.status(200).send({
-    url: `${env.NEXTAUTH_URL}/file/sis/sis-documents/attendance/${newFileName}`,
-  });
+  // return res.status(200).send({
+  //   url: `${env.NEXTAUTH_URL}/file/sis/sis-documents/attendance/${newFileName}`,
+  // });
 
   // return res.status(200).send(req)
 }
