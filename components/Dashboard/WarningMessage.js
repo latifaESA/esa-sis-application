@@ -84,11 +84,7 @@ function WarningMessageObsolote({
   confirmOpenObsolote,
   handleConfirmClose,
   handleConfirm,
-  isAssignPage,
-  details
-  
 }) {
-  // console.log(details)
   return (
     <Modal
       open={confirmOpenObsolote}
@@ -96,12 +92,9 @@ function WarningMessageObsolote({
       className='top-0 left-0 w-full h-full flex items-center justify-center'
     >
       <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-       { isAssignPage ?   <p className='text-gray-700 mb-4'>
-          Are you sure you want to UnAssign teacher <span className='text-red-500 font-bold'>{details.teacher_firstname} {details.teacher_lastname}</span> from course <span className='text-red-500 font-bold'>{details.course_id}</span>?
-        </p>:  <p className='text-gray-700 mb-4'>
+        <p className='text-gray-700 mb-4'>
           Are you sure you want to Delete this User?
-        </p> }
-      
+        </p>
         <div className='flex justify-end'>
           <button
             className='bg-red-500 text-white px-4 py-2 rounded mr-4'

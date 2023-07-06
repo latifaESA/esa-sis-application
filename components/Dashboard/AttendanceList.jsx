@@ -6,32 +6,30 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import moment from 'moment';
 import axios from 'axios';
+import Link from 'next/link';
 import selection_data from '../../utilities/selection_data';
-
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-// import { LowerButtons } from './LowerButtons';
-// import exportSelect from '../../utilities/ExcelExport/exportSelect';
-// import exportAll from '../../utilities/ExcelExport/exportAll';
+import { LowerButtons } from './LowerButtons';
+import exportSelect from '../../utilities/ExcelExport/exportSelect';
+import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 // import {
 //   WarningMessageCancleIncomplete,
 //   WarningMessageIncomplete,
 //   WarningMessageObsolote,
 // } from './WarningMessage';
-// import decrypt from '../../utilities/encrypt_decrypt/decryptText';
+import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
-// import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
+import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
 import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
-import ModalperID from '../../pages/programManager/ModalForm/ModalperID';
-import Archive from '../../pages/programManager/ModalForm/Archive';
 
 const AttendanceList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
@@ -41,96 +39,113 @@ const AttendanceList = ({ users, setUsers }) => {
   // const [presentEnable, setPesentEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
+  const [isModal, setisModal] = useState(false)
+  const [allpromotion, setAllPromotions] = useState([])
+  const [promotion, setPromotions] = useState([])
+  const [allcourses, setAllCourses] = useState([])
+  const [courses, setCourses] = useState([])
+  const [allteachers, setAllTeachers] = useState([])
+  const [teachers, setTeachers] = useState([])
   const [editModal, setEditModal] = useState(false)
-
-  const [attendance, setAttendance] = useState([])
-  const[details , setDetails]= useState([])
-  const [courseName , setCourseName]= useState('');
-  const [teachersFirstname , setTeacherFirstName]=useState('');
-  const [teacherslastname , setTeacherlastname]=useState('');
-  const [date , setDate]=useState('')
-  const [showPrint,setShowPrint] = useState(false)
-  const [archive,setShowArchive] = useState(false)
-
-//sort by Teacher Firstname
-  // const [sortedRows, setSortedRows] = useState(users);
-
-  // const handleSort = (field) => {
-  //   const sorted = [...sortedRows].sort((a, b) => a[field].localeCompare(b[field]));
-  //   setSortedRows(sorted);
-  // };
-  //sort by date
-//   const sortedUsers = [...users].sort((a, b) =>
-//   moment(b.attendance_date).diff(moment(a.attendance_date))
-// );
+  const [student, setStudent] = useState([])
+  const [attendance , setAttendance]=useState([])
 
 
 
-    //     setCourses(datesArray);
+  console.log('===============')
+  console.log('=this is users=======')
+  console.log(users)
+  // console.log('====this is setUsers====')
+  // console.log(users.data[0].major_id)
+  console.log('===============')
+  console.log('===============')
 
 
-    //   } catch (error) {
-    //     return error
-    //   }
-    // }
-    // getCourses();
+  useEffect(() => {
+    const getAllPromotion = async () => {
+      try {
+        let table = 'promotions';
+        let { data } = await axios.post('/api/pmApi/getAll', { table })
+        console.log(data.rows)
+        setAllPromotions(data.rows)
 
-    // const handleTeacher = async () => {
-    //   try {
+        const datesArray = [];
+        data.rows.forEach((promotions) => {
+          datesArray.push(promotions.promotion_name);
+        });
 
-    //     let major_id = session.user.majorid;
-    //     // let course_id = coursesValue ;
-    //     const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
-    //     setAllTeachers(data.data)
-    //     console.log('allteacher', allteachers)
+        setPromotions(datesArray);
+        console.log(promotion, 'before')
 
-    //     const datesArray = [];
-    //     data.data.forEach((teachers) => {
-    //       datesArray.push(teachers.teacher_firstname);
-
-    //     });
-    //     setTeachers(datesArray)
-
-
-    //   } catch (error) {
-    //     return error
-    //   }
-    // }
-    // handleTeacher()
-
-    // const getStudent = async () => {
-    //   try {
-    //     let major_id = session.user.majorid
-    //     const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
-    //     console.log(data.data)
-    //     console.log(data.data)
-    //     setStudent(data.data)
-    //   } catch (error) {
-    //     return error
-    //   }
-//sort by attendance_id
-    const [sortedRows, setSortedRows] = useState(users);
-    useEffect(() => {
-      const sorted = [...users].sort((a, b) => a.attendance_id - b.attendance_id);
-      setSortedRows(sorted);
-    }, [users]);
-  
-
-  const getDetails = async (event) =>{
-    try {
-      const attendance_id = event.attendance_id
-      const { data } = await axios.post(`/api/pmApi/attendanceDetails`, {attendance_id})
-      // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
-      setTeacherFirstName(data.data[0].teacher_firstname)
-      setTeacherlastname(data.data[0].teacher_lastname)
-      setCourseName(data.data[0].course_name)
-      setDate(data.data[0].attendance_date)
-
-      setDetails(data.data)
-    } catch (error) {
-      return error
+      } catch (error) {
+        setMessage(error)
+        return error
+      }
     }
-  }
+    getAllPromotion();
+
+    const getCourses = async () => {
+      try {
+        let table = 'courses';
+        let Where = 'major_id'
+        let id = session.user.majorid
+        let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
+        console.log("course", data.data)
+        setAllCourses(data.data)
+
+        const datesArray = [];
+        data.data.forEach((courses) => {
+          datesArray.push(courses.course_name);
+        });
+
+        setCourses(datesArray);
+
+
+      } catch (error) {
+        return error
+      }
+    }
+    getCourses();
+
+    const handleTeacher = async () => {
+      try {
+
+        let major_id = session.user.majorid;
+        // let course_id = coursesValue ;
+        const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
+        setAllTeachers(data.data)
+        console.log('allteacher', allteachers)
+
+        const datesArray = [];
+        data.data.forEach((teachers) => {
+          datesArray.push(teachers.teacher_firstname);
+
+        });
+        setTeachers(datesArray)
+
+
+      } catch (error) {
+        return error
+      }
+    }
+    handleTeacher()
+
+    const getStudent = async () => {
+      try {
+        let major_id = session.user.majorid
+        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
+        console.log(data.data)
+        console.log(data.data)
+        setStudent(data.data)
+      } catch (error) {
+        return error
+      }
+
+
+    }
+    getStudent()
+
+  }, [])
 
 
   // const handleSave = (user) => {
@@ -161,30 +176,28 @@ const AttendanceList = ({ users, setUsers }) => {
   //     });
   // };
 
-  // const handlePrintSelected = () => {
-  //   const selectedIDs = selectedRows;
-  //   console.log('selectedIDs', selectedIDs);
-  //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-  //   console.log('selectedUsersbefore', selectedUsers);
-  //   selectedUsers.forEach((user) => {
-  //     if (user.reportURL) {
-  //       window.open(user.reportURL);
-  //     } else {
-  //       setMessage('Please select a user with a report');
-  //     }
-  //   });
+  const handlePrintSelected = () => {
+    const selectedIDs = selectedRows;
+    console.log('selectedIDs', selectedIDs);
+    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+    console.log('selectedUsersbefore', selectedUsers);
+    selectedUsers.forEach((user) => {
+      if (user.reportURL) {
+        window.open(user.reportURL);
+      } else {
+        setMessage('Please select a user with a report');
+      }
+    });
 
-  //   console.log('selectedUsers', selectedUsers);
-  // };
+    console.log('selectedUsers', selectedUsers);
+  };
 
-  const handleShowAll = async (event) => {
+  const handleShowAll = async (attendance_id) => {
 
     try {
       // setEditModal(true)
-
-      const attendance_id = event.attendance_id
-      const { data } = await axios.post(`/api/pmApi/getAllAttendance`, {attendance_id})
-
+      console.log(attendance_id)
+      const {data} = await axios.post(`/api/pmApi/getAllAttendance`,attendance_id)
       setAttendance(data.data)
 
     } catch (error) {
@@ -192,7 +205,6 @@ const AttendanceList = ({ users, setUsers }) => {
     }
 
   }
-
   setTimeout(() => {
     setMessage('');
   }, selection_data.message_disapear_timing);
@@ -218,7 +230,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'teacher Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 100,
       renderCell: (params) =>
         `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
 
@@ -236,7 +248,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'Major Name',
       headerAlign: 'center',
       align: 'center',
-      width: 200,
+      width: 150,
     },
 
     {
@@ -244,7 +256,7 @@ const AttendanceList = ({ users, setUsers }) => {
       headerName: 'Course ID',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 90,
     },
 
     // {
@@ -282,6 +294,7 @@ const AttendanceList = ({ users, setUsers }) => {
       valueFormatter: params =>
         moment(params?.value).format("DD/MM/YYYY"),
     },
+
     {
       field: 'action',
       headerName: 'Action',
@@ -293,7 +306,7 @@ const AttendanceList = ({ users, setUsers }) => {
         <div className='flex gap-2'>
           <button
             className='primary-button hover:text-white'
-            onClick={() => { handleShowAll(params.row),getDetails(params.row) ,setEditModal(true) }}
+            onClick={() => {handleShowAll(params.row) , setEditModal(true)}}
             // disabled={params.id !== presentEnable}
             type='button'
             hidden={
@@ -302,16 +315,13 @@ const AttendanceList = ({ users, setUsers }) => {
                 : false
             }
           >
-            Edit
+            Add
           </button>
-          
           <button
             className='primary-button hover:text-white'
-            type='button'
-            onClick={()=>{getDetails(params.row),setShowPrint(true)}}
 
           >
-                Print
+            print
 
           </button>
           {/* <Link
@@ -321,14 +331,19 @@ const AttendanceList = ({ users, setUsers }) => {
             // href={downloadPDF}
             
           > */}
+          <Link
+            className='text-black'
+            target='_blank'
+            href={`${params.row.reportURL}`}
+          >
             <button
               className='primary-button hover:text-white'
+              disabled={params.row.reportURL ? false : true}
               type='button'
-              onClick={()=>{ handleShowAll(params.row),getDetails(params.row) , setShowArchive(true)}}
             >
               Archive
             </button>
-
+          </Link>
           {/* </Link> */}
           {/* <button
             className='primary-button hover:text-white'
@@ -351,58 +366,56 @@ const AttendanceList = ({ users, setUsers }) => {
 
   // export select to excel
 
-  // const exportButton = async () => {
-  //   if (users.length > 0) {
-  //     try {
-  //       const response = await axios.get('/api/admin/listusers/listexport');
-  //       const incomingData = JSON.parse(decrypt(response.data.data));
-  //       if (response.status === 200) {
-  //         console.log('response', response);
-  //         console.log('incomingData', incomingData);
-  //         await exportSelect(selectedRows, incomingData, session);
-  //       } else {
-  //         setUsers([]);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
+  const exportButton = async () => {
+    if (users.length > 0) {
+      try {
+        const response = await axios.get('/api/admin/listusers/listexport');
+        const incomingData = JSON.parse(decrypt(response.data.data));
+        if (response.status === 200) {
+          console.log('response', response);
+          console.log('incomingData', incomingData);
+          await exportSelect(selectedRows, incomingData, session);
+        } else {
+          setUsers([]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   // export all to excel
-  // const exportAllButton = async () => {
-  //   if (users.length > 0) {
-  //     try {
-  //       const response = await axios.get('/api/admin/listusers/listexport');
-  //       const incomingData = JSON.parse(decrypt(response.data.data));
-  //       if (response.status === 200) {
-  //         console.log('response', response);
-  //         console.log('incomingData', incomingData);
-  //         await exportAll(incomingData, session);
-  //       } else {
-  //         setUsers([]);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
+  const exportAllButton = async () => {
+    if (users.length > 0) {
+      try {
+        const response = await axios.get('/api/admin/listusers/listexport');
+        const incomingData = JSON.parse(decrypt(response.data.data));
+        if (response.status === 200) {
+          console.log('response', response);
+          console.log('incomingData', incomingData);
+          await exportAll(incomingData, session);
+        } else {
+          setUsers([]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <>
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname} />}
-      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} setDate={setDate} setDetails={setDetails} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
-      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details} setAttendance={setAttendance} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
+      {isModal && <AttendanceModal promotion={promotion} allpromotion={allpromotion} courses={courses} allcourses={allcourses} teachers={teachers} allteachers={allteachers} setisModal={setisModal} student={student} session={session} setMessage={setMessage} />}
+      {editModal && <UpdateModal  editModal={editModal}  setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} />}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.attendance_id}
-          rows={sortedRows}
+          rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          // onColumnHeaderClick={(column) => handleSort(column.field)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           // pagination
           checkboxSelection
@@ -421,14 +434,14 @@ const AttendanceList = ({ users, setUsers }) => {
       </Box>
 
       <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
-        {/* <LowerButtons
+        <LowerButtons
           exportButton={exportButton}
           setisModal={setisModal}
           selectedRows={selectedRows}
           exportAllButton={exportAllButton}
           handlePrintSelected={handlePrintSelected}
           session={session}
-        /> */}
+        />
       </div>
     </>
   );
