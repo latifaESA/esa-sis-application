@@ -1,4 +1,4 @@
-const { connect , disconnect } = require("../../../utilities/db");
+const { connect } = require("../../../utilities/db");
 const { getTeachersByMajorCourse } = require('../controller/queries')
 
 async function handler(req , res){
@@ -10,7 +10,7 @@ async function handler(req , res){
           
         }=req.body;
         const response = await getTeachersByMajorCourse(connection , major_id);
-        await disconnect(connection);
+       
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,
@@ -18,9 +18,9 @@ async function handler(req , res){
                 message:"teacher Not found"
             })
         }else{
-            return res.status(200).json({
+            return res.status(201).json({
                 success:true,
-                code:200,
+                code:201,
                 data:response.rows
             })
 

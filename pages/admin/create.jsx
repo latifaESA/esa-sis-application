@@ -44,9 +44,10 @@ export default function Create() {
       pm_firstname: ''.trim(),
       pm_lastname: ''.trim(),
       pm_email: ''.trim(),
-      pm_status: 'active'.trim(),
+      pm_status: ''.trim(),
     };
-    
+    console.log('this is pm data');
+    console.log(sendpmData);
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/admin/adminApi/filterpm', sendpmData);
 
@@ -59,7 +60,7 @@ export default function Create() {
     setIDvalue('');
     setEmail('');
     setStatus('');
-    setRole('active');
+    setRole('');
   };
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
@@ -68,7 +69,7 @@ export default function Create() {
       pm_ass_firstname: ''.trim(),
       pm_ass_lastname: ''.trim(),
       pm_ass_email: ''.trim(),
-      pm_ass_status: 'active'.trim(),
+      pm_ass_status: ''.trim(),
     };
     console.log(sendData);
     // id,firstname,lastname,major,promotion,status
@@ -114,7 +115,11 @@ export default function Create() {
         sendpmData
       );
 
-   
+      console.log('this is data');
+      // setTemp(parseInt(idvalue))
+      console.log(data);
+      console.log(sendpmData);
+      // // console.log(typeof(parseInt(temp)))
       setUsers(data);
     }
   };
@@ -219,7 +224,7 @@ export default function Create() {
                   className="ml-9 w-40"
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  {/* <option value="">Choose Value..</option> */}
+                  <option value="">Choose Value..</option>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>

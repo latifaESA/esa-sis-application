@@ -1,8 +1,8 @@
-const { connect , disconnect} = require("../../../utilities/db");
+const { connect } = require("../../../utilities/db");
 const {filterAttendances} = require("../controller/queries");
 
 async function handler(req , res){
-     
+
     try {
         const connection = await connect();
         const {
@@ -18,8 +18,7 @@ async function handler(req , res){
         } = req.body;
         
         const response = await filterAttendances(connection ,attendanceId  ,teacherId ,majorId ,courseId , attendanceDate , present ,teacher_firstname , teacher_lastname ,  major_name);
-        await disconnect(connection); 
-        if(response.rows.length === 0){
+          if(response.rows.length === 0){
             return res.status(404).json({
                 success: false,
                 code:404,
@@ -27,14 +26,12 @@ async function handler(req , res){
             })
           }
           else{
-             return res.status(200).json({
+             return res.status(201).json({
                 success:true,
-                code:200,
+                code:201,
                 data: response.rows
              })
-           
           }
-          
     } catch (error) {
         // console.log(message.error);
         return res.status(500).json({
@@ -43,8 +40,5 @@ async function handler(req , res){
             message: error.message
         })
     }
-  
-   
-    
 }
 module.exports = handler;

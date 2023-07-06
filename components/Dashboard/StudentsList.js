@@ -42,6 +42,15 @@ const StudentsList = ({ users, setUsers }) => {
   // const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
+
+  console.log('===============')
+  console.log('=this is users=======')
+  // console.log(users.data)
+  // console.log('====this is setUsers====')
+  // console.log(users.data[0].major_id)
+  console.log('===============')
+  console.log('===============')
+
   //incomplete modal
   // const handleConfirmIncomplete = (user) => {
   //   setSelectedUser(user);
@@ -470,6 +479,7 @@ const StudentsList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
+
   ];
 
   // export select to excel
@@ -480,6 +490,8 @@ const StudentsList = ({ users, setUsers }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
+          console.log('response', response);
+          console.log('incomingData', incomingData);
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setUsers([]);
@@ -497,6 +509,8 @@ const StudentsList = ({ users, setUsers }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
+          console.log('response', response);
+          console.log('incomingData', incomingData);
           await exportAll(incomingData, session);
         } else {
           setUsers([]);
@@ -508,9 +522,9 @@ const StudentsList = ({ users, setUsers }) => {
   };
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
-
+    console.log('selectedIDs', selectedIDs);
     const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-
+    console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
         window.open(user.reportURL);
@@ -518,6 +532,8 @@ const StudentsList = ({ users, setUsers }) => {
         setMessage('Please select a user with a report');
       }
     });
+
+    console.log('selectedUsers', selectedUsers);
   };
 
   return (
@@ -544,7 +560,7 @@ const StudentsList = ({ users, setUsers }) => {
           handleConfirmClose={handleConfirmClose}
         />
       )} */}
-      <div className="text-center text-red-500 font-bold p-2">{message}</div>
+      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.student_id}
@@ -562,14 +578,14 @@ const StudentsList = ({ users, setUsers }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className="grid h-[100%] place-items-center">No Data</div>
+              <div className='grid h-[100%] place-items-center'>No Data</div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
+      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}

@@ -9,7 +9,11 @@ const nextConfig = {
     // domains: ['res.cloudinary.com'],
     domains: ['localhost','res.cloudinary.com', '80.77.180.245'],
 
-     },
+    // domains: ['res.cloudinary.com'],
+    domains: ['localhost','res.cloudinary.com', '80.77.180.245'],
+
+
+  },
 
   swcMinify: true,
   serverRuntimeConfig: {

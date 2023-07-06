@@ -189,8 +189,8 @@ const DropZone = ({ data, dispatch, type }) => {
           {/* <label htmlFor="fileSelect"> */}
           {type === 'photo'
             ? t('studentApp:uploadonephotofileselect')
-            : type === 'file'
-            ? t('You Can Upload Scanned Attendance')
+            : type === 'cv'
+            ? t('studentApp:uploadonecvfileselect')
             : type === 'passport'
             ? t('studentApp:uploadonepassportfileselect')
             : type === 'RecommendationLetter'

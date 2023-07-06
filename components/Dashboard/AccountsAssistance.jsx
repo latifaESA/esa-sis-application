@@ -50,7 +50,12 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-
+  console.log('===============');
+  console.log(assistance);
+  // console.log('====this is setUsers====')
+  // console.log(users.data[0].major_id)
+  console.log('===============');
+  console.log('===============');
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {

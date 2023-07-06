@@ -1,4 +1,4 @@
-const { connect , disconnect} = require("../../../utilities/db");
+const { connect } = require("../../../utilities/db");
 const {updatePresent} = require("../controller/queries");
 
 async function handler(req , res){
@@ -27,13 +27,12 @@ async function handler(req , res){
           }=req.body
 
           const response = await updatePresent(connection , present , student_id , attendance_id)
-          await disconnect(connection);
         
           if(response){
                return res.status(201).json({
                 success:true,
                 code:201,
-                message: `Attendance Updated Successfully`
+                message: `attendance update Successfully`
 
                })
           }
