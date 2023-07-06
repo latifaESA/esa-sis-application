@@ -1,10 +1,3 @@
-/*
- * Created By: Jaber Mohamad
- * Project: Online Application
- * File: components/Admin/Account/AccountMain.js
- * École Supérieure des Affaires (ESA)
- * Copyright (c) 2023 ESA
- */
 
 import Link from 'next/link';
 import React from 'react';

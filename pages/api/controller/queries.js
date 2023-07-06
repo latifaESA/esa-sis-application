@@ -554,9 +554,9 @@ async function updatePresent(connection, present, student_id, attendance_id) {
   }
 }
 //get student assignment in the promotion in a major
-async function getAllStudent(connection, major_id, promotion_id) {
+async function getAllStudent(connection, major_id) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion_id ='${promotion_id}'`;
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -644,10 +644,10 @@ async function getAttendanceByCTD(
 //get student fullname and promotion by attendance_id
 async function getStudentPromotion(connection, attendance_id) {
   try {
-    const query = `SELECT attendance .* , concat(student_firstname ,' ',student_lastname) AS student_fullname ,promotions.promotion_id , promotions.promotion_name 
+    const query = `SELECT attendance .* , concat(student_firstname ,' ',student_lastname) AS student_fullname ,student.promotion
     from attendance 
     INNER JOIN student ON attendance.student_id = student.student_id
-    INNER JOIN promotions ON student.promotion_id = promotions.promotion_id
+   
     WHERE attendance_id = '${attendance_id}'`;
     const res = await connection.query(query);
     return res;
@@ -752,11 +752,11 @@ async function unassign(connection, teacher_id, course_id) {
 
 
 //create courses 
-async function createCourse(connection , course_id , course_name , course_credit ,major_id){
-  // console.log(major_id)
+async function createCourse(connection , course_id , course_name , course_credit ,major_id , course_type){
+  console.log(course_type)
 
   try {
-    const query = `INSERT INTO courses (course_id , course_name , course_credit , major_id) VALUES ('${course_id}','${course_name}',${course_credit},${major_id})`;
+    const query = `INSERT INTO courses (course_id , course_name , course_credit , major_id , course_type) VALUES ('${course_id}','${course_name}',${course_credit},${major_id} , '${course_type}')`;
     const res = connection.query(query);
     return res;
   } catch (error) {
