@@ -2,66 +2,176 @@ import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import selection_data from '../../../utilities/selection_data';
-import axios from 'axios';
-// import CustomPagination from '../../';
-export default function Modal({ setEditModal, attendance, setAttendance }) {
-  console.log('att', attendance);
 
-  const presence = selection_data.presence;
-  // const [Present, setPresent] = useState('');
-  const [pageSize, setPageSize] = useState(10);
+import axios from 'axios';
+import moment from 'moment';
+// import CustomPagination from '../../../components/Dashboard/Pagination';
+import { useSession } from 'next-auth/react';
+
+import { BsX } from 'react-icons/bs';
+
+export default function Modal({
+  setEditModal,
+  attendance,
+  setAttendance,
+  courseName,
+  teachersFirstname,
+  teacherslastname,
+  date,
+  setCourseName,
+  setTeacherFirstName,
+  setTeacherlastname,
+  setDetails,
+  setDate
+}) {
+  const { data: session } = useSession();
+  const [pageSize, setPageSize] = useState(15);
+  const [message, setMessage] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [rowCount, setRowCount] = useState(0);
+
+
+  setTimeout(() => {
+    setMessage('');
+  }, selection_data.message_disapear_timing);
 
   const handleUpdate = async (event) => {
-    console.log(event);
-
     try {
-      const present = 'false';
+      const present = event.present;
       const attendance_id = event.attendance_id;
       const student_id = event.student_id;
 
-      console.log('attendance', present.attendance_id);
-      console.log('student', present.student_id);
-      // eslint-disable-next-line no-unused-vars
       const { data } = await axios.put('/api/pmApi/presentupdate', {
         present,
         student_id,
         attendance_id,
       });
+
+      setMessage(data.message);
+
+      // Update the attendance state with the new present value
+      setAttendance((prevState) => {
+        const updatedAttendance = prevState.map((row) => {
+          if (row.student_id === student_id) {
+            return { ...row, present: present };
+          }
+          return row;
+        });
+        return updatedAttendance;
+      });
     } catch (error) {
-      return error;
+      console.error(error);
+    }
+  };
+  const sortedAttendance = [...attendance].sort((a, b) => {
+    const nameA = `${a.student_firstname} ${a.student_lastname}`.toLowerCase();
+    const nameB = `${b.student_firstname} ${b.student_lastname}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  }).map((row, index) => ({ ...row, count: index + 1 }));
+  
+
+  const handleAll = async () => {
+    try {
+      for (let i = 0; i < attendance.length; i++) {
+        const row = attendance[i];
+        if (row.isDirty) {
+          const { student_id, attendance_id, present } = row;
+          const { data } = await axios.put('/api/pmApi/presentupdate', {
+            present,
+            student_id,
+            attendance_id,
+          });
+
+          setMessage(data.message);
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
+  const presence = [
+    { value: true, label: 'Present' },
+    { value: false, label: 'Absent' },
+  ];
+
+  const handleCellEditChange = (params) => {
+    const { id, field, value } = params;
+
+    setAttendance((prevState) => {
+      const updatedAttendance = prevState.map((row) => {
+        if (row.student_id === id) {
+          const updatedRow = {
+            ...row,
+            [field]: value,
+            isDirty: row.present !== value,
+          };
+
+          return updatedRow;
+        }
+        return row;
+      });
+
+      return updatedAttendance;
+    });
+  };
+
   const columns = [
+  
+   
+      {
+        field: 'count',
+        headerName: 'No.',
+        headerAlign: 'center',
+        align: 'center',
+        width: 100,
+        renderCell: (params) => params.row.count,
+
+      },
+    
+    
+    
+    {
+      field: 'id', // Add the id field
+      headerName: 'ID',
+      hide: true, // Hide the ID column
+    },
+
     {
       field: 'Name',
       headerName: 'Student Name',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 150,
+      cellClassName: (params) =>
+      params.row.student_firstname !== ''
+        ? 'text-gray-700 text-medium'
+        : params.student_lastname !== ''
+          ? 'text-green-600 font-bold'
+          : '',
+
       renderCell: (params) =>
-        `${params.row.student_firstname || ''} ${
-          params.row.student_lastname || ''
+        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''
         }`,
+        
     },
     {
       field: 'present',
       headerName: 'Presence',
       headerAlign: 'center',
       align: 'center',
-      width: 100,
+      width: 150,
       editable: true,
-
       renderCell: (params) => {
-        return params.value ? <> Present</> : <>Absent</>;
+        return params.value ? <>Present</> : <>Absent</>;
       },
 
       cellClassName: (params) =>
         params.row.present === false
           ? 'text-red-600 font-bold'
           : params.row.present === true
-          ? 'text-green-600 font-bold'
-          : '',
+            ? 'text-green-600 font-bold'
+            : '',
       type: 'singleSelect',
       valueOptions: presence,
     },
@@ -69,7 +179,7 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
+      width: 200,
       headerAlign: 'center',
       align: 'center',
       sortable: false,
@@ -81,95 +191,124 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
               handleUpdate(params.row);
             }}
             // disabled={params.id !== presentEnable}
+
             type="button"
-            // hidden={
-            //   // session.user.role === '1' || session.user.role === '3'
-            //     ? true
-            //     : false
-            // }
+            hidden={
+              session.user.role === '1' || session.user.role === '3'
+                ? true
+                : false
+            }
           >
-            Edit
+            Save
           </button>
         </div>
       ),
     },
   ];
-  // const [showModal, setShowModal] = React.useState(false);
+
   return (
     <>
       <>
-        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-12">
-          <div className="relative w-auto my-6 mx-auto max-w-3xl">
+        <div
+          className="justify-center items-center  flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        >
+          <div className="relative w-3/4 h-screen my-6 mx-auto max-w-3xl">
             {/*content*/}
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               {/*header*/}
-              {/* <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">
-                    Modal Title
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    // onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div> */}
-              {/*body*/}
-              <div className="relative p-12 flex-auto">
-                <div>
-                  <p>{}</p>
-                  {/* <p>{attendance.course_name}</p> */}
-                  {/* <p>{attendance.attendance_date}</p> */}
-                </div>
-                <div>
-                  <Box sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                      getRowId={(r) => r.student_id}
-                      rows={attendance}
-                      getRowHeight={() => 'auto'}
-                      columns={columns}
-                      pageSize={pageSize}
-                      onPageSizeChange={(newPageSize) =>
-                        setPageSize(newPageSize)
-                      }
-                      rowsPerPageOptions={[5, 10, 15, 20]}
-                      // pagination
-                      // checkboxSelection
-                      // onSelectionModelChange={setSelectedRows}
-                      // disableSelectionOnClick
-                      // onSelectionModelChange={disablePrintHanlder}
-                      // onCellEditCommit={(params) => setMajorEnable(params.id)}
-                      components={{
-                        NoRowsOverlay: () => (
-                          <div className="grid h-[100%] place-items-center">
-                            No Data
-                          </div>
-                        ),
-                        // Pagination: CustomPagination,
-                      }}
-                    />
-                  </Box>
-                </div>
-              </div>
-              {/*footer*/}
-              <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+              <div 
+              className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t"
+              >
+                <h3 className="text-gray-700 text-3xl font-bold">
+                  Attendance
+                </h3>
                 <button
-                  className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
+                  className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                   onClick={() => {
-                    setEditModal(false), setAttendance([]);
+                    setEditModal(false), setAttendance([]), setTeacherFirstName(''),
+                    setTeacherlastname(''), setDate(''), setCourseName(''), setDetails([]);
                   }}
                 >
-                  Close
+                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    <BsX className=" text-gray-700 font-bold" />
+                  </span>
                 </button>
-                <button
-                  className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              </div>
+              {/*body*/}
+              <div className="relative p-6 flex-auto">
+                <div className="text-slate-500 ">
+
+                  <div className="pr-3 pl-3">
+                    <div className='flex'>
+                      <p className=" font-semibold text-gray-700 pt-3 mb-1 border-b">
+                        Course Name:
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">
+                        {courseName}
+                      </p>
+
+                    </div>
+                    <div className='flex'>
+                      <p className="font-semibold text-gray-700 pt-3 mb-1 border-b">
+                        Date:
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">{moment(date).format('DD/MM/YYYY')}.</p>
+                    </div>
+                    <div className='flex'>
+                      <p className="font-semibold text-gray-700   pt-3 mb-1 border-b">
+                        Teacher FullName :
+                      </p>
+                      <p className="text-gray-600 text-base pt-3 mb-1 border-b">
+                        {teachersFirstname} {teacherslastname}.
+                      </p>
+                    </div>
+                  </div>
+
+                  {message && (
+                    <div className=" text-green-500 font-bold p-2">{message}</div>
+                  )}
+                  <div className="p-3">
+                    <Box sx={{ height: 300, width: '100%', overflowX: 'hidden' }}>
+                      <DataGrid
+                        getRowId={(r) => r.student_id}
+                        rows={sortedAttendance}
+                        getRowHeight={() => 'auto'}
+                        columns={columns}
+                        pageSize={pageSize}
+                        onPageSizeChange={(newPageSize) =>
+                          setPageSize(newPageSize)
+                        }
+                        rowsPerPageOptions={[5, 10, 15, 20]}
+                        // pagination
+
+                        // onEditCellChange={(params) =>
+                        //   handleCellEditChange(params)
+                        // }
+                        onCellEditCommit={(params) =>
+                          handleCellEditChange(params)
+                        }
+                        components={{
+                          NoRowsOverlay: () => (
+                            <div className="grid h-[100%] place-items-center">
+                              No Data
+                            </div>
+                          ),
+                          // Pagination: CustomPagination,
+                        }}
+                      />
+                    </Box>
+                  </div>
+                </div>
+
+              </div>
+              {/*footer*/}
+              <div className="flex items-center justify-center p-6  rounded-b">
+              <button
+                  className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5"
                   type="button"
-                  onClick={() => setEditModal(false)}
+                  onClick={() => handleAll()}
                 >
-                  Save Changes
+                  Save ALL
                 </button>
               </div>
             </div>
@@ -177,6 +316,7 @@ export default function Modal({ setEditModal, attendance, setAttendance }) {
         </div>
         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
       </>
+
     </>
   );
 }

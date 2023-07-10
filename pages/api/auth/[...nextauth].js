@@ -87,9 +87,7 @@ export const authOptions = {
         const connection = await connect();
         if (connection.success) {
           console.log('connection to DB succes nextauth signin');
-          console.log("credentials.userid === >>", credentials.userid)
-          // session.userid = credentials.userid;
-          // console.log("session  =>> ", session)
+
           // try {
           //   const results = await new Promise((resolve, reject) => {
           //     connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
@@ -113,8 +111,6 @@ export const authOptions = {
               'userid',
               credentials.userid,
             );
-
-            console.log("user ===>>>  ", user.rows[0].userid)
             // const users = await findData(
             //   connection,
             //   'user_document',
@@ -249,6 +245,7 @@ export const authOptions = {
                     }
                     // console.log('user.rows[0].role==', user.rows[0].role);
                     // console.log(user.rows[0]);
+                    console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
 //<<<<<<< batoul
@@ -413,8 +410,9 @@ export const authOptions = {
                       email: PM.rows[0].pm_email,
                       role: user.rows[0].role.toString(),
                       status: PM.rows[0].pm_status,
+                      userid: user.rows[0].userid,
+                      majorid: PM.rows[0].major_id,
                       image: userinfo.rows[0].profileurl,
-                      userid: `${user.rows[0].userid}`
                     };
                   } else {
                     // if the program manager is not exists then send this message to frontend

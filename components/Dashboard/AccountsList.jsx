@@ -52,13 +52,6 @@ const TeachersList = ({ users, setUsers }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-  console.log('===============');
-  console.log('=this is users=======');
-  console.log(users);
-  // console.log('====this is setUsers====')
-  // console.log(users.data[0].major_id)
-  console.log('===============');
-  console.log('===============');
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
@@ -209,12 +202,12 @@ const TeachersList = ({ users, setUsers }) => {
         //   ),
         // }
       )
+      // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        // console.log(response.data);
         setMessage('User deleted Succesfully!');
-        console.log('send data');
-        console.log(sendData);
+
 
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
@@ -535,8 +528,7 @@ const TeachersList = ({ users, setUsers }) => {
             onClick={() => {
               // handleSave(params.row)
               handleConfirmIncomplete(params.row);
-              console.log('asdasdasdasd');
-              console.log(params.row);
+           
             }}
             type="button"
           >
@@ -617,8 +609,7 @@ const TeachersList = ({ users, setUsers }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+        
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setUsers([]);
@@ -636,8 +627,7 @@ const TeachersList = ({ users, setUsers }) => {
         const response = await axios.get('/api/admin/listusers/listexport');
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+         
           await exportAll(incomingData, session);
         } else {
           setUsers([]);
@@ -649,9 +639,9 @@ const TeachersList = ({ users, setUsers }) => {
   };
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
-    console.log('selectedIDs', selectedIDs);
+   
     const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-    console.log('selectedUsersbefore', selectedUsers);
+   
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
         window.open(user.reportURL);
@@ -660,7 +650,7 @@ const TeachersList = ({ users, setUsers }) => {
       }
     });
 
-    console.log('selectedUsers', selectedUsers);
+   
   };
 
   return (
