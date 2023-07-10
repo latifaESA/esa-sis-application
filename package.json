@@ -84,7 +84,7 @@
     "request": "^2.79.0",
     "sharp": "^0.31.3",
     "sheetjs-style": "^0.15.8",
-    "styled-components": "^5.3.11",
+    "styled-components": "^5.3.6",
     "useragent": "^2.3.0",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
