@@ -1,3 +1,4 @@
+
 const { connect , disconnect } = require("../../../utilities/db");
 const { createCourse } = require('../controller/queries');
 const { default: CourseExist } = require("./exist/getCourses");
@@ -58,4 +59,3 @@ async function handler(req , res){
         })
     }
 }
-module.exports = handler;
