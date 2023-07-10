@@ -153,10 +153,7 @@ const handleSave = () => {
 
   const handleSearch = async(e) => {
     e.preventDefault()
-    console.log('hello')
-    console.log(searchCourse)
-    console.log(users.filter(course => course.course_id.includes(searchCourse)))
-    setUsers(users.filter(course => course.course_id.includes(searchCourse)))
+    setUsers(users.filter(course => course.course_id.toLowerCase().includes(searchCourse.toLowerCase())))
   }
   const getClasses = async () => { 
     try{
