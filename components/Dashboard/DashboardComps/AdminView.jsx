@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   PencilIcon,
   Cog8ToothIcon,
@@ -16,9 +16,9 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   UserPlusIcon,
-} from '@heroicons/react/24/solid';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+} from "@heroicons/react/24/solid";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const AdminView = () => {
   const router = useRouter();
@@ -30,9 +30,9 @@ const AdminView = () => {
         <Link href="/admin/main">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/main'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/main"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
           >
             <div className="mr-2">
@@ -47,9 +47,9 @@ const AdminView = () => {
         <Link href="/admin/statistics">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/statistics'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/statistics"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
           >
             <div className="mr-2">
@@ -63,12 +63,12 @@ const AdminView = () => {
 
         {/* Account Managment */}
 
-        <Link href="/admin/create">
+        <Link href="/admin/Accounts">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/create'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/Accounts"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
             disabled={true}
           >
@@ -83,12 +83,12 @@ const AdminView = () => {
 
         {/* Create Section */}
 
-        <Link href="/admin/create">
+        {/* <Link href="/admin/createAccount">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/create'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/createAccount"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
             disabled={true}
           >
@@ -99,18 +99,35 @@ const AdminView = () => {
               <p>Create Accounts</p>
             </div>
           </div>
+        </Link> */}
+        <Link href="/admin/Courses">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == "/admin/Courses"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
+            disabled={true}
+          >
+            <div className="mr-2">
+              <UserPlusIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Courses</p>
+            </div>
+          </div>
         </Link>
 
         {/* Report Section */}
 
         {/* Assign Section */}
 
-        <Link href="/admin/assign">
+        {/* <Link href="/admin/assign">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/assign'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/assign"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
             disabled={true}
           >
@@ -121,16 +138,16 @@ const AdminView = () => {
               <p>Assign Major</p>
             </div>
           </div>
-        </Link>
+        </Link> */}
 
         {/* Report Section */}
 
         <Link href="/admin/report">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/report'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/report"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
           >
             <div className="mr-2">
@@ -147,9 +164,9 @@ const AdminView = () => {
         <Link href="/admin/profile">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/profile'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/profile"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
           >
             <div className="mr-2">
@@ -163,11 +180,11 @@ const AdminView = () => {
         <Link href="/admin/Settings/Settings">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/Settings/Settings' ||
-              router.pathname == '/admin/Settings/General' ||
-              router.pathname == '/admin/Settings/DropDownList'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              router.pathname == "/admin/Settings/Settings" ||
+              router.pathname == "/admin/Settings/General" ||
+              router.pathname == "/admin/Settings/DropDownList"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
           >
             <div className="mr-2">

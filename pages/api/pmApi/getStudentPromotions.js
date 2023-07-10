@@ -1,19 +1,21 @@
-const { connect } = require("../../../utilities/db");
-const { getScheduleByPM } = require('../controller/queries')
+const { connect , disconnect} = require("../../../utilities/db");
+const { getStudentPromotion } = require('../controller/queries')
 
 async function handler(req , res){
 
     try {
         const connection = await connect();
         const {
-           pmID
+           attendance_id
+          
         }=req.body;
-        const response = await getScheduleByPM(connection , pmID);
+        const response = await getStudentPromotion(connection , attendance_id);
+        await disconnect(connection);
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,
                 code:404,
-                message:"Schedule Not found"
+                message:"teacher Not found"
             })
         }else{
             return res.status(200).json({
