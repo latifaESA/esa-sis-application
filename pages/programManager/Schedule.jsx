@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
 import { Calender } from './calenderComponent/Calender';
-// import Link from 'next/link';
 
 
 export default function Schedule() {
