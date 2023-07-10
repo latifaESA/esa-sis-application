@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { useState, useEffect } from 'react';
 import CustomSelectBox from '../customSelectBox'
@@ -207,8 +208,8 @@ export default function createAttendance() {
             } else {
                 setIsModal(true)
                 let major_id = session.user.majorid
-                let promotion_id = promotionValue
-                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion_id })
+                // let promotion = promotionName
+                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id})
                 // console.log(data.data)
                 // console.log(data.data)
                 setStudent(data.data)
@@ -230,6 +231,7 @@ export default function createAttendance() {
                     </p>
                     <form className="flex flex-col justify-between flex-wrap">
                         <div className="flex flex-col  mb-3 pb-4 border-blue-300 border-b-2 max-sm:flex">
+                            <form>
                             <div className='flex flex-row justify-between p-5 flex-wrap'>
                                 <div className='ml-8'>
                                     <label>
@@ -285,6 +287,8 @@ export default function createAttendance() {
                                     />
                                 </div>
                             </div>
+                            </form>
+                           
 
                             <div className="flex flex-row justify-end ml-7 min-[850px]:flex-row gap-4">
                                 <button
@@ -307,3 +311,4 @@ export default function createAttendance() {
 }
 createAttendance.auth = true;
 createAttendance.adminOnly = true;
+

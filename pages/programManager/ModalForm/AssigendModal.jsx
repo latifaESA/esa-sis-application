@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { BsX } from 'react-icons/bs';
 import { useSession } from 'next-auth/react';
@@ -31,9 +32,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
 
 
-  setTimeout(() => {
-    setMessage('');
-  },10000);
+  // setTimeout(() => {
+  //   setMessage('');
+  // },10000);
 
   useEffect(() => {
     const getCourses = async () => {
@@ -162,7 +163,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
           // console.log("payload", payload)
           const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
           // console.log('data', data.message)
-          setMessage(data.message);
+          
           const newRows = {
             teacher_courses_id: data.data[0].teacher_courses_id,
             teacher_id: teacherValue[j],
@@ -173,7 +174,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             teacher_lastname: teachersName[j].split(' ')[1],
           };
           // console.log('newRow' ,  newRows )
-
+          setMessage('Assign Successfully!');
 
           setUsers((prevUsers) => [...prevUsers, newRows]);
           // console.log('message',message)
@@ -220,7 +221,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         // console.log("payload", payload)
         const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
         // console.log('data', data.message)
-        setMessage(data.message);
+        
         const newRows = {
           teacher_courses_id: data.data[0].teacher_courses_id,
           teacher_id: teacherValue[i],
@@ -234,6 +235,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
 
         setUsers((prevUsers) => [...prevUsers, newRows]);
+        setMessage(data.message);
         // console.log('message',message)
 
       }
@@ -718,3 +720,4 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     </>
   );
 }
+

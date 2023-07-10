@@ -1,3 +1,4 @@
+
 const { connect , disconnect } = require("../../../utilities/db");
 const { createCourse } = require('../controller/queries');
 const { default: CourseExist } = require("./exist/getCourses");
@@ -10,7 +11,8 @@ async function handler(req , res){
             course_id ,
             course_name,
             course_credit,
-            major_id
+            major_id,
+            course_type
         }=req.body;
         // if(course_name || course_id || course_credit ||major_id ==='' ){
         //     return res.status(200).json({
@@ -32,7 +34,10 @@ async function handler(req , res){
             const response = await createCourse(connection , course_id ,
                 course_name,
                 course_credit,
-                major_id);
+                major_id,
+                course_type
+                
+                );
                 console.log(response)
                 await disconnect(connection);
         
@@ -54,4 +59,3 @@ async function handler(req , res){
         })
     }
 }
-module.exports = handler;

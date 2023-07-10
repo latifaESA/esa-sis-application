@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSession } from 'next-auth/react';
@@ -13,6 +14,7 @@ export default function createCourse() {
     const [formErrors, setFormErrors] = useState({});
     const [major, setMajor] = useState();
     const [majorValue, setMajorValue] = useState('');
+    const [course_type , setCourse_type] = useState([])
 
     const redirect = () => {
       router.push('/AccessDenied');
@@ -43,6 +45,9 @@ export default function createCourse() {
             if (majorValue.length === 0) {
                 errors.majorValue = 'Major is required';
             }
+            if (course_type.length === 0) {
+                errors.majorValue = 'Course Type is required';
+            }
             if (Object.keys(errors).length > 0) {
                 setFormErrors(errors);
                 return;
@@ -52,7 +57,8 @@ export default function createCourse() {
                 course_id: course_id,
                 course_name: course_name,
                 course_credit: course_credit,
-                major_id: majorValue
+                major_id: majorValue,
+                course_type: course_type
             }
             const { data } = await axios.post('/api/pmApi/createCourses', payload)
             console.log("data", data)
@@ -163,16 +169,20 @@ export default function createCourse() {
                             {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
-                            <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                                Status:
+                            <label className="">
+                             Type:
                                 <select
-                                    className="ml-9 w-40 invisible max-[850px]:visible max-[850px]:hidden "
-                                    onChange={(e) => setStatus(e.target.value)}
+                                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                                    onChange={(e) => setCourse_type(e.target.value)}
                                 >
-                                    {/* <option value="">Choose Value..</option> */}
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
+                                    <option value="">Choose Type..</option>
+                                    <option value="Core Course">Core Course</option>
+                                    <option value="Elective">Elective</option>
+                                    <option value="Seminar">Seminar</option>
+                                    <option value="Workshop">Workshop</option>
                                 </select>
+                                {formErrors.course_type && <div className='text-center text-red-500 font-bold p-2'>{formErrors.course_type}</div>}
+
                             </label>
 
                             <label className="invisible max-[850px]:visible max-[850px]:hidden">
