@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const CustomSelectBox = ({ options, placeholder, onSelect,styled }) => {
+const CustomSelectBox = ({ options, placeholder, onSelect,styled,enable=true, oldvalue = ""}) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(oldvalue);
   const [inputValue, setInputValue] = useState("");
 
   let menuRef = useRef()
 
-  useEffect(() => { 
+  {enable === true &&
     document.addEventListener("mousedown", (e) => { 
       if(!menuRef.current?.contains(e.target)){
         setOpen(false)
       }
-    })
-  }, [])
+    })}
+  // useEffect(() => { 
+  //   {enable === true &&
+  //   document.addEventListener("mousedown", (e) => { 
+  //     if(!menuRef.current?.contains(e.target)){
+  //       setOpen(false)
+  //     }
+  //   })}
+  // }, [])
 
   const handleSelect = (option) => {
     setSelected(option);
