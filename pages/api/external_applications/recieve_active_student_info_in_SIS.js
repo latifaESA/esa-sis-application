@@ -169,6 +169,7 @@ export default async function handler(req, res) {
     if (studentInfo) {
       // console.log(studentInfo[0]);
       let recieved_data = studentInfo[0];
+      console.log("============asdasd===========asdasd======", studentInfo[0]);
       // connect to data base
       const connection = await connect();
 
@@ -207,10 +208,13 @@ export default async function handler(req, res) {
         `${recieved_data.promotion}`,
         "2023",
       ];
-      const columns_promotion = ["promotion_name", "major_id"];
+      const date = new Date();
+      let current_year = date.getFullYear();
+      const columns_promotion = ["promotion_name", "major_id", "current_year"];
       const promotion_data = [
         `${recieved_data.promotion}`,
         `${recieved_data.major}`,
+        current_year,
       ];
       console.log(promotion_data);
       let resstudent = await insertData(
