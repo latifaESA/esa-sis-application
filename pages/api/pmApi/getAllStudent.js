@@ -7,10 +7,10 @@ async function handler(req , res){
         const connection = await connect();
         const {
            major_id,
-          
+          promotion
           
         }=req.body;
-        const response = await getAllStudent(connection , major_id);
+        const response = await getAllStudent(connection , major_id , promotion);
         console.log(response)
         await disconnect(connection);
        console.log(response.data)
