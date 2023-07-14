@@ -208,8 +208,9 @@ export default function createAttendance() {
             } else {
                 setIsModal(true)
                 let major_id = session.user.majorid
+                let promotion = promotionName.replace(/\s/g, '');
                 // let promotion = promotionName
-                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id})
+                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
                 // console.log(data.data)
                 // console.log(data.data)
                 setStudent(data.data)
