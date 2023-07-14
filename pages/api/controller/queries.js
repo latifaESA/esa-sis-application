@@ -166,6 +166,18 @@ async function createClass(connection, course_id, teacher_id, promotion, startda
   }
 }
 
+// Copy Class
+async function copyClass(connection, course_id, teacher_id, promotion, startdate, enddate, pm_id, major_id){
+  try {
+    const query = ` INSERT INTO tmpclass (course_id , teacher_id, promotion, startdate, enddate, pm_id, major_id) VALUES ('${course_id}','${teacher_id}','${promotion}','${startdate}','${enddate}', '${pm_id}', '${major_id}') 
+    RETURNING tmpclass_id;`;
+    const res = await connection.query(query);
+    return res.rows[0].tmpclass_id;;
+  } catch (error) {
+    return error;
+  }
+}
+
 // Create Schedule
 // async function createSchedule(connection,class_id,day,from_time,to_time){
 //   try {
@@ -353,6 +365,22 @@ async function addSchedule(connection, classID, day, fromTime, toTime, room_id, 
   }
 }
 
+// copy Schedule
+async function copySchedule(connection, classID, newClassID){
+  try{
+    // classID, day, fromTime, toTime, room_id, pm_id
+    const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
+    SELECT $1, to_char(day::date + INTERVAL '1 year', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS day, from_time, to_time, room, pm_id
+    FROM tmpschedule
+    WHERE class_id = ${classID};`;
+    const classId = newClassID;
+    let res = await connection.query(query,[classId]);
+
+    return res;
+  }catch(error){
+    return error;
+  }
+}
 // update Schedule
 async function updateSchedule(connection, classID, day, fromTime, toTime, room_id, pm_id, tmpscheduleID){
   try{
@@ -886,5 +914,7 @@ module.exports = {
   deleteByID,
   addSchedule,
   updateSchedule,
-  getUserTeacher
+  getUserTeacher,
+  copySchedule,
+  copyClass
 };

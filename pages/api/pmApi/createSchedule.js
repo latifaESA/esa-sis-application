@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { createSchedule } = require('../controller/queries')
 
 async function handler(req , res){
@@ -9,6 +9,7 @@ async function handler(req , res){
             classId, days, fromTime, toTime, room, pmID
         }=req.body;
         const response = await createSchedule(connection,classId, days, fromTime, toTime, room, pmID);
+        await disconnect(connection)
         if(response.rowCount > 0){
             return res.status(201).json({
                 success:true,
