@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { getAllById } = require("../controller/queries");
 
 // const axios = require('axios')
@@ -9,6 +9,8 @@ async function handler(req, res) {
         const connection = await connect();
         const {table, colName, val} = req.body;        
         const data = await getAllById(connection, table, colName, val);
+        await disconnect(connection)
+
         return res.status('200').send(data)
     } catch (error) {
         console.log('the error is: ', error)

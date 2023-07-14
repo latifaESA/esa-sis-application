@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { getScheduleByPM } = require('../controller/queries')
 
 async function handler(req , res){
@@ -9,6 +9,8 @@ async function handler(req , res){
            pmID
         }=req.body;
         const response = await getScheduleByPM(connection , pmID);
+        await disconnect(connection)
+
         if(response.rows.length === 0){
             return res.status(404).json({
                 success:false,

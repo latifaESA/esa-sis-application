@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { deleteByID } = require("../controller/queries");
 
 // const axios = require('axios')
@@ -11,6 +11,7 @@ async function handler(req, res) {
         const {table, colName, id} = req.body;
         const data = await deleteByID(connection, table,colName, id);
         return res.status('200').send(data)
+        await disconnect(connection)
         
     } catch (error) {
         console.log('the error is: ', error)

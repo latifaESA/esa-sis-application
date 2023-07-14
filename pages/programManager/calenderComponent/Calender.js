@@ -61,8 +61,6 @@ export const Calender = () => {
   }
 
   const getSchedule = async () => { 
-    let table = 'tmpschedule';
-    let colName = 'pm_id'
     let pmID = session.user.userid;
     let {data} = await axios.post('/api/pmApi/getScheduleByPMId', {pmID})
 
@@ -84,6 +82,7 @@ export const Calender = () => {
         color: "#0ba388" 
       })
     })
+    
     setScheduleDate(datesArray)
     console.log('datesArray of schedule:  ', datesArray)
     console.log('schedule:  ', data.data)
@@ -452,7 +451,7 @@ const handleAddNext = (data) =>{
                       onDragStart={(e) => drag(index, e)}
                       draggable
                       id={`${ev.color} ${ev.title}`}
-                      key={ev.title}
+                      key={`${ev.title} ${Math.floor(Math.random() * (100 - 1 + 1)) + 1}`}
                       bgColor={ev.color}
                       onDragOver={(e) => e.preventDefault()}
                       onDragEnd={(e)=>drop(ev,e)}

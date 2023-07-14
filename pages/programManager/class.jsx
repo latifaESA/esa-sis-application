@@ -1,13 +1,11 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import TeachersList from '../../components/Dashboard/TeachersList'
 import axios from 'axios'
 import { useRouter } from 'next/router';
-import CustomSelectBox from './customSelectBox';
 import AddClass from '../../components/addClass';
-import AddSchedule from '../../components/AddSchedule';
 import ClassList from '../../components/Dashboard/classList';
+import CopyClass from '../../components/copyClass';
 // import Link from 'next/link';
 
 
@@ -21,10 +19,12 @@ export default function Students() {
   const [majorValue, setMajorValue] = useState('');
   const [courses, setCourses] = useState([]);
   const [allCourse, setAllCourse] = useState([]);
+  const [coursesCopy, setCoursesCopy] = useState([]);
 
   const [promotionValueClass, setPromotionValueClass] = useState('');
   // const [promotionClass, setPromotionClass] = useState([]);
   const [open, setOpen] = useState(false)
+  const [openCopy, setOpenCopy] = useState(false)
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
 
@@ -35,12 +35,19 @@ export default function Students() {
   const [searchCourse, setSearchCourse] = useState('');
 
   const handleCancel = () => {
-    setOpen(false)
+    setOpen(false);
     setPromotionValue('');
     setCourseValue('');
     setTeacherValue('');
     setDateFrom('');
     setDateTo('');
+}
+
+const handleCancelCopy = () => {
+  setOpenCopy(false)
+  setPromotionValue('');
+  setCourseValue('');
+  setTeacherValue('');
 }
 
 const handleSave = () => {
@@ -79,6 +86,41 @@ const handleSave = () => {
  
 }
 
+const handleSaveCopy = () => {
+  // let createClass = async () =>{
+  //   try{
+  //   let classValue = {
+  //     course_id : courseValue,
+  //     teacher_id : teacherValue, 
+  //     promotion : promotionValueClass, 
+  //     startdate : dateFrom, 
+  //     enddate : dateTo,
+  //     pm_id: session.user.userid,
+  //     major_id: majorValue,
+  //   }
+  //   let {data} = await axios.post('/api/pmApi/createClass',classValue)
+  //   console.log(data)
+  //   if(data.success){
+  //     setOpen(false)
+  //     setPromotionValue('');
+  //     setCourseValue('');
+  //     setMajorValue('');
+  //     setTeacherValue('');
+  //     setDateFrom('');
+  //     setDateTo('');
+  //     getClasses()
+  //   }else{
+  //     alert('Error creating class')
+  //   }
+  //   // setOpen(false)
+  // }catch(err){
+  //     console.log(err)
+  //   }
+  // }
+  courseValue.length === 0 ? setError('Please choose course') :  teacherValue.length === 0 ? setError('Please choose teacher') : promotionValueClass.length === 0 ? setError('Please choose promotion') : (setError(''), createClass());
+ 
+}
+
   const handleDateFromChange = (event) => {
     const selectedDate = event.target.value;
     
@@ -88,6 +130,7 @@ const handleSave = () => {
     }else if(dateTo.length > 0 && selectedDate === dateTo){
       alert('The date from and to are equal')
     }else{
+      console.log(new Date(selectedDate))
       setDateFrom(selectedDate);
     }
   };
@@ -137,6 +180,21 @@ const handleSave = () => {
     setMajorValue(selectedValue.length > 0 ? allCourse.filter(course => course.course_name === selectedValue)[0].major_id : '')
   };
 
+  const handleCourseCopy = (selectedValue) => {
+    setTeacherValue(allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname)
+
+    console.log("teacherValue  ==  ", teacherValue)
+    console.log(selectedValue)
+    console.log(coursesCopy)
+    console.log(users)
+    console.log(users.filter(user => user.course_id == selectedValue)[0].teacher_id)
+
+    console.log(users.filter(user => user.course_id == selectedValue)[0].promotion)
+
+    console.log(
+      allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname
+      )
+  }
   const handleTeacher = (selectedValue) => {
     // Do something with the selected value
     // console.log("Selected Value:", allTeacher.filter(teacher => `${teacher.teacher_firstname} ${teacher.teacher_lastname}` === selectedValue)[0].course_id);
@@ -157,8 +215,6 @@ const handleSave = () => {
   }
   const getClasses = async () => { 
     try{
-    let table = 'tmpclass';
-    let colName = 'pm_id'
     let val = session.user.userid;
     let {data} = await axios.post('/api/pmApi/getuserteacher', {pmID:val})
 
@@ -169,7 +225,9 @@ const handleSave = () => {
 
     console.log('users Classes are the following : ',data.rows)
     setUsers(data.rows);
-    // setPromotionClass(datesArray)
+    
+    setCoursesCopy(data.rows.map(cours => cours.course_id));
+    console.log("CoursesCopy  : ", data.rows.map(cours => cours.course_id))
 
       
     }catch(err){
@@ -213,6 +271,7 @@ console.log('allCourse', allCourse);
       });
 
       setCourses(datesArray);
+      console.log("courses  : ",datesArray)
 
         
       }catch(err){
@@ -246,6 +305,10 @@ const handleClass = () =>{
   setOpen(true)
 }
 
+const handleCopyClass = () =>{
+  setOpenCopy(true)
+}
+
 
 //>>>>>>> main
   return (
@@ -271,6 +334,21 @@ const handleClass = () =>{
         handleCancel = {handleCancel}
         handleSave = {handleSave}
         error = {error}
+        />
+        }
+
+{ openCopy && 
+      <CopyClass 
+        promotion={promotion} 
+        setOpen= {setOpenCopy} 
+        courses = {coursesCopy}
+        teachers = {teachers}
+        handleSave = {handleSaveCopy}
+        error = {error}
+        users={users}
+        allTeacher={allTeacher}
+        setOpenCopy={setOpenCopy}
+        getClasses={getClasses}
         />
         }
       <form >
@@ -335,6 +413,14 @@ const handleClass = () =>{
               onClick={handleClass}
             >
               Add Class
+            </button>
+
+            <button
+              className="secondary-button text-white rounded w-96 bg-green-600 hover:text-white hover:font-bold"
+              type="button"
+              onClick={handleCopyClass}
+            >
+              Copy Schedule
             </button>
           </div>
         </div>

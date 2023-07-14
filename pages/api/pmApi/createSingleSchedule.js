@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { addSchedule } = require('../controller/queries')
 
 async function handler(req , res){
@@ -11,6 +11,7 @@ async function handler(req , res){
 
         // console.log(classID, day, fromTime, toTime, room_id, pm_id)
         const response = await addSchedule(connection , classID, day, fromTime, toTime, room_id, pm_id);
+        await disconnect(connection)
         
         // console.log(response)
 

@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect, disconnect } = require("../../../utilities/db");
 const { getAll } = require("../controller/queries");
 
 // const axios = require('axios')
@@ -10,6 +10,7 @@ async function handler(req, res) {
 
         const {table} = req.body;
         const data = await getAll(connection, table);
+        await disconnect(connection)
 
         // console.log(data.rows)
         return res.status('200').send(data)
