@@ -210,7 +210,7 @@ export default async function handler(req, res) {
       ];
       const date = new Date();
       let current_year = date.getFullYear();
-      const columns_promotion = ["promotion_name", "major_id", "current_year"];
+      const columns_promotion = ["promotion_name", "major_id", "academic_year"];
       const promotion_data = [
         `${recieved_data.promotion}`,
         `${recieved_data.major}`,
