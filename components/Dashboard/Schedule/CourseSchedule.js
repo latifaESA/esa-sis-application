@@ -1,36 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import dayListViewPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
-const events = [
-  { title: 'ELECTIVE COURSE 18h', date: '2023-03-18T16:30:00' },
-  {
-    title: 'SEMINAR 2: S-02(b) PROBLEM SOLVING & DECISION MAKING',
-    date: '2023-03-18T11:00:00',
-  },
-  { title: 'Midterm', start: '2023-03-25', end: '2023-03-30' },
-];
+
+
 
 const CourseSchedule = () => {
+  const { data: session } = useSession();
+  const [events , setEvents] = useState([])
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const major_id = session.user.majorid;
+        const promotion = session.user.promotion;
+        const data = await axios.post('/api/user/getAllStudentSchedule', {
+          major_id,
+          promotion,
+        });
+        const formattedEvents = data.data.data.map((event) => {
+          const startDateTime = new Date(`${event.day.split('T')[0]} ${event.from_time}`);
+          startDateTime.setDate(startDateTime.getDate() + 1); // Add 1 day to the start date
+          const endDateTime = new Date(`${event.day.split('T')[0]} ${event.to_time}`);
+          endDateTime.setDate(endDateTime.getDate() + 1); // Add 1 day to the end date
+        
+          const title = [
+            `C-${event.course_name}`,
+            `T-${event.teacher_fullname}`,
+            `B-${event.room_building}`,
+            `R-${event.room_name}`,
+          ].map((line) => line + '\n');
+        
+          return {
+            title: title.join(','),
+            start: startDateTime,
+            end: endDateTime,
+            background: 'blue',
+          };
+        });
+        
+       
+  
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchSchedule();
+  }, []);
+  
   return (
     <div className='container bg-white p-10 rounded-lg'>
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        events={events}
-        defaultView='dayGridMonth'
-        editable={true}
-        selectable={true}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, dayListViewPlugin, listPlugin]}
+        initialView="dayGridMonth"
         headerToolbar={{
-          start: 'title',
-          end: 'today,dayGridMonth,timeGridWeek,timeGridDay prevYear,prev,next,nextYear',
+          start: 'today prev,next',
+          center: 'title',
+          end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         }}
-        buttonText={{
-          month: 'Month',
-          today: 'Today',
-          week: 'Week',
-          day: 'Day',
+        contentHeight="auto"
+        handleWindowResize={true}
+        weekends={true}
+        events={events}
+        views={{
+          multiMonthFourMonth: {
+            type: 'multiMonth',
+            duration: { months: 4 }
+          }
         }}
       />
     </div>

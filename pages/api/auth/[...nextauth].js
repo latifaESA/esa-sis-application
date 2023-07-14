@@ -56,6 +56,8 @@ export const authOptions = {
       if (user?.userid) token.userid = user.userid;
       if (user?.ID) token.ID = user.ID;
       if (user?.majorid) token.majorid = user.majorid;
+      if (user?.promotion) token.promotion = user.promotion;
+
       if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
     },
@@ -67,6 +69,7 @@ export const authOptions = {
       if (token?.userid) session.user.userid = token.userid;
       if (token?.ID) session.user.ID = token.ID;
       if (token?.majorid) session.user.majorid = token.majorid;
+      if (token?.promotion) session.user.promotion = token.promotion;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -316,6 +319,8 @@ export const authOptions = {
                         status: `${data.blocked ? 'limited' : 'active'}`,
                         userid: `${user.rows[0].userid}`,
                         image: userinfo.rows[0].profileurl,
+                        majorid : ST.rows[0].major_id,
+                        promotion : ST.rows[0].promotion
                       };
                     } else {
                       // if the student is not exists then send this message to frontend
