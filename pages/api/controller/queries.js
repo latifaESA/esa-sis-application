@@ -176,19 +176,26 @@ async function createClass(
   }
 }
 
-
 // Copy Class
-async function copyClass(connection, course_id, teacher_id, promotion, startdate, enddate, pm_id, major_id){
+async function copyClass(
+  connection,
+  course_id,
+  teacher_id,
+  promotion,
+  startdate,
+  enddate,
+  pm_id,
+  major_id
+) {
   try {
     const query = ` INSERT INTO tmpclass (course_id , teacher_id, promotion, startdate, enddate, pm_id, major_id) VALUES ('${course_id}','${teacher_id}','${promotion}','${startdate}','${enddate}', '${pm_id}', '${major_id}') 
     RETURNING tmpclass_id;`;
     const res = await connection.query(query);
-    return res.rows[0].tmpclass_id;;
+    return res.rows[0].tmpclass_id;
   } catch (error) {
     return error;
   }
 }
-
 
 async function insertPromotion(connection, table, columns, values) {
   try {
@@ -415,18 +422,18 @@ async function addSchedule(
 }
 
 // copy Schedule
-async function copySchedule(connection, classID, newClassID){
-  try{
+async function copySchedule(connection, classID, newClassID) {
+  try {
     // classID, day, fromTime, toTime, room_id, pm_id
     const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
     SELECT $1, to_char(day::date + INTERVAL '1 year', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS day, from_time, to_time, room, pm_id
     FROM tmpschedule
     WHERE class_id = ${classID};`;
     const classId = newClassID;
-    let res = await connection.query(query,[classId]);
+    let res = await connection.query(query, [classId]);
 
     return res;
-  }catch(error){
+  } catch (error) {
     return error;
   }
 }
@@ -607,7 +614,6 @@ async function getUserTeacher(connection, pmID) {
 //    const result = await executeQuery(connection, query, []);
 //=======
 
-
 async function filterCourses(
   connection,
   course_id,
@@ -642,7 +648,7 @@ async function filterCourses(
     return err;
   }
 }
-async function getAllCourses(connection , course_id , major_id){
+async function getAllCourses(connection, course_id, major_id) {
   // console.log(course_id)
 
   try {
@@ -730,8 +736,7 @@ async function getExistCourse(connection, course_id, teacher_idC, major_id) {
     // console.log('res', res)
 
     // console.log('query',query)
-    return res
-
+    return res;
   } catch (error) {
     return error;
   }
@@ -772,7 +777,7 @@ async function updatePresent(connection, present, student_id, attendance_id) {
   }
 }
 
-async function getAllStudent(connection, major_id , promotion) {
+async function getAllStudent(connection, major_id, promotion) {
   try {
     const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}'`;
     const res = await connection.query(query);
@@ -783,8 +788,6 @@ async function getAllStudent(connection, major_id , promotion) {
 }
 //insert data to attendance_table
 async function createAttendanceStudent(connection, student_id, attendance_id) {
- 
-
   try {
     const query = `INSERT INTO attendance (attendance_id , student_id) 
     VALUES ('${attendance_id}' , '${student_id}')`;
@@ -795,7 +798,7 @@ async function createAttendanceStudent(connection, student_id, attendance_id) {
     return error;
   }
 }
-//select 
+//select
 async function createAttendance(
   connection,
   teacher_id,
@@ -1061,8 +1064,8 @@ async function teacherCourse(
     return error;
   }
 }
-//get Schedule by major and promotion to each student 
-async function getScheduleToStudents (connection , major_id , promotion){
+//get Schedule by major and promotion to each student
+async function getScheduleToStudents(connection, major_id, promotion) {
   try {
     const query = `SELECT tmpschedule.*,tmpclass.promotion ,tmpclass.major_id  , tmpclass.teacher_id , tmpclass.course_id , rooms.room_name,
     rooms.room_building,
@@ -1071,11 +1074,11 @@ async function getScheduleToStudents (connection , major_id , promotion){
    INNER JOIN rooms ON  tmpschedule.room = rooms.room_id
      INNER JOIN courses ON tmpclass.course_id = courses.course_id
      INNER JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id
-     WHERE tmpclass.major_id = '${major_id}' AND (trim(tmpclass.promotion)) = '${promotion}'`
-    const result = await connection.query(query)
-    return result
+     WHERE tmpclass.major_id = '${major_id}' AND (trim(tmpclass.promotion)) = '${promotion}'`;
+    const result = await connection.query(query);
+    return result;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //unassign teacher to course
@@ -1126,18 +1129,17 @@ async function assignmentTeacherCourse(connection, course_id, teacher_id) {
   }
 }
 //get teacher by id of courses
-async function coursesTeachers(connection , course_id){
+async function coursesTeachers(connection, course_id) {
   try {
     const query = `SELECT teacher_courses.* , concat(teachers.teacher_firstname, ' ', teachers.teacher_lastname) AS teacher_fullName 
     FROM teacher_courses 
     INNER JOIN teachers ON teacher_courses.teacher_id = teachers.teacher_id WHERE course_id = '${course_id}'
-    `
-    const res = await connection.query(query)
-    return res
+    `;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
-
 }
 //attendance details
 async function AttendanceDetails(connection, attendance_id) {
@@ -1156,7 +1158,7 @@ async function AttendanceDetails(connection, attendance_id) {
   }
 }
 //get student fullname and promotion by attendance_id
-async function getStudentPromotion(connection, attendance_id , promotion) {
+async function getStudentPromotion(connection, attendance_id, promotion) {
   try {
     const query = `SELECT attendance .* , concat(student_firstname ,' ',student_lastname) AS student_fullname 
     from attendance 
@@ -1179,8 +1181,15 @@ async function getAllMajor(connection) {
     return err;
   }
 }
-//create courses 
-async function createCourse(connection , course_id , course_name , course_credit ,major_id ,course_type){
+//create courses
+async function createCourse(
+  connection,
+  course_id,
+  course_name,
+  course_credit,
+  major_id,
+  course_type
+) {
   // console.log(major_id)
 
   try {
@@ -1191,6 +1200,109 @@ async function createCourse(connection , course_id , course_name , course_credit
     return error;
   }
 }
+async function createPMAccount(
+  connection,
+  pm_id,
+  pm_firstname,
+  pm_lastname,
+  pm_email,
+  pm_status,
+  userpassword,
+  major_id
+) {
+  try {
+    let query = `
+    insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status, major_id)
+    values ('${pm_id}', '${pm_firstname}', '${pm_lastname}', '${pm_email}', '${pm_status}', '${major_id}') on conflict (pm_id) do nothing
+    RETURNING CASE
+    WHEN pm_id = '${pm_id}' THEN 'ID already exists'
+    ELSE 'Conflict occurred'
+    END AS message; 
+    insert into users(userid, role, userpassword)
+    values ('${pm_id}', '2', '${userpassword}') on conflict (userid) do nothing;
+
+    INSERT INTO user_document(userid)
+      VALUES('${pm_id}') on conflict (userid) do nothing
+      RETURNING CASE
+      WHEN userid = '${pm_id}' THEN 'ID already exists'
+      ELSE 'Conflict occurred'
+      END AS message; 
+    `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function createASAccount(
+  connection,
+  pm_ass_id,
+  pm_ass_firstname,
+  pm_ass_lastname,
+  pm_ass_email,
+  pm_ass_status,
+  userpassword,
+  major_id
+) {
+  try {
+    let query = `
+    insert into program_manager_assistance(pm_ass_id, pm_ass_firstname, pm_ass_lastname, pm_ass_email, pm_ass_status, major_id)
+    values ('${pm_ass_id}', '${pm_ass_firstname}', '${pm_ass_lastname}', '${pm_ass_email}', '${pm_ass_status}', '${major_id}') on conflict (pm_ass_id) do nothing
+    RETURNING CASE
+    WHEN pm_ass_id = '${pm_ass_id}' THEN 'ID already exists'
+    ELSE 'Conflict occurred'
+    END AS message; 
+    insert into users(userid, role, userpassword)
+    values ('${pm_ass_id}', '3', '${userpassword}') on conflict (userid) do nothing;
+
+    INSERT INTO user_document(userid)
+      VALUES('${pm_ass_id}') on conflict (userid) do nothing
+      RETURNING CASE
+      WHEN userid = '${pm_ass_id}' THEN 'ID already exists'
+      ELSE 'Conflict occurred'
+      END AS message; 
+    `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function createAdmin(
+  connection,
+  adminid,
+  adminemail,
+  adminname,
+  userpassword
+) {
+  try {
+    let query = `
+    insert into admin(adminid, adminemail, adminname)
+    values ('${adminid}', '${adminemail}', '${adminname}') on conflict (adminid) do nothing
+    RETURNING CASE
+    WHEN adminid = '${adminid}' THEN 'ID already exists'
+    ELSE 'Conflict occurred'
+    END AS message; 
+    insert into users(userid, role, userpassword)
+    values ('${adminid}', '0', '${userpassword}') on conflict (userid) do nothing;
+
+    INSERT INTO user_document(userid)
+      VALUES('${adminid}') on conflict (userid) do nothing
+      RETURNING CASE
+      WHEN userid = '${adminid}' THEN 'ID already exists'
+      ELSE 'Conflict occurred'
+      END AS message; 
+    `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -1251,5 +1363,8 @@ module.exports = {
   getTeachersCourses,
   getUserTeacher,
   uploadFile,
-  getAllMajor
+  getAllMajor,
+  createASAccount,
+  createPMAccount,
+  createAdmin,
 };
