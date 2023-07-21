@@ -30,6 +30,7 @@ export default function createAttendance() {
     const [isModal, setIsModal] = useState(false)
     const [error, setError] = useState(false)
     const [message, setMessage] = useState('')
+    const [course_type, setCourseType] = useState([])
     // console.log("selectedddd", selectedDate)
 
     const redirect = () => {
@@ -43,12 +44,14 @@ export default function createAttendance() {
             try {
 
                 let table = 'promotions';
-                let { data } = await axios.post('/api/pmApi/getAll', { table })
-                console.log("promotion", data.rows)
-                setAllPromotions(data.rows)
+                let Where = 'major_id'
+                let id = session.user.majorid
+                let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
+                console.log("promotion", data.data)
+                setAllPromotions(data.data)
 
                 const datesArray = [];
-                data.rows.forEach((promotions) => {
+                data.data.forEach((promotions) => {
                     datesArray.push(promotions.promotion_name);
                 });
 
@@ -153,6 +156,7 @@ export default function createAttendance() {
             setCoursesValue(coursesID[0].course_id)
 
             setCourseName(coursesID[0].course_name)
+            setCourseType(coursesID[0].course_type)
 
 
         } else {
@@ -206,14 +210,47 @@ export default function createAttendance() {
                 setFormErrors(errors);
                 return;
             } else {
-                setIsModal(true)
-                let major_id = session.user.majorid
-                let promotion = promotionName.replace(/\s/g, '');
-                // let promotion = promotionName
-                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-                // console.log(data.data)
-                // console.log(data.data)
-                setStudent(data.data)
+
+                if (course_type !== 'Elective') {
+                    setIsModal(true)
+                    let major_id = session.user.majorid
+                    let promotion = promotionName.replace(/\s/g, '');
+                    // let promotion = promotionName
+                    const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion })
+                    // console.log(data.data)
+                    // console.log(data.data)
+                    setStudent(data.data)
+
+                } else {
+                    const payload = {
+                        promotion: promotionName.replace(/\s/g, ''),
+                        major_id: session.user.majorid,
+                        course_id: coursesValue
+                    }
+                    console.log('payload', payload)
+
+                    const data = await axios.post('/api/pmApi/getStudentAssign', payload)
+                    console.log(data.data.code)
+                    if (data.data.code === 404) {
+                        console.log('wssll')
+                        setIsModal(true)
+                        let major_id = session.user.majorid
+                        let promotion = promotionName.replace(/\s/g, '');
+                        // let promotion = promotionName
+                        console.log('promotion', promotion)
+                        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion })
+                        // console.log(data.data)
+
+                        // console.log(data.data)
+                        setStudent(data.data)
+
+                    } else {
+                        setIsModal(true)
+                        setStudent(data.data.data);
+                    }
+
+                }
+
             }
         } catch (error) {
             return error
@@ -221,6 +258,7 @@ export default function createAttendance() {
 
 
     }
+
 
     return (
         <>
@@ -233,63 +271,63 @@ export default function createAttendance() {
                     <form className="flex flex-col justify-between flex-wrap">
                         <div className="flex flex-col  mb-3 pb-4 border-blue-300 border-b-2 max-sm:flex">
                             <form>
-                            <div className='flex flex-row justify-between p-5 flex-wrap'>
-                                <div className='ml-8'>
-                                    <label>
-                                        promotion:
-                                    </label>
-                                    <CustomSelectBox
-                                        options={promotion}
-                                        placeholder="Select Promotion"
-                                        onSelect={handlePromotion}
-                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"}
-                                    />
-                                    {formErrors.promotion && <div className='text-center text-red-500 font-bold p-2'>{formErrors.promotion}</div>}
-
-                                </div>
-                                <div>
-                                    <label>
-                                        Course Name:
-
-                                    </label>
-                                    <CustomSelectBox
-                                        options={courses}
-                                        placeholder="Select Courses"
-                                        onSelect={handleCourses}
-                                        styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
-                                    />
-                                    {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
-                                </div>
-                            </div>
-                            <div className='flex flex-row justify-between p-5 flex-wrap'>
-                                <div>
-                                    <label>
-                                        Teacher FullName:
-                                    </label>
-
-                                    {
+                                <div className='flex flex-row justify-between p-5 flex-wrap'>
+                                    <div className='ml-8'>
+                                        <label>
+                                            promotion:
+                                        </label>
                                         <CustomSelectBox
-                                            options={teachers}
+                                            options={promotion}
+                                            placeholder="Select Promotion"
+                                            onSelect={handlePromotion}
+                                            styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"}
+                                        />
+                                        {formErrors.promotion && <div className='text-center text-red-500 font-bold p-2'>{formErrors.promotion}</div>}
 
-                                            placeholder="Select Teacher"
-                                            onSelect={handleTeachers}
+                                    </div>
+                                    <div>
+                                        <label>
+                                            Course Name:
+
+                                        </label>
+                                        <CustomSelectBox
+                                            options={courses}
+                                            placeholder="Select Courses"
+                                            onSelect={handleCourses}
                                             styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
                                         />
-                                    }
-                                    {formErrors.teachers && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachers}</div>}
+                                        {formErrors.courses && <div className='text-center text-red-500 font-bold p-2'>{formErrors.courses}</div>}
+                                    </div>
+                                </div>
+                                <div className='flex flex-row justify-between p-5 flex-wrap'>
+                                    <div>
+                                        <label>
+                                            Teacher FullName:
+                                        </label>
 
+                                        {
+                                            <CustomSelectBox
+                                                options={teachers}
+
+                                                placeholder="Select Teacher"
+                                                onSelect={handleTeachers}
+                                                styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"}
+                                            />
+                                        }
+                                        {formErrors.teachers && <div className='text-center text-red-500 font-bold p-2'>{formErrors.teachers}</div>}
+
+                                    </div>
+                                    <div>
+                                        <label>
+                                            Date:
+                                        </label>
+                                        <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5' value={selectedDate.toISOString().substring(0, 10)}
+                                            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label>
-                                        Date:
-                                    </label>
-                                    <input type='date' className='font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5' value={selectedDate.toISOString().substring(0, 10)}
-                                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                                    />
-                                </div>
-                            </div>
                             </form>
-                           
+
 
                             <div className="flex flex-row justify-end ml-7 min-[850px]:flex-row gap-4">
                                 <button

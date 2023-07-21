@@ -6,19 +6,36 @@ import ReactToPrint from "react-to-print";
 import axios from 'axios';
 
 
-export default function ModalperID({ setShowPrint, courseName, teachersFirstname, teacherslastname, date, details, setDetails, setAttendance, setDate, setCourseName, setTeacherFirstName, setTeacherlastname }) {
+
+export default function ModalperID({ setShowPrint, courseName, session ,teachersFirstname, teacherslastname, date, details, setDetails, setAttendance, setDate, setCourseName, setTeacherFirstName, setTeacherlastname }) {
 
     const componentRef = useRef();
     const [promotion, setPromotion] = useState([])
     const [student, setStudent] = useState([])
+    // const date = details[0].attendance_date
+    // const year = new Date(date).getFullYear()
+    // const days = details[0].attendance_date
+
 
     useEffect(() => {
+        const handlePromotionByID = async()=>{
+            try {
+                const payload = {
+                    major_id : session.user.majorid ,
+                    academic_year :new Date(details[0].attendance_date).getFullYear()
+                }
+                const data = await axios.post('/api/pmApi/promotionsByIDyears',payload) 
+                
+                setPromotion(data.data.data[0].promotion_name
+                    )
+            } catch (error) {
+                return error
+            }
+        };handlePromotionByID()
         const handlePromotion = async () => {
             try {
               const attendance_id = details[0].attendance_id;
               const data = await axios.post('/api/pmApi/getStudentPromotions', { attendance_id });
-              setPromotion(data.data.data[0].promotion);
-          
               const sortedStudents = data.data.data.sort((a, b) => {
                 const fullNameA = a.student_fullname.toLowerCase();
                 const fullNameB = b.student_fullname.toLowerCase();
@@ -41,12 +58,14 @@ export default function ModalperID({ setShowPrint, courseName, teachersFirstname
               return error;
             }
           };
+        
           
         handlePromotion();
         setTimeout(() => {
             handlePromotion();
         }, 2000);
     }, [details])
+    console.log('promotions' , promotion)
     return (
         <>
 

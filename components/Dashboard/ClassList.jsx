@@ -33,6 +33,7 @@ import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
 import AddSchedule from '../AddSchedule';
 
 const ClassList = ({ users, setUsers }) => {
+
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
@@ -42,7 +43,7 @@ const ClassList = ({ users, setUsers }) => {
   const { data: session } = useSession();
   const [isModal, setisModal] = useState(false)
   const [editModal, setEditModal] = useState(false)
-  const [attendance , setAttendance]=useState([])
+  const [attendance, setAttendance] = useState([])
   const [isAddSchedule, setIsAddSchedule] = useState(false);
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -52,16 +53,25 @@ const ClassList = ({ users, setUsers }) => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [theRoom, setTheRoom] = useState([]);
+  const [teacherValue, setTeacherValue] = useState('')
+  const [courseValue, setCourseValue] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [promotions, setPromotions] = useState('')
+  const [details, setDetails] = useState([])
+  const [data , setData] = useState([])
+  const [student , setStudent] = useState([])
+  const [course_type , setCourseType] = useState('')
 
-  console.log('User =====>>> ', users)
+
 
   const getAllRooms = async () => {
-    try{
+    try {
       let table = 'rooms';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
-      console.log('rooms are ::  ',data.rows)
+      let { data } = await axios.post('/api/pmApi/getAll', { table })
+      console.log('rooms are ::  ', data.rows)
       setTheRoom(data.rows)
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
@@ -105,50 +115,114 @@ const ClassList = ({ users, setUsers }) => {
       console.log(selectedValues.length)
     }
   };
+  useEffect(()=>{
+    getStudent()
+  },[ student])
 
-  
-const handleCancelSchedule = () =>{
+  const getStudent = async () => {
+    try {       
+           const payload = {
+             table:'courses',
+             Where :'course_id',
+             id: courseValue
+           }
+            const response = await axios.post('/api/pmApi/getAllCourses' , payload)
+            console.log(response.data.data[0].course_type)
+            setCourseType(response.data.data[0].course_type)
+
+            if(course_type !== 'Elective'){
+              let major_id = session.user.majorid
+              let promotion = promotions.replace(/\s/g, '');
+              // let promotion = promotionName
+              const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
+              // console.log(data.data)
+              // console.log(data.data)
+              setStudent(data.data)
+              
+            }else{
+              const payload = {
+                promotion: promotions,
+                major_id: session.user.majorid,
+                course_id: courseValue
+              }
+              console.log('payload',payload)
+              const data = await axios.post('/api/pmApi/getStudentAssign' , payload)
+              console.log(data)
+              if(data.code === 404){
+                let major_id = session.user.majorid
+                let promotion = promotions.replace(/\s/g, '');
+                // let promotion = promotionName
+                console.log('promotion',promotions)
+                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
+                // console.log(data.data)
+                // console.log(data.data)
+                setStudent(data.data)
+
+              }else{
+                setStudent(data.data.data);
+              }
+
+              
+          
+
+            }
+
+            
+
+        
+    } catch (error) {
+        return error
+    }
+
+
+}
+console.log('studentsssssssssssssssssss',student)
+
+  const handleCancelSchedule = () => {
     setIsAddSchedule(false)
     setFromTime('');
     setToTime('');
     setLocation('');
     setSelectedValues([]);
-};
-const handleSaveSchedule = async () =>{
+  };
+  const handleSaveSchedule = async () => {
     // e.preventDefault();
     console.log('save')
-      // Usage example:
-      
-      const getWeekDays = async (startDate, endDate, weekdays) => {
-        const result = [];
-        const currentDate = new Date(startDate);
-      
-        while (currentDate <= endDate) {
-          if (weekdays.includes(currentDate.getDay())) {
-            result.push(currentDate.toISOString());
-          }
-          currentDate.setDate(currentDate.getDate() + 1);
+    // Usage example:
+
+    const getWeekDays = async (startDate, endDate, weekdays) => {
+      const result = [];
+      const currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        if (weekdays.includes(currentDate.getDay())) {
+          result.push(currentDate.toISOString());
         }
-      
-        return result;
-      };
-      const startDate = new Date(fromDate);
-      const endDate = new Date(toDate);
-      const startDate1 = new Date('2023-06-21');
-      const endDate1 = new Date('2023-09-25');
-      
-      const weekDays = await getWeekDays(startDate, endDate, selectedValues);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
 
-      console.log('weekDays :: ', weekDays)
-      console.log('weekDays :: ', selectedValues)
+      return result;
+    };
+    const startDate = new Date(fromDate);
+    const endDate = new Date(toDate);
+    const startDate1 = new Date('2023-06-21');
+    const endDate1 = new Date('2023-09-25');
 
-      if(selectedValues.length == 0 || fromTime.length == 0 || toTime.length == 0 || location.length == 0){
-        console.log(selectedValues.length == 0, fromTime.length == 0, toTime.length == 0 , location.length == 0)
-        alert('Please fill all the data');
-      }else{
-        console.log('weekDays inside: ', weekDays)
-        console.log('weekDays inside: ', selectedValues)
-      let createTheSchedule = async() => {
+    const weekDays = await getWeekDays(startDate, endDate, selectedValues);
+
+    console.log('weekDays :: ', weekDays)
+    console.log('weekDays :: ', selectedValues)
+
+    if (selectedValues.length == 0 || fromTime.length == 0 || toTime.length == 0 || location.length == 0) {
+      console.log(selectedValues.length == 0, fromTime.length == 0, toTime.length == 0, location.length == 0)
+      alert('Please fill all the data');
+    } else {
+      console.log('weekDays inside: ', weekDays)
+      console.log('weekDays inside: ', selectedValues)
+      let createTheSchedule = async () => {
+        const formattedDates = weekDays.map((date) => new Date(date).toISOString());
+        console.log("date",formattedDates)
+
         let scheduleData = {
           classId: classID,
           days: weekDays,
@@ -157,21 +231,85 @@ const handleSaveSchedule = async () =>{
           room: location,
           pmID: session.user.userid
         }
-      try{
-        let {data} = await axios.post('/api/pmApi/createSchedule', scheduleData)
-        console.log('the response of create schedule:  ', data)
-        if(data.success){
-          setIsAddSchedule(false)
-          setSelectedValues([])
+        const payload = {
+          teacher_id: teacherValue,
+          course_id: courseValue,
+          major_id: session.user.majorid
         }
-      }catch(error){
-        console.log(error)
-      }
-    }
-    createTheSchedule();
-  }
+    
+  
+          try {
+            for (let i = 0; i < weekDays.length; i++) {
+              const attendance_date = weekDays[i];
+          
+              console.log('payload', { ...payload, attendance_date });
+              const data3 = await axios.post('/api/pmApi/createAttendanceReport', { ...payload, attendance_date });
+              console.log(data3.data);
+          
+              const attendance_id = data3.data.data;
+          
+              if (attendance_id) {
+                for (let j = 0; j < student.length; j++) {
+                  console.log("studennnnt" , student)
+                  const student_id = student[j].student_id;    
+                  const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id });
+                  console.log("dataaa", data2.data);
+                }
+              }
+            }
+          
 
-}
+          
+          let { data } = await axios.post('/api/pmApi/createSchedule', scheduleData)
+          if (data.success) {
+            setIsAddSchedule(false)
+            setSelectedValues([])
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      // const createAttendance = async () => {
+      //   try {
+
+
+      //     const payload = {
+      //       teacher_id: teacherValue,
+      //       course_id: courseValue,
+      //       attendance_date: dateFrom,
+      //       major_id: session.user.majorid
+      //     }
+      //     // console.log('payload')
+      //     const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
+      //     // console.log(data.data)
+      //     setData(data.data);
+      //     // console.log("data",data.data)
+
+      //     const attendance_id = data.data.data
+      //     // console.log('atttttt' , attendance_id)
+      //     if (attendance_id) {
+      //       for (let i = 0; i < student.length; i++) {
+      //         const student_id = student[i].student_id
+      //         const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
+      //         // console.log("dataaa", data2.data)
+      //       }
+
+      //     }
+
+
+      //   } catch (error) {
+      //     return error
+      //   }
+
+      // }
+      createTheSchedule();
+
+
+
+    }
+
+  }
 
 
   const handleShowAll = async (tmpclass_id) => {
@@ -191,7 +329,27 @@ const handleSaveSchedule = async () =>{
   setTimeout(() => {
     setMessage('');
   }, selection_data.message_disapear_timing);
+  const getDetails = async (event) => {
+    
+    try {
+      const tmpclass_id = event.tmpclass_id
+      const { data } = await axios.post(`/api/pmApi/getDetailsClass`, { tmpclass_id })
+      // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
+      setTeacherValue(data.data[0].teacher_id)
+      setCourseValue(data.data[0].course_id)
+      setDateFrom(data.data[0].startdate)
+      setDateTo(data.data[0].enddate)
+      setPromotions(data.data[0].promotion)
 
+      setDetails(data.data)
+
+    } catch (error) {
+      return error
+    }
+  }
+
+console.log('course',courseValue)
+console.log('course',course_type)
 
   const columns = [
     {
@@ -223,19 +381,19 @@ const handleSaveSchedule = async () =>{
       width: 90,
     },
     {
-        field: 'startdate',
-        headerName: 'Start Date',
-        headerAlign: 'center',
-        align: 'center',
-        width: 90,
-      },
-      {
-        field: 'enddate',
-        headerName: 'End Date',
-        headerAlign: 'center',
-        align: 'center',
-        width: 90,
-      },
+      field: 'startdate',
+      headerName: 'Start Date',
+      headerAlign: 'center',
+      align: 'center',
+      width: 90,
+    },
+    {
+      field: 'enddate',
+      headerName: 'End Date',
+      headerAlign: 'center',
+      align: 'center',
+      width: 90,
+    },
 
     // {
     //   field: 'present',
@@ -284,13 +442,16 @@ const handleSaveSchedule = async () =>{
         <div className='flex gap-2'>
           <button
             className='primary-button hover:text-white'
-            onClick={() => {handleShowAll(params.row.tmpclass_id) 
+            onClick={() => {
+              handleShowAll(params.row.tmpclass_id)
                 // , setEditModal(true)
-                ,setIsAddSchedule(true)
-                ,setClassID(params.row.tmpclass_id)
-                ,setToDate(params.row.enddate)
-                ,setFromDate(params.row.startdate)
-                ,getAllRooms()
+                , setIsAddSchedule(true)
+                , setClassID(params.row.tmpclass_id)
+                , setToDate(params.row.enddate)
+                , setFromDate(params.row.startdate)
+                , getAllRooms(),
+                getDetails(params.row),
+                getStudent()
             }}
             // disabled={params.id !== presentEnable}
             type='button'
@@ -354,7 +515,7 @@ const handleSaveSchedule = async () =>{
     <>
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
       {isModal && <AttendanceModal promotion={promotion} allpromotion={allpromotion} courses={courses} allcourses={allcourses} teachers={teachers} allteachers={allteachers} setisModal={setisModal} student={student} session={session} setMessage={setMessage} />}
-      {editModal && <UpdateModal  editModal={editModal}  setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} />}
+      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} />}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.tmpclass_id}
@@ -390,17 +551,30 @@ const handleSaveSchedule = async () =>{
           session={session}
         />
       </div> */}
-      {isAddSchedule && 
-      <AddSchedule 
-      handleFrom = {handleFrom}
-      handleTo = {handleTo}
-      handleLocation = {handleLocation}
-      handleSelect = {handleSelect}
-      selectedValues = {selectedValues}
-      handleCancelSchedule = {handleCancelSchedule}
-      handleSaveSchedule = {handleSaveSchedule}
-      theroom = {theRoom}
-      />
+      {isAddSchedule &&
+        <AddSchedule
+          handleFrom={handleFrom}
+          handleTo={handleTo}
+          handleLocation={handleLocation}
+          handleSelect={handleSelect}
+          selectedValues={selectedValues}
+          handleCancelSchedule={handleCancelSchedule}
+          handleSaveSchedule={handleSaveSchedule}
+          theroom={theRoom}
+      
+          teacherValue={teacherValue}
+          courseValue={courseValue}
+          promotions={promotions}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          details={details}
+          setStudent={setStudent}
+          setDetails={setDetails}
+          setCourseType={setCourseType}
+          setCourseValue={setCourseValue}
+          setPromotions={setPromotions}
+          setTeacherValue={setTeacherValue}
+        />
       }
     </>
   );
