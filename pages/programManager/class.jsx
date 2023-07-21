@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios'
 import { useRouter } from 'next/router';
 import AddClass from '../../components/addClass';
-import ClassList from '../../components/Dashboard/classList';
+import ClassList from '../../components/Dashboard/ClassList';
 import CopyClass from '../../components/copyClass';
 // import Link from 'next/link';
 

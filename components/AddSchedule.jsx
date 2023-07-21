@@ -2,40 +2,25 @@ import React, { useEffect, useState } from 'react'
 import CustomSelectBox from '../pages/programManager/customSelectBox'
 import { HOURS, ROOMS } from '../pages/programManager/calenderComponent/conts'
 
-export default function AddSchedule({handleFrom,handleTo,handleLocation,handleSelect,selectedValues,handleCancelSchedule,handleSaveSchedule, theroom}) {
+export default function AddSchedule(
+  {handleFrom,handleTo,handleLocation,handleSelect,selectedValues,
+    handleCancelSchedule,handleSaveSchedule, theroom ,
+    courseValue,
+    teacherValue,
+    dateFrom,
+    dateTo,
+    promotions,
+    setCourseValue,
+    details,
+    setDetails,
+    setCourseType,
+    setStudent
 
-    // const handleSave = () => {
-    //     console.log('save')
-    //   const getWeekDays = (startDate, endDate, weekdays) => {
-    //       const result = [];
-    //       const currentDate = new Date(startDate);
-        
-    //       while (currentDate <= endDate) {
-    //         // if (currentDate.getDay() === 1 || currentDate.getDay() === 3) { // Monday (1) or Wednesday (3)
-    //         if(weekdays.includes(currentDate.getDay())){
-    //           result.push(new Date(currentDate));
-    //         }
-    //         currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-    //       }
-        
-    //       return result;
-    //     }
-        
-    //     // Usage example:
-    //     const startDate = new Date('2023-06-21');
-    //     const endDate = new Date('2023-09-25');
-        
-    //     const weekDays = getWeekDays(startDate, endDate, selectedValues);
-        
-    //     weekDays.forEach(date => {
-    //       console.log(date.toDateString());
-    //     });
-    // }
-
-    // const handleCancel = () => {
-    //     setOpen(false)
-    // }
+  
+  }) {
+    
     const [allrooms, setAllrooms] = useState([])
+    const [data , setData] = useState([])
     let allStages = [];
 
     const [building, setBuilding] = useState('')
@@ -58,7 +43,39 @@ export default function AddSchedule({handleFrom,handleTo,handleLocation,handleSe
     }
       )
 
-    
+      const handleSave = async () => {
+        try {
+
+
+            const payload = {
+                teacher_id: teacherValue,
+                course_id: courseValue,
+                attendance_date: dateFrom,
+                major_id: session.user.majorid
+            }
+            // console.log('payload')
+            const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
+            // console.log(data.data)
+            setData(data.data);
+            // console.log("data",data.data)
+
+            const attendance_id = data.data.data
+            // console.log('atttttt' , attendance_id)
+            if (attendance_id) {
+                for (let i = 0; i < student.length; i++) {
+                    const student_id = student[i].student_id
+                    const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
+                    // console.log("dataaa", data2.data)
+                }
+
+            }
+            setShowModal(true)
+
+        } catch (error) {
+            return error
+        }
+
+    }
 
 
   return (
@@ -171,8 +188,8 @@ export default function AddSchedule({handleFrom,handleTo,handleLocation,handleSe
 
 
         <div className='flex justify-between'>
-            <button type='button' onClick={() => handleSaveSchedule()} className='p-3 bg-green-500 hover:bg-green-400 active:bg-green-300'>Save</button>
-            <button type='button' onClick={() => handleCancelSchedule()} className='p-3 bg-red-500 hover:bg-red-400 active:bg-red-300'>Cancel</button>
+            <button type='button' onClick={() => {handleSaveSchedule() ; setCourseType('') ;setDetails([]);setStudent([])}} className='p-3 bg-green-500 hover:bg-green-400 active:bg-green-300'>Save</button>
+            <button type='button' onClick={() => {handleCancelSchedule() ; setCourseType('') ;setDetails([]);setStudent([])}} className='p-3 bg-red-500 hover:bg-red-400 active:bg-red-300'>Cancel</button>
         </div>
     </div>
   )

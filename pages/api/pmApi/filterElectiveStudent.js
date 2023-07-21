@@ -1,32 +1,29 @@
 const { connect , disconnect} = require("../../../utilities/db");
-const {filterAttendances} = require("../controller/queries");
+const {filterElective} = require("../controller/queries");
 
 async function handler(req , res){
      
     try {
         const connection = await connect();
         const {
-           attendanceId,
-           courseId,
-           teacherId,
-           majorId,
-           present,
-           attendanceDate,
-           teacher_firstname,
-           teacher_lastname,
-           major_name,
+            course_id , 
+            student_firstname,
+            student_lastname ,
+            course_name
         } = req.body;
         
-        const response = await filterAttendances(connection ,attendanceId  ,teacherId ,majorId ,courseId , attendanceDate , present ,teacher_firstname , teacher_lastname ,  major_name);
+        const response = await filterElective(connection ,  
+            course_id , 
+            student_firstname,
+            student_lastname ,
+            course_name);
+      
         await disconnect(connection); 
-
-
-
         if(response.rows.length === 0){
             return res.status(404).json({
                 success: false,
                 code:404,
-                message:`attendance not found`
+                message:`assign not found`
             })
           }
           else{

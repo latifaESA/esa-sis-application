@@ -65,7 +65,7 @@ const CourseSchedule = () => {
           center: 'title',
           end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         }}
-        contentHeight="auto"
+        contentHeight = {'23rem'}
         handleWindowResize={true}
         weekends={true}
         events={events}

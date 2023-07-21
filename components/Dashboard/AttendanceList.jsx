@@ -391,7 +391,7 @@ const AttendanceList = ({ users, setUsers }) => {
   return (
     <>
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance}  courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname} />}
+      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance} session={session} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname} />}
       {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} setDate={setDate} setDetails={setDetails} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
       {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details} setAttendance={setAttendance} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
       <Box sx={{ height: 400, width: '100%' }}>

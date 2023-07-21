@@ -7,9 +7,10 @@ export const LowerButtons = ({
   // setisCoursesCreate,
   // handlePrintSelected,
   session,
-  
+  elective,
+  setElective,
   assigned,
-setOpenModal
+  setOpenModal
   // setisModal,
 }) => {
   return (
@@ -19,25 +20,44 @@ setOpenModal
         Create Attendance
        </button> */}
 
-        {session.user.role === '2' && assigned ?<>
-        
-        <button
-          className="primary-button btnCol text-white  hover:text-white"
-          type="button"
-          onClick={() => setOpenModal(true)}
-        >
-          Assigned Teacher
-        </button> 
-        
-        </>:<><button
+        {session.user.role === '2' && assigned ? <>
+         <form>
+         <button
+            className="primary-button btnCol text-white  hover:text-white"
+            type="button"
+            onClick={() => setOpenModal(true)}
+          >
+            Assigned Teacher
+          </button>
+         </form>
+
+
+        </> : <>
+        </>}
+        {session.user.role === '2' && elective && session.user.majorid === '13' || session.user.majorid === '15' ?
+          <>
+          <form>
+          <button
+              className="primary-button btnCol text-white  hover:text-white"
+              type="button"
+              onClick={() => setElective(true)}
+            >
+              Elective
+            </button>
+          </form>
+
+          </> : <>
+
+          </>}
+
+        {!elective && !assigned ? <>         <button
           className="primary-button btnCol text-white hover:text-white"
           type="button"
           onClick={exportAllButton}
-          // hidden={session.user.role === '2'?true:false}
+        // hidden={session.user.role === '2'?true:false}
         >
           Export All
-        </button></>}
-       
+        </button></> : <></>}
 
         {/* <button
           className='primary-button hover:text-white'
@@ -48,7 +68,7 @@ setOpenModal
         >
           Export Selected
         </button> */}
-     
+
         {/* <button className='primary-button hover:text-white' type='button'
          disabled={selectedRows.length < 1}
         onClick={()=>handlePrintSelected(selectedRows)}
