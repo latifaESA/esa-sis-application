@@ -1,16 +1,16 @@
-import { useSession } from 'next-auth/react';
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import generatePasswod from '../../utilities/generatePassword';
-import axios from 'axios';
-import bcryptjs from 'bcryptjs';
-import { useRouter } from 'next/router';
+import { useSession } from "next-auth/react";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import generatePasswod from "../../utilities/generatePassword";
+import axios from "axios";
+import bcryptjs from "bcryptjs";
+import { useRouter } from "next/router";
 
 function generateID(prefix) {
   const prefixLength = prefix.length;
   const randomDigits = Math.floor(Math.random() * 10000)
     .toString()
-    .padStart(6, '0');
+    .padStart(6, "0");
   return prefix + randomDigits.substr(prefixLength);
 }
 
@@ -18,26 +18,26 @@ export default function Create() {
   const { data: session } = useSession();
   // const [users, setUsers] = useState([]);
   // const [assistance, setAssistance] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const router = useRouter();
 
-  const [fname, setFname] = useState('');
-  const [lname, setLname] = useState('');
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
   // const [idvalue, setIDvalue] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   // eslint-disable-next-line no-unused-vars
-  const [status, setStatus] = useState('');
-  const [role, setRole] = useState('');
+  const [status, setStatus] = useState("active");
+  const [role, setRole] = useState("");
   const [major, setMajor] = useState();
-  const [majorValue, setMajorValue] = useState('');
+  const [majorValue, setMajorValue] = useState("");
 
   const redirect = () => {
-    router.push('/AccessDenied');
+    router.push("/AccessDenied");
   };
 
   const getAllMajors = async () => {
-    let majorData = await axios.get('/api/admin/adminApi/getMajor');
+    let majorData = await axios.get("/api/admin/adminApi/getMajor");
 
     setMajor(majorData.data);
   };
@@ -50,86 +50,109 @@ export default function Create() {
     e.preventDefault();
     const salt = await bcryptjs.genSalt(8);
     const genPass = await bcryptjs.hash(generatedPass, salt);
-
-    // if(role == '')
     if (
-      role == '2' &&
-      fname != '' &&
-      lname != '' &&
-      email != '' &&
-      majorValue != ''
+      role == "2" &&
+      fname != "" &&
+      lname != "" &&
+      email != "" &&
+      majorValue != ""
     ) {
-      const prefix = 'PM';
+      const prefix = "PM";
       let gen = generateID(prefix);
       let sendData = {
         pm_id: gen.trim(),
         pm_firstname: fname.trim(),
         pm_lastname: lname.trim(),
         pm_email: email.trim(),
-        pm_status: 'active'.trim(),
+        pm_status: status.trim(),
         userpassword: genPass,
         major_id: majorValue.trim(),
       };
 
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        '/api/admin/adminApi/createPMAccount',
+        "/api/admin/adminApi/createPMAccount",
         sendData
       );
 
       console.log(data[0].rowCount);
       if (data[0].rowCount == 0) {
-        setMessage('ID Already Exist');
+        setMessage("ID Already Exist");
       } else {
         setMessage(
           `user Created Successfully with a password : ${generatedPass}`
         );
       }
     } else if (
-      role == '3' &&
-      fname != '' &&
-      lname != '' &&
-      email != '' &&
-      majorValue != ''
+      role == "3" &&
+      fname != "" &&
+      lname != "" &&
+      email != "" &&
+      majorValue != ""
     ) {
-      const prefix = 'AS';
+      const prefix = "AS";
       let gen = generateID(prefix);
       let sendASData = {
         pm_ass_id: gen.trim(),
         pm_ass_firstname: fname.trim(),
         pm_ass_lastname: lname.trim(),
         pm_ass_email: email.trim(),
-        pm_ass_status: 'active'.trim(),
+        pm_ass_status: status.trim(),
         userpassword: genPass,
         major_id: majorValue.trim(),
       };
 
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        '/api/admin/adminApi/createASAccount',
+        "/api/admin/adminApi/createASAccount",
         sendASData
       );
 
       if (data[0].rowCount == 0) {
-        setMessage('ID Already Exist');
+        setMessage("ID Already Exist");
+      } else {
+        setMessage(
+          `user Created Successfully with a password : ${generatedPass}`
+        );
+      }
+    } else if (role == "0" && fname != "" && email != "") {
+      const prefix = "AD";
+      let gen = generateID(prefix);
+      let sendADData = {
+        adminid: gen.trim(),
+        adminemail: email.trim(),
+        adminname: fname.trim(),
+        userpassword: genPass,
+      };
+
+      // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post(
+        "/api/admin/adminApi/createAdminAccount",
+        sendADData
+      );
+
+      if (data[0].rowCount == 0) {
+        setMessage("ID Already Exist");
       } else {
         setMessage(
           `user Created Successfully with a password : ${generatedPass}`
         );
       }
     }
-
-    if (fname == '' && lname == '' && email == '') {
-      setMessage('Please Fill all the required Fields');
+    if (fname == "" && email == "") {
+      setMessage("Please Fill all the required Fields");
     }
-    if (role == '') {
-      setMessage('Please choose a role');
+    if (role == "") {
+      setMessage("Please choose a role");
     }
-    if (majorValue == '') {
-      setMessage('Please choose a Major');
+    if (role != 0) {
+      if (majorValue == "") {
+        setMessage("Please choose a Major");
+      }
+      if (fname == "" && lname == "" && email == "") {
+        setMessage("Please Fill all the required Fields");
+      }
     }
-    console.log('msg');
-    console.log(message.includes('Successfully'));
   };
 
   return (
@@ -138,7 +161,7 @@ export default function Create() {
         <title>SIS Admin - Accounts</title>
       </Head>
 
-      {session?.user.role === '0' ? (
+      {session?.user.role === "0" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Create Accounts
@@ -168,6 +191,7 @@ export default function Create() {
                   name="Fname"
                   required
                   placeholder="First Name"
+                  disabled={role == "0" ? true : false}
                   // value={formData.Fname}
                   onChange={(e) => {
                     setLname(e.target.value);
@@ -195,14 +219,15 @@ export default function Create() {
                 <select
                   onChange={(e) => setMajorValue(e.target.value)}
                   className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  disabled={role == "0" ? true : false}
                 >
-                  <option key={'uu2isdvf'} value="">
+                  <option key={"uu2isdvf"} value="">
                     Choose a Major
                   </option>
                   {major &&
                     major.map((major) => (
                       <>
-                        <option key={major.major_name} value={major.major_id}>
+                        <option key={major.major_id} value={major.major_id}>
                           {major.major_name}
                         </option>
                       </>
@@ -239,6 +264,7 @@ export default function Create() {
                 <select
                   className="ml-9 w-40"
                   onChange={(e) => setStatus(e.target.value)}
+                  disabled={role == "0" ? true : false}
                 >
                   {/* <option value="">Choose Value..</option> */}
                   <option value="active">Active</option>
@@ -253,6 +279,7 @@ export default function Create() {
                   onChange={(e) => setRole(e.target.value)}
                 >
                   <option defaultValue="">Choose a Role</option>
+                  <option value="0">Admin</option>
                   <option value="2">Program Manager</option>
                   <option value="3">Assistance</option>
                 </select>
@@ -268,19 +295,19 @@ export default function Create() {
               </div>
             </div>
           </form>
-          {message == 'Please choose a role' ? (
+          {message == "Please choose a role" ? (
             <div className="text-center text-red-500 text-xl">{message}</div>
           ) : null}
-          {message == 'Please Fill all the required Fields' ? (
+          {message == "Please Fill all the required Fields" ? (
             <div className="text-center text-red-500 text-xl">{message}</div>
           ) : null}
-          {message == 'ID Already Exist' ? (
+          {message == "ID Already Exist" ? (
             <div className="text-center text-red-500 text-xl">{message}</div>
           ) : null}
-          {message == 'Please choose a Major' ? (
+          {message == "Please choose a Major" ? (
             <div className="text-center text-red-500 text-xl">{message}</div>
           ) : null}
-          {message.includes('Successfully') ? (
+          {message.includes("Successfully") ? (
             <div className="text-center text-green-700 text-xl">{message}</div>
           ) : null}
         </>
