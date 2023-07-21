@@ -234,15 +234,14 @@ async function insertPromotion(connection, table, columns, values) {
 //     return error;
 //   }
 // }
-async function getClassDetails(connection , tmpclass_id){
+async function getClassDetails(connection, tmpclass_id) {
   try {
     const query = ` SELECT * FROM tmpclass WHERE tmpclass_id = '${tmpclass_id}'`;
-    const result = connection.query(query)
-    return result 
+    const result = connection.query(query);
+    return result;
   } catch (error) {
-    return error
+    return error;
   }
-
 }
 async function createSchedule(
   connection,
@@ -716,7 +715,7 @@ async function filterAttendances(
     if (present != "") {
       query += ` AND present = '${present}'  `;
     }
-    console.log(query)
+    console.log(query);
     const res = await connection.query(query);
 
     return res;
@@ -728,7 +727,7 @@ async function filterAttendances(
 async function getCourse(connection, table, where, id) {
   try {
     let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
-    console.log(query)
+    console.log(query);
     const response = await connection.query(query);
     return response;
   } catch (error) {
@@ -983,7 +982,10 @@ async function enableUserpm(connection, pm_id, userpassword) {
   try {
     let query = `
       INSERT INTO users(userid ,role , userpassword)
-        VALUES('${pm_id}', 2, '${userpassword}')`;
+        VALUES('${pm_id}', 2, '${userpassword}');
+        INSERT INTO user_document(userid, profileurl)
+        VALUES('${pm_id}', '')
+        `;
 
     const result = await connection.query(query);
     return result;
@@ -995,7 +997,9 @@ async function enableUserAs(connection, pm_ass_id, userpassword) {
   try {
     let query = `
       INSERT INTO users(userid ,role , userpassword)
-        VALUES('${pm_ass_id}', 3, '${userpassword}')`;
+        VALUES('${pm_ass_id}', 3, '${userpassword}'); 
+        INSERT INTO user_document(userid, profileurl)
+        VALUES('${pm_ass_id}', '')`;
 
     const result = await connection.query(query);
     return result;
@@ -1180,7 +1184,7 @@ async function getStudentPromotion(connection, attendance_id, promotion) {
     return error;
   }
 }
-async function getPromotion(connection , major_id , academic_year) {
+async function getPromotion(connection, major_id, academic_year) {
   try {
     let query = `
       SELECT * FROM promotions WHERE academic_year = '${academic_year}' AND major_id='${major_id}'`;
@@ -1222,47 +1226,52 @@ async function createCourse(
     return error;
   }
 }
-//ELECTIVE COURSES 
-async function createElective(connection , course_id , student_id ,major_id , promotion){
- 
+//ELECTIVE COURSES
+async function createElective(
+  connection,
+  course_id,
+  student_id,
+  major_id,
+  promotion
+) {
   try {
     const query = `INSERT INTO assign_student (course_id , student_id , major_id , promotion) VALUES ('${course_id}','${student_id}' , '${major_id}' , '${promotion}') RETURNING assign_student_id`;
-    const res =   await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-//GET STUDENT ELECTIVE 
-async function ExistElective (connection , course_id , student_id){
+//GET STUDENT ELECTIVE
+async function ExistElective(connection, course_id, student_id) {
   try {
     const query = `SELECT * FROM assign_student 
-    WHERE course_id='${course_id}' AND student_id ='${student_id}'`
-    const res = await connection.query(query)
-    return res
+    WHERE course_id='${course_id}' AND student_id ='${student_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-//filter ElectiveStudent 
+//filter ElectiveStudent
 // async function filterElective (
-//   connection , 
-//   course_id , 
+//   connection ,
+//   course_id ,
 //   student_firstname,
 //   student_lastname ,
 //   course_name
 //   ){
 //   try {
-//     let query = `SELECT assign_student.* , student.student_firstname , 
+//     let query = `SELECT assign_student.* , student.student_firstname ,
 //     student.student_lastname , courses.course_name
-//     FROM assign_student 
+//     FROM assign_student
 //     INNER JOIN  student ON assign_student.student_id = student.student_id
-//     INNER JOIN courses ON  assign_student.course_id = courses.course_id WHERE 1=1 
+//     INNER JOIN courses ON  assign_student.course_id = courses.course_id WHERE 1=1
 //     `
 //     if(course_id !=""){
 //       query += ` AND lower(trim(assign_student.course_id)) LIKE lower(trim('%${course_id}%'))`
 //     }
- 
+
 //     if(student_firstname != ""){
 //       query += ` AND lower(trim(student.student_firstname)) LIKE lower(trim('%${student_firstname}%'))`
 //     }
@@ -1283,12 +1292,11 @@ async function ExistElective (connection , course_id , student_id){
 // }
 async function filterElective(
   connection,
-  course_id , 
+  course_id,
   student_firstname,
-  student_lastname ,
+  student_lastname,
   course_name
 ) {
-
   try {
     let query = `SELECT assign_student.* , student.student_firstname , 
     student.student_lastname , courses.course_name , major.major_name , student.promotion
@@ -1311,47 +1319,46 @@ async function filterElective(
     if (course_name) {
       query += ` AND lower(trim(courses.course_name) LIKE lower(trim('%${course_name}%'))`;
     }
-  
+
     const res = await connection.query(query);
-   
+
     return res;
   } catch (error) {
     return error;
   }
 }
 // check with batoul
-async function getElectiveCourse(connection , major_id){
-
+async function getElectiveCourse(connection, major_id) {
   try {
-    const query = `SELECT * FROM courses WHERE course_type = 'Elective' AND major_id = '${major_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM courses WHERE course_type = 'Elective' AND major_id = '${major_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
-  }
-
-}
-
-async function getStudentByYear(connection ,  major_id , academic_year ){
-  try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND academic_year = '${academic_year}' `
-    const res = await connection.query(query)
-    return res
-  } catch (error) {
-    return error
+    return error;
   }
 }
-async function getStudentAssigned(connection , promotion , major_id , course_id){
+
+async function getStudentByYear(connection, major_id, academic_year) {
+  try {
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND academic_year = '${academic_year}' `;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function getStudentAssigned(connection, promotion, major_id, course_id) {
   try {
     const query = `SELECT assign_student .* , student.student_firstname , student.student_lastname FROM assign_student 
     INNER JOIN student ON assign_student.student_id = student.student_id 
     WHERE assign_student.promotion ='${promotion}' 
-    AND assign_student.major_id='${major_id}' AND assign_student.course_id = '${course_id}'`
-    const res = await connection.query(query)
-    return res
+    AND assign_student.major_id='${major_id}' AND assign_student.course_id = '${course_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
-
+    return error;
+  }
+}
 async function createPMAccount(
   connection,
   pm_id,
@@ -1452,7 +1459,6 @@ async function createAdmin(
     return result;
   } catch (err) {
     return err;
-
   }
 }
 
