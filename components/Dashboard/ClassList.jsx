@@ -43,7 +43,7 @@ const ClassList = ({ users, setUsers }) => {
   const { data: session } = useSession();
   const [isModal, setisModal] = useState(false)
   const [editModal, setEditModal] = useState(false)
-  const [attendance, setAttendance] = useState([])
+  const [attendance, setAttendance] = useState(false)
   const [isAddSchedule, setIsAddSchedule] = useState(false);
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -62,6 +62,8 @@ const ClassList = ({ users, setUsers }) => {
   const [data , setData] = useState([])
   const [student , setStudent] = useState([])
   const [course_type , setCourseType] = useState('')
+  const [weekDays , setWeekDays] = useState([])
+  
 
 
 
@@ -115,68 +117,209 @@ const ClassList = ({ users, setUsers }) => {
       console.log(selectedValues.length)
     }
   };
-  useEffect(()=>{
-    getStudent()
-  },[ student])
+  const getDetails = async (event) => {
+    
+    try {
+      // const tmpclass_id = event.tmpclass_id
+      // const { data } = await axios.post(`/api/pmApi/getDetailsClass`, { tmpclass_id })
+      // // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
+      // setTeacherValue(data.data[0].teacher_id)
+      // setCourseValue(data.data[0].course_id)
+      // setDateFrom(data.data[0].startdate)
+      // setDateTo(data.data[0].enddate)
+      // setPromotions(data.data[0].promotion)
+      console.log("detailsssssssss" , event)
+      setTeacherValue(event.teacher_id)
+      setCourseValue(event.course_id)
+      setDateFrom(event.startdate)
+      setDateTo(event.enddate)
+      setPromotions(event.promotion)
+     
 
-  const getStudent = async () => {
-    try {       
-           const payload = {
-             table:'courses',
-             Where :'course_id',
-             id: courseValue
-           }
-            const response = await axios.post('/api/pmApi/getAllCourses' , payload)
-            console.log(response.data.data[0].course_type)
-            setCourseType(response.data.data[0].course_type)
+    } catch (error) {
+      return error
+    }
+  }
 
-            if(course_type !== 'Elective'){
-              let major_id = session.user.majorid
-              let promotion = promotions.replace(/\s/g, '');
-              // let promotion = promotionName
-              const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-              // console.log(data.data)
-              // console.log(data.data)
-              setStudent(data.data)
+    // const handlcourseType = async(event)=>{
+    //   try {
+    //     const payload = {
+    //       table:'courses',
+    //       Where :'course_id',
+    //       id: event.course_id
+    //     }
+    //           const response = await axios.post('/api/pmApi/getAllCourses' , payload)
+    //           setCourseType(response.data.data[0].course_type)
+    //   } catch (error) {
+    //     return error
+    //   }
+    // } 
+
+//   const getStudent = async (event) => {
+
+//     try {       
+   
+//           const payload = {
+//             table:'courses',
+//             Where :'course_id',
+//             id: event.course_id
+//           }
+//                 const response = await axios.post('/api/pmApi/getAllCourses' , payload)
+//                 setCourseType(response.data.data[0].course_type)
+//             console.log("typeeeeeeeeeeee",response.data.data[0].course_type)
+//             if(response.data.data[0].course_type === 'Elective'){
+//               const payload = {
+//                 promotion: event.promotion,
+//                 major_id: session.user.majorid,
+//                 course_id: event.course_id
+//               }
+//               console.log('payload',payload)
+//               const data = await axios.post('/api/pmApi/getStudentAssign' , payload)
+//               console.log(data.data.code)
+//               if(data.data.code === 404){
+//                 try {
+                  // let major_id = session.user.majorid
+                  // let promotion = event.promotion.replace(/\s/g, '');
+                  // // let promotion = promotionName
+                  // console.log('promotion',promotions)
+                  // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
+//                   // console.log(data.data)
+//                   // console.log(data.data)
+//                   setStudent(data.data)
+//                 } catch (error) 
+//                 {
+//                    return error  
+//                 }
+       
+           
+
+//               }else{
+//                 setStudent(data.data.data);
+//               }
               
-            }else{
-              const payload = {
-                promotion: promotions,
-                major_id: session.user.majorid,
-                course_id: courseValue
-              }
-              console.log('payload',payload)
-              const data = await axios.post('/api/pmApi/getStudentAssign' , payload)
-              console.log(data)
-              if(data.code === 404){
-                let major_id = session.user.majorid
-                let promotion = promotions.replace(/\s/g, '');
-                // let promotion = promotionName
-                console.log('promotion',promotions)
-                const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-                // console.log(data.data)
-                // console.log(data.data)
-                setStudent(data.data)
-
-              }else{
-                setStudent(data.data.data);
-              }
-
+//             }else{
+           
+//               let major_id = session.user.majorid
+//               let promotion = event.promotion
+//               // let promotion = promotionName
+//               const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
+//               // console.log(data.data)
+//               // console.log(data.data)
+//               setStudent(data.data)
               
           
 
-            }
+//             }
 
             
 
         
-    } catch (error) {
-        return error
+//     } catch (error) {
+//         return error
+//     }
+
+
+// }
+// const getStudent = async (event) => {
+//   try {
+    // const payload = {
+    //   table: 'courses',
+    //   Where: 'course_id',
+    //   id: event.course_id
+    // };
+
+    // const response = await axios.post('/api/pmApi/getAllCourses', payload);
+    // setCourseType(response.data.data[0].course_type);
+//     console.log("typeeeeeeeeeeee", response.data.data[0].course_type);
+
+//     if (response.data.data[0].course_type === 'Elective') {
+//       try {
+        // const payload = {
+        //   promotion: event.promotion,
+        //   major_id: session.user.majorid,
+        //   course_id: event.course_id
+        // };
+//         console.log('payload', payload);
+
+        // const data = await axios.post('/api/pmApi/getStudentAssign', payload);
+        // console.log(data.data.code);
+
+//         if (data.data.code === 404) {
+//           let major_id = session.user.majorid;
+//           let promotion = event.promotion.replace(/\s/g, '');
+//           console.log('promotion', promotions);
+
+//           try {
+//             // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
+//             // setStudent(data.data);
+//           } catch (error) {
+//             const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
+//             setStudent(data.data);
+//           }
+//         } else {
+//           setStudent(data.data.data);
+//         }
+//       } catch (error) {
+//         console.error('Error in getStudentAssign:', error);
+//         setStudent([]);
+//       }
+//     } else {
+      // let major_id = session.user.majorid;
+      // let promotion = event.promotion.replace(/\s/g, '');
+      // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
+      // setStudent(data.data);
+//     }
+//   } catch (error) {
+//     console.error('Error in getAllCourses:', error);
+//     setStudent([]);
+//   }
+// };
+
+
+
+const getStudent = async(event) =>{
+
+  try {
+    const payload = {
+      table: 'courses',
+      Where: 'course_id',
+      id: event.course_id
+    };
+
+    const response = await axios.post('/api/pmApi/getAllCourses', payload);
+    setCourseType(response.data.data[0].course_type);
+    if(response.data.data[0].course_type !== 'Elective'){
+      let major_id = session.user.majorid;
+      let promotion = event.promotion.replace(/\s/g, '');
+      const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
+      setStudent(data.data);
+
+
+    }else{
+
+      const payload = {
+        promotion: event.promotion,
+        major_id: session.user.majorid,
+        course_id: event.course_id
+      };
+      try {
+        const data = await axios.post('/api/pmApi/getStudentAssign', payload);
+        setStudent(data.data.data)
+      } catch (error) {
+        let major_id = session.user.majorid
+        let promotion = event.promotion.replace(/\s/g, '');
+        // let promotion = promotionName
+        console.log('promotion',promotions)
+        const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
+        setStudent(data.data)
+      }
     }
-
-
+  } catch (error) {
+    return error
+  }
 }
-console.log('studentsssssssssssssssssss',student)
+
+
 
   const handleCancelSchedule = () => {
     setIsAddSchedule(false)
@@ -222,6 +365,7 @@ console.log('studentsssssssssssssssssss',student)
       let createTheSchedule = async () => {
         const formattedDates = weekDays.map((date) => new Date(date).toISOString());
         console.log("date",formattedDates)
+        setWeekDays(formattedDates)
 
         let scheduleData = {
           classId: classID,
@@ -231,37 +375,47 @@ console.log('studentsssssssssssssssssss',student)
           room: location,
           pmID: session.user.userid
         }
-        const payload = {
-          teacher_id: teacherValue,
-          course_id: courseValue,
-          major_id: session.user.majorid
-        }
-    
+        // const payload = {
+        //   teacher_id: teacherValue,
+        //   course_id: courseValue,
+        //   major_id: session.user.majorid
+        // }
+              
+    const payload = {
+      teacher_id: teacherValue,
+      course_id: courseValue,
+      major_id: session.user.majorid
+    }
   
           try {
+
             for (let i = 0; i < weekDays.length; i++) {
               const attendance_date = weekDays[i];
-          
-              console.log('payload', { ...payload, attendance_date });
-              const data3 = await axios.post('/api/pmApi/createAttendanceReport', { ...payload, attendance_date });
-              console.log(data3.data);
+      
+              const payload2 = { ...payload, attendance_date }
+    
+              const data3 = await axios.post('/api/pmApi/createAttendanceReport', payload2);
+    
           
               const attendance_id = data3.data.data;
-          
+             
               if (attendance_id) {
+           
                 for (let j = 0; j < student.length; j++) {
-                  console.log("studennnnt" , student)
+              
                   const student_id = student[j].student_id;    
                   const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id });
-                  console.log("dataaa", data2.data);
+               
                 }
               }
+              
             }
           
 
           
           let { data } = await axios.post('/api/pmApi/createSchedule', scheduleData)
           if (data.success) {
+            
             setIsAddSchedule(false)
             setSelectedValues([])
           }
@@ -329,27 +483,13 @@ console.log('studentsssssssssssssssssss',student)
   setTimeout(() => {
     setMessage('');
   }, selection_data.message_disapear_timing);
-  const getDetails = async (event) => {
-    
-    try {
-      const tmpclass_id = event.tmpclass_id
-      const { data } = await axios.post(`/api/pmApi/getDetailsClass`, { tmpclass_id })
-      // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
-      setTeacherValue(data.data[0].teacher_id)
-      setCourseValue(data.data[0].course_id)
-      setDateFrom(data.data[0].startdate)
-      setDateTo(data.data[0].enddate)
-      setPromotions(data.data[0].promotion)
 
-      setDetails(data.data)
 
-    } catch (error) {
-      return error
-    }
-  }
 
 console.log('course',courseValue)
 console.log('course',course_type)
+console.log('promotions' , promotions)
+console.log('studentsssssssss' , student)
 
   const columns = [
     {
@@ -443,15 +583,20 @@ console.log('course',course_type)
           <button
             className='primary-button hover:text-white'
             onClick={() => {
-              handleShowAll(params.row.tmpclass_id)
+              
+              getDetails(params.row)
+              // handlcourseType(params.row),
+              getStudent(params.row)
                 // , setEditModal(true)
+                handleShowAll(params.row.tmpclass_id)
+               
                 , setIsAddSchedule(true)
                 , setClassID(params.row.tmpclass_id)
                 , setToDate(params.row.enddate)
                 , setFromDate(params.row.startdate)
-                , getAllRooms(),
-                getDetails(params.row),
-                getStudent()
+                , getAllRooms()
+         
+             
             }}
             // disabled={params.id !== presentEnable}
             type='button'
@@ -514,8 +659,6 @@ console.log('course',course_type)
   return (
     <>
       <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      {isModal && <AttendanceModal promotion={promotion} allpromotion={allpromotion} courses={courses} allcourses={allcourses} teachers={teachers} allteachers={allteachers} setisModal={setisModal} student={student} session={session} setMessage={setMessage} />}
-      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} />}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.tmpclass_id}
@@ -561,7 +704,8 @@ console.log('course',course_type)
           handleCancelSchedule={handleCancelSchedule}
           handleSaveSchedule={handleSaveSchedule}
           theroom={theRoom}
-      
+          attendance={attendance}
+          setIsAddSchedule={setIsAddSchedule}
           teacherValue={teacherValue}
           courseValue={courseValue}
           promotions={promotions}
@@ -569,11 +713,16 @@ console.log('course',course_type)
           dateTo={dateTo}
           details={details}
           setStudent={setStudent}
-          setDetails={setDetails}
-          setCourseType={setCourseType}
-          setCourseValue={setCourseValue}
           setPromotions={setPromotions}
+          setCourseValue={setCourseValue}
+          setDetails={setDetails}
+          weekDays={weekDays}
+          student={student}
+          setCourseType={setCourseType}
+         
+          
           setTeacherValue={setTeacherValue}
+          
         />
       }
     </>

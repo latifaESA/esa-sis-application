@@ -25,9 +25,9 @@ const CourseSchedule = () => {
         });
         const formattedEvents = data.data.data.map((event) => {
           const startDateTime = new Date(`${event.day.split('T')[0]} ${event.from_time}`);
-          startDateTime.setDate(startDateTime.getDate() + 1); // Add 1 day to the start date
+          startDateTime.setDate(startDateTime.getDate() ); 
           const endDateTime = new Date(`${event.day.split('T')[0]} ${event.to_time}`);
-          endDateTime.setDate(endDateTime.getDate() + 1); // Add 1 day to the end date
+          endDateTime.setDate(endDateTime.getDate() ); 
         
           const title = [
             `C-${event.course_name}`,

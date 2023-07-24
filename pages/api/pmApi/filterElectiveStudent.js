@@ -6,17 +6,21 @@ async function handler(req , res){
     try {
         const connection = await connect();
         const {
+            major_id,
             course_id , 
             student_firstname,
             student_lastname ,
             course_name
         } = req.body;
         
-        const response = await filterElective(connection ,  
+        const response = await filterElective(
+            connection ,  
+            major_id,
             course_id , 
             student_firstname,
             student_lastname ,
             course_name);
+         
       
         await disconnect(connection); 
         if(response.rows.length === 0){

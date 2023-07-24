@@ -54,15 +54,28 @@ const handleSave = () => {
   console.log('save')
   let createClass = async () =>{
     try{
+
+      const payload = {
+        major_id: session.user.majorid,
+        teachers_fullname: teacherValue,
+        teacher_id:teacherValue,
+        course_id: courseValue, // Retrieve the value property of the selected course === courseID
+        course_name: courseValue, // Retrieve the label property of the selected course === courseName
+
+      };
+      let { response } = await axios.post('/api/pmApi/asigendTeacher', payload);
+   
     let classValue = {
       course_id : courseValue,
       teacher_id : teacherValue, 
-      promotion : promotionValueClass, 
+      promotion : promotionValueClass.replace(/\s/g, ''), 
       startdate : dateFrom, 
       enddate : dateTo,
       pm_id: session.user.userid,
       major_id: majorValue,
     }
+    console.log("payload", payload)
+
     let {data} = await axios.post('/api/pmApi/createClass',classValue)
     console.log(data)
     if(data.success){
