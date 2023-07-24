@@ -31,6 +31,7 @@ export default function ElectiveCourse() {
     const fetchData = async () => {
       try {
         const payload = {
+          major_id:session.user.majorid,
             course_id , 
             student_firstname,
             student_lastname ,
@@ -50,6 +51,7 @@ export default function ElectiveCourse() {
   const handleShowAll = async () => {
     try {
       const payload = {
+        major_id:session.user.majorid,
             course_id : "" , 
             student_firstname : "",
             student_lastname:"" ,
@@ -75,6 +77,7 @@ export default function ElectiveCourse() {
     try {
 
       const payload = {
+        major_id:session.user.majorid,
         course_id : course_id, 
         student_firstname: student_firstname,
         student_lastname : student_lastname,

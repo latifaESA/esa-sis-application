@@ -766,7 +766,7 @@ async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
   try {
     const query = `SELECT teacher_courses .* , courses.major_id FROM teacher_courses
     INNER JOIN courses ON teacher_courses.course_id = courses.course_id
-    WHERE teacher_id='${teacher_id}' AND teacher_courses.course_id ='${course_id}' AND major_id='${major_id}'`;
+    WHERE teacher_id='${teacher_id}' AND teacher_courses.course_id ='${course_id}' AND courses.major_id='${major_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -777,7 +777,9 @@ async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
 async function updatePresent(connection, present, student_id, attendance_id) {
   console.log(attendance_id);
   try {
-    const query = `UPDATE attendance SET present = ${present} WHERE student_id = '${student_id}' AND attendance_id = '${attendance_id}'`;
+    const query = `UPDATE attendance SET present = ${present} 
+    
+    WHERE student_id = '${student_id}' AND attendance_id = '${attendance_id}'`;
     const res = await connection.query(query);
 
     return res;
@@ -1291,7 +1293,9 @@ async function ExistElective(connection, course_id, student_id) {
 //   }
 // }
 async function filterElective(
+ 
   connection,
+  major_id,
   course_id,
   student_firstname,
   student_lastname,
@@ -1304,7 +1308,7 @@ async function filterElective(
     INNER JOIN  student ON assign_student.student_id = student.student_id
 	  INNER JOIN major ON student.major_id = major.major_id
     INNER JOIN courses ON  assign_student.course_id = courses.course_id
-     WHERE 1=1 
+     WHERE assign_student.major_id ='${major_id}'
     `;
 
     if (course_id != "") {
@@ -1462,9 +1466,57 @@ async function createAdmin(
   }
 }
 
+//filter AttendanceStudent 
+async function filterStudentAttendance(
+  connection ,
+  major_id ,
+  student_id ,
+  course_name,
+  teacher_firstname,
+  teacher_lastname,
+  attendance_date ,
+  present,
+) {
+  console.log( major_id ,
+    student_id ,
+    attendance_date ,
+    present)
+  try {
+    let query = `SELECT attendance .* , attendance_report.attendance_date , courses.course_name , 
+    teachers.teacher_firstname , teachers.teacher_lastname 
+    FROM attendance
+    INNER JOIN attendance_report ON attendance.attendance_id = attendance_report.attendance_id
+    INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id 
+    INNER JOIN courses ON  attendance_report.course_id = courses.course_id 
+    WHERE attendance_report.major_id = '${major_id}' AND attendance.student_id= '${student_id}' 
+    `
+    if(teacher_firstname){
+      query += ` AND lower(trim(teachers.teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%')) `;
+
+    }
+    if(teacher_lastname){
+      query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%')) `;
+    }
+    if(course_name){
+      query += ` AND lower(trim(courses.course_name)) LIKE lower(trim('%${course_name}%')) `;
+    }
+    if(attendance_date != ''){
+       query += ` AND attendance_report.attendance_date = '${attendance_date}'`
+    }
+    if(present != ''){
+      query += ` AND present = ${present}`
+    }
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
+  filterStudentAttendance,
   getStudentAssigned,
   getElectiveCourse,
   createElective,

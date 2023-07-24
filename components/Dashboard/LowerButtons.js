@@ -34,7 +34,7 @@ export const LowerButtons = ({
 
         </> : <>
         </>}
-        {session.user.role === '2' && elective && session.user.majorid === '13' || session.user.majorid === '15' ?
+        {session.user.role === '2' && elective && (session.user.majorid === '13' || session.user.majorid === '15') ?
           <>
           <form>
           <button
