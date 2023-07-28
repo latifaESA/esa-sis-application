@@ -253,10 +253,12 @@ const handleSaveCopy = () => {
     const getPromotion = async () => { 
       try{
       let table = 'promotions';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
+      let Where = 'major_id';
+      let id = session.user.majorid
+      let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where , id})
 
       const datesArray = [];
-      data.rows.forEach((prom) => {
+      data.data.forEach((prom) => {
         datesArray.push(prom.promotion_name);
       });
 
@@ -273,13 +275,15 @@ const handleSaveCopy = () => {
     const getCourse = async () => { 
       try{
       let table = 'courses';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
-
-      setAllCourse(data.rows);
-console.log('data', data.rows);
-console.log('allCourse', allCourse);
+      let Where = 'major_id';
+      let id = session.user.majorid
+      let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where , id})
+      console.log('dataaaaaaaaaaaaa', data.data);
+      console.log('allCourse', allCourse);
+      setAllCourse(data.data);
+      console.log('allCourse', allCourse);
       const datesArray = [];
-      data.rows.forEach((course) => {
+      data.data.forEach((course) => {
         datesArray.push(course.course_name);
       });
 

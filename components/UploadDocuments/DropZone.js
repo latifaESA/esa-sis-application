@@ -190,7 +190,7 @@ const DropZone = ({ data, dispatch, type }) => {
           {type === 'photo'
             ? t('studentApp:uploadonephotofileselect')
             : type === 'file'
-            ? t('You Can Upload Scanned Attendance')
+            ? t('You Can Upload Scanned')
             : type === 'passport'
             ? t('studentApp:uploadonepassportfileselect')
             : type === 'RecommendationLetter'

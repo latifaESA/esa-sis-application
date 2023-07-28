@@ -13,6 +13,7 @@ import CustomSelectBox from "./customSelectBox";
 
 
 export default function Students() {
+
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
   const router = useRouter()
@@ -104,7 +105,7 @@ export default function Students() {
       id:'',
       firstname:'',
       lastname:'',
-      major:'',
+      major:session.user.majorid,
       promotion:'',
       status: ''
     }
@@ -121,7 +122,7 @@ export default function Students() {
       id:'',
       firstname:'',
       lastname:'',
-      major:'',
+      major:session.user.majorid,
       promotion:'',
       status: ''
     }
@@ -175,7 +176,7 @@ export default function Students() {
       id:idValue,
       firstname:firstnameValue,
       lastname:lastnameValue,
-      major:majorValue,
+      major:session.user.majorid,
       promotion:promotionValue,
       status: statusValue
     }

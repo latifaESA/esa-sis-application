@@ -30,6 +30,7 @@ import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 
 const CourseList = ({ users, setUsers }) => {
+  console.log("usssssssssssser", users)
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
@@ -201,8 +202,8 @@ const CourseList = ({ users, setUsers }) => {
       width: 200,
     },
     {
-      field: 's',
-      headerName: 'type',
+      field: 'course_type',
+      headerName: 'Course Type',
       headerAlign: 'center',
       align: 'center',
       width: 150,

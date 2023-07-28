@@ -18,7 +18,7 @@ export default function Courses() {
   const [courseid, setCourseid] = useState('')
   const [courseName, setcourseName] = useState('')
   const [courseCredit, setcourseCredit] = useState('')
-
+  const [courseType, setcourseType] = useState('')
   const router = useRouter()
   
   const redirect = () => { 
@@ -32,7 +32,8 @@ export default function Courses() {
       course_id:courseid.trim(),
       course_name:courseName,
       course_credit:courseCredit,
-      major_id:majorid,
+      major_id:session.user.majorid,
+      course_type:courseType
     }
     // console.log(sendData)
     // console.log(JSON.stringify(sendData))
@@ -40,8 +41,8 @@ export default function Courses() {
     let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
 
     console.log('this is data')
-    console.log(sendData)
-    setUsers(data)
+    console.log(data)
+    setUsers(data.data)
   }
   useEffect(() => { 
     handleShowAll()
@@ -52,18 +53,20 @@ export default function Courses() {
       course_id: '',
       course_name:'',
       course_credit:'',
-      major_id:''
+      major_id:session.user.majorid,
+      course_type:''
     }
     console.log(sendData)
     console.log((sendData))
     // id,firstname,lastname,major,promotion,status
     let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
-
-    setUsers(data)
+    console.log("datttttta",data.data)
+    setUsers(data.data)
     setMajorid('')
     setCourseid('')
     setcourseName('')
     setcourseCredit('')
+    setcourseType('')
   }
 
   return (
@@ -147,16 +150,16 @@ export default function Courses() {
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
      
-          <label className='w-[350px] '>
+          <label className=''>
             Type:
-            <input
-              className="ml-[75px] max-[850px]:ml-[67px] w-40 " 
-              type="number"
-              name="course_id"
-              placeholder='Course Type'
-              // value={formData.ID}
-              onChange={(e) => {setCourseid(e.target.value)}}
-            ></input>
+            <select 
+              className="ml-5 w-40 max-[850px]:ml-3"  
+            value={courseType} onChange={(e)=>setcourseType(e.target.value)} >
+              <option value="">Select Type</option>
+              <option value="Core Course">Core Course</option>
+              <option value="Seminar">Seminar</option>
+              <option value="Elective">Elective</option>
+            </select>
           </label>
 
           <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>

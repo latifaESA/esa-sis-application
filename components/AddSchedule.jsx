@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 export default function AddSchedule(
   {handleFrom,handleTo,handleLocation,handleSelect,selectedValues,
-    handleCancelSchedule,handleSaveSchedule, theroom ,
+    handleCancelSchedule,handleSaveSchedule, theroom , isClicked,
     courseValue,
     teacherValue,
     setIsAddSchedule,
@@ -30,8 +30,7 @@ export default function AddSchedule(
   }) {
 
     const [allrooms, setAllrooms] = useState([])
-    const [data , setData] = useState([])
-    const { data: session } = useSession();
+   
     let allStages = [];
 
     const [building, setBuilding] = useState('')
@@ -193,22 +192,36 @@ export default function AddSchedule(
     try {
   
       await handleSaveSchedule();
-  
+       
       // Rest of the code to clear state or perform any other actions if needed.
       setStudent([]);
       setDetails([]);
       setCourseType('');
       setCourseValue('');
       setPromotions('');
+      
     } catch (error) {
       // Handle any errors that may occur during the API calls.
       console.error("Error occurred while saving: ", error);
     }
   };
   
-
+  console.log('clicked', isClicked)
   return (
-    <div className='fixed top-1/3 left-0 bg-white max-h-3/6 overflow-y-auto flex flex-col p-5 lg:left-2/4 md:left-1/4 component-shadow'>
+    <>
+        <div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-non'>
+          <div 
+    className='
+    fixed top-1/3 bg-white  w-1/3 max-h-screen  
+    m-4
+    left-0 
+    shadow-lg 
+    shadow-indigo-500/40
+    rounded-lg
+    md:w-1/3
+    md:h-1/2
+    overflow-y-auto 
+    flex flex-col p-5 lg:left-2/4 md:left-1/2 '>
 
 <div className='flex justify-between mb-3'>
       <span
@@ -317,15 +330,36 @@ export default function AddSchedule(
 
 
         <div className='flex justify-between'>
-            <button type='button' onClick={() => handleSaveAll()} className='p-3 bg-green-500 hover:bg-green-400 active:bg-green-300'>Save</button>
+          {isClicked ?   
+             <button    
+             className="primary-button 
+             cursor-not-allowed
+             rounded w-30 btnCol text-white hover:text-white hover:font-bold "
+             disabled
+             type="button"
+         >
+             Save
+         </button> : 
+            <button type='button' onClick={() => handleSaveAll()} className='primary-button rounded w-30 btnCol text-white hover:text-white hover:font-bold'>Save</button>
+          }
+           
             <button type='button' onClick={() => {handleCancelSchedule()  ;
               setStudent([])
               setDetails([])
               setCourseType('')
               setCourseValue('')
               setPromotions('')
-              }} className='p-3 bg-red-500 hover:bg-red-400 active:bg-red-300'>Cancel</button>
+              }} 
+              className="bg-red-500 text-white active:bg-red-600  text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1">Cancel</button>
         </div>
     </div>
+   
+
+    </div>
+     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    
+    </>
+  
+
   )
 }

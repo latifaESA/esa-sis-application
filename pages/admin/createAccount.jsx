@@ -5,6 +5,8 @@ import generatePasswod from "../../utilities/generatePassword";
 import axios from "axios";
 import bcryptjs from "bcryptjs";
 import { useRouter } from "next/router";
+import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
+
 
 function generateID(prefix) {
   const prefixLength = prefix.length;
@@ -31,10 +33,15 @@ export default function Create() {
   const [role, setRole] = useState("");
   const [major, setMajor] = useState();
   const [majorValue, setMajorValue] = useState("");
+  const [confirmOpenMessage , setConfirmOpenMessage] = useState(false)
+  const [messages , setMessages] = useState('')
+  const [confirmCancleMessage , setConfirmCancleMessage] = useState(false)
 
   const redirect = () => {
     router.push("/AccessDenied");
   };
+
+
 
   const getAllMajors = async () => {
     let majorData = await axios.get("/api/admin/adminApi/getMajor");
@@ -77,11 +84,17 @@ export default function Create() {
 
       console.log(data[0].rowCount);
       if (data[0].rowCount == 0) {
+
         setMessage("ID Already Exist");
+
       } else {
-        setMessage(
-          `user Created Successfully with a password : ${generatedPass}`
-        );
+        setConfirmOpenMessage(true)
+        setMessages (`Account Program Manager Create Successfully With 
+        Username : ${gen.trim()} 
+        and password :${generatedPass} `)
+        // setMessage(
+        //   `user Created Successfully with a password : ${generatedPass}`
+        // );
       }
     } else if (
       role == "3" &&
@@ -111,9 +124,10 @@ export default function Create() {
       if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {
-        setMessage(
-          `user Created Successfully with a password : ${generatedPass}`
-        );
+      setConfirmOpenMessage(true)
+        setMessages (` Account of Assistant Program Manager Create Successfully 
+        With Username : ${gen.trim()} 
+        and password :${generatedPass} `)
       }
     } else if (role == "0" && fname != "" && email != "") {
       const prefix = "AD";
@@ -134,9 +148,10 @@ export default function Create() {
       if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {
-        setMessage(
-          `user Created Successfully with a password : ${generatedPass}`
-        );
+        setConfirmOpenMessage(true)
+        setMessages (`Admin Account Create Successfully 
+        With Username : ${gen.trim()} 
+        and password :${generatedPass} `)
       }
     }
     if (fname == "" && email == "") {
@@ -154,9 +169,26 @@ export default function Create() {
       }
     }
   };
+  const handleOpenNotificatonMessages = ()=>{
+    setConfirmOpenMessage(true)
+  
+  }
+  const handleCloseNotificatonMessages = ()=>{
+    setConfirmOpenMessage(false)
+  }
 
   return (
     <>
+      {confirmOpenMessage && (
+        <NotificatonMessage  
+        handleOpenNotificatonMessages = {handleOpenNotificatonMessages}
+        handleCloseNotificatonMessages = {handleCloseNotificatonMessages}
+        messages={messages}
+   
+        
+        
+        />
+      )}
       <Head>
         <title>SIS Admin - Accounts</title>
       </Head>
@@ -241,8 +273,8 @@ export default function Create() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -252,8 +284,8 @@ export default function Create() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
