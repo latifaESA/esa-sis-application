@@ -529,7 +529,8 @@ async function filterStudent(
       FROM student
       LEFT JOIN major ON student.major_id = major.major_id
       LEFT JOIN user_contact ON student_id = user_contact.userid
-      WHERE 1=1`;
+      WHERE student.major_id = '${major}'`;
+      console.log(query)
 
     if (id.trim() != "") {
       query += ` AND lower(trim(student_id)) LIKE lower(trim('%${id}%'))`;
@@ -539,9 +540,6 @@ async function filterStudent(
     }
     if (lastname.trim() != "") {
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${lastname}%'))`;
-    }
-    if (major != "") {
-      query += ` AND major.major_name = ${major}`;
     }
     if (promotion.trim() != "") {
       query += ` AND promotion = '${promotion}'`;
@@ -627,14 +625,15 @@ async function filterCourses(
   course_id,
   course_name,
   course_credit,
-  major_id
+  major_id,
+  course_type
 ) {
   try {
     let query = `
-    SELECT courses.*, major.major_name
+    SELECT  courses .* , major.major_name
     FROM courses
-    LEFT JOIN major ON courses.major_id = major.major_id
-    WHERE 1=1`;
+    INNER JOIN major ON courses.major_id = major.major_id
+    WHERE major.major_id ='${major_id}'`;
 
     if (course_id != "") {
       query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
@@ -645,12 +644,11 @@ async function filterCourses(
     if (course_credit != "") {
       query += ` AND courses.course_credit = ${course_credit}`;
     }
-    if (major_id != "") {
-      query += ` AND courses.major_id = ${major_id}`;
+    if (course_type != "") {
+      query += ` AND courses.course_type = '${course_type}'`;
     }
 
-    const result = await connection.query(query);
-    console.log(result);
+     const result = await connection.query(query);
     return result;
   } catch (err) {
     return err;
@@ -685,7 +683,7 @@ async function filterAttendances(
     INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id
     INNER JOIN major ON attendance_report.major_id = major.major_id 
     INNER JOIN courses ON attendance_report.course_id = courses.course_id
-    WHERE 1=1  
+    WHERE attendance_report.major_id = '${major_id}'  
     `;
 
     if (attendance_id != "") {
@@ -715,7 +713,7 @@ async function filterAttendances(
     if (present != "") {
       query += ` AND present = '${present}'  `;
     }
-    console.log(query);
+  
     const res = await connection.query(query);
 
     return res;
@@ -1477,10 +1475,7 @@ async function filterStudentAttendance(
   attendance_date ,
   present,
 ) {
-  console.log( major_id ,
-    student_id ,
-    attendance_date ,
-    present)
+
   try {
     let query = `SELECT attendance .* , attendance_report.attendance_date , courses.course_name , 
     teachers.teacher_firstname , teachers.teacher_lastname 
@@ -1513,9 +1508,102 @@ async function filterStudentAttendance(
   }
 }
 
+//create Teacher 
+
+async function createTeacher(
+  connection ,
+  teacher_id,
+  teacher_firstname,
+  teacher_lastname,
+  teacher_mail
+){
+  try {
+    const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
+      ${teacher_id},
+      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') `
+      const res = await connection.query(query)
+      return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function getSchedulePromotion(connection , major_id , attendance_date){
+  try {
+    const query = `select tmpschedule .* , tmpclass.promotion , tmpclass.major_id
+    from tmpschedule 
+    inner join tmpclass on tmpschedule.class_id = tmpclass.tmpclass_id 
+    
+    WHERE tmpschedule.day = '${attendance_date}' AND tmpclass.major_id = '${major_id}'` 
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
+async function CreateCourse(connection , {course_id , course_name , course_credit ,course_type ,  major_id}){
+  try {
+    const query =  `INSERT INTO courses (course_id , course_name , course_credit , major_id , course_type) VALUES 
+    ('${course_id}' , '${course_name}' , ${course_credit} , '${major_id}' ,'${course_type}')`
+ 
+    const res = await connection.query(query)
+   
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function uploadStudent (
+  connection , 
+  student_id , 
+  status , 
+  promotion , 
+  academic_year , 
+  student_firstname , 
+  student_lastname,
+  major_id
+  ){
+    try {
+      const query = `INSERT INTO student (
+        student_id , 
+        status , 
+        promotion , 
+        academic_year , 
+        student_firstname , 
+        student_lastname,
+        major_id
+      ) VALUES (
+        '${student_id}',
+        '${status}',
+        '${promotion}',
+        '${academic_year}',
+        '${student_firstname}',
+        '${student_lastname}',
+        '${major_id}'
+      )`
+      const res = await connection.query(query)
+      return res
+    } catch (error) {
+      return error
+    }
+  }
+async function getMajor(connection , major_name){
+  try {
+    const query =  `SELECT * FROM major WHERE major_name='${major_name}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
+  uploadStudent,
+  getMajor,
+  CreateCourse,
+  createTeacher,
   filterStudentAttendance,
   getStudentAssigned,
   getElectiveCourse,
@@ -1528,6 +1616,7 @@ module.exports = {
   coursesTeachers,
   assignmentTeacherCourse,
   unassign,
+  getSchedulePromotion,
   getScheduleToStudents,
   AttendanceView,
   filterAttendances,

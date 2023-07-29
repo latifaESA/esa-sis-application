@@ -48,7 +48,11 @@ async function handler (req , res){
             })
         }
     } catch (error) {
-        
+        return res.status(500).json({
+            success:false,
+            code:500,
+            message: error.message
+        })
     }
 }
 module.exports = handler

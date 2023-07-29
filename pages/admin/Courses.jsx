@@ -21,7 +21,7 @@ export default function Courses() {
       {session?.user.role === "0" ? (
         <>
           <h2 className="text-gray-700 text-3xl pt-5  font-bold">Courses</h2>
-          <div className="flex gap-10 ml-[30%] max-[850px]:flex-col max-[850px]:mt-32 max-[850px]:ml-0  h-[30vh] place-items-center">
+          <div className="flex gap-10 ml-[10%] max-[850px]:flex-col max-[850px]:mt-32 max-[850px]:ml-0  h-[30vh] place-items-center">
             <Link href="/admin/createCourse">
               <div className="  ">
                 <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
@@ -33,6 +33,13 @@ export default function Courses() {
               <div className=" ">
                 <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
                   Edit Course Assignment
+                </button>
+              </div>
+            </Link>
+            <Link href="/admin/UploadCourses">
+              <div className="  ">
+                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                  Upload Courses
                 </button>
               </div>
             </Link>

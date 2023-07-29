@@ -63,6 +63,7 @@ const ClassList = ({ users, setUsers }) => {
   const [student , setStudent] = useState([])
   const [course_type , setCourseType] = useState('')
   const [weekDays , setWeekDays] = useState([])
+  const [isClicked , setIsClicked] = useState(false)
   
 
 
@@ -331,6 +332,7 @@ const getStudent = async(event) =>{
   const handleSaveSchedule = async () => {
     // e.preventDefault();
     console.log('save')
+
     // Usage example:
 
     const getWeekDays = async (startDate, endDate, weekdays) => {
@@ -359,9 +361,11 @@ const getStudent = async(event) =>{
     if (selectedValues.length == 0 || fromTime.length == 0 || toTime.length == 0 || location.length == 0) {
       console.log(selectedValues.length == 0, fromTime.length == 0, toTime.length == 0, location.length == 0)
       alert('Please fill all the data');
+      setIsClicked(false)
     } else {
       console.log('weekDays inside: ', weekDays)
       console.log('weekDays inside: ', selectedValues)
+      setIsClicked(true)
       let createTheSchedule = async () => {
         const formattedDates = weekDays.map((date) => new Date(date).toISOString());
         console.log("date",formattedDates)
@@ -414,6 +418,8 @@ const getStudent = async(event) =>{
 
           
           let { data } = await axios.post('/api/pmApi/createSchedule', scheduleData)
+   
+          
           if (data.success) {
             
             setIsAddSchedule(false)
@@ -704,6 +710,7 @@ console.log('studentsssssssss' , student)
           handleCancelSchedule={handleCancelSchedule}
           handleSaveSchedule={handleSaveSchedule}
           theroom={theRoom}
+          isClicked={isClicked}
           attendance={attendance}
           setIsAddSchedule={setIsAddSchedule}
           teacherValue={teacherValue}

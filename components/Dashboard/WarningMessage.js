@@ -208,6 +208,32 @@ function NotificatonMessages({
     </Modal>
   );
 }
+function NotificatonMessage({
+  handleOpenNotificatonMessages,
+  handleCloseNotificatonMessages,
+  messages
+}) {
+  return (
+    <Modal
+      open={handleOpenNotificatonMessages}
+      onClose={handleCloseNotificatonMessages}
+      className='top-0 left-0 w-full h-full flex items-center justify-center'
+    >
+      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
+        <h1 className='text-red-500 font-bold mb-5'></h1>
+        <h3 className='text-gray-600 mb-4'>{messages}</h3>
+        <div className='flex justify-end'>
+          <button
+            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            onClick={handleCloseNotificatonMessages}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 function WarningMessageDelete({
   confirmOpenDelete,
@@ -325,6 +351,7 @@ export {
   WarningMessageObsolote,
   WarningMessageCancleIncomplete,
   ErrorMessage,
+  NotificatonMessage,
   WarningMessageDelete,
   WarningMessageNotVerified,
   WarningMessageVerified,
