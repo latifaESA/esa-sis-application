@@ -67,10 +67,12 @@ async function handler(req, res) {
               }
             });
 
+            const currentTimestamp = Date.now();
+            const filename = `${currentTimestamp}_${path1.originalFilename}`;
 
             return (
               // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
-              path1.originalFilename
+              filename
 
             );
 
@@ -119,8 +121,20 @@ async function handler(req, res) {
     let course_files = await fs.readdirSync(directory);
 
 
+    const sortedFiles = course_files.slice().sort((fileA, fileB) => {
+      const getIntFromFilename = (filename) => {
+        const match = filename.match(/(\d+)/);
+        return match ? parseInt(match[0]) : 0;
+      };
+
+      const intA = getIntFromFilename(fileA);
+      const intB = getIntFromFilename(fileB);
+
+      return intA - intB;
+    });
+
     // Get the latest file from the 'course_files' list
-    const latestFile = course_files[course_files.length - 1];
+    const latestFile = sortedFiles[sortedFiles.length - 1];
 
     // Construct the full path of the latest file
     const latestFilePath = path.join(directory, latestFile);
@@ -157,7 +171,6 @@ async function handler(req, res) {
           course_type: row.CourseType,
           major_id: majorid,
         });
-    
         if (response) {
           countSaved++; // Increment the count of saved records
         } else {
@@ -174,7 +187,7 @@ async function handler(req, res) {
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `Course Uploaded Successfully! ${countSaved} records saved.`,
+      message: `Course Uploaded Successfully! ${countSaved} Courses saved.`,
     });
 
 
