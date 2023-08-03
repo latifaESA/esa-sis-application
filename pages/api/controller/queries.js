@@ -1514,13 +1514,16 @@ async function createTeacher(
   connection,
   teacher_id,
   teacher_firstname,
+  teacher_mail,
   teacher_lastname,
-  teacher_mail
-) {
+
+) { 
+  console.log('mail', teacher_mail)
   try {
     const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
       ${teacher_id},
       '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') `
+      console.log("query" , query)
     const res = await connection.query(query)
     return res
   } catch (error) {
