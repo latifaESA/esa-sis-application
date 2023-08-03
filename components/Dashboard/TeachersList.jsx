@@ -314,13 +314,13 @@ const TeachersList = ({ users, setUsers }) => {
     //   type: 'date',
     //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
     // },
-    {
-      field: 'course_id',
-      headerName: 'Course ID',
-      headerAlign: 'center',
-      align: 'center',
-      width: 100,
-    },
+    // {
+    //   field: 'course_id',
+    //   headerName: 'Course ID',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 100,
+    // },
     // {
     //   field: 'reportURL',
     //   headerName: 'Report',

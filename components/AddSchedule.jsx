@@ -330,8 +330,9 @@ export default function AddSchedule(
 
 
         <div className='flex justify-between'>
-          {isClicked ?   
-             <button    
+          {isClicked ?
+           <>
+           <button    
              className="primary-button 
              cursor-not-allowed
              rounded w-30 btnCol text-white hover:text-white hover:font-bold "
@@ -339,18 +340,47 @@ export default function AddSchedule(
              type="button"
          >
              Save
-         </button> : 
-            <button type='button' onClick={() => handleSaveAll()} className='primary-button rounded w-30 btnCol text-white hover:text-white hover:font-bold'>Save</button>
+         </button>
+            <button
+            disabled
+            type='button'
+             onClick={() => {handleCancelSchedule()  ;
+             setStudent([])
+             setDetails([])
+             setCourseType('')
+             setCourseValue('')
+             setPromotions('')
+             }} 
+             className="bg-red-400 text-white active:bg-red-400  cursor-not-allowed text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1">
+             Cancel</button>
+           
+           </>   
+             
+         
+         : 
+         <>
+           <button type='button' 
+           onClick={() => handleSaveAll()} 
+           className='primary-button rounded w-30 btnCol text-white hover:text-white hover:font-bold'>
+            Save
+            </button>
+            <button
+            type='button'
+             onClick={() => {
+              handleCancelSchedule()  ;
+             setStudent([])
+             setDetails([])
+             setCourseType('')
+             setCourseValue('')
+             setPromotions('')
+             }} 
+             className="bg-red-500 text-white active:bg-red-600  cursor-pointer text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1">
+             Cancel</button>
+
+         </>
           }
            
-            <button type='button' onClick={() => {handleCancelSchedule()  ;
-              setStudent([])
-              setDetails([])
-              setCourseType('')
-              setCourseValue('')
-              setPromotions('')
-              }} 
-              className="bg-red-500 text-white active:bg-red-600  text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1">Cancel</button>
+         
         </div>
     </div>
    

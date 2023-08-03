@@ -4,7 +4,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
-
+import * as XLSX from 'xlsx';
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -51,14 +51,66 @@ export default function UploadCourses() {
     const handleCloseNotificatonMessages = () => {
         setConfirmOpenMessage(false)
     }
+    const validateColumnHeaders = (columnA) => {
+        const templateFields = [
+            'CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'
+        ]; // Replace with your actual template fields
+        
+        // Check if all template fields exist in columnA
+        const missingFields = templateFields.filter(field => !columnA.includes(field));
+           
+        if (missingFields.length === 0) {
+            // All template fields are present
+            return true;
+        } else {
+            // Some template fields are missing
+            return false;
+        }
+    };
     useEffect(() => {
         if (uploadPhotoData.fileList.length !== 0) {
             setupdateProfileButtonDisable(true);
             const handleUpload = async () => {
                 try {
+                 
                     const formData = new FormData();
                     formData.append('files', uploadPhotoData.fileList[0]);
-    
+
+                    // Assuming you have a reference to the uploaded file in uploadPhotoData.fileList[0]
+                    const file = uploadPhotoData.fileList[0];
+
+                    // Assuming you have retrieved the file from the FormData object
+                    const reader = new FileReader();
+
+                    reader.onload = async function (event) {
+                        const data = new Uint8Array(event.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+
+                        // Assuming you are interested in the first sheet of the workbook
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
+
+                        // Parse columns or specific cells here
+                        // For example, let's say you want to extract data from column A
+                        const columnHeaders = [];
+
+                        for (const cell in worksheet) {
+                            if (worksheet.hasOwnProperty(cell)) {
+                                const cellRef = XLSX.utils.decode_cell(cell);
+                                if (cellRef.r === 0) { // Assuming the header row is the first row (index 0)
+                                    columnHeaders[cellRef.c] = worksheet[cell].v;
+                                }
+                            }
+                        }
+        
+                        
+                        const isValidHeaders = validateColumnHeaders(columnHeaders);
+                       
+                
+
+                if (isValidHeaders) {
+                    // Data is valid, proceed with uploading and other actions
+                    
                     const { data } = await axios.post(
                         '/api/admin/adminApi/uploadFileCourse',
                         formData
@@ -68,10 +120,15 @@ export default function UploadCourses() {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
                     }
-    
-                    setDocUrl(data.url);
-                    // setShowProfileModal(true)
-                    setupdateProfileButtonDisable(false);
+                } else {
+                    // Data is not valid, show a warning or take appropriate action
+                    setConfirmOpenMessage(true);
+                    setMessages(`file isn't template! please upload Template`);
+                }
+                       
+                    };
+
+                    reader.readAsArrayBuffer(file);
                 } catch (error) {
                     console.log(error.response?.data);
                 }
