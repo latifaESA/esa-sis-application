@@ -1,67 +1,67 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import generatePasswod from "../../utilities/generatePassword";
+import { useState } from "react";
+// import generatePasswod from "../../utilities/generatePassword";
 import axios from "axios";
-import bcryptjs from "bcryptjs";
+// import bcryptjs from "bcryptjs";
 import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 
 function generateID(prefix) {
   const prefixLength = prefix.length;
-  const randomDigits = Math.floor(Math.random() * 10000)
-    .toString()
-   
-  return  randomDigits;
-}
+  const randomDigits = Math.floor(Math.random() * 10000).toString();
 
+  return randomDigits;
+}
 
 export default function CreateTeacher() {
   const { data: session } = useSession();
   // const [users, setUsers] = useState([]);
   // const [assistance, setAssistance] = useState([]);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
 
   const router = useRouter();
 
-  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false)
-  const [messages, setMessages] = useState('')
-  const [confirmCancleMessage, setConfirmCancleMessage] = useState(false)
-  const [teacher_firstname , setTeacherFirstname] = useState('')
-  const [teacher_lastname , setTeacherLastname]= useState('')
-  const [teacher_mail , setTeacherMail] = useState('')
+  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
+  const [messages, setMessages] = useState("");
+  // const [confirmCancleMessage, setConfirmCancleMessage] = useState(false);
+  const [teacher_firstname, setTeacherFirstname] = useState("");
+  const [teacher_lastname, setTeacherLastname] = useState("");
+  const [teacher_mail, setTeacherMail] = useState("");
 
   const redirect = () => {
     router.push("/AccessDenied");
   };
 
-const handleAdd = async()=>{
-  let prefix = 5
-  let teacherId = generateID(prefix)
-  const payload = {
-    teacher_id : teacherId,
-    teacher_firstname: teacher_firstname,
-    teacher_lastname: teacher_lastname,
-    teacher_mail:teacher_mail
-  }
-  console.log(payload)
-  try {
-    const data = await axios.post('/api/admin/adminApi/createTeacher' , payload)
-    console.log(data.data.message)
-     setConfirmOpenMessage(true)
-     setMessages(data.data.message)
-  } catch (error) {
-    return error
-  }
-}
+  const handleAdd = async () => {
+    let prefix = 5;
+    let teacherId = generateID(prefix);
+    const payload = {
+      teacher_id: teacherId,
+      teacher_firstname: teacher_firstname,
+      teacher_lastname: teacher_lastname,
+      teacher_mail: teacher_mail,
+    };
+    console.log(payload);
+    try {
+      const data = await axios.post(
+        "/api/admin/adminApi/createTeacher",
+        payload
+      );
+      console.log(data.data.message);
+      setConfirmOpenMessage(true);
+      setMessages(data.data.message);
+    } catch (error) {
+      return error;
+    }
+  };
 
   const handleOpenNotificatonMessages = () => {
-    setConfirmOpenMessage(true)
-
-  }
+    setConfirmOpenMessage(true);
+  };
   const handleCloseNotificatonMessages = () => {
-    setConfirmOpenMessage(false)
-  }
+    setConfirmOpenMessage(false);
+  };
 
   return (
     <>
@@ -70,9 +70,6 @@ const handleAdd = async()=>{
           handleOpenNotificatonMessages={handleOpenNotificatonMessages}
           handleCloseNotificatonMessages={handleCloseNotificatonMessages}
           messages={messages}
-
-
-
         />
       )}
       <Head>
@@ -94,9 +91,8 @@ const handleAdd = async()=>{
                   name="ID"
                   required
                   placeholder="First Name"
-                 value={teacher_firstname}
-                 onChange={(e)=>setTeacherFirstname(e.target.value)}
-
+                  value={teacher_firstname}
+                  onChange={(e) => setTeacherFirstname(e.target.value)}
                 ></input>
               </label>
 
@@ -108,19 +104,19 @@ const handleAdd = async()=>{
                   name="Fname"
                   required
                   placeholder="Last Name"
-                  onChange={(e)=>{setTeacherLastname(e.target.value)}}
-
+                  onChange={(e) => {
+                    setTeacherLastname(e.target.value);
+                  }}
                 ></input>
               </label>
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden"> 
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 Email:
                 <input
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="email"
                   name="email"
                   placeholder="Email"
-
                 ></input>
               </label>
               {/* </div>
@@ -132,7 +128,6 @@ const handleAdd = async()=>{
                   type="email"
                   name="email"
                   placeholder="Email"
-
                 ></input>
               </label>
 
@@ -142,8 +137,8 @@ const handleAdd = async()=>{
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                // value={formData.from}
-                // onChange={handleChange}
+                  // value={formData.from}
+                  // onChange={handleChange}
                 ></input>
               </label>
 
@@ -153,8 +148,8 @@ const handleAdd = async()=>{
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                // value={formData.to}
-                // onChange={handleChange}
+                  // value={formData.to}
+                  // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -167,18 +162,15 @@ const handleAdd = async()=>{
                   name="email"
                   placeholder="Email"
                   value={teacher_mail}
-                  onChange={(e)=>setTeacherMail(e.target.value)}
-
+                  onChange={(e) => setTeacherMail(e.target.value)}
                 ></input>
               </label>
 
-          
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleAdd}
-
                 >
                   Add
                 </button>

@@ -1,12 +1,10 @@
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+import formidable from "formidable";
+import fs from "fs";
+import path from "path";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
-
-import { env } from 'process';
-
+import { env } from "process";
 
 export const config = {
   api: {
@@ -15,17 +13,16 @@ export const config = {
 };
 
 async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To Save Data' });
+    return res.status(401).send({ message: "Signin Required To Save Data" });
   }
 
   // const { user } = session;
-
 
   // const { formData, attendance } = req.body;
 
@@ -39,11 +36,11 @@ async function handler(req, res) {
         // console.log("user",form)
 
         if (
-          path1.mimetype === 'application/pdf' ||
-          path1.mimetype === 'application/x-pdf' ||
-          path1.mimetype === 'image/png' ||
-          path1.mimetype === 'image/jpeg' ||
-          path1.mimetype === 'image/jpg'
+          path1.mimetype === "application/pdf" ||
+          path1.mimetype === "application/x-pdf" ||
+          path1.mimetype === "image/png" ||
+          path1.mimetype === "image/jpeg" ||
+          path1.mimetype === "image/jpg"
         ) {
           let sourceDir = fs.readdirSync(place);
 
@@ -56,17 +53,14 @@ async function handler(req, res) {
             }
           });
 
-
           return (
             // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
             path1.originalFilename
-            
           );
-
         } else {
           return res
             .status(200)
-            .send({ status: 401, message: 'file was not accepted' });
+            .send({ status: 401, message: "file was not accepted" });
         }
       };
     }
@@ -82,23 +76,27 @@ async function handler(req, res) {
     });
   };
 
-  const localDiskPath = path.parse(require('os').homedir()).root;
+  const localDiskPath = path.parse(require("os").homedir()).root;
 
   const directory =
-    localDiskPath + '/sis-application-data/sis-documents/attendance';
+    localDiskPath + "/sis-application-data/sis-documents/attendance";
 
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
   }
-//<<<<<<< batoul
+  //<<<<<<< batoul
 
-const {fields , files}= await readFile(req, true, directory);
- console.log('fields',fields)
+  const { fields } = await readFile(req, true, directory);
+  console.log("fields", fields);
 
- let attendance_file = await fs.readdirSync(directory);
+  //  let attendance_file = await fs.readdirSync(directory);
 
- return res.status(200).send({ url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}` });
-//=======
+  return res
+    .status(200)
+    .send({
+      url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
+    });
+  //=======
   // eslint-disable-next-line no-unused-vars
   // const { fields, files } = await readFile(req, true, directory);
   // console.log('fields', fields);
@@ -115,7 +113,6 @@ const {fields , files}= await readFile(req, true, directory);
   // if (fs.existsSync(oldFilePath)) {
   //   fs.unlinkSync(oldFilePath);
   // }
-
 
   // Return a response
   // return res.status(200).send({
