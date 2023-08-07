@@ -1,19 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSession } from 'next-auth/react';
 
 import { BsX } from 'react-icons/bs';
 import Select from 'react-select';
 import MessageModal from './MessageModal';
 
-export default function ElectiveModal({ users, setElective, courses, students , setUsers }) {
+export default function ElectiveModal({ setElective, courses, students , setUsers }) {
     const [studentList, setStudent] = useState(false)
     const { data: session } = useSession();
     const [courseValue, setCoursesValue] = useState([])
-    const [selectedCourse, setSelected] = useState([])
+    // const [selectedCourse, setSelected] = useState([])
     const [course, setCourse] = useState([])
     const [selectStudentId, setSelectedStudentIds] = useState([]);
-    const [message , setMassage] = useState('')
+    // const [message , setMassage] = useState('')
     const [showModal, setShowModal] = useState(false)
     const [data, setData] = useState([])
     const [formErrors, setFormErrors] = useState({});
@@ -26,7 +26,7 @@ export default function ElectiveModal({ users, setElective, courses, students , 
         const selectedName = selectedOptions.map((option) => option.label);
         setCourse(selectedName)
         setCoursesValue(selectedCourseIds);
-        setSelected(true)
+        // setSelected(true)
         setStudent(true)
     };
 
@@ -55,7 +55,7 @@ export default function ElectiveModal({ users, setElective, courses, students , 
               setFormErrors(errors);
               return;
             }
-          const newAssignments = [];
+          
           for (let i = 0; i < selectStudentId.length; i++) {
             const payload = {
               course_id: courseValue,
@@ -80,7 +80,7 @@ export default function ElectiveModal({ users, setElective, courses, students , 
               
       
                setData(data);
-            setMassage(data.message)
+            // setMassage(data.message)
             setShowModal(true)
               setUsers((prevUsers) => [...prevUsers, newRows]);
             
@@ -156,7 +156,7 @@ export default function ElectiveModal({ users, setElective, courses, students , 
                                             className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                                             
                                             type="button"
-                                            onClick={(e) => handleSave()}
+                                            onClick={() => handleSave()}
                                         >
                                             Save
                                         </button>:                                       
@@ -164,7 +164,7 @@ export default function ElectiveModal({ users, setElective, courses, students , 
                                             className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                                             disabled
                                             type="button"
-                                            onClick={(e) => handleSave()}
+                                            onClick={() => handleSave()}
                                         >
                                             Save
                                         </button>}

@@ -12,7 +12,7 @@ import axios from 'axios';
 import DropZone from '../../components/UploadDocuments/DropZone';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
 // import selection_data from '../../utilities/selection_data';
-export default function UploadCourses() {
+export default function UploadTeacher() {
     // const [showProfileModal, setShowProfileModal] = useState(false);
     // const [message, setMessage] = useState('');
     // const [docUrl, setDocUrl] = useState(false);
@@ -31,13 +31,13 @@ export default function UploadCourses() {
         router.push("/AccessDenied");
     };
 
- 
+  
     const [uploadPhotoData, uploadPhotoDispatch] = useReducer(uploadDocReducer, {
         inDropZone: false,
         fileList: [],
         totalSize: 0,
     });
-  
+ 
 
     const handleOpenNotificatonMessages = () => {
         setConfirmOpenMessage(true)
@@ -46,32 +46,11 @@ export default function UploadCourses() {
     const handleCloseNotificatonMessages = () => {
         setConfirmOpenMessage(false)
     }
-    function generateRandomPassword(length = 8) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let password = '';
-
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            password += characters.charAt(randomIndex);
-        }
-
-        return password;
-    }
     const validateColumnHeaders = (columnA) => {
         const templateFields = [
-            'StudentID', 'Title','StudentFirstName', 'StudentLastName', 'Gender','DateOfBirth',
-
-            'AcademicYear','Promotion','MajorName' , 'Email' , 'SecondEmail','MobileNumber','LandLineNumber',
-    
-            'FatherName','MotherName','maidename','CountryOfBirth','PlaceOfBirth','RegisterNumber','MartialStatus',
-    
-            'FirstNationality','SecondNationality','Country','Region','City','Street','Building','Floor','Postal',
-    
-            'Degree','Series','DateObtain','EducationCountry','Establishment','otherEstablishment',
-    
-            'EmergencePrefix','EmergenceFirstName','EmergenceMiddleName','EmergenceLastName','EmergencePhoneNumber',
-    
-            'EmergenceRelationShip','EmergenceMedicalHealth','EmergenceDisease'
+            'FirstName' , 
+            'LastName' , 
+            'Email'
         ]; // Replace with your actual template fields
         
         // Check if all template fields exist in columnA
@@ -85,10 +64,16 @@ export default function UploadCourses() {
             return false;
         }
     };
-
+    function generateID(prefix) {
+        prefix.length;
+        const randomDigits = Math.floor(Math.random() * 10000)
+          .toString()
+         
+        return  randomDigits;
+      }
     useEffect(() => {
         if (uploadPhotoData.fileList.length !== 0) {
-            // setupdateProfileButtonDisable(true);
+           
             const handleUpload = async () => {
                 try {
 
@@ -128,8 +113,8 @@ export default function UploadCourses() {
                 if (isValidHeaders) {
                     // Data is valid, proceed with uploading and other actions
                     
-                    await axios.post(
-                        '/api/admin/adminApi/uploadScanStudent',
+                     await axios.post(
+                        '/api/admin/adminApi/uploadTeacher',
                         formData,
 
                     );
@@ -150,84 +135,86 @@ export default function UploadCourses() {
         }
     }, [uploadPhotoData.fileList])
 
-    const handleScan = async () => {
-        try {
-            if (uploadPhotoData.fileList.length !== 0) {
-                setIsClick(true)
-                const passwordRe = generateRandomPassword(8)
-                const formData = new FormData();
-                formData.append('files', uploadPhotoData.fileList[0]);
+   const handleScan = async () => {
+    try {
+        if (uploadPhotoData.fileList.length !== 0) {
+            setIsClick(true);
+            // const teacher_id = generateID(5);
 
-                // Assuming you have a reference to the uploaded file in uploadPhotoData.fileList[0]
-                const file = uploadPhotoData.fileList[0];
+            const formData = new FormData();
+            formData.append('files', uploadPhotoData.fileList[0]);
 
-                // Assuming you have retrieved the file from the FormData object
-                const reader = new FileReader();
+            const file = uploadPhotoData.fileList[0];
+            const reader = new FileReader();
 
-                reader.onload = async function (event) {
-                    const data = new Uint8Array(event.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+            reader.onload = async function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
 
-                    // Assuming you are interested in the first sheet of the workbook
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
 
-                    // Parse columns or specific cells here
-                    // For example, let's say you want to extract data from column A
-                    const columnHeaders = [];
+                const columnHeaders = [];
 
-                    Object.keys(worksheet).forEach(cell => {
-                        const cellRef = XLSX.utils.decode_cell(cell);
-                        if (cellRef.r === 0) {
-                            columnHeaders[cellRef.c] = worksheet[cell].v;
-                        }
-                    });
-    
-                   
-                    const isValidHeaders = validateColumnHeaders(columnHeaders);
-      
-            
-
-            if (isValidHeaders) {
-                // Data is valid, proceed with uploading and other actions
-                
-                const data = await axios.post(
-                    '/api/admin/adminApi/uploadScanStudent',
-                    {
-                        passwordRe,
-                        formData
+                Object.keys(worksheet).forEach(cell => {
+                    const cellRef = XLSX.utils.decode_cell(cell);
+                    if (cellRef.r === 0) {
+                        columnHeaders[cellRef.c] = worksheet[cell].v;
                     }
+                });
 
-                );
-                
-                if (data.data.success === true) {
-                    setIsClick(false)
-                    setConfirmOpenMessage(true);
-                    setMessages(data.data.message);
+                const isValidHeaders = validateColumnHeaders(columnHeaders);
+                const records = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                const teacherDataArray = [];
+                for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
+                    const record = records[rowIndex];
+                    const teacher_id = generateID(5);
+
+                    const teacherData = {
+                        teacher_id,
+                        firstName: record[0], // Assuming FirstName is in the first column
+                        lastName: record[1],  // Assuming LastName is in the second column
+                        email: record[2],     // Assuming Email is in the third column
+                        // ... (other data)
+                    };
+
+                    teacherDataArray.push(teacherData);
                 }
-            } else {
-                // Data is not valid, show a warning or take appropriate action
-                setIsClick(false)
-                setConfirmOpenMessage(true);
-                setMessages(`Error File! please upload Template`);
-            }
+
+                if (isValidHeaders) {
                    
-                };
+                    // Proceed with uploading and other actions
+                    const response = await axios.post(
+                        '/api/admin/adminApi/uploadTeacher',
+                        teacherDataArray
+                    );
 
-                reader.readAsArrayBuffer(file);
+                   
 
-                
-                // console.log('URL', data);
-                // if (data.data.success === true) {
-                //     setConfirmOpenMessage(true);
-                //     setMessages(data.data.message);
-                // }
+                    if (response.data.success === true) {
+                        setConfirmOpenMessage(true);
+                        setIsClick(false);
+                        setMessages(response.data.message);
+                    } else {
+                        setConfirmOpenMessage(true);
+                        setIsClick(false);
+                        setMessages(response.data.message);
+                    }
+                } else {
+                    setIsClick(false);
+                    setConfirmOpenMessage(true);
+                    setMessages('Error File! Please upload Template');
+                }
             }
+        
+        
 
-        } catch (error) {
-            return error
+            reader.readAsArrayBuffer(file);
         }
+    } catch (error) {
+        console.error(error);
     }
+};
 
     return (
         <>
@@ -244,7 +231,7 @@ export default function UploadCourses() {
             {session?.user.role === '0' ? (
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-                        Upload Student
+                        Upload Teachers
                     </p>
                     <form>
 
@@ -303,5 +290,5 @@ export default function UploadCourses() {
 
     )
 }
-UploadCourses.auth = true;
-UploadCourses.adminOnly = true;
+UploadTeacher.auth = true;
+UploadTeacher.adminOnly = true;

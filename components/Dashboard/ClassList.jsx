@@ -38,7 +38,7 @@ const ClassList = ({ users }) => {
   // const statusData = selection_data.application_status_inList;
   // const presence = selection_data.presence;
   // const [presentEnable, setPesentEnable] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   // const [isModal, setisModal] = useState(false)
   // const [editModal, setEditModal] = useState(false)
@@ -58,7 +58,7 @@ const ClassList = ({ users }) => {
   const [dateTo, setDateTo] = useState("");
   const [promotions, setPromotions] = useState("");
   const [details, setDetails] = useState([]);
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [student, setStudent] = useState([]);
   const [course_type, setCourseType] = useState("");
   const [weekDays, setWeekDays] = useState([]);
@@ -334,8 +334,8 @@ const ClassList = ({ users }) => {
     };
     const startDate = new Date(fromDate);
     const endDate = new Date(toDate);
-    const startDate1 = new Date("2023-06-21");
-    const endDate1 = new Date("2023-09-25");
+    // const startDate1 = new Date("2023-06-21");
+    // const endDate1 = new Date("2023-09-25");
 
     const weekDays = await getWeekDays(startDate, endDate, selectedValues);
 
@@ -403,7 +403,7 @@ const ClassList = ({ users }) => {
             if (attendance_id) {
               for (let j = 0; j < student.length; j++) {
                 const student_id = student[j].student_id;
-                const data2 = await axios.post(
+                await axios.post(
                   "/api/pmApi/createAttendanceStudent",
                   { attendance_id, student_id }
                 );
@@ -652,7 +652,7 @@ const ClassList = ({ users }) => {
           rowsPerPageOptions={[5, 10, 15, 20]}
           // pagination
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
@@ -685,6 +685,7 @@ const ClassList = ({ users }) => {
           handleCancelSchedule={handleCancelSchedule}
           handleSaveSchedule={handleSaveSchedule}
           theroom={theRoom}
+          setAttendance={setAttendance}
           isClicked={isClicked}
           attendance={attendance}
           setIsAddSchedule={setIsAddSchedule}

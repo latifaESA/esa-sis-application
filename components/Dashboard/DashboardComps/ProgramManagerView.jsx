@@ -17,11 +17,11 @@ import {
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+
 
 const ProgramManagerView = () => {
   const router = useRouter();
-  const { data: session } = useSession();
+
 
   return (
     <>
@@ -180,11 +180,11 @@ const ProgramManagerView = () => {
         </Link>
 
         {/* course Management system */}
-        <Link href="/programManager/teacherCourse">
+        <Link href="/programManager/ViewAssign">
           {/* <Link href='/admin/payments'> */}
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/teacherCourse' 
+              router.pathname == '/programManager/ViewAssign' 
               // router.pathname == '/programManager/Create/createAttendance'
                 ? // router.pathname == '/admin/Payments'
                   'bg-blue-100 text-blue-500'
@@ -200,29 +200,7 @@ const ProgramManagerView = () => {
           </div>
         </Link>
            {/* course Management system */}
-           {session.user.majorid === '13' || session.user.majorid === '15' ? 
-           <>
-                        <Link href="/programManager/ElectiveCourse">
-          {/* <Link href='/admin/payments'> */}
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/ElectiveCourse' 
-              // router.pathname == '/programManager/Create/createAttendance'
-                ? // router.pathname == '/admin/Payments'
-                  'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <UserGroupIcon className="h-5 w-5" />
-            </div>
-             Assign Course
-            <div>
-              <p></p>
-            </div>
-          </div>
-        </Link>
-           </>:<></>}
+  
 
 
         {/* Edit Profile */}

@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
 //attendance
-export default function attendance() {
+export default function Attendance() {
 
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
@@ -18,18 +18,10 @@ export default function attendance() {
     router.push('/AccessDenied')
   }
 
-  const [attendance_id, setAttendanceId] = useState('')
-  const [student_id, setStudentid] = useState('')
-  const [teacher_id, setTeacherid] = useState('')
-  const [major_id, setMajorid] = useState('');
-  const [major, setMajor] = useState([]);
-  const [allMajor, setAllMajor] = useState([])
-  const [course_id, setCourseid] = useState('')
+
   const [present, setPresent] = useState('')
-  const [major_name, setMajorName] = useState('')
-  const [allmajor, setallMajor] = useState([])
-  const [majorValue, setMajorValue] = useState([])
-  const [test, setTest] = useState()
+ 
+ 
   const [attendance_date , setattendanceDate] = useState('')
   const [teacher_lastname, setTeacherLastName] = useState('')
   const [teacher_firstname, setTeacherFirstName] = useState('')
@@ -87,7 +79,7 @@ export default function attendance() {
       setPresent('')
       setCourseName('')
    
-      setTest(true)
+      // setTest(true)
     } catch (error) {
       return error
     }
@@ -105,7 +97,7 @@ export default function attendance() {
         teacher_firstname: teacher_firstname,
         teacher_lastname: teacher_lastname,
         course_name:course_name,
-        attendance_date: attendance_date ,
+        attendance_date: new Date(attendance_date) ,
         present : present,
 
 
@@ -147,7 +139,7 @@ export default function attendance() {
               name="Fname"
               placeholder="Teacher's First Name"
               // value={formData.Fname}
-              onChange={(e) => { 
+              onChange={() => { 
                 // setFname(e.target.value)
               }}
             ></input>
@@ -254,5 +246,5 @@ export default function attendance() {
     </>
   );
 }
-attendance.auth = true;
-attendance.adminOnly = true;
+Attendance.auth = true;
+Attendance.adminOnly = true;

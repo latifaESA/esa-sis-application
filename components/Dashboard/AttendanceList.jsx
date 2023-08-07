@@ -33,13 +33,13 @@ import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
 import ModalperID from '../../pages/programManager/ModalForm/ModalperID';
 import Archive from '../../pages/programManager/ModalForm/Archive';
 
-const AttendanceList = ({ users, setUsers }) => {
+const AttendanceList = ({ users }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
   // const presence = selection_data.presence;
   // const [presentEnable, setPesentEnable] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   const [editModal, setEditModal] = useState(false)
 
@@ -406,7 +406,7 @@ const AttendanceList = ({ users, setUsers }) => {
           rowsPerPageOptions={[5, 10, 15, 20]}
           // pagination
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}

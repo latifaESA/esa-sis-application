@@ -15,7 +15,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [allcourses, setAllCourses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [allteachers, setAllTeachers] = useState([]);
-  const [teachers, setTeachers] = useState([]);
+  // const [teachers, setTeachers] = useState([]);
   const [message, setMessage] = useState('');
   const [teachersName, setTeachersName] = useState('')
   const [teachersNameC, setTeachersNameC] = useState('')
@@ -25,7 +25,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [newAssign, setNewAssign] = useState(false)
   const [multiAssign, setMultiAssign] = useState(false)
   const [teacherCourses, setTeacherCourses] = useState([])
-  const [teacherCourse, setTeacherCourse] = useState([])
+  // const [teacherCourse, setTeacherCourse] = useState([])
   const [teacherFrom, setTeacherFrom] = useState('')
   const [teacherFromValue, setTeacherFromValue] = useState('')
   const [isSelected, setSelected] = useState(false)
@@ -63,8 +63,8 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         setAllTeachers(data.data);
         setMessage(data.data.message);
 
-        const datesArray = data.data.map((teacher) => teacher.teacher_fullname);
-        setTeachers(datesArray);
+       data.data.map((teacher) => teacher.teacher_fullname);
+        // setTeachers(datesArray);
       } catch (error) {
         return error;
       }
@@ -84,9 +84,8 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
           setTeacherCourses(data.data);
           setMessage(data.data.message);
 
-          const datesArray = data.data.map((teacher) => teacher.teacher_fullname);
-          console.log(datesArray)
-          setTeacherCourse(datesArray);
+            data.data.map((teacher) => teacher.teacher_fullname);
+        
         }
 
       } catch (error) {
@@ -395,7 +394,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                 </h3>
                 <button
                   className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                  onClick={(e) => { setOpenModal(false) }}
+                  onClick={() => { setOpenModal(false) }}
                 >
                   <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                     <BsX className=" text-gray-700 font-bold" />
@@ -411,7 +410,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   </h3>
                   <button
                     className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                    onClick={(e) => { setIsReplace(false), setFormErrors({}), setSelected(false) }}
+                    onClick={() => { setIsReplace(false), setFormErrors({}), setSelected(false) }}
                   >
                     <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                       <BsX className=" text-gray-700 font-bold" />
@@ -428,7 +427,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   </h3>
                   <button
                     className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                    onClick={(e) => { setNewAssign(false), setFormErrors({}), setSelected(false) }}
+                    onClick={() => { setNewAssign(false), setFormErrors({}), setSelected(false) }}
                   >
                     <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                       <BsX className=" text-gray-700 font-bold" />
@@ -444,7 +443,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   </h3>
                   <button
                     className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
-                    onClick={(e) => { setMultiAssign(false), setFormErrors({}), setSelected(false) }}
+                    onClick={() => { setMultiAssign(false), setFormErrors({}), setSelected(false) }}
                   >
                     <span className="bg-transparent text-black font-bold h-6 w-6 text-2xl block outline-none focus:outline-none">
                       <BsX className=" text-gray-700 font-bold" />
@@ -462,7 +461,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       <button
                         className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
                         type="button"
-                        onClick={(e) => setIsReplace(true)}
+                        onClick={() => setIsReplace(true)}
                       >
                         Replace Teachers
                       </button>
@@ -471,7 +470,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       <button
                         className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
                         type="button"
-                        onClick={(e) => setNewAssign(true)}
+                        onClick={() => setNewAssign(true)}
                       >
                         New Assign
                       </button>
@@ -480,7 +479,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       <button
                         className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
                         type="button"
-                        onClick={(e) => setMultiAssign(true)}
+                        onClick={() => setMultiAssign(true)}
                       >
                         Assign Teachers To Courses
                       </button>
@@ -540,7 +539,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   <button
                     className="primary-button rounded w-60 btnCol text-white hover:text-white justify-center"
                     type="button"
-                    onClick={(e) => handleAdd()}
+                    onClick={() => handleAdd()}
                   >
                     Assign
                   </button>
@@ -593,7 +592,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                   <button
                     className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                     type="button"
-                    onClick={(e) => handleAddMultiple()}
+                    onClick={() => handleAddMultiple()}
                   >
                     Assign set
                   </button>
@@ -690,7 +689,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                       <button
                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                         type="button"
-                        onClick={(e) => handleUpdate()}
+                        onClick={() => handleUpdate()}
                       >
                         Replace
                       </button>
@@ -701,7 +700,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                         disabled
                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold justify-center"
                         type="button"
-                        onClick={(e) => handleUpdate()}
+                        onClick={() => handleUpdate()}
                       >
                         Replace
                       </button>

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 
 function generateID(prefix) {
-  const prefixLength = prefix.length;
+    prefix.length;
   const randomDigits = Math.floor(Math.random() * 10000).toString();
 
   return randomDigits;

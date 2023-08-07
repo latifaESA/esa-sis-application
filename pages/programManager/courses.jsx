@@ -159,6 +159,7 @@ export default function Courses() {
               <option value="Core Course">Core Course</option>
               <option value="Seminar">Seminar</option>
               <option value="Elective">Elective</option>
+              <option value="Workshop">Workshop</option>
             </select>
           </label>
 

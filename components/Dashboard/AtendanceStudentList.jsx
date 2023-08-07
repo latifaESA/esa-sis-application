@@ -7,20 +7,20 @@
  */
 //AtendanceStudentList.jsx
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import moment from 'moment';
-import { useSession } from 'next-auth/react';
+
 import CustomPagination from './Pagination';
 
 
-const AttendanceStudentList = ({ users, setUsers }) => {
+const AttendanceStudentList = ({ users }) => {
 
 
   const [pageSize, setPageSize] = useState(10);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
 
   //   sort by date
   const sortedUsers = [...users].sort((a, b) =>
@@ -214,7 +214,7 @@ const AttendanceStudentList = ({ users, setUsers }) => {
           rowsPerPageOptions={[5, 10, 15, 20]}
 
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           components={{
             NoRowsOverlay: () => (

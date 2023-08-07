@@ -30,7 +30,7 @@ const TeachersCourseList = ({ users, setUsers}) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const [OpenModal,setOpenModal] =useState(false)
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   const [assigned , setAssigned] = useState(true)
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -46,7 +46,7 @@ const TeachersCourseList = ({ users, setUsers}) => {
     setMessage('');
   },10000);
 
-  const handleConfirmClose = (user) => {
+  const handleConfirmClose = () => {
     setConfirmOpenIncomplete(false);
     setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
@@ -154,6 +154,7 @@ const TeachersCourseList = ({ users, setUsers}) => {
     <>
       {confirmOpenDelete && (
     <WarningMessageObsolote
+      confirmOpenIncomplete={confirmOpenIncomplete}
       isAssignPage={isAssignPage}
       confirmOpenObsolote={confirmOpenDelete}
       handleConfirmClose={handleConfirmClose}
@@ -175,7 +176,7 @@ const TeachersCourseList = ({ users, setUsers}) => {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           components={{
             NoRowsOverlay: () => (
@@ -190,6 +191,7 @@ const TeachersCourseList = ({ users, setUsers}) => {
       <div className='grid lg:grid-cols-1 p-5 shadow-sm items-center'>
         <LowerButtons
           assigned={assigned}
+          setAssigned={setAssigned}
          setOpenModal={setOpenModal}
           session={session}
         />

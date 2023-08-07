@@ -62,12 +62,12 @@ export default function AttendanceModal({
       // console.log('atttttt' , attendance_id)
       if (attendance_id) {
         for (let i = 0; i < student.length; i++) {
-          //   const student_id = student[i].student_id;
-          //   const data2 = await axios.post("/api/pmApi/createAttendanceStudent", {
-          //     attendance_id,
-          //     student_id,
-          //   });
-          // console.log("dataaa", data2.data)
+            const student_id = student[i].student_id;
+            const data2 = await axios.post("/api/pmApi/createAttendanceStudent", {
+              attendance_id,
+              student_id,
+            });
+          console.log("dataaa", data2.data)
         }
       }
       setShowModal(true);
@@ -89,7 +89,7 @@ export default function AttendanceModal({
                   </h3> */}
                 <button
                   className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                  onClick={(e) => setIsModal(false)}
+                  onClick={() => setIsModal(false)}
                 >
                   <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
                     <BsX className=" text-gray-700" />

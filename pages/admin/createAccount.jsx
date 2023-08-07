@@ -86,7 +86,7 @@ export default function Create() {
         setConfirmOpenMessage(true);
         setMessages(`Account Program Manager Create Successfully With 
         Username : ${gen.trim()} 
-        and password :${generatedPass} `);
+        and password: ${generatedPass} `);
         // setMessage(
         //   `user Created Successfully with a password : ${generatedPass}`
         // );
@@ -122,7 +122,7 @@ export default function Create() {
         setConfirmOpenMessage(true);
         setMessages(` Account of Assistant Program Manager Create Successfully 
         With Username : ${gen.trim()} 
-        and password :${generatedPass} `);
+        and password :   ${generatedPass} `);
       }
     } else if (role == "0" && fname != "" && email != "") {
       const prefix = "AD";
@@ -146,7 +146,7 @@ export default function Create() {
         setConfirmOpenMessage(true);
         setMessages(`Admin Account Create Successfully 
         With Username : ${gen.trim()} 
-        and password :${generatedPass} `);
+        and password :   ${generatedPass} `);
       }
     }
     if (fname == "" && email == "") {

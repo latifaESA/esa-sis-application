@@ -29,13 +29,6 @@ export default function Accounts() {
                 </button>
               </div>
             </Link>
-            <Link href="/admin/UploadStudent">
-              <div className="  ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Upload Students
-                </button>
-              </div>
-            </Link>
             <Link href="/admin/createAccount">
               <div className="  ">
                 <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
@@ -51,8 +44,23 @@ export default function Accounts() {
                 </button>
               </div>
             </Link>
-         
           </div>
+          <div className="flex gap-4 max-[850px]:flex-col max-[850px]:ml-0  place-items-center ">
+            <Link href="/admin/UploadTeacher">
+              <div className=" ">
+                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                  Upload Teacher
+                </button>
+              </div>
+            </Link>
+            <Link href="/admin/UploadStudent">
+              <div className="  ">
+                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                  Upload Students
+                </button>
+              </div>
+            </Link>
+            </div>
         </>
       ) : (
         redirect()

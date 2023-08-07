@@ -8,7 +8,8 @@ import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
 
-export default function attendance() {
+
+export default function Attendance() {
 
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
@@ -19,21 +20,21 @@ export default function attendance() {
   }
 
   const [attendance_id, setAttendanceId] = useState('')
-  const [student_id, setStudentid] = useState('')
-  const [teacher_id, setTeacherid] = useState('')
-  const [major_id, setMajorid] = useState('');
+  const [student_id, setStudentId] = useState('')
+  const [teacher_id, setTeacherId] = useState('')
+  // const [major_id, setMajorid] = useState('');
   const [major, setMajor] = useState([]);
-  const [allMajor, setAllMajor] = useState([])
-  const [course_id, setCourseid] = useState('')
+  // const [allMajor, setAllMajor] = useState([])
+  const [course_id, setCourseId] = useState('')
   const [present, setPresent] = useState('')
-  const [teacher_firstname, setTeacherFirstName] = useState('')
-  const [teacher_lastname, setTeacherLastName] = useState('')
-  const [attendance_date, setattendanceDate] = useState('')
-  const [major_name, setMajorName] = useState('')
-  const [allmajor, setallMajor] = useState([])
-  const [majorValue, setMajorValue] = useState([])
-  const [test, setTest] = useState()
-  console.log(session)
+  const [teacher_firstName, setTeacherFirstName] = useState('')
+  const [teacher_lastName, setTeacherLastName] = useState('')
+  const [attendance_date, setAttendanceDate] = useState('')
+  // const [major_name, setMajorName] = useState('')
+  // // const [allmajor, setallMajor] = useState([])
+  // const [majorValue, setMajorValue] = useState([])
+  // const [test, setTest] = useState()
+
 
   useEffect(() => {
     const getMajor = async () => {
@@ -42,9 +43,9 @@ export default function attendance() {
       let { data } = await axios.post('/api/pmApi/getAll', { table })
 
 
-      console.log('major')
-      console.log(data.rows)
-      setAllMajor(data.rows)
+      // console.log('major')
+      // console.log(data.rows)
+      // setAllMajor(data.rows)
 
       const datesArray = [];
       data.rows.forEach((attendance) => {
@@ -104,16 +105,16 @@ export default function attendance() {
       const result = await axios.post("/api/pmApi/filterAttendance", payload)
       setUsers(result.data.data)
       setAttendanceId('')
-      setCourseid('')
-      setTeacherid('')
-      setStudentid('')
-      setattendanceDate('')
+      setCourseId('')
+      setTeacherId('')
+      setStudentId('')
+      setAttendanceDate('')
       setPresent('')
       setTeacherFirstName('')
       setTeacherLastName('')
-      setMajorName('')
-      setMajorValue('')
-      setTest(true)
+      // setMajorName('')
+      // setMajorValue('')
+      // setTest(true)
     } catch (error) {
       return error
     }
@@ -125,20 +126,22 @@ export default function attendance() {
   const handleAttendance = async () => {
     try {
 
+      // Assuming attendance_id, student_id, teacher_id, session.user.majorid, course_id, attendance_date, present, teacher_firstName, and teacher_lastName are defined
+      
       const payload = {
         attendanceId: attendance_id,
         studentId: student_id,
         teacherId: teacher_id,
         majorId: session.user.majorid,
         courseId: course_id,
-        attendanceDate: attendance_date,
+        attendanceDate: new Date(attendance_date),
         present: present,
-        teacher_firstname: teacher_firstname,
-        teacher_lastname: teacher_lastname,
-
-
-      }
-      const result = await axios.post('/api/pmApi/filterAttendance', payload)
+        teacher_firstname: teacher_firstName,
+        teacher_lastname: teacher_lastName,
+      };
+      
+      const result = await axios.post('/api/pmApi/filterAttendance', payload);
+      
       setUsers(result.data.data)
     } catch (error) {
       return error
@@ -183,7 +186,7 @@ export default function attendance() {
               placeholder=""
               id={'date'}
               value={attendance_date}
-              onChange={(e) => { setattendanceDate(e.target.value) }}
+              onChange={(e) => { setAttendanceDate(e.target.value) }}
             ></input>
           </label>
 
@@ -195,7 +198,7 @@ export default function attendance() {
               name="Fname"
               placeholder="Teacher's First Name"
               // value={formData.Fname}
-              onChange={(e) => { 
+              onChange={() => { 
                 // setFname(e.target.value)
               }}
             ></input>
@@ -210,7 +213,7 @@ export default function attendance() {
               placeholder="Course ID"
               id={'text'}
               value={course_id}
-              onChange={(e) => { setCourseid(e.target.value) }}
+              onChange={(e) => { setCourseId(e.target.value) }}
             ></input>
           </label>
           {/* </div>
@@ -223,7 +226,7 @@ export default function attendance() {
               name="firstname"
               placeholder='First Name'
               id={'teacherId'}
-              value={teacher_firstname}
+              value={teacher_firstName}
               onChange={(e) => { setTeacherFirstName(e.target.value) }}
 
             ></input>
@@ -249,7 +252,7 @@ export default function attendance() {
               name="lastname"
               placeholder="Last Name"
               id={'teacherId'}
-              value={teacher_lastname}
+              value={teacher_lastName}
               onChange={(e) => { setTeacherLastName(e.target.value) }}
             ></input>
           </label>
@@ -264,8 +267,8 @@ export default function attendance() {
               name="course-id"
               placeholder='Enter Course ID'
               // value={formData.Fname}
-              onChange={(e) => { 
-                // setCourseid(e.target.value)
+              onChange={() => { 
+                // setCourseId(e.target.value)
               }}
             ></input>
          </label>
@@ -304,5 +307,5 @@ export default function attendance() {
     </>
   );
 }
-attendance.auth = true;
-attendance.adminOnly = true;
+Attendance.auth = true;
+Attendance.adminOnly = true;

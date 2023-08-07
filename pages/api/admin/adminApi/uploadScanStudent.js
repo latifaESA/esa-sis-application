@@ -10,7 +10,7 @@ const {
   uploadEducation,
   uploadEmerg,
   uploadContact,
-  // uploadInfo,
+  uploadInfo,
   uploadStudent,
   ActiveUser,
   userDocument,
@@ -30,6 +30,7 @@ export const config = {
 
 async function handler(req, res) {
   try {
+    const message ='';
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
@@ -54,11 +55,11 @@ async function handler(req, res) {
           // console.log("user",form)
 
           if (
-            path1.mimetype === "application/pdf" ||
-            path1.mimetype === "application/x-pdf" ||
-            path1.mimetype === "image/png" ||
-            path1.mimetype === "image/jpeg" ||
-            path1.mimetype === "image/jpg" ||
+            // path1.mimetype === "application/pdf" ||
+            // path1.mimetype === "application/x-pdf" ||
+            // path1.mimetype === "image/png" ||
+            // path1.mimetype === "image/jpeg" ||
+            // path1.mimetype === "image/jpg" ||
             path1.mimetype ===
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           ) {
@@ -220,30 +221,31 @@ async function handler(req, res) {
           emerg_medicalhealth: row.EmergenceMedicalHealth,
           emerg_diseasetype: row.EmergenceDisease,
         });
-        // const info =await uploadInfo(
-        //     connection,
-        //     {
-        //         userid: row.StudentID,
-        //         title: row.Title,
-        //         firstname:row.StudentFirstName,
-        //         fathername:row.FatherName,
-        //         lastname:row.StudentLastName,
-        //         maidename:row.maidename,
-        //         mothername:row.MotherName,
-        //         gender:row.Gender,
-        //         dateofbirth:row.DateOfBirth,
-        //         countryofbirth:row.CountryOfBirth,
-        //         placeofbirth:row.PlaceOfBirth,
-        //         registernumber:row.RegisterNumber,
-        //         martialstatus:row.MartialStatus,
-        //         firstnationality:row.FirstNationality,
-        //         secondnationality:row.SecondNationality
-        //     }
-        // )
+     await uploadInfo(
+            connection,
+            {
+                userid: row.StudentID,
+                title: row.Title,
+                firstname:row.StudentFirstName,
+                fathername:row.FatherName,
+                lastname:row.StudentLastName,
+                maidename:row.maidename,
+                mothername:row.MotherName,
+                gender:row.Gender,
+                dateofbirth:new Date((row.DateOfBirth - 25569) * 86400 * 1000), // Convert Excel date to JavaScript date,
+                countryofbirth:row.CountryOfBirth,
+                placeofbirth:row.PlaceOfBirth,
+                registernumber:row.RegisterNumber,
+                martialstatus:row.MartialStatus,
+                firstnationality:row.FirstNationality,
+                secondnationality:row.SecondNationality
+            }
+        )
+       
         const response = await uploadStudent(connection, {
           student_id: row.StudentID,
           status: "active",
-          promotion: row.Promotion,
+          promotion: row.Promotion.replace(/\s+/g, '').toUpperCase(),
           academic_year: row.AcademicYear,
           student_firstname: row.StudentFirstName,
           student_lastname: row.StudentLastName,

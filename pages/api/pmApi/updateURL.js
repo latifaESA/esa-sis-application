@@ -1,14 +1,14 @@
 const { connect, disconnect } = require("../../../utilities/db");
-// const { uploadFile } = require('../controller/queries')
+const { uploadFile } = require('../controller/queries')
 
-async function handler(res) {
+async function handler(req , res) {
   try {
     const connection = await connect();
-    // const {
-    //     url,
-    //    attendance_id
-    // } = req.body;
-    // const response = await uploadFile(connection ,url ,attendance_id);
+    const {
+        url,
+       attendance_id
+    } = req.body;
+   await uploadFile(connection ,url ,attendance_id);
     await disconnect(connection);
     return res.status(201).json({
       success: true,

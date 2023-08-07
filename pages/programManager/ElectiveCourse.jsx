@@ -23,7 +23,7 @@ export default function ElectiveCourse() {
   const [student_firstname , setStudent_firstname] = useState('')
   const [student_lastname  , setStudent_lastname] = useState('')
   const [course_name  , setCourse_name] = useState('')
-  const [test, setTest] = useState()
+  // const [test, setTest] = useState()
   console.log(session)
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function ElectiveCourse() {
       setStudent_lastname('')
       setCourse_name('')
       setUsers(result.data.data)
-      setTest(true)
+      // setTest(true)
     } catch (error) {
       return error
     }
@@ -142,7 +142,7 @@ export default function ElectiveCourse() {
               name="Fname"
               placeholder="Teacher's First Name"
               // value={formData.Fname}
-              onChange={(e) => { 
+              onChange={() => { 
                 // setFname(e.target.value)
               }}
             ></input>
