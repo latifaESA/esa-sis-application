@@ -1,14 +1,15 @@
-import formidable from "formidable";
-import fs from "fs";
-import path from "path";
+import formidable from 'formidable';
+import fs from 'fs';
+import path from 'path';
 
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from 'next-auth/next';
 const { connect, disconnect } = require("../../../../utilities/db");
-const { getMajor, CreateCourse } = require("../../controller/queries");
+const { uploadTeacher } = require("../../controller/queries");
 
-import xlsx from "xlsx";
-// import { env } from 'process';
-import { authOptions } from "../../auth/[...nextauth]";
+import xlsx from 'xlsx';
+
+import { authOptions } from '../../auth/[...nextauth]';
+
 
 export const config = {
   api: {
@@ -17,7 +18,12 @@ export const config = {
 };
 
 async function handler(req, res) {
+
   try {
+
+
+
+
     if (req.method !== 'POST') {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
@@ -32,66 +38,6 @@ async function handler(req, res) {
 
     // const { formData, attendance } = req.body;
 
-    // const readFile = (file, saveLocally, place) => {
-    //   const options = {};
-    //   if (saveLocally) {
-    //     options.uploadDir = place;
-
-    //     // eslint-disable-next-line no-unused-vars
-    //     options.filename = (name, ext, path1, form) => {
-    //       // console.log("user",form)
-
-    //       if (
-    //         // path1.mimetype === 'application/pdf' ||
-    //         // path1.mimetype === 'application/x-pdf' ||
-    //         // path1.mimetype === 'image/png' ||
-    //         // path1.mimetype === 'image/jpeg' ||
-    //         // path1.mimetype === 'image/jpg' ||
-    //         path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
-    //       ) {
-    //         let sourceDir = fs.readdirSync(place);
-
-    //         sourceDir.forEach((file) => {
-    //           const filePath = path.join(place, file);
-    //           const stats = fs.statSync(filePath);
-    //           if (stats.isFile()) {
-    //             // fs.unlinkSync(filePath);
-    //             // console.log('Deleted file:', filePath);
-    //           }
-    //         });
-
-    //         const currentTimestamp = Date.now();
-    //         const filename = `${currentTimestamp}_${path1.originalFilename}`;
-
-    //         return (
-    //           // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
-    //           filename
-
-    //         );
-
-    //       } else {
-    //         return res
-    //           .status(200)
-    //           .send({ status: 401, message: 'file was not accepted' });
-    //       }
-    //     };
-    //   }
-
-    //   // options.maxFileSize = 4000 * 1024 * 1024;
-    //   const form = formidable(options);
-
-    //   return new Promise((resolve, reject) => {
-    //     form.parse(file, (err, fields, files) => {
-    //       if (err) reject(err);
-    //       resolve({ fields, files });
-    //     });
-    //   });
-    // };
-
-    // const { user } = session;
-
-
     const readFile = (file, saveLocally, place) => {
       const options = {};
       if (saveLocally) {
@@ -102,13 +48,13 @@ async function handler(req, res) {
           // console.log("user",form)
 
           if (
-            // path1.mimetype === "application/pdf" ||
-            // path1.mimetype === "application/x-pdf" ||
-            // path1.mimetype === "image/png" ||
-            // path1.mimetype === "image/jpeg" ||
-            // path1.mimetype === "image/jpg" ||
-            path1.mimetype ===
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            // path1.mimetype === 'application/pdf' ||
+            // path1.mimetype === 'application/x-pdf' ||
+            // path1.mimetype === 'image/png' ||
+            // path1.mimetype === 'image/jpeg' ||
+            // path1.mimetype === 'image/jpg' ||
+            path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
           ) {
             let sourceDir = fs.readdirSync(place);
 
@@ -127,11 +73,13 @@ async function handler(req, res) {
             return (
               // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
               filename
+
             );
+
           } else {
             return res
               .status(200)
-              .send({ status: 401, message: "file was not accepted" });
+              .send({ status: 401, message: 'file was not accepted' });
           }
         };
       }
@@ -147,15 +95,15 @@ async function handler(req, res) {
       });
     };
 
-    const localDiskPath = path.parse(require("os").homedir()).root;
+    const localDiskPath = path.parse(require('os').homedir()).root;
 
     const directory =
-      localDiskPath + "/sis-application-data/sis-documents-Admin/course";
+      localDiskPath + '/sis-application-data/sis-documents-Admin/teacher';
 
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
-     await readFile(req, true, directory);
+    const { fields } = await readFile(req, true, directory);
 
     let course_file = await fs.readdirSync(directory);
 
@@ -166,11 +114,12 @@ async function handler(req, res) {
       return res.status(400).json({
         success: false,
         code: 400,
-        message: "File path not provided.",
+        message: 'File path not provided.',
       });
     }
 
     let course_files = await fs.readdirSync(directory);
+
 
     const sortedFiles = course_files.slice().sort((fileA, fileB) => {
       const getIntFromFilename = (filename) => {
@@ -194,7 +143,7 @@ async function handler(req, res) {
     const buffer = fs.readFileSync(latestFilePath);
 
     // Read the file data and create the workbook
-    const workbook = xlsx.read(buffer, { type: "buffer" });
+    const workbook = xlsx.read(buffer, { type: 'buffer' });
 
     const sheetName = workbook.SheetNames[0];
 
@@ -208,27 +157,40 @@ async function handler(req, res) {
 
     for (const row of data) {
       try {
-        const major = await getMajor(connection, row.MajorName);
-        if (!major || major.rows.length === 0) {
-          console.error(`Major not found for row: `, row);
-          continue; // Skip this row if the major is not found
-        }
+        // const teacherId = fields[0].teacher_id
+        const teacherArray = Object.values(fields);
 
-        const majorid = major.rows[0].major_id;
-        const response = await CreateCourse(connection, {
-          course_id: row.CourseID,
-          course_name: row.CourseName,
-          course_credit: row.CourseCredit,
-          course_type: row.CourseType,
-          major_id: majorid,
+        const uploadPromises = teacherArray.map(async (teacher) => {
+          const response = await uploadTeacher(connection, {
+            teacher_id: teacher.teacher_id,
+            teacher_firstname: teacher.firstName,
+            teacher_mail: teacher.email,
+            teacher_lastname: teacher.lastName
+          });
+        
+          // You can handle the response here if needed
+        
+          return response;
         });
-        if (response) {
+        
+        // Wait for all promises to resolve
+        const responses = await Promise.all(uploadPromises);
+        
+        
+          // console.log(fields)
+        if (responses) {
           countSaved++; // Increment the count of saved records
         } else {
-          console.error(`Failed to save row: `, row);
+            return res.status(401).json({
+                success:false,
+                code:401,
+                message:`Error In Create `
+            })
+            
+          
         }
       } catch (error) {
-        console.error(`Error while processing row: `, row, "\nError: ", error);
+        console.error(`Error while processing row: `, row, '\nError: ', error);
       }
     }
 
@@ -238,16 +200,20 @@ async function handler(req, res) {
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `Course Uploaded Successfully! ${countSaved} Courses saved.`,
+      message: `Teachers Uploaded Successfully! ${countSaved} Teachers saved.`,
     });
+
+
   } catch (error) {
     return res.status(500).json({
       success: false,
       code: 500,
-      message: "An error occurred while processing the request.",
+      message: 'An error occurred while processing the request.',
       error: error.message,
     });
   }
+
+
 }
 
 export default handler;

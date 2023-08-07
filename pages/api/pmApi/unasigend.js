@@ -1,6 +1,6 @@
 const { connect, disconnect } = require("../../../utilities/db");
 
-// const { unassign } = require("../controller/queries");
+const { unassign } = require("../controller/queries");
 // const { default: assignedExist } = require('./exist/getTeachersCourse');
 
 async function handler(req, res) {
@@ -10,11 +10,11 @@ async function handler(req, res) {
     const {
       teacher_firstname,
       teacher_lastname,
-      // teacher_id,
+      teacher_id,
       course_id,
     } = req.body;
 
-    // const response = await unassign(connection, teacher_id, course_id)
+     await unassign(connection, teacher_id, course_id)
     await disconnect(connection);
     return res.status(201).json({
       success: true,

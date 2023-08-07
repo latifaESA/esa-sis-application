@@ -5,7 +5,7 @@ import {
 } from '../../../components/StudentInfoApplication/ModalDocument';
 import uploadDocReducer from '../../../components/UploadDocuments/reducers/uploadDocReducer';
 import { BsX } from 'react-icons/bs';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import selection_data from '../../../utilities/selection_data';
 
@@ -17,12 +17,12 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [message, setMessage] = useState('');
   const [docUrl, setDocUrl] = useState(false);
-  const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
-    useState(false);
+  // const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
+  //   useState(false);
   // const [profileUrl, setProfileUrl] = useState(null);
 
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [uploadPhotoData, uploadPhotoDispatch] = useReducer(uploadDocReducer, {
     inDropZone: false,
     fileList: [],
@@ -60,7 +60,7 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
     if (uploadPhotoData.fileList.length !== 0) {
       // console.log('uploaddata', uploadPhotoData.fileList[0].name);
 
-      setupdateProfileButtonDisable(true);
+      // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
 //<<<<<<< batoul
@@ -108,7 +108,7 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
           console.log('URL', data.url);
           setDocUrl(data.url);
           // setShowProfileModal(true)
-          setupdateProfileButtonDisable(false);
+          // setupdateProfileButtonDisable(false);
         } catch (error) {
           console.log(error.response?.data);
         }
@@ -116,7 +116,7 @@ export default function Archive({ setShowArchive, attendance, details, setDetail
       handleUpload();
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadPhotoData]);
+  }, [uploadPhotoData.fileList]);
   const getFileExtension = (filename) => {
     const parts = filename.split('.');
     return parts[parts.length - 1];

@@ -13,7 +13,7 @@ import CopyClass from '../../components/copyClass';
 export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
-  const [promotionValue, setPromotionValue] = useState('');
+  // const [promotionValue, setPromotionValue] = useState('');
   const [promotion, setPromotion] = useState([]);
   const [courseValue, setCourseValue] = useState('');
   const [majorValue, setMajorValue] = useState('');
@@ -36,19 +36,19 @@ export default function Students() {
 
   const handleCancel = () => {
     setOpen(false);
-    setPromotionValue('');
+    // setPromotionValue('');
     setCourseValue('');
     setTeacherValue('');
     setDateFrom('');
     setDateTo('');
 }
 
-const handleCancelCopy = () => {
-  setOpenCopy(false)
-  setPromotionValue('');
-  setCourseValue('');
-  setTeacherValue('');
-}
+// const handleCancelCopy = () => {
+//   setOpenCopy(false)
+//   setPromotionValue('');
+//   setCourseValue('');
+//   setTeacherValue('');
+// }
 
 const handleSave = () => {
   console.log('save')
@@ -63,7 +63,7 @@ const handleSave = () => {
         course_name: courseValue, // Retrieve the label property of the selected course === courseName
 
       };
-      let { response } = await axios.post('/api/pmApi/asigendTeacher', payload);
+       await axios.post('/api/pmApi/asigendTeacher', payload);
    
     let classValue = {
       course_id : courseValue,
@@ -80,7 +80,7 @@ const handleSave = () => {
     console.log(data)
     if(data.success){
       setOpen(false)
-      setPromotionValue('');
+      // setPromotionValue('');
       setCourseValue('');
       setMajorValue('');
       setTeacherValue('');
@@ -100,36 +100,36 @@ const handleSave = () => {
 }
 
 const handleSaveCopy = () => {
-  // let createClass = async () =>{
-  //   try{
-  //   let classValue = {
-  //     course_id : courseValue,
-  //     teacher_id : teacherValue, 
-  //     promotion : promotionValueClass, 
-  //     startdate : dateFrom, 
-  //     enddate : dateTo,
-  //     pm_id: session.user.userid,
-  //     major_id: majorValue,
-  //   }
-  //   let {data} = await axios.post('/api/pmApi/createClass',classValue)
-  //   console.log(data)
-  //   if(data.success){
-  //     setOpen(false)
-  //     setPromotionValue('');
-  //     setCourseValue('');
-  //     setMajorValue('');
-  //     setTeacherValue('');
-  //     setDateFrom('');
-  //     setDateTo('');
-  //     getClasses()
-  //   }else{
-  //     alert('Error creating class')
-  //   }
-  //   // setOpen(false)
-  // }catch(err){
-  //     console.log(err)
-  //   }
-  // }
+  let createClass = async () =>{
+    try{
+    let classValue = {
+      course_id : courseValue,
+      teacher_id : teacherValue, 
+      promotion : promotionValueClass, 
+      startdate : dateFrom, 
+      enddate : dateTo,
+      pm_id: session.user.userid,
+      major_id: majorValue,
+    }
+    let {data} = await axios.post('/api/pmApi/createClass',classValue)
+    console.log(data)
+    if(data.success){
+      setOpen(false)
+      // setPromotionValue('');
+      setCourseValue('');
+      setMajorValue('');
+      setTeacherValue('');
+      setDateFrom('');
+      setDateTo('');
+      getClasses()
+    }else{
+      alert('Error creating class')
+    }
+    // setOpen(false)
+  }catch(err){
+      console.log(err)
+    }
+  }
   courseValue.length === 0 ? setError('Please choose course') :  teacherValue.length === 0 ? setError('Please choose teacher') : promotionValueClass.length === 0 ? setError('Please choose promotion') : (setError(''), createClass());
  
 }
@@ -173,11 +173,11 @@ const handleSaveCopy = () => {
     handleShowAll()
   }, [])
 
-  const handlePromotion = (selectedValue) => {
-    // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
-    setPromotionValue(selectedValue)
-  };
+  // const handlePromotion = (selectedValue) => {
+  //   // Do something with the selected value
+  //   console.log("Selected Value:", selectedValue);
+  //   setPromotionValue(selectedValue)
+  // };
 
   const handlePromotionClass = (selectedValue) => {
     // Do something with the selected value
@@ -193,21 +193,21 @@ const handleSaveCopy = () => {
     setMajorValue(selectedValue.length > 0 ? allCourse.filter(course => course.course_name === selectedValue)[0].major_id : '')
   };
 
-  const handleCourseCopy = (selectedValue) => {
-    setTeacherValue(allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname)
+  // const handleCourseCopy = (selectedValue) => {
+  //   setTeacherValue(allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname)
 
-    console.log("teacherValue  ==  ", teacherValue)
-    console.log(selectedValue)
-    console.log(coursesCopy)
-    console.log(users)
-    console.log(users.filter(user => user.course_id == selectedValue)[0].teacher_id)
+  //   console.log("teacherValue  ==  ", teacherValue)
+  //   console.log(selectedValue)
+  //   console.log(coursesCopy)
+  //   console.log(users)
+  //   console.log(users.filter(user => user.course_id == selectedValue)[0].teacher_id)
 
-    console.log(users.filter(user => user.course_id == selectedValue)[0].promotion)
+  //   console.log(users.filter(user => user.course_id == selectedValue)[0].promotion)
 
-    console.log(
-      allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname
-      )
-  }
+  //   console.log(
+  //     allTeacher.filter(teach => teach.teacher_id === users.filter(user => user.course_id == selectedValue)[0].teacher_id)[0].teacher_firstname
+  //     )
+  // }
   const handleTeacher = (selectedValue) => {
     // Do something with the selected value
     // console.log("Selected Value:", allTeacher.filter(teacher => `${teacher.teacher_firstname} ${teacher.teacher_lastname}` === selectedValue)[0].course_id);

@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 
 // import CustomSelectBox from "./customSelectBox";
-export default function teacherCourse() {
+export default function TeacherCourse() {
 
     const { data: session } = useSession();
     const [users, setUsers] = useState([]);
@@ -197,7 +197,7 @@ export default function teacherCourse() {
                                 className="ml-5 w-40 max-[850px]:ml-3"
                                 type="text"
                                 name="teacher_id"
-                                placeholder='Teacher LastName'
+                                placeholder='Teacher FirstName'
                                 id={'teacherId'}
                                 value={teacher_firstname}
                                 onChange={(e) => { setTeacherFirstName(e.target.value) }}
@@ -211,7 +211,7 @@ export default function teacherCourse() {
                                 className="ml-5 w-40 max-[850px]:ml-3"
                                 type="text"
                                 name="teacher_id"
-                                placeholder='Teacher FirstName'
+                                placeholder='Teacher LastName'
                                 id={'teacherId'}
                                 value={teacher_lastname}
                                 onChange={(e) => { setTeacherLastName(e.target.value) }}
@@ -252,7 +252,7 @@ export default function teacherCourse() {
                                 className="ml-5 w-40 max-[850px]:visible max-[850px]:hidden"
                                 type="text"
                                 name="teacher_id"
-                                placeholder='Teacher LastName'
+                                placeholder='Teacher FirstName'
                                 id={'teacherId'}
                                 value={teacher_firstname}
                                 onChange={(e) => { setTeacherFirstName(e.target.value) }}
@@ -266,7 +266,7 @@ export default function teacherCourse() {
                                 className="ml-5 w-40 max-[850px]:visible max-[850px]:hidden"
                                 type="text"
                                 name="teacher_id"
-                                placeholder='Teacher FirstName'
+                                placeholder='Teacher LastName'
                                 id={'teacherId'}
                                 value={teacher_lastname}
                                 onChange={(e) => { setTeacherLastName(e.target.value) }}
@@ -299,5 +299,5 @@ export default function teacherCourse() {
     );
 
 }
-teacherCourse.auth = true;
-teacherCourse.adminOnly = true;
+TeacherCourse.auth = true;
+TeacherCourse.adminOnly = true;

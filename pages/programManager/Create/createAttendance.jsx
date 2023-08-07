@@ -5,20 +5,21 @@ import CustomSelectBox from '../customSelectBox'
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import AttendanceModal from '../ModalForm/AttendanceModal';
-export default function createAttendance() {
+import { useRouter } from 'next/router';
+export default function CreateAttendance() {
 
     const [promotionValue, setPromotionValue] = useState('')
     const [formErrors, setFormErrors] = useState({});
-    const [test, setTest] = useState()
+    // const [test, setTest] = useState()
     const [coursesValue, setCoursesValue] = useState('')
     const [teacherValue, setTeachersValue] = useState('')
     const [promotionName, setPromotionName] = useState('')
     const [courseName, setCourseName] = useState('')
     const [teachersName, setTeachersName] = useState('')
-    const [teachersLastName, setTeachersLastName] = useState('')
+    // const [teachersLastName, setTeachersLastName] = useState('')
     // const componentRef = useRef();
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [data, setData] = useState('');
+    // const [data, setData] = useState('');
     const { data: session } = useSession();
     const [allpromotion, setAllPromotions] = useState([])
     const [promotion, setPromotions] = useState([])
@@ -28,11 +29,11 @@ export default function createAttendance() {
     const [teachers, setTeachers] = useState([])
     const [student, setStudent] = useState([])
     const [isModal, setIsModal] = useState(false)
-    const [error, setError] = useState(false)
-    const [message, setMessage] = useState('')
+    // const [error, setError] = useState(false)
+    // const [message, setMessage] = useState('')
     const [course_type, setCourseType] = useState([])
     // console.log("selectedddd", selectedDate)
-
+   const router = useRouter()
     const redirect = () => {
         router.push('/AccessDenied');
     };
@@ -57,8 +58,8 @@ export default function createAttendance() {
 
 
                 setPromotions(datesArray);
-                console.log(promotion, 'before')
-                setMessage(data.data.message)
+                // console.log(promotion, 'before')
+                // setMessage(data.data.message)
 
             } catch (error) {
                 return error
@@ -77,7 +78,7 @@ export default function createAttendance() {
                 let { data } = await axios.post('/api/pmApi/getAllCourses', { table, Where, id })
                 console.log("course", data.data)
                 setAllCourses(data.data)
-                setMessage(data.data.message)
+                // setMessage(data.data.message)
 
                 const datesArray = [];
                 data.data.forEach((courses) => {
@@ -102,7 +103,7 @@ export default function createAttendance() {
                 setAllTeachers(data.data)
                 // console.log("teacher",data.data.teacher_fullname)
 
-                setMessage(data.data.message)
+                // setMessage(data.data.message)
                 const datesArray = [];
                 data.data.forEach((teachers) => {
                     datesArray.push(teachers.teacher_fullname);
@@ -125,9 +126,7 @@ export default function createAttendance() {
     const handlePromotion = (selectedValue) => {
         // Do something with the selected value
         // console.log("Selected Value:", selectedValue);
-        if (test) {
-            selectedValue == ''
-        }
+   
         if (selectedValue.trim() !== '') {
             let promotionID = allpromotion.filter(promotion => promotion.promotion_name === selectedValue);
             console.log(promotionID[0].promotion_id)
@@ -138,18 +137,15 @@ export default function createAttendance() {
             setPromotionValue("")
 
         }
-        if (test == true) {
-            selectedValue === ' '
 
-        }
     };
 
     const handleCourses = (selectedValue) => {
         // Do something with the selected value
-        console.log("Selected Value:", selectedValue);
-        if (test) {
-            selectedValue == ''
-        }
+        // console.log("Selected Value:", selectedValue);
+        // if (test) {
+        //     selectedValue == ''
+        // }
         if (selectedValue.trim() !== '') {
             let coursesID = allcourses.filter(courses => courses.course_name === selectedValue);
 
@@ -163,17 +159,17 @@ export default function createAttendance() {
             setCoursesValue("")
 
         }
-        if (test == true) {
-            selectedValue === ' '
-        }
+        // if (test == true) {
+        //     selectedValue === ' '
+        // }
     };
 
     const handleTeachers = (selectedValue) => {
         // Do something with the selected value
         console.log("Selected Value:", selectedValue);
-        if (test) {
-            selectedValue == ''
-        }
+        // if (test) {
+        //     selectedValue == ''
+        // }
         if (selectedValue.trim() !== '') {
             let teachersFullname = allteachers.filter(teachers => teachers.teacher_fullname === selectedValue);
             console.log("select", teachersFullname[0].teacher_id)
@@ -187,15 +183,15 @@ export default function createAttendance() {
             setTeachersValue("")
 
         }
-        if (test == true) {
-            selectedValue === ' '
-        }
+        // if (test == true) {
+        //     selectedValue === ' '
+        // }
     };
 
     const getStudent = async () => {
         try {
             const errors = {};
-            const currentDate = new Date()
+            // const currentDate = new Date()
             if (teacherValue.length === 0) {
                 errors.teachers = 'At least one Teacher must be selected.';
             }
@@ -222,16 +218,22 @@ export default function createAttendance() {
                     setStudent(data.data)
 
                 } else {
-                    const payload = {
-                        promotion: promotionName.replace(/\s/g, ''),
-                        major_id: session.user.majorid,
-                        course_id: coursesValue
-                    }
-                    console.log('payload', payload)
 
-                    const data = await axios.post('/api/pmApi/getStudentAssign', payload)
-                    console.log(data.data.code)
-                    if (data.data.code === 404) {
+                    try {
+
+                        const payload = {
+                            promotion: promotionName.replace(/\s/g, ''),
+                            major_id: session.user.majorid,
+                            course_id: coursesValue
+                        }
+                        console.log('payload', payload)
+    
+                        const data = await axios.post('/api/pmApi/getStudentAssign', payload)
+                        setIsModal(true)
+                        setStudent(data.data.data);
+                        
+                    } catch (error) {
+                            
                         console.log('wssll')
                         setIsModal(true)
                         let major_id = session.user.majorid
@@ -242,11 +244,9 @@ export default function createAttendance() {
                         // console.log(data.data)
 
                         // console.log(data.data)
-                        setStudent(data.data)
-
-                    } else {
                         setIsModal(true)
-                        setStudent(data.data.data);
+                        setStudent(data.data)
+                        
                     }
 
                 }
@@ -333,7 +333,7 @@ export default function createAttendance() {
                                 <button
                                     className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                     type="button"
-                                    onClick={(e) => getStudent()}
+                                    onClick={() => getStudent()}
                                 >
                                     Create Attendance
                                 </button>
@@ -348,6 +348,6 @@ export default function createAttendance() {
         </>
     );
 }
-createAttendance.auth = true;
-createAttendance.adminOnly = true;
+CreateAttendance.auth = true;
+CreateAttendance.adminOnly = true;
 

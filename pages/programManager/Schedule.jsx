@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import CustomSelectBox from './customSelectBox';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
+// import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
 import { Calender } from './calenderComponent/Calender';
 
 
@@ -12,22 +12,22 @@ export default function Schedule() {
   const { data: session } = useSession();
   const router = useRouter();
   const [promotion, setPromotion] = useState([]);
-  const [major, setMajor] = useState([]);
+  // const [major, setMajor] = useState([]);
 
-  const [majorValue, setMajorValue] = useState('');
-  const [promotionValue, setPromotionValue] = useState('');
+  // const [majorValue, setMajorValue] = useState('');
+  // const [promotionValue, setPromotionValue] = useState('');
 
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value
     console.log("Selected Value:", selectedValue);
-    setPromotionValue(selectedValue)
+    setPromotion(selectedValue)
   };
 
-  const handleMajor = (selectedValue) => {
-    // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
-    setMajorValue(selectedValue)
-  };
+  // const handleMajor = (selectedValue) => {
+  //   // Do something with the selected value
+  //   console.log("Selected Value:", selectedValue);
+  //   setMajorValue(selectedValue)
+  // };
 
 
 
@@ -44,7 +44,7 @@ export default function Schedule() {
         datesArray.push(student.major_name);
       });
 
-      setMajor(datesArray);
+      // setMajor(datesArray);
 
     }
     getMajor()

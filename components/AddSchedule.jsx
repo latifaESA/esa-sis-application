@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import CustomSelectBox from '../pages/programManager/customSelectBox'
-import { HOURS, ROOMS } from '../pages/programManager/calenderComponent/conts'
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
+import { HOURS } from '../pages/programManager/calenderComponent/conts'
+// import { useSession } from 'next-auth/react';
+// import axios from 'axios';
 export default function AddSchedule(
   {handleFrom,handleTo,handleLocation,handleSelect,selectedValues,
     handleCancelSchedule,handleSaveSchedule, theroom , isClicked,
-    courseValue,
-    teacherValue,
-    setIsAddSchedule,
+    // courseValue,
+    // teacherValue,
+    // setIsAddSchedule,
     setPromotions,
     setCourseValue,
-    weekDays,
-    dateFrom,
-    dateTo,
-    promotions,
-    attendance,
+    // weekDays,
+    // dateFrom,
+    // dateTo,
+    // promotions,
+    // attendance,
   
-    details,
+    // details,
     setDetails,
-    student,
+    // student,
     setStudent,
     setCourseType,
     
@@ -206,7 +206,7 @@ export default function AddSchedule(
     }
   };
   
-  console.log('clicked', isClicked)
+  // console.log('clicked', isClicked)
   return (
     <>
         <div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-non'>

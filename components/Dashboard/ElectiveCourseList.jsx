@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import { LowerButtons } from './LowerButtons';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
-import { WarningMessageObsolote } from './WarningMessage';
+// import { WarningMessageObsolote } from './WarningMessage';
 import ElectiveModal from '../../pages/programManager/ModalForm/ElectiveModal';
 import axios from 'axios';
 
@@ -23,27 +23,27 @@ const ElectiveCourseList = ({ users, setUsers}) => {
 
 
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
-  const [OpenModal,setOpenModal] =useState(false)
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [message, setMessage] = useState('');
+  // const [OpenModal,setOpenModal] =useState(false)
+  // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
-  const [assigned , setAssigned] = useState(false)
+  // const [assigned , setAssigned] = useState(false)
  
-  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
-  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isAssignPage , setIsAssignPage] = useState(false)
-  const [details , setDetails] = useState([])
+  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  // const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
+  // const [selectedUser, setSelectedUser] = useState(null);
+  // const [isAssignPage , setIsAssignPage] = useState(false)
+  // const [details , setDetails] = useState([])
   const [iselective , setElective] = useState(false)
-  const [elective , setIsElective] = useState(true)
+  // const [elective , setIsElective] = useState(true)
   const [courses , setCourses] = useState([])
   const [students , setStudents] = useState([])
-  
 
+const elective = true
 // console.log("users",users)
-  setTimeout(() => {
-    setMessage('');
-  },10000);
+  // setTimeout(() => {
+  //   setMessage('');
+  // },10000);
  
   useEffect(()=>{
      const fetchCourses = async()=>{
@@ -80,25 +80,25 @@ const ElectiveCourseList = ({ users, setUsers}) => {
   },[])
 
 
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
+  // const handleConfirmClose = (user) => {
+  //   setConfirmOpenIncomplete(false);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
    
-  };
+  // };
   
-  const handleConfirmDelete = () => {
-    unAssign(selectedUser);
-    // handleSave(selectedUser);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-  };
-  const handleConfirmDel = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenDelete(true);
-  };
+  // const handleConfirmDelete = () => {
+  //   unAssign(selectedUser);
+  //   // handleSave(selectedUser);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
+  // const handleConfirmDel = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenDelete(true);
+  // };
   const sortedstudent = [...users].sort((a, b) => a.assign_student_id - b.assign_student_id);
   const columns = [
   
@@ -171,16 +171,16 @@ const ElectiveCourseList = ({ users, setUsers}) => {
 
   return (
     <>
-      {confirmOpenDelete && (
+      {/* {confirmOpenDelete && (
     <WarningMessageObsolote
       isAssignPage={isAssignPage}
       confirmOpenObsolote={confirmOpenDelete}
       handleConfirmClose={handleConfirmClose}
-      handleConfirm={handleConfirmDelete}
+      // handleConfirm={handleConfirmDelete}
       details={details}
      
     />
-  )}
+  )} */}
        {iselective && <ElectiveModal courses={courses} users={users} setElective={setElective} students={students} setUsers={setUsers}/>}
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
@@ -192,7 +192,7 @@ const ElectiveCourseList = ({ users, setUsers}) => {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           components={{
             NoRowsOverlay: () => (
