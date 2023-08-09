@@ -18,7 +18,7 @@ export default function PMmain() {
         </div>
 
         <div className="flex font-bold text-xl">
-          <Link href="/programManager/Attendance">
+          <Link href="/programManager/attendance">
             <button
               className="primary-button hover:text-white hover:font-bold  justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700  rounded uppercase"
               type="button"
