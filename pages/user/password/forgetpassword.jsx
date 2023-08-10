@@ -31,7 +31,7 @@ const ForgetPassword = () => {
 
   const router = useRouter();
   const { redirect } = router.query;
-  // console.log('session?.user=>', session?.user);
+  // // console.log('session?.user=>', session?.user);
   useEffect(() => {
     if (session?.user) {
       router.push(redirect || "/");
@@ -53,30 +53,30 @@ const ForgetPassword = () => {
       const res = await axios.post("/api/user/password/forgetpassword", {
         email,
       });
-      console.log("=======res.data======");
-      // console.log(errorMessage)
-      console.log(res.data);
+      // console.log("=======res.data======");
+      // // console.log(errorMessage)
+      // console.log(res.data);
       const emailToken = res.data.emailToken;
       // const lname = res.data.lname;
       // const fname = res.data.fname;
       const ID = res.data.ID;
-      // console.log(emailToken)
+      // // console.log(emailToken)
 
-      console.log("before email");
-      console.log(router);
+      // console.log("before email");
+      // console.log(router);
       await EmailForResetPassword({
         emailToken,
         ID,
         email,
         router,
       });
-      console.log("after email");
-      console.log("asd===asd===asd");
-      console.log(emailToken);
-      console.log(ID);
-      console.log(email);
+      // console.log("after email");
+      // console.log("asd===asd===asd");
+      // console.log(emailToken);
+      // console.log(ID);
+      // console.log(email);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setErrorMessage(getError(err));
     }
   };

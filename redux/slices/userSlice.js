@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlice = createSlice({
-  name: 'userstate',
+  name: "userstate",
   initialState: {
     userState: {
       authenticating: false,
@@ -134,7 +134,7 @@ export const userSlice = createSlice({
         },
       };
     },
-      isLogout: (state, action) => {
+    isLogout: (state, action) => {
       return {
         ...state,
         userState: {
@@ -163,5 +163,5 @@ export const {
   isLogout,
 } = userSlice.actions;
 // export const selectUser = (state) => state.userState;
-// console.log('selectUser==', selectUser);
+// // console.log('selectUser==', selectUser);
 export default userSlice.reducer;

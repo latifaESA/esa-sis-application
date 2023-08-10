@@ -5,8 +5,8 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import React from 'react';
-import Modal from '@mui/material/Modal';
+import React from "react";
+import Modal from "@mui/material/Modal";
 
 function WarningMessageIncomplete({
   confirmOpenIncomplete,
@@ -17,21 +17,21 @@ function WarningMessageIncomplete({
     <Modal
       open={confirmOpenIncomplete}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
           Are you sure you want to Activate this User ?
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirm();
             }}
@@ -53,21 +53,21 @@ function WarningMessageUpdateCourse({
     <Modal
       open={confirmOpenIncomplete}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
           Are you sure you want to Update this Course ?
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirm();
             }}
@@ -85,32 +85,40 @@ function WarningMessageObsolote({
   handleConfirmClose,
   handleConfirm,
   isAssignPage,
-  details
-  
+  details,
 }) {
-  // console.log(details)
+  // // console.log(details)
   return (
     <Modal
       open={confirmOpenObsolote}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-       { isAssignPage ?   <p className='text-gray-700 mb-4'>
-          Are you sure you want to UnAssign teacher <span className='text-red-500 font-bold'>{details.teacher_firstname} {details.teacher_lastname}</span> from course <span className='text-red-500 font-bold'>{details.course_id}</span>?
-        </p>:  <p className='text-gray-700 mb-4'>
-          Are you sure you want to Delete this User?
-        </p> }
-      
-        <div className='flex justify-end'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        {isAssignPage ? (
+          <p className="text-gray-700 mb-4">
+            Are you sure you want to UnAssign teacher{" "}
+            <span className="text-red-500 font-bold">
+              {details.teacher_firstname} {details.teacher_lastname}
+            </span>{" "}
+            from course{" "}
+            <span className="text-red-500 font-bold">{details.course_id}</span>?
+          </p>
+        ) : (
+          <p className="text-gray-700 mb-4">
+            Are you sure you want to Delete this User?
+          </p>
+        )}
+
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirm();
             }}
@@ -131,15 +139,15 @@ function WarningMessageCancleIncomplete({
     <Modal
       open={cancleIncomplete}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
           You are not permitted to alter the status as it is still incomplete.
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
@@ -155,16 +163,16 @@ function ErrorMessage({ handleOpenErrorMessage, handleCloseErroMessage }) {
     <Modal
       open={handleOpenErrorMessage}
       onClose={handleCloseErroMessage}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <h1 className='text-red-500 font-bold mb-5'>An Error Occured!</h1>
-        <p className='text-gray-700 mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <h1 className="text-red-500 font-bold mb-5">An Error Occured!</h1>
+        <p className="text-gray-700 mb-4">
           Column item already used by a user,you can&apos;t delete it.
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleCloseErroMessage}
           >
             Close
@@ -185,20 +193,20 @@ function NotificatonMessages({
     <Modal
       open={handleOpenNotificatonMessages}
       onClose={handleCloseNotificatonMessages}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <h1 className='text-red-500 font-bold mb-5'>{`${selectedNotification[0].action}`}</h1>
-        <p className='text-gray-700 mb-4'>{`${selectedNotification[0].message}`}</p>
-        <div className='flex justify-end'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <h1 className="text-red-500 font-bold mb-5">{`${selectedNotification[0].action}`}</h1>
+        <p className="text-gray-700 mb-4">{`${selectedNotification[0].message}`}</p>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleCloseNotificatonMessages}
           >
             Close
           </button>
           <button
-            className='bg-green-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-green-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleSolvedClicked}
           >
             Solved
@@ -211,20 +219,20 @@ function NotificatonMessages({
 function NotificatonMessage({
   handleOpenNotificatonMessages,
   handleCloseNotificatonMessages,
-  messages
+  messages,
 }) {
   return (
     <Modal
       open={handleOpenNotificatonMessages}
       onClose={handleCloseNotificatonMessages}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <h1 className='text-red-500 font-bold mb-5'></h1>
-        <h3 className='text-gray-600 mb-4'>{messages}</h3>
-        <div className='flex justify-end'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <h1 className="text-red-500 font-bold mb-5"></h1>
+        <h3 className="text-gray-600 mb-4">{messages}</h3>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleCloseNotificatonMessages}
           >
             Close
@@ -245,21 +253,21 @@ function WarningMessageDelete({
     <Modal
       open={confirmOpenDelete}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
           {`Are you sure you want to delete ${selectedUser.fname} ${selectedUser.lname} account?`}
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirmDelete();
             }}
@@ -281,21 +289,21 @@ function WarningMessageNotVerified({
     <Modal
       open={confirmOpenNotVerified}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 font-bold mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 font-bold mb-4">
           {`Are you sure you want to lock ${selectedUser.fname} ${selectedUser.lname}'s account?`}
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirmNotVerified();
             }}
@@ -318,21 +326,21 @@ function WarningMessageVerified({
     <Modal
       open={confirmOpenVerified}
       onClose={handleConfirmClose}
-      className='top-0 left-0 w-full h-full flex items-center justify-center'
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
-      <div className='bg-white w-full max-w-lg rounded-lg shadow-lg p-10'>
-        <p className='text-gray-700 font-bold mb-4'>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 font-bold mb-4">
           {`Are you sure you want to unlock ${selectedUser.fname} ${selectedUser.lname}'s account?`}
         </p>
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            className='bg-red-500 text-white px-4 py-2 rounded mr-4'
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
             onClick={handleConfirmClose}
           >
             Cancel
           </button>
           <button
-            className='bg-blue-500 text-white px-4 py-2 rounded'
+            className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
               handleConfirmVerified();
             }}

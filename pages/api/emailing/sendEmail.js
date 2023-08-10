@@ -6,37 +6,37 @@
  * Copyright (c) 2023 ESA
  */
 
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
-import sis_app_logger from '../../api/logger';
-import useragent from 'useragent';
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
+import sis_app_logger from "../../api/logger";
+import useragent from "useragent";
 
 /* Loading the environment variables from the .env file. */
-require('dotenv').config();
+require("dotenv").config();
 
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 async function sendEmail(req, res) {
   // const sendEmail = (req, res) => {
-  // console.log('sendEmail..........');
-  // console.log('req.body=', req.body);
+  // // console.log('sendEmail..........');
+  // // console.log('req.body=', req.body);
   const incomingEmail = JSON.parse(decrypt(req.body.data));
-  // console.log('incomingEmail=', incomingEmail);
+  // // console.log('incomingEmail=', incomingEmail);
   const { from, to, cc, bcc, subject, emailBody, attachments, purpose } =
     incomingEmail;
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
   // const { from, to, cc,bcc, subject, emailBody, attachments } = req.body;
   /* Creating a transporter object using the default SMTP transport. */
   const mailTransporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    port: '587',
+    host: "smtp.office365.com",
+    port: "587",
     auth: {
       // TODO:will be changed to read from admin dashbord setting ()
       user: process.env.OFFICE365_EMAIL,
       pass: process.env.OFFICE365_PASSWORD,
     },
     secureConnection: false,
-    tls: { ciphers: 'SSLv3' },
+    tls: { ciphers: "SSLv3" },
     debug: false, // show debug output
     logger: false, // log information in console
   });
@@ -82,7 +82,7 @@ async function sendEmail(req, res) {
   // eslint-disable-next-line no-unused-vars
   mailTransporter.sendMail(mailOption, (err, data) => {
     if (err) {
-      // console.log(err);
+      // // console.log(err);
       sis_app_logger.error(
         `${new Date()}=---=${purpose} email Failed=${to}=${JSON.stringify(
           err
@@ -102,8 +102,8 @@ async function sendEmail(req, res) {
 
       res.status(500).send({ error: JSON.stringify(err) });
     } else {
-      // console.log('Email sent: ' + data.response);
-      res.status(200).send({ message: 'success' });
+      // // console.log('Email sent: ' + data.response);
+      res.status(200).send({ message: "success" });
 
       sis_app_logger.info(
         `${new Date()}=1=${purpose} email Sent=${to}=${

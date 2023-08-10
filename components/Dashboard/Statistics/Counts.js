@@ -6,20 +6,20 @@
  * Copyright (c) 2023 ESA
  */
 
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import UnpublishedIcon from '@mui/icons-material/Unpublished';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import UpdateDisabledIcon from '@mui/icons-material/UpdateDisabled';
-import { Box, Paper, Typography } from '@mui/material';
-import axios from 'axios';
-import React from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
-import { useDispatch, useSelector } from 'react-redux';
-import { appIsWaiting } from '../../../redux/slices/appSlice';
-import ProgressIndicator from '../../progressIndicator';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import UpdateDisabledIcon from "@mui/icons-material/UpdateDisabled";
+import { Box, Paper, Typography } from "@mui/material";
+import axios from "axios";
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
+import { useDispatch, useSelector } from "react-redux";
+import { appIsWaiting } from "../../../redux/slices/appSlice";
+import ProgressIndicator from "../../progressIndicator";
 
 const Counts = () => {
   const [users, setUsers] = useState([]);
@@ -36,9 +36,9 @@ const Counts = () => {
 
   useEffect(() => {
     const getAllUsers = async () => {
-      // console.log('in getAllUsers...');
+      // // console.log('in getAllUsers...');
       try {
-        const response = await axios.get('/api/admin/listusers');
+        const response = await axios.get("/api/admin/listusers");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
           setUsers(incomingData);
@@ -60,7 +60,7 @@ const Counts = () => {
   }, []);
 
   const appsIncomplete = users.filter((user) => {
-    return user.status === 'incomplete';
+    return user.status === "incomplete";
   });
 
   //const appssubmitted = users.filter((user) => {
@@ -93,7 +93,7 @@ const Counts = () => {
     const currentWeek = new Date().getWeek();
     return users.filter((user) => {
       const userWeek = new Date(user.updatedAt).getWeek();
-      if (userWeek === currentWeek && user.status === 'submitted') {
+      if (userWeek === currentWeek && user.status === "submitted") {
         count++;
         return true;
       }
@@ -119,9 +119,9 @@ const Counts = () => {
       return false;
     }).length;
   };
-  //console.log(filterWeeklyUsers(users))
-  //console.log(filterWeeklySubmittedUsers(users))
-  //console.log(filterWeeklySubmittedUsers.length);
+  //// console.log(filterWeeklyUsers(users))
+  //// console.log(filterWeeklySubmittedUsers(users))
+  //// console.log(filterWeeklySubmittedUsers.length);
 
   //const SubmitWeekCount =
   //submittedUsersPerWeek[Object.keys(submittedUsersPerWeek).pop()] || '---';
@@ -146,14 +146,14 @@ const Counts = () => {
     //completemonthlycount++;
     //}
     //}
-    if (status === 'submitted') {
+    if (status === "submitted") {
       const userMonth = new Date(user.updatedAt).getMonth();
       const userYear = new Date(user.updatedAt).getFullYear();
       if (userMonth === currentMonth && userYear === currentYear) {
         submitmonthlycount++;
       }
     }
-    if (status === 'obsolete') {
+    if (status === "obsolete") {
       const userMonth = new Date(user.updatedAt).getMonth();
       const userYear = new Date(user.updatedAt).getFullYear();
       if (userMonth === currentMonth && userYear === currentYear) {
@@ -176,18 +176,18 @@ const Counts = () => {
         <>
           <Box
             sx={{
-              display: { xs: 'flex', md: 'grid' },
-              gridTemplateColumns: 'repeat(2,2fr)',
-              gridAutoRows: 'minmax(100px, auto)',
+              display: { xs: "flex", md: "grid" },
+              gridTemplateColumns: "repeat(2,2fr)",
+              gridAutoRows: "minmax(100px, auto)",
               gap: 3,
-              textAlign: 'center',
-              flexDirection: 'column',
+              textAlign: "center",
+              flexDirection: "column",
             }}
           >
             <Paper elevation={3} sx={{ p: 4 }}>
               <Typography
                 variant="h4"
-                fontWeight={'bold'}
+                fontWeight={"bold"}
                 fontSize={30}
                 marginBottom={2}
               >
@@ -195,13 +195,13 @@ const Counts = () => {
               </Typography>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <PeopleAltIcon
-                  style={{ color: 'blue' }}
+                  style={{ color: "blue" }}
                   sx={{ height: 70, width: 70, opacity: 0.7, mr: 1 }}
                 />
                 <Typography variant="h3">{users.length}</Typography>
@@ -211,7 +211,7 @@ const Counts = () => {
             <Paper elevation={3} sx={{ p: 4 }}>
               <Typography
                 variant="h4"
-                fontWeight={'bold'}
+                fontWeight={"bold"}
                 fontSize={30}
                 marginBottom={2}
               >
@@ -219,13 +219,13 @@ const Counts = () => {
               </Typography>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <UnpublishedIcon
-                  style={{ color: 'red' }}
+                  style={{ color: "red" }}
                   sx={{ height: 70, width: 70, opacity: 0.6, mr: 1 }}
                 />
                 <Typography variant="h3">{appsIncomplete.length}</Typography>
@@ -237,27 +237,27 @@ const Counts = () => {
 
           <Box
             sx={{
-              display: { xs: 'flex', md: 'grid' },
-              gridTemplateColumns: 'repeat(2,2fr)',
-              gridAutoRows: 'minmax(100px, auto)',
+              display: { xs: "flex", md: "grid" },
+              gridTemplateColumns: "repeat(2,2fr)",
+              gridAutoRows: "minmax(100px, auto)",
               gap: 3,
-              textAlign: 'center',
-              flexDirection: 'column',
+              textAlign: "center",
+              flexDirection: "column",
             }}
           >
             <Paper elevation={3} sx={{ p: 4 }}>
-              <Typography variant="h4" fontWeight={'bold'} marginBottom={2}>
+              <Typography variant="h4" fontWeight={"bold"} marginBottom={2}>
                 Weekly
               </Typography>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <AppRegistrationIcon
-                  style={{ color: 'orange' }}
+                  style={{ color: "orange" }}
                   sx={{ height: 40, width: 40, opacity: 0.6, mr: 1 }}
                 />
 
@@ -268,13 +268,13 @@ const Counts = () => {
 
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <HowToRegIcon
-                  style={{ color: 'green' }}
+                  style={{ color: "green" }}
                   sx={{ height: 40, width: 40, opacity: 0.6, mr: 1 }}
                 />
 
@@ -287,18 +287,18 @@ const Counts = () => {
             {/* Monthly */}
 
             <Paper elevation={3} sx={{ p: 4 }}>
-              <Typography variant="h4" fontWeight={'bold'} marginBottom={2}>
+              <Typography variant="h4" fontWeight={"bold"} marginBottom={2}>
                 Monthly
               </Typography>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <AppRegistrationIcon
-                  style={{ color: 'orange' }}
+                  style={{ color: "orange" }}
                   sx={{ height: 40, width: 40, opacity: 0.6, mr: 1 }}
                 />
                 <Typography variant="h3" fontSize={18}>
@@ -308,13 +308,13 @@ const Counts = () => {
 
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <HowToRegIcon
-                  style={{ color: 'green' }}
+                  style={{ color: "green" }}
                   sx={{ height: 40, width: 40, opacity: 0.6, mr: 1 }}
                 />
                 <Typography variant="h3" fontSize={18}>
@@ -324,13 +324,13 @@ const Counts = () => {
 
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <UpdateDisabledIcon
-                  style={{ color: 'red' }}
+                  style={{ color: "red" }}
                   sx={{ height: 40, width: 40, opacity: 0.9, mr: 1 }}
                 />
                 <Typography variant="h3" fontSize={18}>

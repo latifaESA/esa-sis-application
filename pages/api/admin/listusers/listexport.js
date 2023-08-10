@@ -6,52 +6,52 @@
  * Copyright (c) 2023 ESA
  */
 
-import { connect, disconnect } from '../../../../utilities/db';
-import encrypt from '../../../../utilities/encrypt_decrypt/encryptText';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]';
+import { connect, disconnect } from "../../../../utilities/db";
+import encrypt from "../../../../utilities/encrypt_decrypt/encryptText";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
 import {
   FilterDataExport,
   findextramajor,
   findemajor_user,
-} from '../../controller/accountquery';
-import sis_app_logger from '../../../api/logger';
-import useragent from 'useragent';
+} from "../../controller/accountquery";
+import sis_app_logger from "../../../api/logger";
+import useragent from "useragent";
 
 async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== "GET") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required' });
+    return res.status(401).send({ message: "Signin Required" });
   }
 
   const { user } = session;
 
-  if (user.role === '1') {
-    return res.status(401).send({ message: 'You are Unauthorized' });
+  if (user.role === "1") {
+    return res.status(401).send({ message: "You are Unauthorized" });
   }
-  const ViewNames = ['usersbba', 'usersmba_emba', 'usersother'];
+  const ViewNames = ["usersbba", "usersmba_emba", "usersother"];
   let response = {};
-  let filter2 = '';
+  let filter2 = "";
 
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
 
-  if (user.role === '2') {
+  if (user.role === "2") {
     const connection = await connect();
     const extra_major = await findextramajor(connection, user._id);
-    console.log('extra', extra_major);
+    // console.log('extra', extra_major);
     const user_major = await findemajor_user(connection, user._id);
 
     const majorIds = [
       ...extra_major.map((item) => item.major_id),
       user_major.major,
-    ].join(',');
+    ].join(",");
 
-    console.log('majorIds', majorIds);
+    // console.log('majorIds', majorIds);
     filter2 += `WHERE UserProfileID !='${user._id}' AND role !='0' AND role !='2' AND role!='3' AND isVerified !=0  AND major IN (${majorIds})`;
 
     try {
@@ -61,10 +61,10 @@ async function handler(req, res) {
           ViewNames[i],
           filter2
         );
-        console.log(filter2);
+        // console.log(filter2);
         response[ViewNames[i]] = result;
-        // console.log('response', response);
-        // console.log(`result for ${ViewNames[i]}`, result);
+        // // console.log('response', response);
+        // // console.log(`result for ${ViewNames[i]}`, result);
       }
       const encryptedResponse = encrypt(JSON.stringify(response));
       sis_app_logger.info(
@@ -83,7 +83,7 @@ async function handler(req, res) {
           userAgentinfo.family
         }=${userAgentinfo.source}=${userAgentinfo.device.family}`
       );
-      res.status(500).send({ message: 'Internal Server Error' });
+      res.status(500).send({ message: "Internal Server Error" });
     }
   } else {
     filter2 += `WHERE UserProfileID !='${user._id}' AND role !='0' AND role !='2' AND role!='3' AND isVerified !=0`;
@@ -97,8 +97,8 @@ async function handler(req, res) {
           filter2
         );
         response[ViewNames[i]] = result;
-        // console.log('response', response);
-        // console.log(`result for ${ViewNames[i]}`, result);
+        // // console.log('response', response);
+        // // console.log(`result for ${ViewNames[i]}`, result);
       }
 
       const encryptedResponse = encrypt(JSON.stringify(response));
@@ -118,7 +118,7 @@ async function handler(req, res) {
           userAgentinfo.family
         }=${userAgentinfo.source}=${userAgentinfo.device.family}`
       );
-      res.status(500).send({ message: 'Internal Server Error' });
+      res.status(500).send({ message: "Internal Server Error" });
     }
 
     await disconnect(connection);

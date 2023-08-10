@@ -6,32 +6,32 @@
  * Copyright (c) 2023 ESA
  */
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
 
-import cloudinary from 'cloudinary';
-import selection_data from '../../../utilities/selection_data';
+import cloudinary from "cloudinary";
+import selection_data from "../../../utilities/selection_data";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To send' });
+    return res.status(401).send({ message: "Signin Required To send" });
   }
   const incomingData = JSON.parse(decrypt(req.body.data));
   const name = incomingData.userName;
   const StudentID = incomingData.userID;
   const folder = incomingData.folder;
-  console.log("dataDeletefolder",incomingData)
-  // console.log('deleteFolderInCloud name==>', name);
-  // console.log('deleteFolderInCloud StudentID==>', StudentID);
-  // console.log('deleteFolderInCloud folder==>', folder);
+  // console.log("dataDeletefolder",incomingData)
+  // // console.log('deleteFolderInCloud name==>', name);
+  // // console.log('deleteFolderInCloud StudentID==>', StudentID);
+  // // console.log('deleteFolderInCloud folder==>', folder);
 
   // TODO: Delete relevant data from Cloudinary
   cloudinary.config({
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       );
       console.log(result);
     } catch (error) {
-      console.error('Error=', error);
+      console.error("Error=", error);
     }
   };
   // deleteFolderresources(`onlineUsers/${name}-${StudentID}/application`);
@@ -58,12 +58,12 @@ export default async function handler(req, res) {
   // const deleteFolder = async (folderName) => {
   //   try {
   //     const result = await cloudinary.api.delete_folder(folderName);
-  //     console.log(result);
+  //     // console.log(result);
   //   } catch (error) {
   //     console.error('Error=', error);
   //   }
   // };
 
   // deleteFolder(`onlineUsers/${name}-${StudentID}/student`);
-  return res.status(200).send({ message: 'Succeed' });
+  return res.status(200).send({ message: "Succeed" });
 }

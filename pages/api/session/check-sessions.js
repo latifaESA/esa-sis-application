@@ -7,10 +7,10 @@
  */
 
 // import { getSession } from 'next-auth/react';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
-import sis_app_logger from '../../api/logger';
-import useragent from 'useragent';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import sis_app_logger from "../../api/logger";
+import useragent from "useragent";
 
 const handler = async (req, res) => {
   // Get all active sessions
@@ -19,17 +19,17 @@ const handler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
   const sessions = await session?.provider?.getAllSessions();
 
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
-  console.log(`Session: ${session?.user}`);
-  console.log(`Sessions: ${sessions}`);
+  // console.log(`Session: ${session?.user}`);
+  // console.log(`Sessions: ${sessions}`);
   // Check the expiration of each session
   sessions?.forEach((session) => {
     const expiresAt = new Date(session?.expires).getTime();
     const now = Date.now();
     if (expiresAt < now) {
       // Session has expired, log it
-      console.log(`Session expired: ${session?.user.email}`);
+      // console.log(`Session expired: ${session?.user.email}`);
       sis_app_logger.info(
         `${new Date()}=${session?.user.role}=session expire=${
           session?.user.email
@@ -41,7 +41,7 @@ const handler = async (req, res) => {
   });
 
   // Send a response to indicate the check has completed
-  res.status(200).json({ message: 'Session check completed' });
+  res.status(200).json({ message: "Session check completed" });
 };
 
 export default handler;

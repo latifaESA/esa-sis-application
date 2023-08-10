@@ -77,7 +77,7 @@ export default function ModalperID({
       handlePromotion();
     }, 2000);
   }, [details]);
-  console.log("promotions", promotion);
+  // console.log("promotions", promotion);
   return (
     <>
       <>

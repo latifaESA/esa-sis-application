@@ -27,19 +27,19 @@
 //     </div>
 //   );
 // }
-import { useEffect, useState } from 'react';
-import { parse } from 'querystring';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useSelector } from 'react-redux';
-import { SignOut } from '../components/SignOut';
-import Head from 'next/head';
-import encrypt from '../utilities/encrypt_decrypt/encryptText';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
+import { useEffect, useState } from "react";
+import { parse } from "querystring";
+import Link from "next/link";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+import { SignOut } from "../components/SignOut";
+import Head from "next/head";
+import encrypt from "../utilities/encrypt_decrypt/encryptText";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function AuthError(statusCode) {
-  const [message, setmessage] = useState('');
+  const [message, setmessage] = useState("");
   const { data: session } = useSession();
   const appState = useSelector(
     (state) => state.persistedReducer.app_state.appState
@@ -49,23 +49,23 @@ export default function AuthError(statusCode) {
       JSON.stringify({
         email: session?.user.email,
         role: session?.user.role,
-        info: 'From auth-error,Unhandled ERROR',
+        info: "From auth-error,Unhandled ERROR",
         error: `${
           Object.keys(statusCode).length !== 0
             ? statusCode
-            : 'Undefined Error on client side'
+            : "Undefined Error on client side"
         }`,
       })
     );
-    await axios.put('/api/logger/sendWarnToLogger', {
+    await axios.put("/api/logger/sendWarnToLogger", {
       data: encryptedBody,
     });
   };
   useEffect(() => {
     sendwarn();
-    // console.log('statusCode=',statusCode);
-    // console.log('session?.user.email=',session?.user.email);
-    // console.log('session?.user.role=',session?.user.role);
+    // // console.log('statusCode=',statusCode);
+    // // console.log('session?.user.email=',session?.user.email);
+    // // console.log('session?.user.role=',session?.user.role);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session !== undefined && statusCode !== undefined]);
 
@@ -114,6 +114,6 @@ export default function AuthError(statusCode) {
 }
 
 AuthError.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : '';
+  const statusCode = res ? res.statusCode : err ? err.statusCode : "";
   return statusCode;
 };

@@ -6,13 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import moment from 'moment';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
+import moment from "moment";
+import axios from "axios";
+import selection_data from "../../utilities/selection_data";
 
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
@@ -26,33 +26,33 @@ import selection_data from '../../utilities/selection_data';
 //   WarningMessageObsolote,
 // } from './WarningMessage';
 // import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 // import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
-import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
-import ModalperID from '../../pages/programManager/ModalForm/ModalperID';
-import Archive from '../../pages/programManager/ModalForm/Archive';
+import UpdateModal from "../../pages/programManager/ModalForm/UpdateModal";
+import ModalperID from "../../pages/programManager/ModalForm/ModalperID";
+import Archive from "../../pages/programManager/ModalForm/Archive";
 
 const AttendanceList = ({ users }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;
   // const presence = selection_data.presence;
   // const [presentEnable, setPesentEnable] = useState(null);
   // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
-  const [editModal, setEditModal] = useState(false)
+  const [editModal, setEditModal] = useState(false);
 
-  const [attendance, setAttendance] = useState([])
-  const[details , setDetails]= useState([])
-  const [courseName , setCourseName]= useState('');
-  const [teachersFirstname , setTeacherFirstName]=useState('');
-  const [teacherslastname , setTeacherlastname]=useState('');
-  const [date , setDate]=useState('')
-  const [showPrint,setShowPrint] = useState(false)
-  const [archive,setShowArchive] = useState(false)
+  const [attendance, setAttendance] = useState([]);
+  const [details, setDetails] = useState([]);
+  const [courseName, setCourseName] = useState("");
+  const [teachersFirstname, setTeacherFirstName] = useState("");
+  const [teacherslastname, setTeacherlastname] = useState("");
+  const [date, setDate] = useState("");
+  const [showPrint, setShowPrint] = useState(false);
+  const [archive, setShowArchive] = useState(false);
 
-//sort by Teacher Firstname
+  //sort by Teacher Firstname
   // const [sortedRows, setSortedRows] = useState(users);
 
   // const handleSort = (field) => {
@@ -60,78 +60,74 @@ const AttendanceList = ({ users }) => {
   //   setSortedRows(sorted);
   // };
   //sort by date
-//   const sortedUsers = [...users].sort((a, b) =>
-//   moment(b.attendance_date).diff(moment(a.attendance_date))
-// );
+  //   const sortedUsers = [...users].sort((a, b) =>
+  //   moment(b.attendance_date).diff(moment(a.attendance_date))
+  // );
 
+  //     setCourses(datesArray);
 
+  //   } catch (error) {
+  //     return error
+  //   }
+  // }
+  // getCourses();
 
-    //     setCourses(datesArray);
+  // const handleTeacher = async () => {
+  //   try {
 
+  //     let major_id = session.user.majorid;
+  //     // let course_id = coursesValue ;
+  //     const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
+  //     setAllTeachers(data.data)
+  //     // console.log('allteacher', allteachers)
 
-    //   } catch (error) {
-    //     return error
-    //   }
-    // }
-    // getCourses();
+  //     const datesArray = [];
+  //     data.data.forEach((teachers) => {
+  //       datesArray.push(teachers.teacher_firstname);
 
-    // const handleTeacher = async () => {
-    //   try {
+  //     });
+  //     setTeachers(datesArray)
 
-    //     let major_id = session.user.majorid;
-    //     // let course_id = coursesValue ;
-    //     const { data } = await axios.post("/api/pmApi/getTeachersByMajorCourse", { major_id })
-    //     setAllTeachers(data.data)
-    //     console.log('allteacher', allteachers)
+  //   } catch (error) {
+  //     return error
+  //   }
+  // }
+  // handleTeacher()
 
-    //     const datesArray = [];
-    //     data.data.forEach((teachers) => {
-    //       datesArray.push(teachers.teacher_firstname);
+  // const getStudent = async () => {
+  //   try {
+  //     let major_id = session.user.majorid
+  //     const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
+  //     // console.log(data.data)
+  //     // console.log(data.data)
+  //     setStudent(data.data)
+  //   } catch (error) {
+  //     return error
+  //   }
+  //sort by attendance_id
+  const [sortedRows, setSortedRows] = useState(users);
+  useEffect(() => {
+    const sorted = [...users].sort((a, b) => a.attendance_id - b.attendance_id);
+    setSortedRows(sorted);
+  }, [users]);
 
-    //     });
-    //     setTeachers(datesArray)
-
-
-    //   } catch (error) {
-    //     return error
-    //   }
-    // }
-    // handleTeacher()
-
-    // const getStudent = async () => {
-    //   try {
-    //     let major_id = session.user.majorid
-    //     const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id })
-    //     console.log(data.data)
-    //     console.log(data.data)
-    //     setStudent(data.data)
-    //   } catch (error) {
-    //     return error
-    //   }
-//sort by attendance_id
-    const [sortedRows, setSortedRows] = useState(users);
-    useEffect(() => {
-      const sorted = [...users].sort((a, b) => a.attendance_id - b.attendance_id);
-      setSortedRows(sorted);
-    }, [users]);
-  
-
-  const getDetails = async (event) =>{
+  const getDetails = async (event) => {
     try {
-      const attendance_id = event.attendance_id
-      const { data } = await axios.post(`/api/pmApi/attendanceDetails`, {attendance_id})
-      // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
-      setTeacherFirstName(data.data[0].teacher_firstname)
-      setTeacherlastname(data.data[0].teacher_lastname)
-      setCourseName(data.data[0].course_name)
-      setDate(data.data[0].attendance_date)
+      const attendance_id = event.attendance_id;
+      const { data } = await axios.post(`/api/pmApi/attendanceDetails`, {
+        attendance_id,
+      });
+      // // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
+      setTeacherFirstName(data.data[0].teacher_firstname);
+      setTeacherlastname(data.data[0].teacher_lastname);
+      setCourseName(data.data[0].course_name);
+      setDate(data.data[0].attendance_date);
 
-      setDetails(data.data)
+      setDetails(data.data);
     } catch (error) {
-      return error
+      return error;
     }
-  }
-
+  };
 
   // const handleSave = (user) => {
   //   axios
@@ -145,7 +141,7 @@ const AttendanceList = ({ users }) => {
   //     })
   //     .then((response) => {
   //       // Handle success
-  //       console.log(response.data);
+  //       // console.log(response.data);
   //       setMessage('User Status Changed Succesfully!');
 
   //       //Update the user's status and major in the table
@@ -157,15 +153,15 @@ const AttendanceList = ({ users }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error);
+  //       // console.log(error);
   //     });
   // };
 
   // const handlePrintSelected = () => {
   //   const selectedIDs = selectedRows;
-  //   console.log('selectedIDs', selectedIDs);
+  //   // console.log('selectedIDs', selectedIDs);
   //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-  //   console.log('selectedUsersbefore', selectedUsers);
+  //   // console.log('selectedUsersbefore', selectedUsers);
   //   selectedUsers.forEach((user) => {
   //     if (user.reportURL) {
   //       window.open(user.reportURL);
@@ -174,29 +170,27 @@ const AttendanceList = ({ users }) => {
   //     }
   //   });
 
-  //   console.log('selectedUsers', selectedUsers);
+  //   // console.log('selectedUsers', selectedUsers);
   // };
 
   const handleShowAll = async (event) => {
-
     try {
       // setEditModal(true)
 
-      const attendance_id = event.attendance_id
-      const { data } = await axios.post(`/api/pmApi/getAllAttendance`, {attendance_id})
+      const attendance_id = event.attendance_id;
+      const { data } = await axios.post(`/api/pmApi/getAllAttendance`, {
+        attendance_id,
+      });
 
-      setAttendance(data.data)
-
+      setAttendance(data.data);
     } catch (error) {
-      return error
+      return error;
     }
-
-  }
+  };
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
-
 
   const columns = [
     // {
@@ -214,15 +208,15 @@ const AttendanceList = ({ users }) => {
     //   width: 90,
     // },
     {
-      field: 'Name',
-      headerName: 'teacher Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "Name",
+      headerName: "teacher Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       renderCell: (params) =>
-        `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
-
-
+        `${params.row.teacher_firstname || ""} ${
+          params.row.teacher_lastname || ""
+        }`,
     },
     // {
     //   field: 'major_id',
@@ -232,18 +226,18 @@ const AttendanceList = ({ users }) => {
     //   width: 90,
     // },
     {
-      field: 'major_name',
-      headerName: 'Major Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "major_name",
+      headerName: "Major Name",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
 
     {
-      field: 'course_id',
-      headerName: 'Course ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_id",
+      headerName: "Course ID",
+      headerAlign: "center",
+      align: "center",
       width: 120,
     },
 
@@ -254,7 +248,6 @@ const AttendanceList = ({ users }) => {
     //   align: 'center',
     //   width: 100,
     //   editable: true,
-
 
     //   renderCell: (params) => {
     //     return params.value ? (
@@ -271,48 +264,50 @@ const AttendanceList = ({ users }) => {
     //     type: 'singleSelect',
     //     valueOptions: presence,
 
-
     // },
     {
-      field: 'attendance_date',
-      headerName: 'Attendance Date',
-      headerAlign: 'center',
-      align: 'center',
+      field: "attendance_date",
+      headerName: "Attendance Date",
+      headerAlign: "center",
+      align: "center",
       width: 150,
-      valueFormatter: params =>
-        moment(params?.value).format("DD/MM/YYYY"),
+      valueFormatter: (params) => moment(params?.value).format("DD/MM/YYYY"),
     },
     {
-      field: 'action',
-      headerName: 'Action',
-      width: `${session.user.role === '2' ? 300 : 150}`,
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      width: `${session.user.role === "2" ? 300 : 150}`,
+      headerAlign: "center",
+      align: "center",
       sortable: false,
       renderCell: (params) => (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <button
-            className='primary-button hover:text-white'
-            onClick={() => { handleShowAll(params.row),getDetails(params.row) ,setEditModal(true) }}
+            className="primary-button hover:text-white"
+            onClick={() => {
+              handleShowAll(params.row),
+                getDetails(params.row),
+                setEditModal(true);
+            }}
             // disabled={params.id !== presentEnable}
-            type='button'
+            type="button"
             hidden={
-              session.user.role === '1' || session.user.role === '3'
+              session.user.role === "1" || session.user.role === "3"
                 ? true
                 : false
             }
           >
             Edit
           </button>
-          
+
           <button
-            className='primary-button hover:text-white'
-            type='button'
-            onClick={()=>{getDetails(params.row),setShowPrint(true)}}
-
+            className="primary-button hover:text-white"
+            type="button"
+            onClick={() => {
+              getDetails(params.row), setShowPrint(true);
+            }}
           >
-                Print
-
+            Print
           </button>
           {/* <Link
             className='text-black'
@@ -321,13 +316,17 @@ const AttendanceList = ({ users }) => {
             // href={downloadPDF}
             
           > */}
-            <button
-              className='primary-button hover:text-white'
-              type='button'
-              onClick={()=>{ handleShowAll(params.row),getDetails(params.row) , setShowArchive(true)}}
-            >
-              Archive
-            </button>
+          <button
+            className="primary-button hover:text-white"
+            type="button"
+            onClick={() => {
+              handleShowAll(params.row),
+                getDetails(params.row),
+                setShowArchive(true);
+            }}
+          >
+            Archive
+          </button>
 
           {/* </Link> */}
           {/* <button
@@ -346,7 +345,6 @@ const AttendanceList = ({ users }) => {
         </div>
       ),
     },
-
   ];
 
   // export select to excel
@@ -357,8 +355,8 @@ const AttendanceList = ({ users }) => {
   //       const response = await axios.get('/api/admin/listusers/listexport');
   //       const incomingData = JSON.parse(decrypt(response.data.data));
   //       if (response.status === 200) {
-  //         console.log('response', response);
-  //         console.log('incomingData', incomingData);
+  //         // console.log('response', response);
+  //         // console.log('incomingData', incomingData);
   //         await exportSelect(selectedRows, incomingData, session);
   //       } else {
   //         setUsers([]);
@@ -376,8 +374,8 @@ const AttendanceList = ({ users }) => {
   //       const response = await axios.get('/api/admin/listusers/listexport');
   //       const incomingData = JSON.parse(decrypt(response.data.data));
   //       if (response.status === 200) {
-  //         console.log('response', response);
-  //         console.log('incomingData', incomingData);
+  //         // console.log('response', response);
+  //         // console.log('incomingData', incomingData);
   //         await exportAll(incomingData, session);
   //       } else {
   //         setUsers([]);
@@ -390,15 +388,61 @@ const AttendanceList = ({ users }) => {
 
   return (
     <>
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      {showPrint && <ModalperID setShowPrint={setShowPrint} attendance={attendance} session={session} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} details={details} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname} />}
-      {editModal && <UpdateModal editModal={editModal} setEditModal={setEditModal} attendance={attendance} setAttendance={setAttendance} setMessage={setMessage} courseName={courseName} teachersFirstname={teachersFirstname} teacherslastname={teacherslastname} date={date} setDate={setDate} setDetails={setDetails} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
-      {archive && <Archive  archive={archive} setShowArchive={setShowArchive} attendance={attendance} details={details} setAttendance={setAttendance} setDetails={setDetails} setDate={setDate} setCourseName={setCourseName} setTeacherFirstName={setTeacherFirstName} setTeacherlastname={setTeacherlastname}/>}
-      <Box sx={{ height: 400, width: '100%' }}>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
+      {showPrint && (
+        <ModalperID
+          setShowPrint={setShowPrint}
+          attendance={attendance}
+          session={session}
+          courseName={courseName}
+          teachersFirstname={teachersFirstname}
+          teacherslastname={teacherslastname}
+          date={date}
+          details={details}
+          setDetails={setDetails}
+          setDate={setDate}
+          setCourseName={setCourseName}
+          setTeacherFirstName={setTeacherFirstName}
+          setTeacherlastname={setTeacherlastname}
+        />
+      )}
+      {editModal && (
+        <UpdateModal
+          editModal={editModal}
+          setEditModal={setEditModal}
+          attendance={attendance}
+          setAttendance={setAttendance}
+          setMessage={setMessage}
+          courseName={courseName}
+          teachersFirstname={teachersFirstname}
+          teacherslastname={teacherslastname}
+          date={date}
+          setDate={setDate}
+          setDetails={setDetails}
+          setCourseName={setCourseName}
+          setTeacherFirstName={setTeacherFirstName}
+          setTeacherlastname={setTeacherlastname}
+        />
+      )}
+      {archive && (
+        <Archive
+          archive={archive}
+          setShowArchive={setShowArchive}
+          attendance={attendance}
+          details={details}
+          setAttendance={setAttendance}
+          setDetails={setDetails}
+          setDate={setDate}
+          setCourseName={setCourseName}
+          setTeacherFirstName={setTeacherFirstName}
+          setTeacherlastname={setTeacherlastname}
+        />
+      )}
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.attendance_id}
           rows={sortedRows}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -412,15 +456,14 @@ const AttendanceList = ({ users }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}
-
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         {/* <LowerButtons
           exportButton={exportButton}
           setisModal={setisModal}

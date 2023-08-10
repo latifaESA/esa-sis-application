@@ -1,15 +1,14 @@
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
+import formidable from "formidable";
+import fs from "fs";
+import path from "path";
 
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../../utilities/db");
 const { uploadTeacher } = require("../../controller/queries");
 
-import xlsx from 'xlsx';
+import xlsx from "xlsx";
 
-import { authOptions } from '../../auth/[...nextauth]';
-
+import { authOptions } from "../../auth/[...nextauth]";
 
 export const config = {
   api: {
@@ -18,23 +17,17 @@ export const config = {
 };
 
 async function handler(req, res) {
-
   try {
-
-
-
-
-    if (req.method !== 'POST') {
+    if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
     const session = await getServerSession(req, res, authOptions);
 
     if (!session) {
-      return res.status(401).send({ message: 'Signin Required To Save Data' });
+      return res.status(401).send({ message: "Signin Required To Save Data" });
     }
 
     // const { user } = session;
-
 
     // const { formData, attendance } = req.body;
 
@@ -45,7 +38,7 @@ async function handler(req, res) {
 
         // eslint-disable-next-line no-unused-vars
         options.filename = (name, ext, path1, form) => {
-          // console.log("user",form)
+          // // console.log("user",form)
 
           if (
             // path1.mimetype === 'application/pdf' ||
@@ -53,8 +46,8 @@ async function handler(req, res) {
             // path1.mimetype === 'image/png' ||
             // path1.mimetype === 'image/jpeg' ||
             // path1.mimetype === 'image/jpg' ||
-            path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
+            path1.mimetype ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           ) {
             let sourceDir = fs.readdirSync(place);
 
@@ -63,7 +56,7 @@ async function handler(req, res) {
               const stats = fs.statSync(filePath);
               if (stats.isFile()) {
                 // fs.unlinkSync(filePath);
-                // console.log('Deleted file:', filePath);
+                // // console.log('Deleted file:', filePath);
               }
             });
 
@@ -73,13 +66,11 @@ async function handler(req, res) {
             return (
               // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
               filename
-
             );
-
           } else {
             return res
               .status(200)
-              .send({ status: 401, message: 'file was not accepted' });
+              .send({ status: 401, message: "file was not accepted" });
           }
         };
       }
@@ -95,10 +86,10 @@ async function handler(req, res) {
       });
     };
 
-    const localDiskPath = path.parse(require('os').homedir()).root;
+    const localDiskPath = path.parse(require("os").homedir()).root;
 
     const directory =
-      localDiskPath + '/sis-application-data/sis-documents-Admin/teacher';
+      localDiskPath + "/sis-application-data/sis-documents-Admin/teacher";
 
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
@@ -109,17 +100,16 @@ async function handler(req, res) {
 
     // Access the file path from the 'files' object
     // const buffer = attendance_file.slice(-1)
-    // console.log(directory)
+    // // console.log(directory)
     if (!course_file) {
       return res.status(400).json({
         success: false,
         code: 400,
-        message: 'File path not provided.',
+        message: "File path not provided.",
       });
     }
 
     let course_files = await fs.readdirSync(directory);
-
 
     const sortedFiles = course_files.slice().sort((fileA, fileB) => {
       const getIntFromFilename = (filename) => {
@@ -143,7 +133,7 @@ async function handler(req, res) {
     const buffer = fs.readFileSync(latestFilePath);
 
     // Read the file data and create the workbook
-    const workbook = xlsx.read(buffer, { type: 'buffer' });
+    const workbook = xlsx.read(buffer, { type: "buffer" });
 
     const sheetName = workbook.SheetNames[0];
 
@@ -165,32 +155,29 @@ async function handler(req, res) {
             teacher_id: teacher.teacher_id,
             teacher_firstname: teacher.firstName,
             teacher_mail: teacher.email,
-            teacher_lastname: teacher.lastName
+            teacher_lastname: teacher.lastName,
           });
-        
+
           // You can handle the response here if needed
-        
+
           return response;
         });
-        
+
         // Wait for all promises to resolve
         const responses = await Promise.all(uploadPromises);
-        
-        
-          // console.log(fields)
+
+        // // console.log(fields)
         if (responses) {
           countSaved++; // Increment the count of saved records
         } else {
-            return res.status(401).json({
-                success:false,
-                code:401,
-                message:`Error In Create `
-            })
-            
-          
+          return res.status(401).json({
+            success: false,
+            code: 401,
+            message: `Error In Create `,
+          });
         }
       } catch (error) {
-        console.error(`Error while processing row: `, row, '\nError: ', error);
+        console.error(`Error while processing row: `, row, "\nError: ", error);
       }
     }
 
@@ -202,18 +189,14 @@ async function handler(req, res) {
       code: 201,
       message: `Teachers Uploaded Successfully! ${countSaved} Teachers saved.`,
     });
-
-
   } catch (error) {
     return res.status(500).json({
       success: false,
       code: 500,
-      message: 'An error occurred while processing the request.',
+      message: "An error occurred while processing the request.",
       error: error.message,
     });
   }
-
-
 }
 
 export default handler;

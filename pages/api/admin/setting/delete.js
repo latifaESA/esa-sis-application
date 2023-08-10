@@ -5,29 +5,32 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { connect, disconnect } from '../../../../utilities/db';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]';
-import { DeletefromDropdown, findData } from '../../controller/queries';
+import { connect, disconnect } from "../../../../utilities/db";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
+import {
+  //  DeletefromDropdown,
+  findData,
+} from "../../controller/queries";
 
 async function handler(req, res) {
-  if (req.method !== 'DELETE') {
+  if (req.method !== "DELETE") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To Delete' });
+    return res.status(401).send({ message: "Signin Required To Delete" });
   }
 
   const incomingData = JSON.parse(decrypt(req.body));
   //const incomingData = req.body.data;
   //const dataType = incomingData.dataType;
-  console.log(incomingData);
+  // console.log(incomingData);
   if (!incomingData) {
-    return res.status(400).send({ message: 'Data not found in request body' });
+    return res.status(400).send({ message: "Data not found in request body" });
   }
 
   const dataType = incomingData.dataType;
@@ -37,19 +40,19 @@ async function handler(req, res) {
   //const tableid  = xss.inHTMLData(incomingData.tableid);
   const tableid = incomingData.tableid;
   const tablename = incomingData.tablename;
-  //console.log(id);
-  //console.log(dataType);
-  //console.log(tableid);
+  //// console.log(id);
+  //// console.log(dataType);
+  //// console.log(tableid);
   if (!id) {
     res.status(422).json({
-      message: 'ID Empty!!',
+      message: "ID Empty!!",
     });
     return;
   }
 
   if (!dataType) {
     res.status(422).json({
-      message: 'dataType Empty!!',
+      message: "dataType Empty!!",
     });
     return;
   }
@@ -57,17 +60,17 @@ async function handler(req, res) {
     const connection = await connect();
 
     const existingtableID = await findData(connection, tableid, tablename, id);
-    //console.log(existingtableID);
+    //// console.log(existingtableID);
     if (!existingtableID.result) {
-      return res.status(404).send({ message: 'Table not found' });
+      return res.status(404).send({ message: "Table not found" });
     }
-    const DeleteTable = await DeletefromDropdown(
-      tablename,
-      tableid,
-      id,
-      connection
-    );
-    console.log(DeleteTable);
+    // const DeleteTable = await DeletefromDropdown(
+    //   tablename,
+    //   tableid,
+    //   id,
+    //   connection
+    // );
+    // console.log(DeleteTable);
 
     res.status(200).json({
       message: `Delete Table was successful in the database table:${dataType}`,
@@ -76,7 +79,7 @@ async function handler(req, res) {
     await disconnect(connection);
   } catch (error) {
     console.error(error);
-    res.status(400).send({ message: 'Failed to Delete table', error });
+    res.status(400).send({ message: "Failed to Delete table", error });
     //throw error;
   }
 }

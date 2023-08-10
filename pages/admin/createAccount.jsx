@@ -78,6 +78,11 @@ export default function Create() {
         "/api/admin/adminApi/createPMAccount",
         sendData
       );
+// <<<<<<< Hassan
+
+//       // console.log(data[0].rowCount);
+//       if (data[0].rowCount == 0) {
+// =======
        console.log("data",data)
       if(data === true){
         setConfirmOpenMessage(true);
@@ -85,6 +90,7 @@ export default function Create() {
       }
       // console.log(data[0].rowCount);
       else if (data[0].rowCount == 0) {
+// >>>>>>> main
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);

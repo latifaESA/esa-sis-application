@@ -30,7 +30,7 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
-import CustomSelectBox from "../customSelectBox";
+import CustomSelectBox from "../../pages/programManager/customSelectBox";
 import axios from "axios";
 
 export const Calender = () => {
@@ -63,7 +63,7 @@ export const Calender = () => {
       let { data } = await axios.post("/api/pmApi/getAll", { table });
       setAllRoomName(data.rows);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -91,8 +91,8 @@ export const Calender = () => {
     });
 
     setScheduleDate(datesArray);
-    console.log("datesArray of schedule:  ", datesArray);
-    console.log("schedule:  ", data.data);
+    // console.log("datesArray of schedule:  ", datesArray);
+    // console.log("schedule:  ", data.data);
   };
 
   const getClass = async () => {
@@ -105,7 +105,7 @@ export const Calender = () => {
       val,
     });
 
-    console.log("all classes:  ==> ", data.rows);
+    // console.log("all classes:  ==> ", data.rows);
 
     // setAllClasses(data.rows.map(clas => clas.course_id))
     setAllClasses(data.rows);
@@ -121,9 +121,9 @@ export const Calender = () => {
   };
 
   const handleAddPrevious = (data) => {
-    console.log("date.getFullYear() === > >", data.date.getFullYear());
-    console.log("date.getMonth() === > >", data.date.getMonth());
-    console.log("date.getDate() === >", data.date.getDate());
+    // console.log("date.getFullYear() === > >", data.date.getFullYear());
+    // console.log("date.getMonth() === > >", data.date.getMonth());
+    // console.log("date.getDate() === >", data.date.getDate());
 
     let ifPreviousExists = events.some((ev) =>
       areDatesEqual(
@@ -135,7 +135,7 @@ export const Calender = () => {
         )
       )
     );
-    // console.log('if exists previously ===>>',)
+    // // console.log('if exists previously ===>>',)
 
     !ifPreviousExists &&
       setEvents((prev) => [
@@ -159,9 +159,9 @@ export const Calender = () => {
   };
 
   const handleAddNext = (data) => {
-    console.log("date.getFullYear() === > >", data.date.getFullYear());
-    console.log("date.getMonth() === > >", data.date.getMonth());
-    console.log("date.getDate() === >", data.date.getDate());
+    // console.log("date.getFullYear() === > >", data.date.getFullYear());
+    // console.log("date.getMonth() === > >", data.date.getMonth());
+    // console.log("date.getDate() === >", data.date.getDate());
 
     let ifNextExists = events.some((ev) =>
       areDatesEqual(
@@ -173,7 +173,7 @@ export const Calender = () => {
         )
       )
     );
-    // console.log('if exists previously ===>>',)
+    // // console.log('if exists previously ===>>',)
 
     !ifNextExists &&
       setEvents((prev) => [
@@ -228,7 +228,7 @@ export const Calender = () => {
         pm_id: session.user.userid,
       });
 
-      console.log("axios data ==>  ", data);
+      // console.log("axios data ==>  ", data);
       if (data.success) {
         getSchedule();
       }
@@ -238,7 +238,7 @@ export const Calender = () => {
   const handlePlace = (selectedValue) => {
     // handlePlace
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    // console.log("Selected Value:", selectedValue);
     // setPlace(selectedValue)
     setPlace(
       selectedValue.length > 0 &&
@@ -249,13 +249,13 @@ export const Calender = () => {
 
   const handleFrom = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    // console.log("Selected Value:", selectedValue);
     setFromTime(selectedValue);
   };
 
   const handleTo = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    // console.log("Selected Value:", selectedValue);
     setToTime(selectedValue);
   };
 
@@ -275,10 +275,10 @@ export const Calender = () => {
       date.setHours(0);
       date.setSeconds(0);
       date.setMilliseconds(0);
-      console.log("date.setHours(0) === > >", date.setHours(0));
-      console.log("date.setSeconds(0) === > >", date.setSeconds(0));
-      console.log("date.setMilliseconds(0) === > >", date.setMilliseconds(0));
-      console.log("date===>", date);
+      // console.log("date.setHours(0) === > >", date.setHours(0));
+      // console.log("date.setSeconds(0) === > >", date.setSeconds(0));
+      // console.log("date.setMilliseconds(0) === > >", date.setMilliseconds(0));
+      // console.log("date===>", date);
       setTheDate(date);
     }
   };
@@ -298,7 +298,7 @@ export const Calender = () => {
       pm_id: session.user.userid,
     });
 
-    console.log("axios data ==>  ", data);
+    // console.log("axios data ==>  ", data);
     if (data.success) {
       getSchedule();
       setShowForm(false);
@@ -327,12 +327,12 @@ export const Calender = () => {
       colName,
       id,
     });
-    console.log("deleted:  ==> ", data);
+    // console.log("deleted:  ==> ", data);
     if (data.rowCount > 0) {
       handlePotalClose();
       getSchedule();
     }
-    // console.log(id)
+    // // console.log(id)
   };
 
   const handleCloseEdit = () => {
@@ -342,22 +342,22 @@ export const Calender = () => {
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     // setShowFormEdit(false)
-    console.log("the edit form: ==> ", {
-      classID:
-        typeof classes === "string"
-          ? allClasses.filter((clas) => clas.course_id === classes)[0]
-              .tmpclass_id
-          : classes,
-      day: theDate,
-      fromTime: fromTime,
-      toTime: toTime,
-      room_id:
-        place > 0
-          ? place
-          : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
-      pm_id: session.user.userid,
-      tmpscheduleID,
-    });
+    // console.log("the edit form: ==> ", {
+    //   classID:
+    //     typeof classes === "string"
+    //       ? allClasses.filter((clas) => clas.course_id === classes)[0]
+    //           .tmpclass_id
+    //       : classes,
+    //   day: theDate,
+    //   fromTime: fromTime,
+    //   toTime: toTime,
+    //   room_id:
+    //     place > 0
+    //       ? place
+    //       : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
+    //   pm_id: session.user.userid,
+    //   tmpscheduleID,
+    // });
     // tmpscheduleID, classID, day, fromTime, toTime, room_id, pm_id
     // let pmID = session.user.userid;
     let schedData = {
@@ -377,7 +377,7 @@ export const Calender = () => {
           : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
       pm_id: session.user.userid,
     };
-    console.log("schedData  :", schedData);
+    // console.log("schedData  :", schedData);
 
     let { data } = await axios.post(
       "/api/pmApi/updateSingleSchedule",
@@ -387,12 +387,12 @@ export const Calender = () => {
       getSchedule();
       setShowFormEdit(false);
     }
-    console.log("the update change:  ", data);
+    // console.log("the update change:  ", data);
   };
 
   const handleEdit = (e, event, date) => {
     e.preventDefault();
-    console.log(event);
+    // console.log(event);
     setShowFormEdit(true);
     setFromTime(event.from);
     setToTime(event.to);
@@ -435,8 +435,10 @@ export const Calender = () => {
         />
       </DateControls>
       <SevenColGrid>
-        {DAYS.map((day) => (
-          <HeadDays className="nonDRAG">{day}</HeadDays>
+        {DAYS.map((day, index) => (
+          <HeadDays key={index} className="nonDRAG">
+            {day}
+          </HeadDays>
         ))}
       </SevenColGrid>
 
@@ -444,8 +446,9 @@ export const Calender = () => {
         fullheight={true}
         is28Days={getDaysInMonth(currentDate) === 28}
       >
-        {getSortedDays(currentDate).map((day) => (
+        {getSortedDays(currentDate).map((day, index) => (
           <div
+            key={index}
             id={`${currentDate.getFullYear()}/${currentDate.getMonth()}/${day}`}
             onDragEnter={(e) =>
               onDragEnter(
@@ -481,14 +484,14 @@ export const Calender = () => {
               {events.map(
                 (ev, index) =>
                 {
-                  console.log('ev:===> ',ev)
-                  console.log(ev.date)
-                  console.log(new Date(
+                  // console.log('ev:===> ',ev)
+                  // console.log(ev.date)
+                  // console.log(new Date(
                     currentDate.getFullYear(),
                     currentDate.getMonth(),
                     day
                   ))
-                  console.log('isld==>',datesAreOnSameDay(
+                  // console.log('isld==>',datesAreOnSameDay(
                     ev.date,
                     new Date(
                       currentDate.getFullYear(),
@@ -691,7 +694,7 @@ export const Calender = () => {
 //           <SeeMore
 //             onClick={(e) => {
 //               e.stopPropagation();
-//               console.log("clicked p");
+//               // console.log("clicked p");
 //             }}
 //           >
 //             see more...
@@ -710,7 +713,7 @@ const EventWrapper = ({ children }) => {
           <SeeMore
             onClick={(e) => {
               e.stopPropagation();
-              console.log("clicked p");
+              // console.log("clicked p");
             }}
           >
             see more...
@@ -762,12 +765,12 @@ const AddSchedule = ({
   const handleStages = (selectedValue) => {
     setBuilding(selectedValue);
     setAllrooms([]);
-    console.log("allrooms1 :: ==> ", allrooms);
+    // console.log("allrooms1 :: ==> ", allrooms);
     theroom.forEach((room) => {
       room.room_building === selectedValue &&
         setAllrooms((prev) => [...prev, room.room_name]);
     });
-    console.log("allrooms2 :: ==> ", allrooms);
+    // console.log("allrooms2 :: ==> ", allrooms);
   };
 
   const allroomsRef = useRef([]);

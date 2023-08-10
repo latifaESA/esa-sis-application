@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import Link from 'next/link';
+import { forwardRef } from "react";
+import Link from "next/link";
 // import {
 //   PencilIcon,
 //   Cog8ToothIcon,
@@ -15,12 +15,12 @@ import Link from 'next/link';
 //   AcademicCapIcon,
 //   WalletIcon,
 // } from '@heroicons/react/24/solid';
-import StudentView from './DashboardComps/StudentView';
-import ProgramManagerView from './DashboardComps/ProgramManagerView';
-import AdminView from './DashboardComps/AdminView';
+import StudentView from "./DashboardComps/StudentView";
+import ProgramManagerView from "./DashboardComps/ProgramManagerView";
+import AdminView from "./DashboardComps/AdminView";
 // import { useRouter } from 'next/router';
 // import selection_data from '../../utilities/selection_data';
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 // import { useSelector } from 'react-redux';
 // import esaLogo from '../../public/images/esa.png';
 // import Image from 'next/image';
@@ -33,7 +33,7 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
   //   (state) => state.persistedReducer.app_state.appState
   // );
 
-  console.log(session);
+  // console.log(session);
   return (
     <>
       <div ref={ref} className="fixed w-52 h-full overflow-auto bg-white z-10">
@@ -43,7 +43,7 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
               <img
                 className="w-32 h-auto"
                 src={
-                  'https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png'
+                  "https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png"
                 }
                 // src={appState.appVar.esa_logo}
                 alt="ESA logo"
@@ -51,16 +51,16 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
             </picture>
           </Link>
         </div>
-        {session?.user.role === '0' && <AdminView />}
+        {session?.user.role === "0" && <AdminView />}
 
-        {session?.user.role === '1' && <StudentView />}
+        {session?.user.role === "1" && <StudentView />}
 
-        {session?.user.role === '2' && <ProgramManagerView />}
+        {session?.user.role === "2" && <ProgramManagerView />}
       </div>
     </>
   );
 });
 
-DashboardSideBar.displayName = 'DashboardSideBar';
+DashboardSideBar.displayName = "DashboardSideBar";
 
 export default DashboardSideBar;

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 
 function generateID(prefix) {
-    prefix.length;
+  prefix.length;
   const randomDigits = Math.floor(Math.random() * 10000).toString();
 
   return randomDigits;
@@ -42,13 +42,13 @@ export default function CreateTeacher() {
       teacher_lastname: teacher_lastname,
       teacher_mail: teacher_mail,
     };
-    console.log(payload);
+    // console.log(payload);
     try {
       const data = await axios.post(
         "/api/admin/adminApi/createTeacher",
         payload
       );
-      console.log(data.data.message);
+      // console.log(data.data.message);
       setConfirmOpenMessage(true);
       setMessages(data.data.message);
     } catch (error) {

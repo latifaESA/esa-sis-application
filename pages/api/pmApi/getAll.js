@@ -5,21 +5,20 @@ const { getAll } = require("../controller/queries");
 // import https from 'https';
 
 async function handler(req, res) {
-    try {
-        const connection = await connect();
+  try {
+    const connection = await connect();
 
-        const {table} = req.body;
-        const data = await getAll(connection, table);
-        await disconnect(connection)
+    const { table } = req.body;
+    const data = await getAll(connection, table);
+    await disconnect(connection);
 
-        // console.log(data.rows)
-        return res.status('200').send(data)
-    } catch (error) {
-        console.log('the error is: ', error)
-        return res.status('401').send(error)
-        // return error;
-    }
-
+    // // console.log(data.rows)
+    return res.status("200").send(data);
+  } catch (error) {
+    // console.log('the error is: ', error)
+    return res.status("401").send(error);
+    // return error;
+  }
 }
 // export default handler;
 module.exports = handler;

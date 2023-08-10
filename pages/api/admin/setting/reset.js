@@ -5,14 +5,14 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { connect, disconnect } from '../../../../utilities/db';
+import { connect, disconnect } from "../../../../utilities/db";
 //import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
 // import { getServerSession } from 'next-auth/next';
 // import { authOptions } from '../../auth/[...nextauth]';
-import { ReadDropdown, ResetSetting } from '../../controller/queries';
+import { ReadDropdown, ResetSetting } from "../../controller/queries";
 
 async function handler(req, res) {
-  if (req.method !== 'PUT') {
+  if (req.method !== "PUT") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
@@ -25,20 +25,20 @@ async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const existingtableID = await ReadDropdown(connection, 'setting');
+    const existingtableID = await ReadDropdown(connection, "setting");
 
     if (!existingtableID) {
-      return res.status(404).send({ message: 'Table not found' });
+      return res.status(404).send({ message: "Table not found" });
     }
     await ResetSetting(connection);
-    //console.log(DeleteTable);
+    //// console.log(DeleteTable);
     res.status(200).json({
       message: `Reset values was successful`,
     });
     await disconnect(connection);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: 'Failed to Reset values', error });
+    res.status(500).send({ message: "Failed to Reset values", error });
   }
 }
 export default handler;

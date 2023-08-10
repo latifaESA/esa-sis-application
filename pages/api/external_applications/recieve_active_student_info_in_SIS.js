@@ -48,11 +48,11 @@ const { env } = require("process");
 //       const userAgent = req.headers['user-agent'];
 //       const userAgentinfo = useragent.parse(userAgent);
 //       const studentInfo = await JSON.parse(body).studentInfo;
-//       // console.log('Received student info:', studentInfo);
+//       // // console.log('Received student info:', studentInfo);
 //       // TODO: Dear SIS developper
 //       // TODO: send recieved data to the database
 //       if(studentInfo){
-//         console.log(studentInfo[0])
+//         // console.log(studentInfo[0])
 //         let recieved_data = studentInfo[0];
 //         // connect to data base
 //         const connection = await connect();
@@ -61,52 +61,52 @@ const { env } = require("process");
 //         const columns_user = ['userid', 'role', 'userpassword'];
 //         const values_user = [`${recieved_data.UserProfileID}`, 2, `${recieved_data.password}`];
 //         let resUser = await insertData(connection, 'users', columns_user, values_user);
-//         console.log("resUser: ", resUser)
+//         // console.log("resUser: ", resUser)
 
 //         // insert the major
 //         const columns_major = ['major_id', 'major_name', 'current_promotion'];
 //         const values_major = [`${recieved_data.major}`, `${recieved_data.program}`, `${recieved_data.promotion}`];
 //         // const insertmajor =
 //         const resMajor = await insertData(connection, 'major', columns_major, values_major);
-//         console.log('resMajor: ',resMajor)
+//         // console.log('resMajor: ',resMajor)
 
 //         // insert the user_personal_info
 //         const columns_user_personal_info = ['userid', 'title', 'firstname', 'fathername', 'lastname', 'maidename', 'mothername', 'gender', 'dateofbirth', 'countryofbirth', 'placeofbirth', 'registrationnumber', 'maritalstatus', 'firstnationality', 'secondnationality'];
 //         const values_user_personal_info = [`${recieved_data.UserProfileID}`, `${recieved_data.title}`, `${recieved_data.firstname}`, `${recieved_data.fathername}`, `${recieved_data.lastname}`, `${recieved_data.maidename}`, `${recieved_data.mothername}`, `${recieved_data.gender}`, `${recieved_data.dateofbirth}`, `${recieved_data.countryofbirth}`, `${recieved_data.placeofbirth}`, `${recieved_data.registrationnumber}`, `${recieved_data.maritalstatus}`, `${recieved_data.firstnationality}`, `${recieved_data.secondnationality}`];
 //         const resUserPersonalInfo = await insertData(connection, 'user_personal_info', columns_user_personal_info, values_user_personal_info);
 
-//         console.log('resUserPersonalInfo: ',resUserPersonalInfo)
+//         // console.log('resUserPersonalInfo: ',resUserPersonalInfo)
 
 //         // insert the user_contact
 //         const columns_user_contact = ['userid', 'email', 'email_two', 'mobile_number', 'landline_number'];
 //         const values_user_contact = [`${recieved_data.UserProfileID}`, `${recieved_data.email}`, `${recieved_data.email_two}`, `${recieved_data.mobile_number}`, `${recieved_data.landline_number}`];
 //         const res_user_contact = insertData(connection, 'user_contact', columns_user_contact, values_user_contact);
 
-//         console.log('res_user_contact: ', res_user_contact)
+//         // console.log('res_user_contact: ', res_user_contact)
 
 //         // insert the user_personal_address
 //         const columns_user_personal_address = ['userid', 'address_country', 'address_region', 'address_city', 'address_street', 'address_building', 'address_floor', 'address_postal'];
 //         const values_user_personal_address = [`${recieved_data.UserProfileID}`, `${recieved_data.address_country}`, `${recieved_data.address_region}`, `${recieved_data.address_city}`, `${recieved_data.address_street}`,`${recieved_data.address_building}`, `${recieved_data.address_floor}`, `${recieved_data.address_postal}`];
 //         const res_user_personal_address = insertData(connection, 'user_personal_address', columns_user_personal_address, values_user_personal_address);
 
-//         console.log('res_user_personal_address: ', res_user_personal_address)
+//         // console.log('res_user_personal_address: ', res_user_personal_address)
 
 //         // insert the user_emergency_contact
 //         const columns_user_emergency_contact = ['userid', 'prefix', 'emerg_firstname', 'emerg_middlename', 'emerg_lastname', 'emerg_phonenumber', 'emerg_relationship', 'emerg_medicalhealth', 'emerg_diseasetype'];
 //         const values_user_emergency_contact = [`${recieved_data.UserProfileID}`, `${recieved_data.prefix}`, `${recieved_data.emerg_firstname}`, `${recieved_data.emerg_middlename}`, `${recieved_data.emerg_lastname}`,`${recieved_data.emerg_phonenumber}`, `${recieved_data.emerg_relationship}`, `${recieved_data.emerg_medicalhealth}`, `${recieved_data.emerg_diseasetype}`];
 //         const res_user_emergency_contact = await insertData(connection, 'user_emergency_contact', columns_user_emergency_contact, values_user_emergency_contact);
 
-//         console.log('res_user_emergency_contact: ', res_user_emergency_contact)
+//         // console.log('res_user_emergency_contact: ', res_user_emergency_contact)
 
 //         // insert the user_education
 //         const columns_user_education = ['userid', 'degree_level', 'series', 'obtain_date', 'education_country', 'establishment', 'other_establishment'];
 //         const values_user_education = [`${recieved_data.UserProfileID}`, `${recieved_data.degree_level}`, `${recieved_data.series}`, `${recieved_data.obtain_date}`, `${recieved_data.education_country}`,`${recieved_data.establishment}`, `${recieved_data.other_establishment}`];
 //         const res_user_education = await insertData(connection, 'user_education', columns_user_education, values_user_education);
 
-//         console.log('res_user_education: ', res_user_education)
+//         // console.log('res_user_education: ', res_user_education)
 
 //         }else{
-//           console.log('no student info')
+//           // console.log('no student info')
 //         }
 
 //       // TODO: write an info log
@@ -124,7 +124,7 @@ const { env } = require("process");
 //       res.end(JSON.stringify(responseData));
 //     });
 //   } else {
-//     console.log('hello how are you?')
+//     // console.log('hello how are you?')
 //     res.writeHead(404, { 'Content-Type': 'text/plain' });
 //     res.end('Not found');
 //     // TODO: Dear SIS developper
@@ -134,7 +134,7 @@ const { env } = require("process");
 
 // const port = process.env.PORT || 3001;
 // server.listen(port, () => {
-//   console.log('SIS application listening on port 3001');
+//   // console.log('SIS application listening on port 3001');
 // });
 
 export default async function handler(req, res) {
@@ -167,9 +167,9 @@ export default async function handler(req, res) {
     let { studentInfo } = req.body;
     let isSuccess = true;
     if (studentInfo) {
-      // console.log(studentInfo[0]);
+      // // console.log(studentInfo[0]);
       let recieved_data = studentInfo[0];
-      console.log("============asdasd===========asdasd======", studentInfo[0]);
+      // console.log("============asdasd===========asdasd======", studentInfo[0]);
       // connect to data base
       const connection = await connect();
 
@@ -186,7 +186,7 @@ export default async function handler(req, res) {
         columns_user,
         values_user
       );
-      // console.log('resUser: ', resUser.rowCount > 0);
+      // // console.log('resUser: ', resUser.rowCount > 0);
       isSuccess = isSuccess && resUser.rowCount > 0;
 
       // insert the student
@@ -216,7 +216,7 @@ export default async function handler(req, res) {
         `${recieved_data.major}`,
         current_year,
       ];
-      console.log(promotion_data);
+      // console.log(promotion_data);
       let resstudent = await insertData(
         connection,
         "student",
@@ -253,7 +253,7 @@ export default async function handler(req, res) {
         columns_major,
         values_major
       );
-      // console.log('resMajor: ', resMajor);
+      // // console.log('resMajor: ', resMajor);
 
       // insert the user_personal_info
       const columns_user_personal_info = [
@@ -297,7 +297,7 @@ export default async function handler(req, res) {
         values_user_personal_info
       );
 
-      // console.log('resUserPersonalInfo: ', resUserPersonalInfo.rowCount > 0);
+      // // console.log('resUserPersonalInfo: ', resUserPersonalInfo.rowCount > 0);
       isSuccess = isSuccess && resUserPersonalInfo.rowCount > 0;
 
       // insert the user_contact
@@ -322,7 +322,7 @@ export default async function handler(req, res) {
         values_user_contact
       );
 
-      // console.log('res_user_contact: ', res_user_contact.rowCount > 0);
+      // // console.log('res_user_contact: ', res_user_contact.rowCount > 0);
       isSuccess = isSuccess && res_user_contact.rowCount > 0;
 
       // insert the user_personal_address
@@ -353,7 +353,7 @@ export default async function handler(req, res) {
         values_user_personal_address
       );
 
-      // console.log('res_user_personal_address: ', res_user_personal_address.rowCount > 0);
+      // // console.log('res_user_personal_address: ', res_user_personal_address.rowCount > 0);
       isSuccess = isSuccess && res_user_personal_address.rowCount > 0;
 
       // insert the user_emergency_contact
@@ -386,7 +386,7 @@ export default async function handler(req, res) {
         values_user_emergency_contact
       );
 
-      // console.log('res_user_emergency_contact: ', res_user_emergency_contact.rowCount > 0);
+      // // console.log('res_user_emergency_contact: ', res_user_emergency_contact.rowCount > 0);
       isSuccess = isSuccess && res_user_emergency_contact.rowCount > 0;
 
       // insert the user_education
@@ -415,7 +415,7 @@ export default async function handler(req, res) {
         values_user_education
       );
 
-      // console.log('res_user_education: ', res_user_education.rowCount > 0);
+      // // console.log('res_user_education: ', res_user_education.rowCount > 0);
       isSuccess = isSuccess && res_user_education.rowCount > 0;
 
       // insert the promotion
@@ -428,7 +428,7 @@ export default async function handler(req, res) {
       //   columns_promotion,
       //   values_promotion
       // );
-      // console.log("respromotion: ", resPromotion);
+      // // console.log("respromotion: ", resPromotion);
 
       // insert the user_document
       const columns_document = ["userid", "profileURL"];
@@ -442,7 +442,7 @@ export default async function handler(req, res) {
         columns_document,
         values_document
       );
-      // console.log("resDocument: ", resDocument.rowCount > 0);
+      // // console.log("resDocument: ", resDocument.rowCount > 0);
       isSuccess = isSuccess && resDocument.rowCount > 0;
 
       // inseFIXME:Dear SIS team, please fix this useEffect to read SIS settings from the databasee.log("resDocument: ", resDocument);
@@ -458,7 +458,7 @@ export default async function handler(req, res) {
         res.end(JSON.stringify(responseData));
       }
     } else {
-      // console.log('no student info');
+      // // console.log('no student info');
       const responseData = { message: "No Student Info" };
       // else send
       // const responseData = { message: 'Failed to insert student info' };

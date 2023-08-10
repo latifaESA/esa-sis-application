@@ -6,17 +6,17 @@
  * Copyright (c) 2023 ESA
  */
 
-import '../styles/globals.css';
-import { SessionProvider, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import "../styles/globals.css";
+import { SessionProvider, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 // import Layout from '../components/Layout';
-import { wrapper } from '../redux/store';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import CircularProgress from '@mui/material/CircularProgress';
-import DashboardLayout from '../components/Dashboard/DashboardLayout';
-import Cookies from 'js-cookie';
-import Head from 'next/head';
+import { wrapper } from "../redux/store";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import CircularProgress from "@mui/material/CircularProgress";
+import DashboardLayout from "../components/Dashboard/DashboardLayout";
+import Cookies from "js-cookie";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <>
         <SessionProvider session={session}>
           <Provider store={store}>
-          <Component {...props.pageProps} />
+            <Component {...props.pageProps} />
           </Provider>
         </SessionProvider>
       </>
@@ -37,12 +37,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   // try {
   return (
     <>
-    <Head>
-      <link rel='icon' href='/esa.ico' />
-    </Head>
+      <Head>
+        <link rel="icon" href="/esa.ico" />
+      </Head>
       <SessionProvider session={session}>
-        {/* {console.log('Component.auth=', Component.auth)}
-        {console.log('Component.adminOnly=', Component.adminOnly)} */}
+        {/* {// console.log('Component.auth=', Component.auth)}
+        {// console.log('Component.adminOnly=', Component.adminOnly)} */}
 
         {Component.auth ? (
           <Auth adminOnly={Component.auth}>
@@ -99,7 +99,7 @@ function Auth({ children }) {
       // adminOnly
       //   ? router.push('/unauthorized?message=admin login required')
       //   :
-      router.push('/unauthorized?message=Login Required');
+      router.push("/unauthorized?message=Login Required");
     },
   });
 
@@ -108,7 +108,7 @@ function Auth({ children }) {
   // 'unauthenticated': This means that there is no authenticated user session available. This can happen if the user has not logged in or if their session has expired.
   // 'authenticated': This means that there is an authenticated user session available. In this case, the data property of the returned object should contain the user's session data.
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
       <div className="grid h-screen place-items-center">
         <CircularProgress />
@@ -116,8 +116,8 @@ function Auth({ children }) {
     );
   }
 
-  if (status === 'unauthenticated') {
-    console.log('unauthenticated user...');
+  if (status === "unauthenticated") {
+    // console.log('unauthenticated user...');
     // localStorage.clear();
     sessionStorage.clear();
     // Clear all cookies
@@ -125,7 +125,7 @@ function Auth({ children }) {
     //   Cookies.remove(cookieName);
     // });
     // Clear session cookie
-    Cookies.remove('sessionCookieName', { path: '' });
+    Cookies.remove("sessionCookieName", { path: "" });
   }
 
   return children;

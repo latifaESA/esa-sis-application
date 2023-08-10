@@ -5,31 +5,31 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { connect, disconnect } from '../../../../utilities/db';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]';
+import { connect, disconnect } from "../../../../utilities/db";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
 import {
   ReadDropdown,
   UpdateintoDropdown,
   UpdateintoDropdownformajor,
-} from '../../controller/queries';
+} from "../../controller/queries";
 
 async function handler(req, res) {
-  if (req.method !== 'PUT') {
+  if (req.method !== "PUT") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To Insert' });
+    return res.status(401).send({ message: "Signin Required To Insert" });
   }
 
   const incomingData = JSON.parse(decrypt(req.body.data));
 
   if (!incomingData) {
-    return res.status(400).send({ message: 'Data not found in request body' });
+    return res.status(400).send({ message: "Data not found in request body" });
   }
   const tablename = incomingData.tablename;
   const tableid = incomingData.tableid;
@@ -42,22 +42,22 @@ async function handler(req, res) {
 
   if (!itemsEn) {
     res.status(422).json({
-      message: 'English value Empty!!',
+      message: "English value Empty!!",
     });
     return;
   }
 
   if (!itemsFr) {
     res.status(422).json({
-      message: 'french value Empty!!',
+      message: "french value Empty!!",
     });
     return;
   }
 
-  if (tablename === 'major') {
+  if (tablename === "major") {
     if (!itemsPromotion) {
       res.status(422).json({
-        message: 'Promotion value Empty!!',
+        message: "Promotion value Empty!!",
       });
       return;
     }
@@ -68,9 +68,9 @@ async function handler(req, res) {
     const existingtableID = await ReadDropdown(connection, tablename);
 
     if (!existingtableID) {
-      return res.status(404).send({ message: 'Table not found' });
+      return res.status(404).send({ message: "Table not found" });
     }
-    if (tablename === 'major') {
+    if (tablename === "major") {
       await UpdateintoDropdownformajor(
         tablename,
         tableid,
@@ -82,7 +82,7 @@ async function handler(req, res) {
         id,
         connection
       );
-      //console.log(DeleteTable);
+      //// console.log(DeleteTable);
     } else {
       await UpdateintoDropdown(
         tablename,
@@ -101,7 +101,7 @@ async function handler(req, res) {
     await disconnect(connection);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: 'Failed to Update table', error });
+    res.status(500).send({ message: "Failed to Update table", error });
   }
 }
 

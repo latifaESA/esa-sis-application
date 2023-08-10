@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const appSlice = createSlice({
-  name: 'appstate',
+  name: "appstate",
   initialState: {
     appState: {
       isWaiting: false,
@@ -41,5 +41,5 @@ export const appSlice = createSlice({
 
 export const { appIsWaiting, appSetting } = appSlice.actions;
 // export const selectapp = (state) => state.appState;
-// console.log('selectapp==', selectapp);
+// // console.log('selectapp==', selectapp);
 export default appSlice.reducer;

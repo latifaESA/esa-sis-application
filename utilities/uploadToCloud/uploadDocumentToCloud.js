@@ -5,43 +5,45 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2022 ESA
  */
-import axios from 'axios';
-import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import axios from "axios";
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-import selection_data from '../selection_data';
-import encrypt from '../encrypt_decrypt/encryptText';
+import selection_data from "../selection_data";
+import encrypt from "../encrypt_decrypt/encryptText";
 
 async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
-  console.log("----",isPhoto)
-  // console.log('uploadData.fileList==', uploadData.fileList);
+  // console.log("----",isPhoto)
+  // // console.log('uploadData.fileList==', uploadData.fileList);
   let cloudURL = null;
   const imageFile = uploadData.fileList.find(
     (file) =>
-      file.type === 'image/png' ||
-      file.type === 'image/jpeg' ||
-      file.type === 'image/jpg'
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg"
   );
   const pdfFile = uploadData.fileList.find(
-    (file) => file.type === 'application/pdf'
+    (file) => file.type === "application/pdf"
   );
   if (imageFile) {
-    // console.log('imageFile==', imageFile);
+    // // console.log('imageFile==', imageFile);
     const formProfileData = new FormData();
-    formProfileData.append('file', imageFile);
+    formProfileData.append("file", imageFile);
     let publicId;
     // Test If the uploaded document is the photo
     isPhoto
-      ? (publicId = `SISUsers/${session.user.name}-${session.user.userid
-        }/photo/${from}/${imageFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`)
-      : (publicId = `SISUsers/${session.user.name}-${session.user.userid
+      ? (publicId = `SISUsers/${session.user.name}-${
+          session.user.userid
+        }/photo/${from}/${imageFile.name.replace(/[àâäçéèêëîïôöùûü]/g, "-")}`)
+      : (publicId = `SISUsers/${session.user.name}-${
+          session.user.userid
         }/application/${from}/${imageFile.name.replace(
           /[àâäçéèêëîïôöùûü]/g,
-          '-'
+          "-"
         )}`);
 
-        formProfileData.append('public_id', publicId);
-        formProfileData.append('upload_preset', selection_data.upload_preset);
-        // console.log('formProfileData==', formProfileData);
+    formProfileData.append("public_id", publicId);
+    formProfileData.append("upload_preset", selection_data.upload_preset);
+    // // console.log('formProfileData==', formProfileData);
     try {
       if (isPhoto) {
         // Delete old folder resources,
@@ -54,7 +56,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         );
         try {
           await axios.post(
-            '/api/cloud/deleteFolderInCloud',
+            "/api/cloud/deleteFolderInCloud",
             {
               data: encryptedBody,
             },
@@ -73,17 +75,17 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
           })
           .then((res) => res.data.secure_url)
           .catch((error) => {
-            console.log('Error on sending to cloud:', error);
+            // console.log('Error on sending to cloud:', error);
           });
 
-        console.log('image cloudURL===>>', cloudURL);
+        // console.log('image cloudURL===>>', cloudURL);
         // // send the profile image to the local HardDisk
         // cloudURL = await axios
         //   .post('/api/CRUD_Op/sendprofile', {
         //     cloudURL,
         //   })
         //   .then((res) => res.data.cloudURL);
-        // console.log('cloudURL', cloudURL);
+        // // console.log('cloudURL', cloudURL);
 
         // Test if the Cloudinary URL is not corrupted
         if (cloudURL !== null)
@@ -91,11 +93,11 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
             .get(cloudURL)
             .then(async (response) => {
               if (response.status >= 200 && response.status < 300) {
-                console.log('File is not corrupted');
+                // console.log('File is not corrupted');
                 // send the profile image to the local HardDisk
                 await axios
                   .post(
-                    '/api/CRUD_Op/sendprofile',
+                    "/api/CRUD_Op/sendprofile",
                     {
                       cloudURL,
                     },
@@ -105,12 +107,12 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
                   )
                   .then((res) => res.data.cloudURL);
               } else {
-                console.log('File may be corrupted');
+                // console.log('File may be corrupted');
                 cloudURL = null;
               }
             })
             .catch((error) => {
-              console.log(`Error fetching file: ${error}`);
+              // console.log(`Error fetching file: ${error}`);
               cloudURL = null;
             });
         return cloudURL;
@@ -125,7 +127,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         );
         try {
           await axios.post(
-            '/api/cloud/deleteFolderInCloud',
+            "/api/cloud/deleteFolderInCloud",
             {
               data: encryptedBody,
             },
@@ -142,7 +144,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         //   formProfileData, {
         //   timeout: selection_data.axios_timeout,
         // }
-        // ).catch((error) => { console.log('Error on sending to cloud:', error) });
+        // ).catch((error) => { // console.log('Error on sending to cloud:', error) });
         // let cloudURL = response.data.secure_url;
         cloudURL = await axios
           .post(selection_data.cloudinary_image_url, formProfileData, {
@@ -150,7 +152,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
           })
           .then((res) => res.data.secure_url)
           .catch((error) => {
-            console.log('Error on sending to cloud:', error);
+            // console.log('Error on sending to cloud:', error);
           });
         // Test if the Cloudinary URL is not corrupted
         if (cloudURL !== null)
@@ -158,14 +160,14 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
             .get(cloudURL)
             .then((response) => {
               if (response.status >= 200 && response.status < 300) {
-                // console.log('File is not corrupted');
+                // // console.log('File is not corrupted');
               } else {
-                // console.log('File may be corrupted');
+                // // console.log('File may be corrupted');
                 cloudURL = null;
               }
             })
             .catch((error) => {
-              console.log(`Error fetching file: ${error}`);
+              // console.log(`Error fetching file: ${error}`);
               cloudURL = null;
             });
         return cloudURL;
@@ -192,7 +194,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
 
     //   // Convert the canvas to a data URL and send it to Cloudinary
     //    images.push(canvas.toDataURL("image/png"));
-    //    console.log(`Page ${pagenum}: ${images}`);
+    //    // console.log(`Page ${pagenum}: ${images}`);
     // }
 
     //   const formCVData = new FormData();
@@ -212,14 +214,14 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
 
     const formDocData = new FormData();
 
-    formDocData.append('file', pdfFile);
+    formDocData.append("file", pdfFile);
 
     const publicId = `SISUsers/${session.user.name}-${
       session.user.userid
-    }/application/${from}/${pdfFile.name.replace(/[àâäçéèêëîïôöùûü]/g, '-')}`;
-    formDocData.append('public_id', publicId);
+    }/application/${from}/${pdfFile.name.replace(/[àâäçéèêëîïôöùûü]/g, "-")}`;
+    formDocData.append("public_id", publicId);
 
-    formDocData.append('upload_preset', selection_data.upload_preset);
+    formDocData.append("upload_preset", selection_data.upload_preset);
 
     // Delete old folder resources,
     const encryptedBody = encrypt(
@@ -231,7 +233,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
     );
     try {
       await axios.post(
-        '/api/cloud/deleteFolderInCloud',
+        "/api/cloud/deleteFolderInCloud",
         {
           data: encryptedBody,
         },
@@ -249,7 +251,7 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
       //   formDocData, {
       //     timeout: selection_data.axios_timeout,
       //   }
-      // ).catch((error) => { console.log('Error on sending to cloud:', error) });
+      // ).catch((error) => { // console.log('Error on sending to cloud:', error) });
       // cloudURL = response.data.secure_url;
       cloudURL = await axios
         .post(selection_data.cloudinary_image_url, formDocData, {
@@ -257,23 +259,23 @@ async function uploadDocumentToCloud(uploadData, session, isPhoto, from) {
         })
         .then((res) => res.data.secure_url)
         .catch((error) => {
-          console.log('Error on sending to cloud:', error);
+          // console.log('Error on sending to cloud:', error);
         });
-      console.log('PDF cloudURL====>> ', cloudURL);
+      // console.log('PDF cloudURL====>> ', cloudURL);
       // Test if the Cloudinary URL is not corrupted
       if (cloudURL !== null)
         await axios
           .get(cloudURL)
           .then((response) => {
             if (response.status >= 200 && response.status < 300) {
-              // console.log('File is not corrupted');
+              // // console.log('File is not corrupted');
             } else {
-              // console.log('File may be corrupted');
+              // // console.log('File may be corrupted');
               cloudURL = null;
             }
           })
           .catch((error) => {
-            console.log(`Error fetching file: ${error}`);
+            // console.log(`Error fetching file: ${error}`);
             cloudURL = null;
           });
       return cloudURL;

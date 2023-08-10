@@ -7,31 +7,31 @@
  */
 
 /* Importing all the required libraries. */
-import React, { useEffect, StrictMode, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect, StrictMode, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useForm, Controller } from "react-hook-form";
 // import Layout from '../../components/Layout';
 
-import { getError } from '../../utilities/error';
+import { getError } from "../../utilities/error";
 // import { toast } from 'react-toastify';
 
-import { useRouter } from 'next/router';
-import axios from 'axios';
+import { useRouter } from "next/router";
+import axios from "axios";
 // import selection_data from '../../utilities/selection_data';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import EmailAfterRegister from '../../utilities/emailing/emailAfterRegister';
-import encrypt from '../../utilities/encrypt_decrypt/encryptText';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import SaveIndicator from '../../components/SaveIndicator';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import EmailAfterRegister from "../../utilities/emailing/emailAfterRegister";
+import encrypt from "../../utilities/encrypt_decrypt/encryptText";
+import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+import SaveIndicator from "../../components/SaveIndicator";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 // import sendErrorToSlack from '../api/slack/sendErrorToSlack';
 // import ErrorOccur from '../_error';
 
 export default function LoginScreen() {
   const { data: session } = useSession();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const { redirect } = router.query;
   const [isRegistering, setIsRegistering] = useState(false);
@@ -49,14 +49,14 @@ export default function LoginScreen() {
   /* Checking if the user is logged in, if so, it will redirect to the home page. */
   useEffect(() => {
     if (session?.user) {
-      router.push(redirect || '/');
+      router.push(redirect || "/");
     }
   }, [router, session, redirect]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/majoritems');
+        const response = await axios.get("/api/controller/majoritems");
         const incomingeData = JSON.parse(decrypt(response.data.data));
         setmajorList(incomingeData.majors);
       } catch (error) {
@@ -77,7 +77,7 @@ export default function LoginScreen() {
   let ID, emailToken;
   // const { serverRuntimeConfig } = getConfig();
   // FIXME: attached image don't work in production version
-  // console.log(
+  // // console.log(
   //   'Path=',
   //   path.join(serverRuntimeConfig.PROJECT_ROOT, './path/to/file.json').toString
   // );
@@ -96,21 +96,21 @@ export default function LoginScreen() {
     password,
     mobileNumber,
   }) => {
-    let writeToDberror = '';
+    let writeToDberror = "";
     try {
-      setErrorMessage('');
+      setErrorMessage("");
       setIsRegistering(true);
-      const id_res = await axios.post('/api/user/generateID', {
+      const id_res = await axios.post("/api/user/generateID", {
         data: encrypt(JSON.stringify(major)),
       });
       const incomingID = JSON.parse(decrypt(id_res.data.data));
       ID = incomingID.ID;
-      // console.log('ID=', ID);
+      // // console.log('ID=', ID);
       /* Sending the data to the server.  */
       const payload = {
         ID,
-        fname: fname.replace(/ /g, '-'),
-        lname: lname.replace(/ /g, '-'),
+        fname: fname.replace(/ /g, "-"),
+        lname: lname.replace(/ /g, "-"),
         email,
         major,
         password,
@@ -119,28 +119,28 @@ export default function LoginScreen() {
       // Encrypt the data before sending in the body
       // end-to-end encryption for query parameters
       const encryptedBody = encrypt(JSON.stringify(payload));
-      const res = await axios.post('/api/user/signup', { data: encryptedBody });
+      const res = await axios.post("/api/user/signup", { data: encryptedBody });
       const incomingReponse = JSON.parse(decrypt(res.data.data));
       emailToken = incomingReponse.emailToken;
-      // console.log('res==', res);
+      // // console.log('res==', res);
     } catch (err) {
-      // console.log('error==', err);
-      err.message === 'Request failed with status code 500'
-        ? (writeToDberror = 'Check Your Internet Connection')
-        : (writeToDberror = '');
+      // // console.log('error==', err);
+      err.message === "Request failed with status code 500"
+        ? (writeToDberror = "Check Your Internet Connection")
+        : (writeToDberror = "");
 
       setErrorMessage(`${getError(err)}; ${writeToDberror}`);
 
-      if (writeToDberror === '') {
+      if (writeToDberror === "") {
         const encryptedBody = encrypt(
           JSON.stringify({
             email: email,
-            role: '1',
-            info: 'From register page,signup',
+            role: "1",
+            info: "From register page,signup",
             error: `${getError(err)}`,
           })
         );
-        await axios.put('/api/logger/sendErrorToLogger', {
+        await axios.put("/api/logger/sendErrorToLogger", {
           data: encryptedBody,
         });
         // await axios.post(
@@ -194,8 +194,8 @@ export default function LoginScreen() {
               type="text"
               className="w-full ml-2 bg-transparent"
               id="fname"
-              {...register('fname', {
-                required: 'Please Enter First Name',
+              {...register("fname", {
+                required: "Please Enter First Name",
               })}
             />
           </div>
@@ -214,8 +214,8 @@ export default function LoginScreen() {
               type="text"
               className="w-full ml-2 mt-4 bg-transparent"
               id="lname"
-              {...register('lname', {
-                required: 'Please Enter Last Name',
+              {...register("lname", {
+                required: "Please Enter Last Name",
               })}
             />
           </div>
@@ -232,11 +232,11 @@ export default function LoginScreen() {
             <a className="text-red-500 ml-2 mt-4 font-bold ">*</a>
             <input
               type="email"
-              {...register('email', {
-                required: 'Please Enter Your Email',
+              {...register("email", {
+                required: "Please Enter Your Email",
                 pattern: {
                   value: /\S+@\S+\.\S+/,
-                  message: 'Please Enter a Valid Email',
+                  message: "Please Enter a Valid Email",
                 },
               })}
               className="w-full ml-2 mt-4 bg-transparent"
@@ -252,8 +252,8 @@ export default function LoginScreen() {
             <select
               className="w-full ml-2 mt-4 bg-transparent"
               id="major"
-              {...register('major', {
-                required: 'Please Select Major',
+              {...register("major", {
+                required: "Please Select Major",
               })}
             >
               {majorlist.map((major, index) => (
@@ -275,14 +275,14 @@ export default function LoginScreen() {
             </label>
             <a className="text-red-500 ml-2 mt-4 font-bold">*</a>
             <input
-              type={showPassword === false ? 'password' : 'text'}
-              {...register('password', {
-                required: 'Please Enter Password',
+              type={showPassword === false ? "password" : "text"}
+              {...register("password", {
+                required: "Please Enter Password",
                 pattern: {
                   value:
                     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/,
                   message:
-                    'Password should be greater than 7, containing at 1 number and one special (non-alphanumeric) character',
+                    "Password should be greater than 7, containing at 1 number and one special (non-alphanumeric) character",
                 },
               })}
               className="w-full ml-2 mt-4 bg-transparent"
@@ -315,14 +315,14 @@ export default function LoginScreen() {
             <a className="text-red-500 ml-2 mt-4 font-bold">*</a>
             <input
               className="w-full ml-2 mt-4 bg-transparent"
-              type={showConfirmPassword === false ? 'password' : 'text'}
+              type={showConfirmPassword === false ? "password" : "text"}
               id="confirmPassword"
-              {...register('confirmPassword', {
-                required: 'Please Confirm Your Password',
-                validate: (value) => value === getValues('password'),
+              {...register("confirmPassword", {
+                required: "Please Confirm Your Password",
+                validate: (value) => value === getValues("password"),
                 minLength: {
                   value: 7,
-                  message: 'Confirm Password is Less than 7 chars',
+                  message: "Confirm Password is Less than 7 chars",
                 },
               })}
             />
@@ -346,7 +346,7 @@ export default function LoginScreen() {
             </div>
           )}
           {errors.confirmPassword &&
-            errors.confirmPassword.type === 'validate' && (
+            errors.confirmPassword.type === "validate" && (
               <div className="text-red-500 w-full md:ml-48 sm:ml-32 mb-4">
                 Password do not Match!
               </div>
@@ -370,19 +370,19 @@ export default function LoginScreen() {
                   }}
                   className="w-full ml-2 mt-4 text-black bg-transparent"
                   country=""
-                  excludeCountries={['il']}
-                  preferredCountries={['lb', 'fr']}
+                  excludeCountries={["il"]}
+                  preferredCountries={["lb", "fr"]}
                   countryCodeEditable={true}
                   inputStyle={{
-                    width: '200px',
-                    height: '40px',
-                    backgroundColor: 'transparent',
-                    color: 'white',
+                    width: "200px",
+                    height: "40px",
+                    backgroundColor: "transparent",
+                    color: "white",
                   }}
                   onChange={onChange}
                   masks={{
-                    lb: '.. ... ...',
-                    fr: '... .. .. ..',
+                    lb: ".. ... ...",
+                    fr: "... .. .. ..",
                   }}
                   // isValid={(value, country) => {
                   isValid={(value) => {
@@ -390,13 +390,13 @@ export default function LoginScreen() {
                       return true;
                     } else if (!value.match(/^(\+\d{1,3}[- ]?)?\d{7,11}$/)) {
                       {
-                        register('mobileNumber', {
-                          required: 'Please Enter Your Mobile Number',
+                        register("mobileNumber", {
+                          required: "Please Enter Your Mobile Number",
                         });
                       }
                       return false;
                     } else if (value.match(/12345/) || value.match(/00000/)) {
-                      return 'Invalid phone number';
+                      return "Invalid phone number";
                     } else if (value.match(/1234/) || value.match(/0000/)) {
                       return false;
                     } else {
@@ -420,7 +420,7 @@ export default function LoginScreen() {
                   <SaveIndicator /> Registering...
                 </div>
               ) : (
-                'Register'
+                "Register"
               )}
             </button>
           </div>
@@ -430,7 +430,7 @@ export default function LoginScreen() {
   );
   // } catch (error) {
   //   sendErrorToSlack(error);
-  //   console.log('error==', error);
+  //   // console.log('error==', error);
   //   return (
   //     <>
   //       <ErrorOccur />

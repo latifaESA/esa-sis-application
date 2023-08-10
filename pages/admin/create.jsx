@@ -1,10 +1,10 @@
-import { useSession } from 'next-auth/react';
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import AccountsList from '../../components/Dashboard/AccountsList';
-import AccountsAssistance from '../../components/Dashboard/AccountsAssistance';
-import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useSession } from "next-auth/react";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import AccountsList from "../../components/Dashboard/AccountsList";
+import AccountsAssistance from "../../components/Dashboard/AccountsAssistance";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 // import Link from 'next/link';
 // import TeachersList from '../../components/Dashboard/TeachersList'
@@ -20,15 +20,15 @@ export default function Create() {
   // const [dates, setDates] = useState([]);
   // const [status, setStatus] = useState([]);
   // const [promotion, setPromotion] = useState([]);
-  const [fname, setFname] = useState('');
-  const [lname, setLname] = useState('');
-  const [idvalue, setIDvalue] = useState('');
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('');
-  const [role, setRole] = useState('2');
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [idvalue, setIDvalue] = useState("");
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+  const [role, setRole] = useState("2");
 
   const redirect = () => {
-    router.push('/AccessDenied');
+    router.push("/AccessDenied");
   };
 
   useEffect(() => {
@@ -38,53 +38,53 @@ export default function Create() {
 
   const handleShowAll = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
-    setRole('2');
+    setRole("2");
     let sendpmData = {
-      pm_id: ''.trim(),
-      pm_firstname: ''.trim(),
-      pm_lastname: ''.trim(),
-      pm_email: ''.trim(),
-      pm_status: 'active'.trim(),
+      pm_id: "".trim(),
+      pm_firstname: "".trim(),
+      pm_lastname: "".trim(),
+      pm_email: "".trim(),
+      pm_status: "active".trim(),
     };
-    
-    // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post('/api/admin/adminApi/filterpm', sendpmData);
 
-    console.log(data);
+    // id,firstname,lastname,major,promotion,status
+    let { data } = await axios.post("/api/admin/adminApi/filterpm", sendpmData);
+
+    // console.log(data);
     setUsers(data);
-    // console.log('this is users')
-    // console.log(users)
-    setFname('');
-    setLname('');
-    setIDvalue('');
-    setEmail('');
-    setStatus('');
-    setRole('active');
+    // // console.log('this is users')
+    // // console.log(users)
+    setFname("");
+    setLname("");
+    setIDvalue("");
+    setEmail("");
+    setStatus("");
+    setRole("active");
   };
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
     let sendData = {
-      pm_ass_id: ''.trim(),
-      pm_ass_firstname: ''.trim(),
-      pm_ass_lastname: ''.trim(),
-      pm_ass_email: ''.trim(),
-      pm_ass_status: 'active'.trim(),
+      pm_ass_id: "".trim(),
+      pm_ass_firstname: "".trim(),
+      pm_ass_lastname: "".trim(),
+      pm_ass_email: "".trim(),
+      pm_ass_status: "active".trim(),
     };
-    console.log(sendData);
+    // console.log(sendData);
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post(
-      '/api/admin/adminApi/filterassistance',
+      "/api/admin/adminApi/filterassistance",
       sendData
     );
 
-    console.log(sendData);
+    // console.log(sendData);
     setAssistance(data.rows);
   };
 
   const handleAccounts = async (e) => {
     e.preventDefault();
-    // console.log(idvalue, fname, lname, email, courseid)
-    if (role == '3') {
+    // // console.log(idvalue, fname, lname, email, courseid)
+    if (role == "3") {
       let sendData = {
         pm_ass_id: idvalue.trim(),
         pm_ass_firstname: fname.trim(),
@@ -92,10 +92,10 @@ export default function Create() {
         pm_ass_email: email.trim(),
         pm_ass_status: status.trim(),
       };
-      console.log(sendData);
+      // console.log(sendData);
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        '/api/admin/adminApi/filterassistance',
+        "/api/admin/adminApi/filterassistance",
         sendData
       );
 
@@ -110,11 +110,10 @@ export default function Create() {
       };
       // // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        '/api/admin/adminApi/filterpm',
+        "/api/admin/adminApi/filterpm",
         sendpmData
       );
 
-   
       setUsers(data);
     }
   };
@@ -125,7 +124,7 @@ export default function Create() {
         <title>SIS Admin - Accounts</title>
       </Head>
 
-      {session?.user.role === '0' ? (
+      {session?.user.role === "0" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Accounts
@@ -252,7 +251,7 @@ export default function Create() {
                 </button>
               </div>
             </div>
-            {role == '3' ? (
+            {role == "3" ? (
               <AccountsAssistance
                 assistance={assistance}
                 setAssistance={setAssistance}

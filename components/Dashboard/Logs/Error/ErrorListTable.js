@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 
 const ErrorListTable = ({
   handleLogsChange,
@@ -24,9 +24,9 @@ const ErrorListTable = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/logs?logtype=error');
+        const response = await axios.get("/api/controller/logs?logtype=error");
         const incomingData = response.data.data;
-        //console.log(incomingData);
+        //// console.log(incomingData);
         if (response.status === 200) {
           setLogs(incomingData);
           //setDatagridLogs(incomingData);
@@ -50,7 +50,7 @@ const ErrorListTable = ({
   }, [Filteredlogs]);
 
   useEffect(() => {
-    //console.log('ttt');
+    //// console.log('ttt');
     //handleLogsChange(logs);
     setLogsfiltered(logs);
     setShowAll(0);
@@ -59,98 +59,98 @@ const ErrorListTable = ({
 
   const columns = [
     {
-      field: 'level',
-      headerName: 'Level',
-      headerAlign: 'center',
-      align: 'center',
+      field: "level",
+      headerName: "Level",
+      headerAlign: "center",
+      align: "center",
       width: 80,
     },
     {
-      field: 'date',
-      headerName: 'Date',
-      headerAlign: 'center',
-      align: 'center',
+      field: "date",
+      headerName: "Date",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'Athour',
-      headerName: 'Hour',
-      headerAlign: 'center',
-      align: 'center',
+      field: "Athour",
+      headerName: "Hour",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'role',
-      headerName: 'Role',
-      headerAlign: 'center',
-      align: 'center',
+      field: "role",
+      headerName: "Role",
+      headerAlign: "center",
+      align: "center",
       width: 80,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'action',
-      headerName: 'Action',
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'message',
-      headerName: 'Message',
-      headerAlign: 'center',
-      align: 'center',
+      field: "message",
+      headerName: "Message",
+      headerAlign: "center",
+      align: "center",
       width: 300,
     },
     {
-      field: 'os',
-      headerName: 'OS',
-      headerAlign: 'center',
-      align: 'center',
+      field: "os",
+      headerName: "OS",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'osVersion',
-      headerName: 'OS Version',
-      headerAlign: 'center',
-      align: 'center',
+      field: "osVersion",
+      headerName: "OS Version",
+      headerAlign: "center",
+      align: "center",
       width: 50,
     },
     {
-      field: 'browser',
-      headerName: 'Browser',
-      headerAlign: 'center',
-      align: 'center',
+      field: "browser",
+      headerName: "Browser",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'browserSource',
-      headerName: 'Browser Source',
-      headerAlign: 'center',
-      align: 'center',
+      field: "browserSource",
+      headerName: "Browser Source",
+      headerAlign: "center",
+      align: "center",
       width: 250,
     },
     {
-      field: 'device',
-      headerName: 'Device',
-      headerAlign: 'center',
-      align: 'center',
+      field: "device",
+      headerName: "Device",
+      headerAlign: "center",
+      align: "center",
       width: 80,
     },
   ];
   return (
     <>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.id}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           rows={logsfiltered}
-          rowHeight={() => 'auto'}
+          rowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

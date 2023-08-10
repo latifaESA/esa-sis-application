@@ -6,32 +6,32 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 // import Link from 'next/link';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
 // import moment from 'moment';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+import axios from "axios";
+import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from './LowerButtons';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+import { LowerButtons } from "./LowerButtons";
+import exportSelect from "../../utilities/ExcelExport/exportSelect";
+import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 // import {
 //   WarningMessageCancleIncomplete,
 //   WarningMessageIncomplete,
 //   WarningMessageObsolote,
 // } from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 
 const StudentsList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
@@ -59,7 +59,7 @@ const StudentsList = ({ users, setUsers }) => {
   //   setSelectedUser(user);
   //   setCancleIncomplete(true);
   //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
+  //   // // console.log("prevStatus",prevStatus)
   //   setUsers((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -72,7 +72,7 @@ const StudentsList = ({ users, setUsers }) => {
   //   setConfirmOpenObsolote(false);
   //   setCancleIncomplete(false);
   //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
+  //   // // console.log("prevStatus",prevStatus)
   //   setUsers((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -92,7 +92,7 @@ const StudentsList = ({ users, setUsers }) => {
   //     })
   //     .then((response) => {
   //       // Handle success
-  //       console.log(response.data);
+  //       // console.log(response.data);
   //       setMessage('User Status Changed Succesfully!');
 
   //       //Update the user's status and major in the table
@@ -104,7 +104,7 @@ const StudentsList = ({ users, setUsers }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error);
+  //       // console.log(error);
   //     });
   // };
 
@@ -130,9 +130,9 @@ const StudentsList = ({ users, setUsers }) => {
   //     })
   //     .then(async (response) => {
   //       // Handle success
-  //       console.log(response.data);
-  //       //console.log(response.data.defaultpassword)
-  //       //console.log(response.data.newID)
+  //       // console.log(response.data);
+  //       //// console.log(response.data.defaultpassword)
+  //       //// console.log(response.data.newID)
   //       setMessage('User Major Changed Succesfully!');
   //         await EmailAfterChangMajor({
   //          lname:response.data.lastname ,
@@ -161,37 +161,37 @@ const StudentsList = ({ users, setUsers }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error.response.data);
+  //       // console.log(error.response.data);
   //     });
   // };
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: 'student_id',
-      headerName: 'ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "student_id",
+      headerName: "ID",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
 
     {
-      field: 'student_lastname',
-      headerName: 'Last Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "student_lastname",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       // renderCell: (params) =>
       //   `${params.row.student_lastname || ''}`,
     },
     {
-      field: 'student_firstname',
-      headerName: 'First Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "student_firstname",
+      headerName: "First Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       // renderCell: (params) =>
       //   `${params.row.student_firstname || ''}`,
@@ -256,52 +256,52 @@ const StudentsList = ({ users, setUsers }) => {
     // },
 
     {
-      field: 'major_name',
-      headerName: 'Major',
-      headerAlign: 'center',
-      align: 'center',
+      field: "major_name",
+      headerName: "Major",
+      headerAlign: "center",
+      align: "center",
       width: 200,
       editable: true,
-      type: 'singleSelect',
+      type: "singleSelect",
       valueOptions: majorData,
     },
     {
-      field: 'promotion',
-      headerName: 'Promotion',
-      headerAlign: 'center',
-      align: 'center',
+      field: "promotion",
+      headerName: "Promotion",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
     {
-      field: 'status',
-      headerName: 'Status',
-      headerAlign: 'center',
-      align: 'center',
+      field: "status",
+      headerName: "Status",
+      headerAlign: "center",
+      align: "center",
       width: 100,
       editable: true,
       cellClassName: (params) =>
-        params.row.status === 'active'
-          ? 'text-green-600 font-bold'
-          : params.row.status === 'limited'
-          ? 'text-red-600 font-bold'
-          : '' || params.row.status === 'Inactive'
-          ? 'text-blue-600 font-bold'
-          : '',
-      type: 'singleSelect',
+        params.row.status === "active"
+          ? "text-green-600 font-bold"
+          : params.row.status === "limited"
+          ? "text-red-600 font-bold"
+          : "" || params.row.status === "Inactive"
+          ? "text-blue-600 font-bold"
+          : "",
+      type: "singleSelect",
       valueOptions: statusData,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
     {
-      field: 'mobile_number',
-      headerName: 'Mobile Number',
-      headerAlign: 'center',
-      align: 'center',
+      field: "mobile_number",
+      headerName: "Mobile Number",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
     // {
@@ -477,7 +477,7 @@ const StudentsList = ({ users, setUsers }) => {
   const exportButton = async () => {
     if (users.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
           await exportSelect(selectedRows, incomingData, session);
@@ -494,7 +494,7 @@ const StudentsList = ({ users, setUsers }) => {
   const exportAllButton = async () => {
     if (users.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
           await exportAll(incomingData, session);
@@ -515,7 +515,7 @@ const StudentsList = ({ users, setUsers }) => {
       if (user.reportURL) {
         window.open(user.reportURL);
       } else {
-        setMessage('Please select a user with a report');
+        setMessage("Please select a user with a report");
       }
     });
   };
@@ -545,11 +545,11 @@ const StudentsList = ({ users, setUsers }) => {
         />
       )} */}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.student_id}
           rows={users}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

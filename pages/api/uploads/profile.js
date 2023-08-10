@@ -6,13 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+import formidable from "formidable";
+import fs from "fs";
+import path from "path";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
-import { env } from 'process';
+import { env } from "process";
 
 export const config = {
   api: {
@@ -21,18 +21,18 @@ export const config = {
 };
 
 async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To Save Data' });
+    return res.status(401).send({ message: "Signin Required To Save Data" });
   }
   const { user } = session;
 
-  console.log('user from profile: ', user);
-  console.log('userId from profile: ', user.userid);
+  // console.log('user from profile: ', user);
+  // console.log('userId from profile: ', user.userid);
   const readFile = (file, saveLocally, place) => {
     const options = {};
     if (saveLocally) {
@@ -41,9 +41,9 @@ async function handler(req, res) {
       // eslint-disable-next-line no-unused-vars
       options.filename = (name, ext, path1, form) => {
         if (
-          path1.mimetype === 'image/png' ||
-          path1.mimetype === 'image/jpeg' ||
-          path1.mimetype === 'image/jpg'
+          path1.mimetype === "image/png" ||
+          path1.mimetype === "image/jpeg" ||
+          path1.mimetype === "image/jpg"
         ) {
           let sourceDir = fs.readdirSync(place);
 
@@ -52,14 +52,14 @@ async function handler(req, res) {
             const stats = fs.statSync(filePath);
             if (stats.isFile()) {
               fs.unlinkSync(filePath);
-              // console.log('Deleted file:', filePath);
+              // // console.log('Deleted file:', filePath);
             }
           });
-          return Date.now().toString() + '_' + path1.originalFilename;
+          return Date.now().toString() + "_" + path1.originalFilename;
         } else {
           return res
             .status(200)
-            .send({ status: 401, message: 'file was not accepted' });
+            .send({ status: 401, message: "file was not accepted" });
         }
       };
     }
@@ -74,7 +74,7 @@ async function handler(req, res) {
     });
   };
 
-  const localDiskPath = path.parse(require('os').homedir()).root;
+  const localDiskPath = path.parse(require("os").homedir()).root;
   // const directory = path.join(
   //   localDiskPath,
   //   'esa-applicants-data',
@@ -85,10 +85,10 @@ async function handler(req, res) {
   // );
   const directory = path.join(
     localDiskPath,
-    'sis-application-data',
-    'Users',
+    "sis-application-data",
+    "Users",
     `${user.userid}`,
-    'photo'
+    "photo"
   );
 
   if (!fs.existsSync(directory)) {
@@ -102,9 +102,7 @@ async function handler(req, res) {
   // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
 
   return res.status(200).send({
-
     secure_url: `${env.NEXTAUTH_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
-
   });
 
   // return res.status(200).send(req)

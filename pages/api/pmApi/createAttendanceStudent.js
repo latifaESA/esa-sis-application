@@ -1,15 +1,12 @@
 const { connect, disconnect } = require("../../../utilities/db");
-const { createAttendanceStudent } = require('../controller/queries')
+const { createAttendanceStudent } = require("../controller/queries");
 
-async function handler(req , res) {
+async function handler(req, res) {
   try {
     const connection = await connect();
-    const {
-       attendance_id,
-       student_id
-    } = req.body;
-   await createAttendanceStudent(connection , student_id,attendance_id);
-    // console.log(response)
+    const { attendance_id, student_id } = req.body;
+    await createAttendanceStudent(connection, student_id, attendance_id);
+    // // console.log(response)
     await disconnect(connection);
 
     return res.status(201).json({

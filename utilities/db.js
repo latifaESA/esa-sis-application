@@ -8,12 +8,12 @@ dotenv.config("../env");
 let connected = false;
 async function connect() {
   // Create a new connection to the database
-  console.log(".env");
-  console.log(process.env.user);
-  console.log(process.env.host);
-  console.log(process.env.database);
-  console.log(process.env.password);
-  console.log(process.env.PORTS);
+  // console.log(".env");
+  // console.log(process.env.user);
+  // console.log(process.env.host);
+  // console.log(process.env.database);
+  // console.log(process.env.password);
+  // console.log(process.env.PORTS);
   try {
     const connection = new Client({
       user: process.env.user,
@@ -32,7 +32,7 @@ async function connect() {
         }
       });
     });
-    console.log("Connection To DB Established");
+    // console.log("Connection To DB Established");
     connection.success = true;
     connected = true;
     connection.message = "Connection To DB Established";
@@ -77,7 +77,7 @@ async function disconnect(connection) {
   try {
     if (connected) {
       await connection.end();
-      console.log("Connection To DB Released");
+      // console.log("Connection To DB Released");
     } else {
       console.error(`No connection was established to release`);
       return { message: `No connection was established to release` };

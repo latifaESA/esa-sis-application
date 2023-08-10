@@ -6,9 +6,9 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
 
 const ButtomSettings = ({ register, errors }) => {
   // const [fileUploadDirectory, setFileUploadDirectory] = useState();
@@ -25,9 +25,9 @@ const ButtomSettings = ({ register, errors }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/settingdata');
+        const response = await axios.get("/api/controller/settingdata");
         const incomingData = JSON.parse(decrypt(response.data.data));
-        //console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
+        //// console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
         if (response.status === 200) {
           //setCarouselList(incomingData.setting[0].carouselList)
           setESALogo(incomingData.setting[0].esa_logo);
@@ -81,7 +81,7 @@ const ButtomSettings = ({ register, errors }) => {
   function EMBARecommendationLetterChangeHandler(e) {
     setEMBARecommendationLetter(e.target.files[0]);
   }
-  //console.log(ESALogo.split('/').pop());
+  //// console.log(ESALogo.split('/').pop());
   return (
     <>
       <div className="flex gap-4">
@@ -90,9 +90,9 @@ const ButtomSettings = ({ register, errors }) => {
           type="text"
           value={upload_file_directory_name}
           className={`md:w-[340px] ${
-            errors.FileUploadDirectoryName && 'border border-red-500'
+            errors.FileUploadDirectoryName && "border border-red-500"
           }`}
-          {...register('FileUploadDirectoryName', {
+          {...register("FileUploadDirectoryName", {
             //required: 'Enter URL path for your Directory',
             onChange: (e) => {
               UploadDirectoryChangeHandler(e);
@@ -113,9 +113,9 @@ const ButtomSettings = ({ register, errors }) => {
           type="text"
           value={carouselFiles}
           className={`md:w-[385px] ${
-            errors.CarouselList && 'border border-red-500'
+            errors.CarouselList && "border border-red-500"
           }`}
-          {...register('CarouselList', {
+          {...register("CarouselList", {
             //required: 'Upload files or enter Carousel path url',
           })}
         />
@@ -137,11 +137,11 @@ const ButtomSettings = ({ register, errors }) => {
         <label className="w-[280px] mt-2">ESA Logo</label>
         <input
           type="text"
-          value={ESALogo && ESALogo.length > 0 ? ESALogo.split('/').pop() : ''}
+          value={ESALogo && ESALogo.length > 0 ? ESALogo.split("/").pop() : ""}
           className={`md:w-[385px] ${
-            errors.ESALogo && 'border border-red-500'
+            errors.ESALogo && "border border-red-500"
           }`}
-          {...register('ESALogo', {
+          {...register("ESALogo", {
             //required: 'Upload file or enter Logo path url',
           })}
         />
@@ -164,13 +164,13 @@ const ButtomSettings = ({ register, errors }) => {
           type="text"
           value={
             loginBackground && loginBackground.length > 0
-              ? loginBackground.split('/').pop()
-              : ''
+              ? loginBackground.split("/").pop()
+              : ""
           }
           className={`md:w-[385px] ${
-            errors.LoginBackground && 'border border-red-500'
+            errors.LoginBackground && "border border-red-500"
           }`}
-          {...register('LoginBackground', {
+          {...register("LoginBackground", {
             //required: 'Upload file or enter Background path url',
           })}
         />
@@ -193,13 +193,13 @@ const ButtomSettings = ({ register, errors }) => {
           type="text"
           value={
             MBARecommendationLetter && MBARecommendationLetter.length > 0
-              ? MBARecommendationLetter.split('/').pop()
-              : ''
+              ? MBARecommendationLetter.split("/").pop()
+              : ""
           }
           className={`md:w-[385px] ${
-            errors.MBARecommendationLetter && 'border border-red-500'
+            errors.MBARecommendationLetter && "border border-red-500"
           }`}
-          {...register('MBARecommendationLetter', {
+          {...register("MBARecommendationLetter", {
             // required: 'Upload file or enter path url',
           })}
         />
@@ -222,13 +222,13 @@ const ButtomSettings = ({ register, errors }) => {
           type="text"
           value={
             EMBARecommendationLetter && EMBARecommendationLetter.length > 0
-              ? EMBARecommendationLetter.split('/').pop()
-              : ''
+              ? EMBARecommendationLetter.split("/").pop()
+              : ""
           }
           className={`md:w-[385px] ${
-            errors.EMBARecommendationLetter && 'border border-red-500'
+            errors.EMBARecommendationLetter && "border border-red-500"
           }`}
-          {...register('EMBARecommendationLetter', {
+          {...register("EMBARecommendationLetter", {
             // required: 'Upload file or enter path url',
           })}
         />

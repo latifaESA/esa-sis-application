@@ -5,11 +5,11 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import emailing_data from '../emailing_data';
-import axios from 'axios';
-import encrypt from '../encrypt_decrypt/encryptText';
+import emailing_data from "../emailing_data";
+import axios from "axios";
+import encrypt from "../encrypt_decrypt/encryptText";
 //import selection_data from '../selection_data';
-import decrypt from '../encrypt_decrypt/decryptText';
+import decrypt from "../encrypt_decrypt/decryptText";
 
 // import { useSelector } from 'react-redux';
 
@@ -35,11 +35,11 @@ async function EmailAfterRegister({
       })
     )
   );
-  const apiUrl = '/api/controller/settingdata'; 
+  const apiUrl = "/api/controller/settingdata";
   const response = await fetch(apiUrl);
   const data = await response.json();
   const decryptedData = JSON.parse(decrypt(data.data));
-  const esa_logo = decryptedData.setting[0].esa_logo
+  const esa_logo = decryptedData.setting[0].esa_logo;
   const link = `${window.location.origin}/api/user/verifyemail?query=${encryptedQuery}`;
 
   // const link = `${window.location.origin}/api/user/verifyemail?token=${emailToken}&email=${email}&password=${password}`;
@@ -55,13 +55,13 @@ async function EmailAfterRegister({
   const attachments = [
     {
       path: `${esa_logo}`,
-      cid: 'esalogo',
+      cid: "esalogo",
     },
   ];
   const emailBody =
-    '<!DOCTYPE html>' +
-    '<html><head><title>Appointment</title>' +
-    '</head><body><div>' +
+    "<!DOCTYPE html>" +
+    "<html><head><title>Appointment</title>" +
+    "</head><body><div>" +
     `<div style="text-align: center;">
         <img src="cid:esalogo" alt="" width = "120">
         </div>` +
@@ -85,7 +85,7 @@ async function EmailAfterRegister({
     `<p>Best regards,</p> ` +
     `<p>The Admissions Department </p> ` +
     `<p> +961 3 394 584 | WhatsApp or Phone Call </p> ` +
-    '</div></body></html>';
+    "</div></body></html>";
   const payload = JSON.stringify({
     from: fromEmail,
     to: email,
@@ -94,16 +94,16 @@ async function EmailAfterRegister({
     subject: subject,
     emailBody: emailBody,
     attachments: attachments,
-    purpose: 'verification',
+    purpose: "verification",
   });
   // Encrypt the data before sending in the body
   // end-to-end encryption for query parameters
   const encryptedBody = JSON.stringify({ data: encrypt(payload) });
-  await fetch('/api/emailing/sendEmail', {
-    method: 'POST',
+  await fetch("/api/emailing/sendEmail", {
+    method: "POST",
     headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json',
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
     },
     body: encryptedBody,
     // body: JSON.stringify({
@@ -116,25 +116,25 @@ async function EmailAfterRegister({
     //   attachments: attachments,
     // }),
   }).then(async (res) => {
-    // console.log('Fetch= ', res);
+    // // console.log('Fetch= ', res);
     // let resp;
-    let title = 'Sending Verification Email Failed';
-    let message = 'Emailing Service Not Available!';
-    let instructions = 'Please contact us on the following email:';
-    let emailservice = 'itservicedesk@esa.edu.lb';
+    let title = "Sending Verification Email Failed";
+    let message = "Emailing Service Not Available!";
+    let instructions = "Please contact us on the following email:";
+    let emailservice = "itservicedesk@esa.edu.lb";
 
-    // console.log(res.status);
+    // // console.log(res.status);
     // return res.status;
     // TODO: route to a send email success
     // FIXME: get error on live server (Vercel)
-    // console.log(`${window.location.origin}/user/validation`);
+    // // console.log(`${window.location.origin}/user/validation`);
 
     res.status === 200
-      ? router.push('/user/message/validation')
-      : (await axios.post('/api/CRUD_Op/deleteByID', {
+      ? router.push("/user/message/validation")
+      : (await axios.post("/api/CRUD_Op/deleteByID", {
           data: encrypt(JSON.stringify(ID)),
         }),
-        // console.log(resp.data.message),
+        // // console.log(resp.data.message),
         // FIXME: if (resp.status!==200) I Suggest To send an message to the admin content the ID to Delete from the dashboed the data
         router.push(
           `/user/message/messageEmailingService?title=${title}&message=${message}&instructions=${instructions}&email=${emailservice}`
