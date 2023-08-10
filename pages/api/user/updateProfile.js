@@ -69,6 +69,7 @@ async function handler(req, res) {
     // const connection = await connect();
     if (user.role === '0') {
       if (fname) {
+
         await UpdateadminInfo(connection, fname, lname, user.email);
       }
     } else if (user.role === '1') {

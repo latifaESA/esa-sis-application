@@ -274,7 +274,7 @@ export const authOptions = {
 //                        'pm_id',
 //                        user.rows[0].userid,
 //=======
-                      name: admin.rows[0].adminname,
+                      name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
                       role: user.rows[0].role.toString(),
                       userid: `${user.rows[0].userid}`,

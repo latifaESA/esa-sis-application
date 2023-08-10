@@ -177,6 +177,9 @@ const TeachersList = ({ users, setUsers }) => {
               : u
           )
         );
+        setTimeout(() => {
+          setUsers(prevUsers => prevUsers.filter(u => u.pm_status === 'inactive'));
+        }, 10000); // 10000 milliseconds = 10 seconds
       })
       .catch((error) => {
         // Handle error
@@ -204,22 +207,15 @@ const TeachersList = ({ users, setUsers }) => {
       )
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
+        
+
+        //Update the user's status and major in the table
+        setUsers(prevUsers => prevUsers.filter(u => u.pm_status === 'active'));
         // Handle success
         // console.log(response.data);
         setMessage('User deleted Succesfully!');
 
-
-        //Update the user's status and major in the table
-        setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.pm_id === user.pm_id
-              ? {
-                  ...u,
-                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-                }
-              : u
-          )
-        );
+        
       })
       .catch((error) => {
         // Handle error

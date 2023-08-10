@@ -14,7 +14,7 @@ export default function Courses() {
   const [users, setUsers] = useState([]);
 
   
-  const [majorid, setMajorid] = useState('')
+  // const [majorid, setMajorid] = useState('')
   const [courseid, setCourseid] = useState('')
   const [courseName, setcourseName] = useState('')
   const [courseCredit, setcourseCredit] = useState('')
@@ -62,7 +62,7 @@ export default function Courses() {
     let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
     console.log("datttttta",data.data)
     setUsers(data.data)
-    setMajorid('')
+    // setMajorid('')
     setCourseid('')
     setcourseName('')
     setcourseCredit('')
@@ -115,15 +115,15 @@ export default function Courses() {
           </label>
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-          <label className='w-[350px]'>
+          <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>
             Major Name:
             <input
-              className="ml-5 w-40 max-[850px]:ml-3"  
+              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"  
               type="number"
               name="major_id"
               placeholder='Major Name'
               // value={formData.ID}
-              onChange={(e) => {setMajorid(e.target.value)}}
+              // onChange={(e) => {setMajorid(e.target.value)}}
             ></input>
           </label>
           <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>
