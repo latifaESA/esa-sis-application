@@ -249,30 +249,57 @@ export const authOptions = {
                     // console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
-                      //<<<<<<< batoul
-                      //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      //                              role: (user.rows[0].role).toString(),
-                      //                              status: `${data.blocked ? 'limited' : 'active'}`,
-                      //                              userid: `${user.rows[0].userid}`,
-                      //                              // ID: `${user.rows[0].userid}`,
-                      //                              image: userinfo.rows[0].profileurl,
-                      //
-                      //                            };
-                      //                    }
-                      //                    else{
-                      //                      // if the student is not exists then send this message to frontend
-                      //                      message = 'Student does not exists'
-                      //                    }
-                      //                  }else if(user.rows[0].role === 2){
-                      //                      // get the program_manager data
-                      //                      const PM = await findData(
-                      //                        connection,
-                      //                        'program_manager',
-                      //                        'pm_id',
-                      //                        user.rows[0].userid,
-                      //=======
-                      name: admin.rows[0].adminname,
+// <<<<<<< Hassan
+//                       //<<<<<<< batoul
+//                       //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+//                       //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+//                       //                              role: (user.rows[0].role).toString(),
+//                       //                              status: `${data.blocked ? 'limited' : 'active'}`,
+//                       //                              userid: `${user.rows[0].userid}`,
+//                       //                              // ID: `${user.rows[0].userid}`,
+//                       //                              image: userinfo.rows[0].profileurl,
+//                       //
+//                       //                            };
+//                       //                    }
+//                       //                    else{
+//                       //                      // if the student is not exists then send this message to frontend
+//                       //                      message = 'Student does not exists'
+//                       //                    }
+//                       //                  }else if(user.rows[0].role === 2){
+//                       //                      // get the program_manager data
+//                       //                      const PM = await findData(
+//                       //                        connection,
+//                       //                        'program_manager',
+//                       //                        'pm_id',
+//                       //                        user.rows[0].userid,
+//                       //=======
+//                       name: admin.rows[0].adminname,
+// =======
+// //<<<<<<< batoul
+// //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+// //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+// //                              role: (user.rows[0].role).toString(),
+// //                              status: `${data.blocked ? 'limited' : 'active'}`,
+// //                              userid: `${user.rows[0].userid}`,
+// //                              // ID: `${user.rows[0].userid}`,
+// //                              image: userinfo.rows[0].profileurl,
+// //                           
+// //                            };
+// //                    }
+// //                    else{
+// //                      // if the student is not exists then send this message to frontend
+// //                      message = 'Student does not exists'
+// //                    }
+// //                  }else if(user.rows[0].role === 2){
+// //                      // get the program_manager data
+// //                      const PM = await findData(
+// //                        connection,
+// //                        'program_manager',
+// //                        'pm_id',
+// //                        user.rows[0].userid,
+// //=======
+//                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
+// >>>>>>> main
                       email: admin.rows[0].adminemail,
                       role: user.rows[0].role.toString(),
                       userid: `${user.rows[0].userid}`,

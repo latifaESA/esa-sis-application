@@ -237,10 +237,16 @@ async function UpdateUserpassword(connection, password, userid) {
 
 async function UpdateadminInfo(connection, name, lname, email) {
   try {
-    let userdata = await executeQuery(
-      connection,
-      `UPDATE admin SET adminname = '${name} ${lname}' WHERE adminemail ='${email}' `
-    );
+// <<<<<<< Hassan
+//     let userdata = await executeQuery(
+//       connection,
+//       `UPDATE admin SET adminname = '${name} ${lname}' WHERE adminemail ='${email}' `
+//     );
+// =======
+    let userdata = await executeQuery(connection ,
+      `UPDATE admin SET admin_firstname = '${name}' ,  admin_lastname='${lname}' WHERE adminemail ='${email}' `,
+      );
+// >>>>>>> main
     return userdata;
   } catch (error) {
     return error;
