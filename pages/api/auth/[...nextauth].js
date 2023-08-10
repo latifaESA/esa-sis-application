@@ -89,7 +89,7 @@ export const authOptions = {
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
         if (connection.success) {
-          // console.log('connection to DB succes nextauth signin');
+          console.log("connection to DB succes nextauth signin");
 
           // try {
           //   const results = await new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ export const authOptions = {
           //       }
           //     });
           //   });
-          //   // console.log(results);
+          //   console.log(results);
           // } catch (err) {
           //   console.error(err);
           // }
@@ -127,8 +127,8 @@ export const authOptions = {
           //   credentials.userid,
           // );
           const userinfo = await Userinfo(connection, credentials.userid); //email from req body
-          // // console.log(userinfo.rows[0].profileurl)
-          // // console.log("---------------------------------")
+          // console.log(userinfo.rows[0].profileurl)
+          // console.log("---------------------------------")
 
           //  check if there is user with the given id
           if (user.rowCount > 0) {
@@ -156,8 +156,8 @@ export const authOptions = {
                     }),
                   }
                 );
-                // // console.log(data.blocked);
-                // // console.log(data);
+                // console.log(data.blocked);
+                // console.log(data);
                 // if the user did not complete the survey then send the links
                 // if(data.blocked){
 
@@ -169,10 +169,10 @@ export const authOptions = {
                 //       rejectUnauthorized: false,
                 //     })
                 //     })
-                //     // // console.log(data.Tasks)
-                //     // console.log('==========-=-=-=-=')
-                //     // console.log(data.StatusCode)
-                //     // console.log('==========-=-=-=-=')
+                //     // console.log(data.Tasks)
+                //     console.log('==========-=-=-=-=')
+                //     console.log(data.StatusCode)
+                //     console.log('==========-=-=-=-=')
                 //     // return {data};
                 //     message = JSON.stringify(data);
 
@@ -210,7 +210,7 @@ export const authOptions = {
                 //       }
 
                 //   }catch (error) {
-                //     // console.log('the error is: ', error)
+                //     console.log('the error is: ', error)
                 //     message = JSON.stringify(error);
 
                 // }
@@ -244,62 +244,35 @@ export const authOptions = {
                         }`
                       );
                     }
-                    // // console.log('user.rows[0].role==', user.rows[0].role);
-                    // // console.log(user.rows[0]);
-                    // console.log('userinfo.rows[0]==', userinfo.rows[0]);
+                    // console.log('user.rows[0].role==', user.rows[0].role);
+                    // console.log(user.rows[0]);
+                    console.log("userinfo.rows[0]==", userinfo.rows[0]);
 
                     return {
-// <<<<<<< Hassan
-//                       //<<<<<<< batoul
-//                       //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-//                       //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-//                       //                              role: (user.rows[0].role).toString(),
-//                       //                              status: `${data.blocked ? 'limited' : 'active'}`,
-//                       //                              userid: `${user.rows[0].userid}`,
-//                       //                              // ID: `${user.rows[0].userid}`,
-//                       //                              image: userinfo.rows[0].profileurl,
-//                       //
-//                       //                            };
-//                       //                    }
-//                       //                    else{
-//                       //                      // if the student is not exists then send this message to frontend
-//                       //                      message = 'Student does not exists'
-//                       //                    }
-//                       //                  }else if(user.rows[0].role === 2){
-//                       //                      // get the program_manager data
-//                       //                      const PM = await findData(
-//                       //                        connection,
-//                       //                        'program_manager',
-//                       //                        'pm_id',
-//                       //                        user.rows[0].userid,
-//                       //=======
-//                       name: admin.rows[0].adminname,
-// =======
-// //<<<<<<< batoul
-// //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-// //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-// //                              role: (user.rows[0].role).toString(),
-// //                              status: `${data.blocked ? 'limited' : 'active'}`,
-// //                              userid: `${user.rows[0].userid}`,
-// //                              // ID: `${user.rows[0].userid}`,
-// //                              image: userinfo.rows[0].profileurl,
-// //                           
-// //                            };
-// //                    }
-// //                    else{
-// //                      // if the student is not exists then send this message to frontend
-// //                      message = 'Student does not exists'
-// //                    }
-// //                  }else if(user.rows[0].role === 2){
-// //                      // get the program_manager data
-// //                      const PM = await findData(
-// //                        connection,
-// //                        'program_manager',
-// //                        'pm_id',
-// //                        user.rows[0].userid,
-// //=======
-//                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
-// >>>>>>> main
+                      //<<<<<<< batoul
+                      //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                      //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                      //                              role: (user.rows[0].role).toString(),
+                      //                              status: `${data.blocked ? 'limited' : 'active'}`,
+                      //                              userid: `${user.rows[0].userid}`,
+                      //                              // ID: `${user.rows[0].userid}`,
+                      //                              image: userinfo.rows[0].profileurl,
+                      //
+                      //                            };
+                      //                    }
+                      //                    else{
+                      //                      // if the student is not exists then send this message to frontend
+                      //                      message = 'Student does not exists'
+                      //                    }
+                      //                  }else if(user.rows[0].role === 2){
+                      //                      // get the program_manager data
+                      //                      const PM = await findData(
+                      //                        connection,
+                      //                        'program_manager',
+                      //                        'pm_id',
+                      //                        user.rows[0].userid,
+                      //=======
+                      name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
                       role: user.rows[0].role.toString(),
                       userid: `${user.rows[0].userid}`,
@@ -317,8 +290,8 @@ export const authOptions = {
                     "student_id",
                     user.rows[0].userid
                   );
-                  // // console.log('this is ST ');
-                  // // console.log(ST);
+                  // console.log('this is ST ');
+                  // console.log(ST);
                   // if the program_manager exists then send the data to frontend
                   if (ST.rows) {
                     await disconnect(connection);
@@ -375,8 +348,8 @@ export const authOptions = {
                     "pm_id",
                     user.rows[0].userid
                   );
-                  // // console.log(user.rows[0].userid);
-                  // // console.log(PM);
+                  // console.log(user.rows[0].userid);
+                  // console.log(PM);
                   // if the program_manager exists then send the data to frontend
                   if (PM.rows) {
                     await disconnect(connection);
@@ -417,8 +390,8 @@ export const authOptions = {
                       //                      'pm_ass_id',
                       //                      user.rows[0].userid,
                       //                    );
-                      //                    // console.log(user.rows[0].userid)
-                      //                    // console.log(AS)
+                      //                    console.log(user.rows[0].userid)
+                      //                    console.log(AS)
                       //                    // if the program_manager_assistance exists then send the data to frontend
                       //                if(AS.rows){
                       //
@@ -455,8 +428,8 @@ export const authOptions = {
                     "pm_ass_id",
                     user.rows[0].userid
                   );
-                  // // console.log(user.rows[0].userid);
-                  // // console.log(AS);
+                  // console.log(user.rows[0].userid);
+                  // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
                   if (AS.rows) {
                     await disconnect(connection);
@@ -506,8 +479,8 @@ export const authOptions = {
                 //     'pm_ass_id',
                 //     user.rows[0].userid
                 //   );
-                //   // console.log(user.rows[0].userid);
-                //   // console.log(AS);
+                //   console.log(user.rows[0].userid);
+                //   console.log(AS);
                 //   // if the program_manager_assistance exists then send the data to frontend
                 //   if (AS.rows) {
                 //     await disconnect(connection);
@@ -541,9 +514,9 @@ export const authOptions = {
 
                 // }
                 // end of if data.bloked
-                // // console.log(data);
+                // console.log(data);
               } catch (error) {
-                // // console.log('the error is: ', error);
+                // console.log('the error is: ', error);
                 return { error };
               }
               // message = 'hello'
@@ -574,10 +547,10 @@ export const authOptions = {
           // ); //email from req body
 
           // const userinfo = await Userinfo(connection, credentials.email); //email from req body
-          // // // console.log(user);
-          // // // console.log('User In Auth=', user);
+          // // console.log(user);
+          // // console.log('User In Auth=', user);
           // if (user.result) {
-          //   // // console.log('User=', user);
+          //   // console.log('User=', user);
           //   /* Checking if the user is verified and if the user is not obsolete. */
           //   if (
           //     bcryptjs.compareSync(
@@ -602,8 +575,8 @@ export const authOptions = {
           //         connection
           //       );
 
-          //       //// console.log('User', userinfo)
-          //       //// console.log(program.program)
+          //       //console.log('User', userinfo)
+          //       //console.log(program.program)
           //       await disconnect(connection);
           //       // Write to logger
           //       if (req) {
@@ -706,7 +679,7 @@ export const authOptions = {
           // }
         } //(!connection.success)
         else {
-          // console.log('connection to DB unsucces nextauth signin');
+          console.log("connection to DB unsucces nextauth signin");
           message = connection.message;
           sis_app_logger.error(
             `${new Date()}=From nextauth signin,connection unsuccess=---=${

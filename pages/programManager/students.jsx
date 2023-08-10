@@ -27,20 +27,12 @@ export default function Students() {
   const [statusValue, setStatusValue] = useState("");
   const [promotionValue, setPromotionValue] = useState("");
 
-// <<<<<<< Hassan
-//   const redirect = () => {
-//     router.push("/AccessDenied");
-//   };
+  const redirect = () => {
+    router.push("/AccessDenied");
+  };
 
-//   useEffect(() => {
-//     const getMajor = async () => {
-//       let table = "major";
-//       let { data } = await axios.post("/api/pmApi/getAll", { table });
-
-//       setallMajor(data.rows);
-// =======
-  useEffect(() => { 
-    // const getMajor = async () => { 
+  useEffect(() => {
+    // const getMajor = async () => {
     //   let table = 'promotions';
     //   let Where='major_id';
     //   let id = session.user.majorid;
@@ -48,34 +40,20 @@ export default function Students() {
 
     //      console.log("data"  , data)
     //   setallMajor(data.data)
-// >>>>>>> main
 
     //   const datesArray = [];
     //   data.data.forEach((promotion) => {
     //     datesArray.push(promotion.promotion_name);
     //   });
 
-// <<<<<<< Hassan
-//       setMajor(datesArray);
-//     };
-//     getMajor();
-
-//     const getStatus = async () => {
-//       let table = "status";
-//       let { data } = await axios.post("/api/pmApi/getAll", { table });
-// =======
     //   setPromotionValue(datesArray);
 
     // }
     // getMajor()
 
-
-
-    const getStatus = async () => { 
-      let table = 'status';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
-
-// >>>>>>> main
+    const getStatus = async () => {
+      let table = "status";
+      let { data } = await axios.post("/api/pmApi/getAll", { table });
 
       // setUsers(data)
       // setDates(data.rows)
@@ -91,19 +69,16 @@ export default function Students() {
     };
     getStatus();
 
-// <<<<<<< Hassan
-//     const getPromotion = async () => {
-//       let table = "student";
-//       let { data } = await axios.post("/api/pmApi/getAll", { table });
-// =======
-    const getPromotion = async () => { 
-      let table = 'promotions';
-      let Where='major_id';
+    const getPromotion = async () => {
+      let table = "promotions";
+      let Where = "major_id";
       let id = session.user.majorid;
-      let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where, id})
-      console.log('data',data.data.data)
-
-// >>>>>>> main
+      let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        table,
+        Where,
+        id,
+      });
+      console.log("data", data.data.data);
 
       // setUsers(data)
 
@@ -134,11 +109,11 @@ export default function Students() {
       promotion: "",
       status: "",
     };
-    // console.log(sendData)
-    // console.log((sendData))
+    console.log(sendData);
+    console.log(sendData);
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
-    // console.log(sendData)
+    console.log(sendData);
     setUsers(data.rows);
   };
 
@@ -151,11 +126,11 @@ export default function Students() {
       promotion: "",
       status: "",
     };
-    // console.log(sendData)
-    // console.log((sendData))
+    console.log(sendData);
+    console.log(sendData);
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
-    // console.log(sendData)
+    console.log(sendData);
     setUsers(data.rows);
     setMajorValue("");
     setTest(true);
@@ -168,7 +143,7 @@ export default function Students() {
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
+    console.log("Selected Value:", selectedValue);
     if (test) {
       selectedValue == "";
     }
@@ -176,7 +151,7 @@ export default function Students() {
       let majorID = allMajor.filter(
         (major) => major.major_name === selectedValue
       );
-      // console.log(majorID[0].major_id)
+      console.log(majorID[0].major_id);
       setMajorValue(majorID[0].major_id);
     } else {
       setMajorValue("");
@@ -184,18 +159,25 @@ export default function Students() {
   };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
+    console.log("Selected Value:", selectedValue);
     setStatusValue(selectedValue);
   };
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
+    console.log("Selected Value:", selectedValue);
     setPromotionValue(selectedValue);
   };
 
   const handleStudents = async (e) => {
     e.preventDefault();
-    console.log(majorValue);
+    console.log(
+      idValue,
+      firstnameValue,
+      lastnameValue,
+      majorValue,
+      statusValue,
+      promotionValue
+    );
     let sendData = {
       id: idValue,
       firstname: firstnameValue,
@@ -204,12 +186,12 @@ export default function Students() {
       promotion: promotionValue,
       status: statusValue,
     };
-    // console.log(sendData)
-    // console.log(JSON.stringify(sendData))
+    console.log(sendData);
+    console.log(JSON.stringify(sendData));
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
 
-    // console.log(data.rows)
+    console.log(data.rows);
     setUsers(data.rows);
   };
 
@@ -266,80 +248,42 @@ export default function Students() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-// <<<<<<< Hassan
-//               <label>
-//                 Major:
-//                 {/* Start select box */}
-//                 <CustomSelectBox
-//                   options={major}
-//                   placeholder="Select Major"
-//                   onSelect={handleMajor}
-//                   styled={
-//                     "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
-//                   }
-//                 />
-//               </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                Major:
+                {/* Start select box */}
+                <CustomSelectBox
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  options={major}
+                  placeholder="Select Major"
+                  onSelect={handleMajor}
+                  styled={
+                    "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
+                  }
+                />
+              </label>
 
-//               <label className="invisible max-[850px]:visible max-[850px]:hidden">
-//                 From:
-//                 <input
-//                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-//                   type="date"
-//                   name="from"
-//                   // value={formData.from}
-//                   // onChange={handleChange}
-//                 ></input>
-//               </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                From:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="date"
+                  name="from"
+                  // value={formData.from}
+                  // onChange={handleChange}
+                ></input>
+              </label>
 
-//               <label className="invisible max-[850px]:visible max-[850px]:hidden">
-//                 To:
-//                 <input
-//                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-//                   type="date"
-//                   name="to"
-//                   // value={formData.to}
-//                   // onChange={handleChange}
-//                 ></input>
-//               </label>
-//               {/* </div>
-// =======
-          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            Major:
-
-              {/* Start select box */}
-            <CustomSelectBox 
-            className='ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10'
-            options={major}
-            placeholder="Select Major"
-            onSelect={handleMajor}
-            styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"}
-            />
-          </label>
-
-
-          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            From:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="date"
-              name="from"
-              // value={formData.from}
-              // onChange={handleChange}
-            ></input>
-          </label>
-
-          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            To:
-            <input
-              className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-              type="date"
-              name="to"
-              // value={formData.to}
-              // onChange={handleChange}
-            ></input>
-          </label>
-          {/* </div>
-// >>>>>>> main
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                  // value={formData.to}
+                  // onChange={handleChange}
+                ></input>
+              </label>
+              {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
               <label className="w-[350px]">

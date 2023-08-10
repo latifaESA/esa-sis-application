@@ -219,11 +219,11 @@ async function UpdateUserpassword(connection, password, userid) {
   }
 }
 // async function UpdateadminInfo(connection ,table , condition , em , name , email){
-//   // // console.log(table);
-//   // // console.log(condition);
-//   // // console.log(name);
-//   // // console.log(em);
-//   // // console.log(email)
+//   // console.log(table);
+//   // console.log(condition);
+//   // console.log(name);
+//   // console.log(em);
+//   // console.log(email)
 //   try {
 //     let userdata = await executeQuery(connection ,
 //       `UPDATE '${table}' SET '${condition}' = '${name}' WHERE '${em}' ='${email}' `,
@@ -237,16 +237,10 @@ async function UpdateUserpassword(connection, password, userid) {
 
 async function UpdateadminInfo(connection, name, lname, email) {
   try {
-// <<<<<<< Hassan
-//     let userdata = await executeQuery(
-//       connection,
-//       `UPDATE admin SET adminname = '${name} ${lname}' WHERE adminemail ='${email}' `
-//     );
-// =======
-    let userdata = await executeQuery(connection ,
-      `UPDATE admin SET admin_firstname = '${name}' ,  admin_lastname='${lname}' WHERE adminemail ='${email}' `,
-      );
-// >>>>>>> main
+    let userdata = await executeQuery(
+      connection,
+      `UPDATE admin SET admin_firstname = '${name}' ,  admin_lastname='${lname}' WHERE adminemail ='${email}' `
+    );
     return userdata;
   } catch (error) {
     return error;
@@ -258,14 +252,14 @@ async function Userinfo(connection, userid) {
       connection,
       `select * from user_document where userid = '${userid}'`
     );
-    // console.log(UserData)
+    console.log(UserData);
     return UserData;
   } catch (err) {
     return err;
   }
 }
 async function updateUser(connection, table, condition, column, value, id) {
-  // // console.log(value)
+  // console.log(value)
   try {
     let sql = `UPDATE ${table} SET ${column} = '${value}' WHERE ${condition} = '${id}'`;
     const data = await executeQuery(connection, sql);

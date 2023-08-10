@@ -78,19 +78,15 @@ export default function Create() {
         "/api/admin/adminApi/createPMAccount",
         sendData
       );
-// <<<<<<< Hassan
 
-//       // console.log(data[0].rowCount);
-//       if (data[0].rowCount == 0) {
-// =======
-       console.log("data",data)
-      if(data === true){
+      console.log("data", data);
+      if (data === true) {
         setConfirmOpenMessage(true);
-        setMessages(`Account Program Manager Already Exist`)
+        setMessages(`Account Program Manager Already Exist`);
       }
       // console.log(data[0].rowCount);
       else if (data[0].rowCount == 0) {
-// >>>>>>> main
+        // >>>>>>> main
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
@@ -142,7 +138,7 @@ export default function Create() {
         adminemail: email.trim(),
         admin_firstname: fname.trim(),
         userpassword: genPass,
-        admin_lastname:lname.trim()
+        admin_lastname: lname.trim(),
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -151,20 +147,18 @@ export default function Create() {
         sendADData
       );
 
-    console.log(data)
+      console.log(data);
 
-      if(data === true){
+      if (data === true) {
         setConfirmOpenMessage(true);
-        setMessages(`Account Admin Already Exist`)
-      }else if (data[0].rowCount == 0) {
-        
+        setMessages(`Account Admin Already Exist`);
+      } else if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
         setMessages(`Admin Account Create Successfully 
         With Username : ${gen.trim()} 
         and password :   ${generatedPass} `);
-
       }
     }
     if (fname == "" && email == "") {
@@ -196,7 +190,6 @@ export default function Create() {
           handleOpenNotificatonMessages={handleOpenNotificatonMessages}
           handleCloseNotificatonMessages={handleCloseNotificatonMessages}
           messages={messages}
-
         />
       )}
       <Head>

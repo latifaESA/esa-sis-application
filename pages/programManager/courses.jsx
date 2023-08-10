@@ -12,33 +12,19 @@ export default function Courses() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
 
-// <<<<<<< Hassan
-//   // const [majorid, setMajorid] = useState('')
-//   const [courseid, setCourseid] = useState("");
-//   const [courseName, setcourseName] = useState("");
-//   const [courseCredit, setcourseCredit] = useState("");
-//   const [courseType, setcourseType] = useState("");
-//   const router = useRouter();
-// =======
-  
   // const [majorid, setMajorid] = useState('')
-  const [courseid, setCourseid] = useState('')
-  const [courseName, setcourseName] = useState('')
-  const [courseCredit, setcourseCredit] = useState('')
-  const [courseType, setcourseType] = useState('')
-  const router = useRouter()
-  
-  const redirect = () => { 
-    router.push('/AccessDenied')
-  }
-// >>>>>>> main
+  const [courseid, setCourseid] = useState("");
+  const [courseName, setcourseName] = useState("");
+  const [courseCredit, setcourseCredit] = useState("");
+  const [courseType, setcourseType] = useState("");
+  const router = useRouter();
 
   const redirect = () => {
     router.push("/AccessDenied");
   };
 
   const handleCourses = async () => {
-    // // console.log(courseid, courseName, courseCredit, majorid)
+    // console.log(courseid, courseName, courseCredit, majorid)
     let sendData = {
       course_id: courseid.trim(),
       course_name: courseName,
@@ -46,13 +32,13 @@ export default function Courses() {
       major_id: session.user.majorid,
       course_type: courseType,
     };
-    // // console.log(sendData)
-    // // console.log(JSON.stringify(sendData))
+    // console.log(sendData)
+    // console.log(JSON.stringify(sendData))
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
 
-    // console.log("this is data");
-    // console.log(data);
+    console.log("this is data");
+    console.log(data);
     setUsers(data.data);
   };
   useEffect(() => {
@@ -67,30 +53,18 @@ export default function Courses() {
       major_id: session.user.majorid,
       course_type: "",
     };
-    // console.log(sendData);
-    // console.log(sendData);
+    console.log(sendData);
+    console.log(sendData);
     // id,firstname,lastname,major,promotion,status
-// <<<<<<< Hassan
-//     let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
-//     // console.log("datttttta", data.data);
-//     setUsers(data.data);
-//     // setMajorid('')
-//     setCourseid("");
-//     setcourseName("");
-//     setcourseCredit("");
-//     setcourseType("");
-//   };
-// =======
-    let {data} = await axios.post('/api/pmApi/filterCourse', sendData)
-    console.log("datttttta",data.data)
-    setUsers(data.data)
+    let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
+    console.log("datttttta", data.data);
+    setUsers(data.data);
     // setMajorid('')
-    setCourseid('')
-    setcourseName('')
-    setcourseCredit('')
-    setcourseType('')
-  }
-// >>>>>>> main
+    setCourseid("");
+    setcourseName("");
+    setcourseCredit("");
+    setcourseType("");
+  };
 
   return (
     <>
@@ -145,51 +119,27 @@ export default function Courses() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-// <<<<<<< Hassan
-//               <label className="w-[350px]">
-//                 Major Name:
-//                 <input
-//                   className="ml-5 w-40 max-[850px]:ml-3"
-//                   type="number"
-//                   name="major_id"
-//                   placeholder="Major Name"
-//                   // value={formData.ID}
-//                   // onChange={(e) => {setMajorid(e.target.value)}}
-//                 ></input>
-//               </label>
-//               <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-//                 Date:
-//                 <input
-//                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
-//                   type="date"
-//                   name="from"
-//                   // value={formData.from}
-//                   // onChange={handleChange}
-//                 ></input>
-//               </label>
-// =======
-          <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>
-            Major Name:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"  
-              type="number"
-              name="major_id"
-              placeholder='Major Name'
-              // value={formData.ID}
-              // onChange={(e) => {setMajorid(e.target.value)}}
-            ></input>
-          </label>
-          <label className='w-[350px] invisible max-[850px]:visible max-[850px]:hidden'>
-            Date:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
-              type="date"
-              name="from"
-              // value={formData.from}
-              // onChange={handleChange}
-            ></input>
-          </label>
-// >>>>>>> main
+              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
+                Major Name:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
+                  type="number"
+                  name="major_id"
+                  placeholder="Major Name"
+                  // value={formData.ID}
+                  // onChange={(e) => {setMajorid(e.target.value)}}
+                ></input>
+              </label>
+              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
+                Date:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
+                  type="date"
+                  name="from"
+                  // value={formData.from}
+                  // onChange={handleChange}
+                ></input>
+              </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 To:
