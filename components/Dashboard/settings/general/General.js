@@ -6,13 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-import axios from 'axios';
-import { React, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
-import encrypt from '../../../../utilities/encrypt_decrypt/encryptText';
-import ButtomSettings from './ButtomSettings';
-import TopSettings from './TopSettings';
+import axios from "axios";
+import { React, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
+import encrypt from "../../../../utilities/encrypt_decrypt/encryptText";
+import ButtomSettings from "./ButtomSettings";
+import TopSettings from "./TopSettings";
 
 export const GeneralSettings = () => {
   const {
@@ -27,45 +27,45 @@ export const GeneralSettings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/settingdata');
+        const response = await axios.get("/api/controller/settingdata");
         const incomingData = JSON.parse(decrypt(response.data.data));
-        //console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
+        //// console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
         if (response.status === 200) {
-          setValue('AutoSavingTime', incomingData.setting[0].auto_Save_Timing);
+          setValue("AutoSavingTime", incomingData.setting[0].auto_Save_Timing);
           setValue(
-            'MaxCharacterCount',
+            "MaxCharacterCount",
             incomingData.setting[0].max_characters_count
           );
           setValue(
-            'YearOfAquisitionLimit',
+            "YearOfAquisitionLimit",
             incomingData.setting[0].Year_of_Acquisition_Limit
           );
           setValue(
-            'DisapearingMessageTime',
+            "DisapearingMessageTime",
             incomingData.setting[0].message_disapear_timing
           );
           setValue(
-            'DOBMinDate',
-            incomingData.setting[0].personalinfo_dob_min.split('T')[0]
+            "DOBMinDate",
+            incomingData.setting[0].personalinfo_dob_min.split("T")[0]
           );
           setValue(
-            'DOBMaxDate',
-            incomingData.setting[0].personalinfo_dob_max.split('T')[0]
+            "DOBMaxDate",
+            incomingData.setting[0].personalinfo_dob_max.split("T")[0]
           );
           setValue(
-            'SingleFileUploadSize',
+            "SingleFileUploadSize",
             incomingData.setting[0].upload_file_single_size
           );
           setValue(
-            'FileUploadTotalSize',
+            "FileUploadTotalSize",
             incomingData.setting[0].upload_file_total_size
           );
           setValue(
-            'LoggerExpiryDay',
+            "LoggerExpiryDay",
             incomingData.setting[0].logger_expiry_day
           );
           setValue(
-            'LoggerMaxFileSize',
+            "LoggerMaxFileSize",
             incomingData.setting[0].logger_max_file_size
           );
           //setValue('FileUploadDirectoryName',incomingData.setting[0].upload_file_directory_name)
@@ -85,16 +85,16 @@ export const GeneralSettings = () => {
   const resetHandler = () => {};
   const submitHandler = async () => {
     const payload = {
-      AutoSavingTime: getValues('AutoSavingTime'),
-      MaxCharacterCount: getValues('MaxCharacterCount'),
-      YearOfAquisitionLimit: getValues('YearOfAquisitionLimit'),
-      DisapearingMessageTime: getValues('DisapearingMessageTime'),
-      DOBMinDate: getValues('DOBMinDate'),
-      DOBMaxDate: getValues('DOBMaxDate'),
-      SingleFileUploadSize: getValues('SingleFileUploadSize'),
-      FileUploadTotalSize: getValues('FileUploadTotalSize'),
-      LoggerExpiryDay: getValues('LoggerExpiryDay'),
-      LoggerMaxFileSize: getValues('LoggerMaxFileSize'),
+      AutoSavingTime: getValues("AutoSavingTime"),
+      MaxCharacterCount: getValues("MaxCharacterCount"),
+      YearOfAquisitionLimit: getValues("YearOfAquisitionLimit"),
+      DisapearingMessageTime: getValues("DisapearingMessageTime"),
+      DOBMinDate: getValues("DOBMinDate"),
+      DOBMaxDate: getValues("DOBMaxDate"),
+      SingleFileUploadSize: getValues("SingleFileUploadSize"),
+      FileUploadTotalSize: getValues("FileUploadTotalSize"),
+      LoggerExpiryDay: getValues("LoggerExpiryDay"),
+      LoggerMaxFileSize: getValues("LoggerMaxFileSize"),
     };
     const encryptedBody = encrypt(JSON.stringify(payload));
     try {
@@ -108,13 +108,13 @@ export const GeneralSettings = () => {
     } catch (error) {
       console.error(error);
       return {
-        message: 'Failed to Update Setting',
+        message: "Failed to Update Setting",
       };
     }
   };
 
   //const formData = getValues();
-  //console.log(formData);
+  //// console.log(formData);
   return (
     <>
       <form

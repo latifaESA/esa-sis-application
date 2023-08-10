@@ -13,7 +13,7 @@ async function handler(req, res) {
     return res.status("200").send(data);
     // await disconnect(connection)
   } catch (error) {
-    console.log("the error is: ", error);
+    // console.log("the error is: ", error);
     return res.status("401").send(error);
     // return error;
   }

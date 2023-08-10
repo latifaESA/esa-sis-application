@@ -6,33 +6,33 @@
  * Copyright (c) 2023 ESA
  */
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]';
-import selection_data from '../../../../utilities/selection_data';
-import encrypt from '../../../../utilities/encrypt_decrypt/encryptText';
-import { connect, disconnect } from '../../../../utilities/db';
-import { FilterData, findmajor_id } from '../../controller/queries';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
+import selection_data from "../../../../utilities/selection_data";
+import encrypt from "../../../../utilities/encrypt_decrypt/encryptText";
+import { connect, disconnect } from "../../../../utilities/db";
+import { FilterData, findmajor_id } from "../../controller/queries";
 // import {findData}from "../../controller/accountquery"
-import sis_app_logger from '../../../api/logger';
-import useragent from 'useragent';
+import sis_app_logger from "../../../api/logger";
+import useragent from "useragent";
 
 async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== "GET") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
 
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: 'Signin Required To Update' });
+    return res.status(401).send({ message: "Signin Required To Update" });
   }
 
   const { user } = session;
 
-  if (user.role !== '0') {
-    return res.status(401).send({ message: 'You are Unauthorized' });
+  if (user.role !== "0") {
+    return res.status(401).send({ message: "You are Unauthorized" });
   }
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
 
   const connection = await connect();
@@ -45,43 +45,43 @@ async function handler(req, res) {
   const limit = selection_data.search_limit;
   let startDate;
   let endDate;
-  let filter2 = '';
+  let filter2 = "";
   if (req.query.Fname) {
-    if (filter2 === '')
+    if (filter2 === "")
       filter2 += ` WHERE firstname like '%${req.query.Fname}%'`;
     else filter2 += ` AND firstname like '%${req.query.Fname}%'`;
   }
 
   if (req.query.Lname) {
-    if (filter2 === '')
+    if (filter2 === "")
       filter2 += ` WHERE lastname like '%${req.query.Lname}%'`;
     else filter2 += ` AND lastname like '%${req.query.Lname}%'`;
   }
 
   if (req.query.ID) {
-    if (filter2 === '') filter2 += ` WHERE UserProfileID = '${req.query.ID}'`;
+    if (filter2 === "") filter2 += ` WHERE UserProfileID = '${req.query.ID}'`;
     else filter2 += ` AND UserProfileID = '${req.query.ID}'`;
   }
 
   if (req.query.major) {
     const major_id = await findmajor_id(connection, req.query.major);
-    if (filter2 === '') filter2 += ` WHERE major = '${major_id.major_id}'`;
+    if (filter2 === "") filter2 += ` WHERE major = '${major_id.major_id}'`;
     else filter2 += ` AND major = '${major_id.major_id}'`;
   }
 
   if (req.query.promotion) {
-    if (filter2 === '')
+    if (filter2 === "")
       filter2 += ` WHERE promotion = '${req.query.promotion}'`;
     else filter2 += ` AND promotion = '${req.query.promotion}'`;
   }
 
   if (req.query.from && req.query.to) {
-    startDate = new Date(req.query.from).toISOString().split('T')[0];
-    endDate = new Date(req.query.to).toISOString().split('T')[0];
-    //console.log(startDate);
-    //console.log(endDate);
+    startDate = new Date(req.query.from).toISOString().split("T")[0];
+    endDate = new Date(req.query.to).toISOString().split("T")[0];
+    //// console.log(startDate);
+    //// console.log(endDate);
     if (startDate && endDate) {
-      if (filter2 === '')
+      if (filter2 === "")
         filter2 += ` WHERE DATE_FORMAT(create_time, '%Y-%m-%d') between '${startDate}' and '${endDate}'`;
       else
         filter2 += ` and DATE_FORMAT(create_time, '%Y-%m-%d') between '${startDate}' and '${endDate}'`;
@@ -93,10 +93,10 @@ async function handler(req, res) {
   //         'old_report'
   //     )
 
-  //     console.log("old_report",typeof old_report,old_report)
-  // console.log("old_reporter",old_report)
+  //     // console.log("old_report",typeof old_report,old_report)
+  // // console.log("old_reporter",old_report)
 
-  if (filter2 === '') {
+  if (filter2 === "") {
     filter2 += `WHERE UserProfileID !='${user._id}' AND role !='0' AND role !='2' AND isVerified !=0`;
   } else {
     filter2 += ` and UserProfileID !='${user._id}' AND role !='0' AND role !='2' AND isVerified !=0`;
@@ -104,13 +104,13 @@ async function handler(req, res) {
   try {
     const data = await FilterData(
       connection,
-      'userinfo',
+      "userinfo",
       filter2,
       limit,
       (page - 1) * limit
     );
-    ////console.log(data);
-    console.log(filter2);
+    ////// console.log(data);
+    // console.log(filter2);
     const response = await Promise.all(
       data.map(async (user) => {
         return {
@@ -147,7 +147,7 @@ async function handler(req, res) {
         userAgentinfo.family
       }=${userAgentinfo.source}=${userAgentinfo.device.family}`
     );
-    res.status(500).send({ message: 'Failed to get users', error });
+    res.status(500).send({ message: "Failed to get users", error });
   }
   await disconnect(connection);
 }

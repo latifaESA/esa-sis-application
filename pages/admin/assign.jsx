@@ -75,14 +75,14 @@ export default function Create() {
   //       pm_ass_email: ''.trim(),
   //       pm_ass_status: ''.trim(),
   //     };
-  //     console.log(sendData);
+  //     // console.log(sendData);
   //     // id,firstname,lastname,major,promotion,status
   //     let { data } = await axios.post(
   //       '/api/admin/adminApi/filterassistance',
   //       sendData
   //     );
 
-  //     console.log(sendData);
+  //     // console.log(sendData);
   //     setAssistance(data.rows);
   //   };
 

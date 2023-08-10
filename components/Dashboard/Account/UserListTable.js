@@ -6,29 +6,29 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
-import axios from 'axios';
-import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
-import encrypt from '../../../utilities/encrypt_decrypt/encryptText';
-import selection_data from '../../../utilities/selection_data';
+import React from "react";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
+import { useState } from "react";
+import { useEffect } from "react";
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
+import axios from "axios";
+import LockPersonOutlinedIcon from "@mui/icons-material/LockPersonOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import encrypt from "../../../utilities/encrypt_decrypt/encryptText";
+import selection_data from "../../../utilities/selection_data";
 import {
   WarningMessageDelete,
   WarningMessageNotVerified,
   WarningMessageVerified,
-} from '../WarningMessage';
+} from "../WarningMessage";
 
 const UserListTable = () => {
   const [pageSize, setPageSize] = useState(5);
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   const [confirmOpenNotVerified, setConfirmOpenNotVerified] = useState(false);
   const [confirmOpenVerified, setConfirmOpenVerified] = useState(false);
@@ -38,11 +38,11 @@ const UserListTable = () => {
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const response = await axios.get('/api/admin/account/listadmin');
+        const response = await axios.get("/api/admin/account/listadmin");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
           setUsers(incomingData);
-          //console.log(users)
+          //// console.log(users)
         } else {
           // If the server sends an empty array of users,
           // set the message state to indicate that no users were found
@@ -55,17 +55,17 @@ const UserListTable = () => {
     getAllUsers();
   }, []);
 
-  console.log(users);
+  // console.log(users);
 
   //Updata User Account
   const handleSave = (user) => {
-    if (user.role !== '0' && user.role !== '2' && user.role !== '3') {
-      setMessage('You can only choose roles 0 ,2 and 3');
+    if (user.role !== "0" && user.role !== "2" && user.role !== "3") {
+      setMessage("You can only choose roles 0 ,2 and 3");
       return;
     }
 
     axios
-      .put('/api/admin/account/updateData', {
+      .put("/api/admin/account/updateData", {
         data: encrypt(
           JSON.stringify({
             ID: user.ID,
@@ -79,7 +79,7 @@ const UserListTable = () => {
       })
       .then((response) => {
         console.log(response.data);
-        setMessage('User Account Updated Successfully');
+        setMessage("User Account Updated Successfully");
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
             u.ID === user.ID
@@ -136,9 +136,8 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-   
         // Handle success
-        setMessage('User Account Deleted Successfully');
+        setMessage("User Account Deleted Successfully");
         console.log(response.data);
         setUsers((prevUsers) => prevUsers.filter((u) => u.ID !== user.ID));
       })
@@ -160,9 +159,8 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-     
         // Handle success
-        setMessage('User Account Locked.');
+        setMessage("User Account Locked.");
         console.log(response.data);
 
         setUsers((prevUsers) =>
@@ -188,9 +186,8 @@ const UserListTable = () => {
         ),
       })
       .then((response) => {
-    
         // Handle success
-        setMessage('User Account Unlocked.');
+        setMessage("User Account Unlocked.");
         console.log(response.data);
 
         setUsers((prevUsers) =>
@@ -223,61 +220,61 @@ const UserListTable = () => {
 
   const columns = [
     {
-      field: 'ID',
-      headerName: 'ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "ID",
+      headerName: "ID",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       editable: true,
     },
     {
-      field: 'role',
-      headerName: 'Role',
-      headerAlign: 'center',
-      align: 'center',
+      field: "role",
+      headerName: "Role",
+      headerAlign: "center",
+      align: "center",
       width: 80,
       editable: true,
     },
 
     {
-      field: 'fname',
-      headerName: 'First Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "fname",
+      headerName: "First Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       editable: true,
     },
     {
-      field: 'lname',
-      headerName: 'Last Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "lname",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       editable: true,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
       width: 200,
       editable: true,
     },
 
     {
-      field: 'mobileNumber',
-      headerName: 'Mobile Number',
-      headerAlign: 'center',
-      align: 'center',
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       editable: true,
     },
 
     {
-      field: 'action',
-      headerName: 'Action',
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      headerAlign: "center",
+      align: "center",
       width: 200,
       sortable: false,
       renderCell: (params) => (
@@ -300,7 +297,7 @@ const UserListTable = () => {
 
           <button
             className={`bg-yellow-500 hover:bg-yellow-700 text-white w-[50px] p-1 font-bold rounded-lg ${
-              params.row.isVerified === 0 && 'hidden'
+              params.row.isVerified === 0 && "hidden"
             }`}
             type="button"
             onClick={() => handleNotVerifiedAccount(params.row)}
@@ -310,7 +307,7 @@ const UserListTable = () => {
 
           <button
             className={`bg-orange-500 hover:bg-orange-700 text-white w-[50px] p-1 font-bold rounded-lg ${
-              params.row.isVerified === 1 && 'hidden'
+              params.row.isVerified === 1 && "hidden"
             }`}
             type="button"
             onClick={() => handleVerifiedAccount(params.row)}
@@ -323,7 +320,7 @@ const UserListTable = () => {
   ];
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
   return (
     <>
@@ -352,7 +349,7 @@ const UserListTable = () => {
         />
       )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.ID}
           rows={users}

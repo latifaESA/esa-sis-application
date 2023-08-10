@@ -6,10 +6,10 @@
  * Copyright (c) 2023 ESA
  */
 
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { createWrapper, HYDRATE } from 'next-redux-wrapper';
-import user_state from './slices/userSlice';
-import app_state from './slices/appSlice';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import user_state from "./slices/userSlice";
+import app_state from "./slices/appSlice";
 import {
   persistStore,
   persistReducer,
@@ -19,8 +19,8 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
-import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+} from "redux-persist";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 // To Combine Many Reducer
 const combinedReducer = combineReducers({
@@ -44,7 +44,7 @@ const masterReducer = (state, action) => {
       //   ...action.payload.app_state,
       //   ...state.app_state,
       // ],
-      
+
       app_state: {
         appState: [
           ...action.payload.app_state.appState,
@@ -95,13 +95,13 @@ const createNoopStorage = () => {
   };
 };
 const storage =
-  typeof window !== 'undefined'
-    ? createWebStorage('local')
+  typeof window !== "undefined"
+    ? createWebStorage("local")
     : createNoopStorage();
 
 const makeStore = ({ isServer }) => {
   if (isServer) {
-    console.log('In the Server Side');
+    // console.log('In the Server Side');
     //If it's on server side, create a store
     return configureStore({
       reducer: {
@@ -115,9 +115,9 @@ const makeStore = ({ isServer }) => {
   } else {
     //If it's on client side, create a store which will persis
     /* The configuration for the redux-persist. */
-    // console.log('In the Client Side');
+    // // console.log('In the Client Side');
     const persistConfig = {
-      key: 'root',
+      key: "root",
       version: 1,
       storage,
     };
@@ -128,7 +128,7 @@ const makeStore = ({ isServer }) => {
         persistedReducer,
       },
       // to enable the Redux devtools extension in our store on dev mode only
-      devTools: process.env.NODE_ENV === 'production' ? false : true,
+      devTools: process.env.NODE_ENV === "production" ? false : true,
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: {

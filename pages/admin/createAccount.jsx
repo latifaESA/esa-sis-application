@@ -79,7 +79,7 @@ export default function Create() {
         sendData
       );
 
-      console.log(data[0].rowCount);
+      // console.log(data[0].rowCount);
       if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {

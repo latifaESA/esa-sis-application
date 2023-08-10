@@ -5,12 +5,12 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import emailing_data from '../emailing_data';
-import * as dateFn from 'date-fns';
+import emailing_data from "../emailing_data";
+import * as dateFn from "date-fns";
 //import selection_data from '../selection_data';
-import axios from 'axios';
-import encrypt from '../encrypt_decrypt/encryptText';
-import decrypt from '../encrypt_decrypt/decryptText';
+import axios from "axios";
+import encrypt from "../encrypt_decrypt/encryptText";
+import decrypt from "../encrypt_decrypt/decryptText";
 // import { useSelector } from 'react-redux';
 
 async function EmailAfterSubmission({
@@ -24,7 +24,7 @@ async function EmailAfterSubmission({
   emergencycontact_medicalhealth,
 }) {
   // FIXME: After verification signin and go to home or filling application
-  const name = fname + ' ' + lname;
+  const name = fname + " " + lname;
   const fromEmail = emailing_data.fromEmail;
   const ccEmail = emailing_data.ccEmail;
   const bccEmail = emailing_data.bccEamil;
@@ -32,23 +32,25 @@ async function EmailAfterSubmission({
   const admissionsDepartmentEmail = emailing_data.admissionsDepartmentEmail;
   const reportName = `${fname}_${lname}-${ID}-Application-${dateFn.format(
     Date.now(),
-    'dd-MM-Y'
+    "dd-MM-Y"
   )}.pdf`;
 
   // const appState = useSelector(
   //   (state) => state.persistedReducer.app_state.appState
   // );
-  const apiUrl = '/api/controller/settingdata'; 
+  const apiUrl = "/api/controller/settingdata";
   const response = await fetch(apiUrl);
   const data = await response.json();
   const decryptedData = JSON.parse(decrypt(data.data));
-  const esa_logo = decryptedData.setting[0].esa_logo
-  const MBA_recommendation_letter = decryptedData.setting[0].MBA_recommendation_letter;
-  const EMBA_recommendation_letter = decryptedData.setting[0].EMBA_recommendation_letter
+  const esa_logo = decryptedData.setting[0].esa_logo;
+  const MBA_recommendation_letter =
+    decryptedData.setting[0].MBA_recommendation_letter;
+  const EMBA_recommendation_letter =
+    decryptedData.setting[0].EMBA_recommendation_letter;
   let requiredDocument;
   let attachments;
   let emailBody;
-  if (major === 'BBA (Bachelor in Business Administration)') {
+  if (major === "BBA (Bachelor in Business Administration)") {
     requiredDocument = `<p>
     <ul>
       <li>Copie de votre pièce d’identité.</li>
@@ -61,7 +63,7 @@ async function EmailAfterSubmission({
       <li> Copie certifiée du diplôme du baccalauréat dès qu’elle sera disponible</li>
     </ul>
     </p>`;
-  } else if (major === 'MEMS (Master Executif en Management de la Santé)') {
+  } else if (major === "MEMS (Master Executif en Management de la Santé)") {
     requiredDocument = `<p>
 
     <ul>
@@ -77,7 +79,7 @@ async function EmailAfterSubmission({
       <li>Lettre de recommandation</li>
     </ul>
     </p>`;
-  } else if (major === 'MIM (International Masters In Management)') {
+  } else if (major === "MIM (International Masters In Management)") {
     requiredDocument = `<p>
 
       <ul>
@@ -94,10 +96,10 @@ async function EmailAfterSubmission({
       </ul>
       </p>`;
   } else if (
-    major === 'MIAD (Master in International Affairs and Diplomacy)' ||
-    major === 'MENT (Masters in Entrepreneurship)' ||
-    major === 'MSM (Mastère de Spécialisation en Marketing et Communication)' ||
-    major === 'EMFM (Executive Master in Financial Management)'
+    major === "MIAD (Master in International Affairs and Diplomacy)" ||
+    major === "MENT (Masters in Entrepreneurship)" ||
+    major === "MSM (Mastère de Spécialisation en Marketing et Communication)" ||
+    major === "EMFM (Executive Master in Financial Management)"
   ) {
     requiredDocument = `<p>
 
@@ -112,7 +114,7 @@ async function EmailAfterSubmission({
                 <li>CV</li>
               </ul>
               </p>`;
-  } else if (major === 'EMBA (Executive Masters in Business Administration)') {
+  } else if (major === "EMBA (Executive Masters in Business Administration)") {
     requiredDocument = `<p>
 
       <ul>
@@ -126,7 +128,7 @@ async function EmailAfterSubmission({
         <li>CV</li>
       </ul>
       </p>`;
-  } else if (major === 'MBA (Master in Business Administration)') {
+  } else if (major === "MBA (Master in Business Administration)") {
     requiredDocument = `<p>
 
       <ul>
@@ -141,7 +143,7 @@ async function EmailAfterSubmission({
         <li>CV</li>
       </ul>
       </p>`;
-  } else if (major === 'DBA (Doctorate in Business Administration)') {
+  } else if (major === "DBA (Doctorate in Business Administration)") {
     requiredDocument = `<p>
 
       <ul>
@@ -158,32 +160,32 @@ async function EmailAfterSubmission({
       </p>`;
   }
   if (
-    major === 'BBA (Bachelor in Business Administration)' ||
-    major === 'MEMS (Master Executif en Management de la Santé)' ||
-    major === 'MIM (International Masters In Management)' ||
-    major === 'MIAD (Master in International Affairs and Diplomacy)' ||
-    major === 'MENT (Masters in Entrepreneurship)' ||
-    major === 'MSM (Mastère de Spécialisation en Marketing et Communication)' ||
-    major === 'EMFM (Executive Master in Financial Management)' ||
-    major === 'DBA (Doctorate in Business Administration)'
+    major === "BBA (Bachelor in Business Administration)" ||
+    major === "MEMS (Master Executif en Management de la Santé)" ||
+    major === "MIM (International Masters In Management)" ||
+    major === "MIAD (Master in International Affairs and Diplomacy)" ||
+    major === "MENT (Masters in Entrepreneurship)" ||
+    major === "MSM (Mastère de Spécialisation en Marketing et Communication)" ||
+    major === "EMFM (Executive Master in Financial Management)" ||
+    major === "DBA (Doctorate in Business Administration)"
   ) {
     attachments = [
       // Report returned as cloudainary url from convertFormToPdf
       {
         filename: reportName,
         path: reportURL,
-        cid: 'PDF Report',
+        cid: "PDF Report",
       },
       {
         path: `${esa_logo}`,
-        cid: 'esalogo',
+        cid: "esalogo",
       },
     ];
-    if (emergencycontact_medicalhealth === 'Yes') {
+    if (emergencycontact_medicalhealth === "Yes") {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
 
@@ -205,12 +207,12 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic">The Admissions Department </span></p> ` +
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
-        '</div></body></html>';
+        "</div></body></html>";
     } else {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
         <img src="cid:esalogo" alt="" width = "120">
@@ -230,30 +232,30 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic">The Admissions Department </span></p> ` +
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
-        '</div></body></html>';
+        "</div></body></html>";
     }
-  } else if (major === 'MBA (Master in Business Administration)') {
+  } else if (major === "MBA (Master in Business Administration)") {
     attachments = [
       // Report returned as cloudainary url from convertFormToPdf
       {
         filename: reportName,
         path: reportURL,
-        cid: 'PDF Report',
+        cid: "PDF Report",
       },
       {
         path: `${esa_logo}`,
-        cid: 'esalogo',
+        cid: "esalogo",
       },
       (attachments = {
         path: `${MBA_recommendation_letter}`,
-        cid: 'MBALetter',
+        cid: "MBALetter",
       }),
     ];
-    if (emergencycontact_medicalhealth === 'Yes') {
+    if (emergencycontact_medicalhealth === "Yes") {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
           <img src="cid:esalogo" alt="" width = "120">
@@ -274,12 +276,12 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
         '<a href="cid:MBALetter"></a>' +
-        '</div></body></html>';
+        "</div></body></html>";
     } else {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
           <img src="cid:esalogo" alt="" width = "120">
@@ -300,30 +302,30 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
         '<a href="cid:MBALetter"></a>' +
-        '</div></body></html>';
+        "</div></body></html>";
     }
-  } else if (major === 'EMBA (Executive Masters in Business Administration)') {
+  } else if (major === "EMBA (Executive Masters in Business Administration)") {
     attachments = [
       // Report returned as cloudainary url from convertFormToPdf
       {
         filename: reportName,
         path: reportURL,
-        cid: 'PDF Report',
+        cid: "PDF Report",
       },
       {
         path: `${esa_logo}`,
-        cid: 'esalogo',
+        cid: "esalogo",
       },
       (attachments = {
         path: `${EMBA_recommendation_letter}`,
-        cid: 'EMBALetter',
+        cid: "EMBALetter",
       }),
     ];
-    if (emergencycontact_medicalhealth === 'Yes') {
+    if (emergencycontact_medicalhealth === "Yes") {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
          <img src="cid:esalogo" alt="" width = "120">
@@ -345,12 +347,12 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
         '<a href="cid:EMBALetter"></a>' +
-        '</div></body></html>';
+        "</div></body></html>";
     } else {
       emailBody =
-        '<!DOCTYPE html>' +
-        '<html><head><title>Appointment</title>' +
-        '</head><body><div>' +
+        "<!DOCTYPE html>" +
+        "<html><head><title>Appointment</title>" +
+        "</head><body><div>" +
         // FIXME: Commented to deploy on VERCEL
         `<div style="text-align: center;">
          <img src="cid:esalogo" alt="" width = "120">
@@ -371,7 +373,7 @@ async function EmailAfterSubmission({
         `<p><span style="font-weight: italic"> ${admissionsDepartmentEmail} </span></p>` +
         `<p><span style="font-weight: italic"> +961 3 394 584 | WhatsApp or Phone Call </span></p>` +
         '<a href="cid:EMBALetter"></a>' +
-        '</div></body></html>';
+        "</div></body></html>";
     }
   }
   const payload = JSON.stringify({
@@ -382,34 +384,34 @@ async function EmailAfterSubmission({
     subject: subject,
     emailBody: emailBody,
     attachments: attachments,
-    purpose: 'submission',
+    purpose: "submission",
   });
   // Encrypt the data before sending in the body
   // end-to-end encryption for query parameters
   const encryptedBody = JSON.stringify({ data: encrypt(payload) });
-  const emailresp = await fetch('/api/emailing/sendEmail', {
-    method: 'POST',
+  const emailresp = await fetch("/api/emailing/sendEmail", {
+    method: "POST",
     headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json',
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
     },
     body: encryptedBody,
   });
-  let status = 'incomplete';
+  let status = "incomplete";
   // let resp;
-  let title = 'Sending Submission Email Failed';
-  let message = 'Emailing Service Not Available!';
+  let title = "Sending Submission Email Failed";
+  let message = "Emailing Service Not Available!";
   let instructions =
-    'Please try to submit the Application later, If the attempt fails, contact us on the following email:';
-  let itservicedeskemail = 'itservicedesk@esa.edu.lb';
+    "Please try to submit the Application later, If the attempt fails, contact us on the following email:";
+  let itservicedeskemail = "itservicedesk@esa.edu.lb";
   let clarification =
-    'Your Application has been saved, you just have to log into your account and go to Student Application from the Menu, and try to submit the Application again';
+    "Your Application has been saved, you just have to log into your account and go to Student Application from the Menu, and try to submit the Application again";
   emailresp.status === 200
-    ? router.push('/user/message/submissionEmail')
-    : (await axios.put('/api/CRUD_Op/changeStatusByID', {
+    ? router.push("/user/message/submissionEmail")
+    : (await axios.put("/api/CRUD_Op/changeStatusByID", {
         data: encrypt(JSON.stringify({ ID, status })),
       }),
-      // console.log(resp.data.message),
+      // // console.log(resp.data.message),
       router.push(
         `/user/message/messageEmailingService?title=${title}&message=${message}&instructions=${instructions}&email=${itservicedeskemail}&clarification=${clarification}`
       ));

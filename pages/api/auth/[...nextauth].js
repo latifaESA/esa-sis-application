@@ -6,9 +6,9 @@
  * Copyright (c) 2023 ESA
  */
 /* Importing the required modules. */
-import bcryptjs from 'bcryptjs';
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import bcryptjs from "bcryptjs";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 // import {
 //   findData,
 //   Userinfo,
@@ -16,14 +16,14 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 //   current_applicant_promotion,
 //   findmajor_id,
 // } from '../controller/queries';
-import { connect, disconnect } from '../../../utilities/db';
+import { connect, disconnect } from "../../../utilities/db";
 
-import sis_app_logger from '../logger';
-import useragent from 'useragent';
-import { findData } from '../controller/queries';
-import { Userinfo } from '../controller/accountquery';
-import axios from 'axios';
-import https from 'https';
+import sis_app_logger from "../logger";
+import useragent from "useragent";
+import { findData } from "../controller/queries";
+import { Userinfo } from "../controller/accountquery";
+import axios from "axios";
+import https from "https";
 // import client from '../../../utilities/db1'
 
 // // Import cors
@@ -39,7 +39,7 @@ import https from 'https';
 export const authOptions = {
   /* A session strategy that is used to store the session data in the browser. */
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 6 * 1 * 60 * 60, //Hour
     // after xx min, the session expire:if the user has not interacted with the application for the duration of the session expiration time,the user don't made a request to the server, close the browser without logout,the auto-save function writes to the database without any user interaction, it may not be enough to keep the session active. In most cases, the session expiration time is based on user activity or interaction with the application, rather than automated background processes.
@@ -84,12 +84,12 @@ export const authOptions = {
       //   password: { label: "Password", type: "password" }
       // },
       async authorize(credentials, req) {
-        let message = '';
-        const userAgent = req.headers['user-agent'];
+        let message = "";
+        const userAgent = req.headers["user-agent"];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
         if (connection.success) {
-          console.log('connection to DB succes nextauth signin');
+          // console.log('connection to DB succes nextauth signin');
 
           // try {
           //   const results = await new Promise((resolve, reject) => {
@@ -101,36 +101,34 @@ export const authOptions = {
           //       }
           //     });
           //   });
-          //   console.log(results);
+          //   // console.log(results);
           // } catch (err) {
           //   console.error(err);
           // }
 
           // get the user info
           const user = await findData(
+            connection,
+            "users",
+            "userid",
+            credentials.userid
+          );
+          // const users = await findData(
+          //   connection,
+          //   'user_document',
+          //   'userid',
+          //   credentials.email,
+          // );
 
-              connection,
-              'users',
-              'userid',
-              credentials.userid,
-            );
-            // const users = await findData(
-            //   connection,
-            //   'user_document',
-            //   'userid',
-            //   credentials.email,
-            // );
-
-            // const users = await findData(
-            //   connection,
-            //   'user_document',
-            //   'profileurl',
-            //   credentials.userid,
-            // );  
-            const userinfo = await Userinfo(connection, credentials.userid); //email from req body
-            // console.log(userinfo.rows[0].profileurl)
-            // console.log("---------------------------------")
-            
+          // const users = await findData(
+          //   connection,
+          //   'user_document',
+          //   'profileurl',
+          //   credentials.userid,
+          // );
+          const userinfo = await Userinfo(connection, credentials.userid); //email from req body
+          // // console.log(userinfo.rows[0].profileurl)
+          // // console.log("---------------------------------")
 
           //  check if there is user with the given id
           if (user.rowCount > 0) {
@@ -158,8 +156,8 @@ export const authOptions = {
                     }),
                   }
                 );
-                // console.log(data.blocked);
-                // console.log(data);
+                // // console.log(data.blocked);
+                // // console.log(data);
                 // if the user did not complete the survey then send the links
                 // if(data.blocked){
 
@@ -171,10 +169,10 @@ export const authOptions = {
                 //       rejectUnauthorized: false,
                 //     })
                 //     })
-                //     // console.log(data.Tasks)
-                //     console.log('==========-=-=-=-=')
-                //     console.log(data.StatusCode)
-                //     console.log('==========-=-=-=-=')
+                //     // // console.log(data.Tasks)
+                //     // console.log('==========-=-=-=-=')
+                //     // console.log(data.StatusCode)
+                //     // console.log('==========-=-=-=-=')
                 //     // return {data};
                 //     message = JSON.stringify(data);
 
@@ -212,7 +210,7 @@ export const authOptions = {
                 //       }
 
                 //   }catch (error) {
-                //     console.log('the error is: ', error)
+                //     // console.log('the error is: ', error)
                 //     message = JSON.stringify(error);
 
                 // }
@@ -225,8 +223,8 @@ export const authOptions = {
                   // get the admin data
                   const admin = await findData(
                     connection,
-                    'admin',
-                    'adminid',
+                    "admin",
+                    "adminid",
                     user.rows[0].userid
                   );
                   // if the admin exists then send the data to frontend
@@ -246,34 +244,34 @@ export const authOptions = {
                         }`
                       );
                     }
-                    // console.log('user.rows[0].role==', user.rows[0].role);
-                    // console.log(user.rows[0]);
-                    console.log('userinfo.rows[0]==', userinfo.rows[0]);
+                    // // console.log('user.rows[0].role==', user.rows[0].role);
+                    // // console.log(user.rows[0]);
+                    // console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
-//<<<<<<< batoul
-//                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-//                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-//                              role: (user.rows[0].role).toString(),
-//                              status: `${data.blocked ? 'limited' : 'active'}`,
-//                              userid: `${user.rows[0].userid}`,
-//                              // ID: `${user.rows[0].userid}`,
-//                              image: userinfo.rows[0].profileurl,
-//                           
-//                            };
-//                    }
-//                    else{
-//                      // if the student is not exists then send this message to frontend
-//                      message = 'Student does not exists'
-//                    }
-//                  }else if(user.rows[0].role === 2){
-//                      // get the program_manager data
-//                      const PM = await findData(
-//                        connection,
-//                        'program_manager',
-//                        'pm_id',
-//                        user.rows[0].userid,
-//=======
+                      //<<<<<<< batoul
+                      //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                      //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                      //                              role: (user.rows[0].role).toString(),
+                      //                              status: `${data.blocked ? 'limited' : 'active'}`,
+                      //                              userid: `${user.rows[0].userid}`,
+                      //                              // ID: `${user.rows[0].userid}`,
+                      //                              image: userinfo.rows[0].profileurl,
+                      //
+                      //                            };
+                      //                    }
+                      //                    else{
+                      //                      // if the student is not exists then send this message to frontend
+                      //                      message = 'Student does not exists'
+                      //                    }
+                      //                  }else if(user.rows[0].role === 2){
+                      //                      // get the program_manager data
+                      //                      const PM = await findData(
+                      //                        connection,
+                      //                        'program_manager',
+                      //                        'pm_id',
+                      //                        user.rows[0].userid,
+                      //=======
                       name: admin.rows[0].adminname,
                       email: admin.rows[0].adminemail,
                       role: user.rows[0].role.toString(),
@@ -282,18 +280,18 @@ export const authOptions = {
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
-                    message = 'Admin does not exists';
+                    message = "Admin does not exists";
                   }
                 } else if (user.rows[0].role === 1) {
                   // get the student data
                   const ST = await findData(
                     connection,
-                    'student',
-                    'student_id',
+                    "student",
+                    "student_id",
                     user.rows[0].userid
                   );
-                  // console.log('this is ST ');
-                  // console.log(ST);
+                  // // console.log('this is ST ');
+                  // // console.log(ST);
                   // if the program_manager exists then send the data to frontend
                   if (ST.rows) {
                     await disconnect(connection);
@@ -309,22 +307,21 @@ export const authOptions = {
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${
                           userAgentinfo.device.family
                         }`
-
                       );
 
                       return {
                         name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                         // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                         role: user.rows[0].role.toString(),
-                        status: `${data.blocked ? 'limited' : 'active'}`,
+                        status: `${data.blocked ? "limited" : "active"}`,
                         userid: `${user.rows[0].userid}`,
                         image: userinfo.rows[0].profileurl,
-                        majorid : ST.rows[0].major_id,
-                        promotion : ST.rows[0].promotion
+                        majorid: ST.rows[0].major_id,
+                        promotion: ST.rows[0].promotion,
                       };
                     } else {
                       // if the student is not exists then send this message to frontend
-                      message = 'Student does not exists';
+                      message = "Student does not exists";
                     }
                     // if the program_manager exists then send the data to frontend
                     // if(PM.rows){
@@ -347,12 +344,12 @@ export const authOptions = {
                   // get the program_manager data
                   const PM = await findData(
                     connection,
-                    'program_manager',
-                    'pm_id',
+                    "program_manager",
+                    "pm_id",
                     user.rows[0].userid
                   );
-                  // console.log(user.rows[0].userid);
-                  // console.log(PM);
+                  // // console.log(user.rows[0].userid);
+                  // // console.log(PM);
                   // if the program_manager exists then send the data to frontend
                   if (PM.rows) {
                     await disconnect(connection);
@@ -372,45 +369,45 @@ export const authOptions = {
                     }
 
                     return {
-//<<<<<<< batoul
-//                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
-//                              email: PM.rows[0].pm_email,
-//                              majorid: PM.rows[0].major_id,
-//                              role: (user.rows[0].role).toString(),
-//                              userid: user.rows[0].userid,
-//                              image: userinfo.rows[0].profileurl
-//                              
-//                            };
-//                    }else{
-//                      // if the program manager is not exists then send this message to frontend
-//                      message = 'Program manager does not exists'
-//                    }
-//                  }else if(user.rows[0].role === 3){
-//                    // get the program_manager_assistance data
-//                    const AS = await findData(
-//                      connection,
-//                      'program_manager_assistance',
-//                      'pm_ass_id',
-//                      user.rows[0].userid,
-//                    );
-//                    console.log(user.rows[0].userid)
-//                    console.log(AS)
-//                    // if the program_manager_assistance exists then send the data to frontend
-//                if(AS.rows){
-//
-//                  await disconnect(connection);
-//                  // Write to logger
-//                  if (req) {
-//                    // Log user information
-//                    // userinfo.role ==='1'?
-//                    sis_app_logger.info(
-//                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
-//                        userAgentinfo.os.family
-//                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-//                        userAgentinfo.source
-//                      }=${userAgentinfo.device.family}`
-//                    );
-//=======
+                      //<<<<<<< batoul
+                      //                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
+                      //                              email: PM.rows[0].pm_email,
+                      //                              majorid: PM.rows[0].major_id,
+                      //                              role: (user.rows[0].role).toString(),
+                      //                              userid: user.rows[0].userid,
+                      //                              image: userinfo.rows[0].profileurl
+                      //
+                      //                            };
+                      //                    }else{
+                      //                      // if the program manager is not exists then send this message to frontend
+                      //                      message = 'Program manager does not exists'
+                      //                    }
+                      //                  }else if(user.rows[0].role === 3){
+                      //                    // get the program_manager_assistance data
+                      //                    const AS = await findData(
+                      //                      connection,
+                      //                      'program_manager_assistance',
+                      //                      'pm_ass_id',
+                      //                      user.rows[0].userid,
+                      //                    );
+                      //                    // console.log(user.rows[0].userid)
+                      //                    // console.log(AS)
+                      //                    // if the program_manager_assistance exists then send the data to frontend
+                      //                if(AS.rows){
+                      //
+                      //                  await disconnect(connection);
+                      //                  // Write to logger
+                      //                  if (req) {
+                      //                    // Log user information
+                      //                    // userinfo.role ==='1'?
+                      //                    sis_app_logger.info(
+                      //                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                      //                        userAgentinfo.os.family
+                      //                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                      //                        userAgentinfo.source
+                      //                      }=${userAgentinfo.device.family}`
+                      //                    );
+                      //=======
                       name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                       email: PM.rows[0].pm_email,
                       role: user.rows[0].role.toString(),
@@ -421,19 +418,18 @@ export const authOptions = {
                     };
                   } else {
                     // if the program manager is not exists then send this message to frontend
-                    message = 'Program manager does not exists';
-
+                    message = "Program manager does not exists";
                   }
                 } else if (user.rows[0].role === 3) {
                   // get the program_manager_assistance data
                   const AS = await findData(
                     connection,
-                    'program_manager_assistance',
-                    'pm_ass_id',
+                    "program_manager_assistance",
+                    "pm_ass_id",
                     user.rows[0].userid
                   );
-                  // console.log(user.rows[0].userid);
-                  // console.log(AS);
+                  // // console.log(user.rows[0].userid);
+                  // // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
                   if (AS.rows) {
                     await disconnect(connection);
@@ -461,7 +457,7 @@ export const authOptions = {
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
-                    message = 'Program manager assistance does not exists';
+                    message = "Program manager assistance does not exists";
                   }
                   //=======
                   //                      name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
@@ -483,8 +479,8 @@ export const authOptions = {
                 //     'pm_ass_id',
                 //     user.rows[0].userid
                 //   );
-                //   console.log(user.rows[0].userid);
-                //   console.log(AS);
+                //   // console.log(user.rows[0].userid);
+                //   // console.log(AS);
                 //   // if the program_manager_assistance exists then send the data to frontend
                 //   if (AS.rows) {
                 //     await disconnect(connection);
@@ -518,15 +514,15 @@ export const authOptions = {
 
                 // }
                 // end of if data.bloked
-                // console.log(data);
+                // // console.log(data);
               } catch (error) {
-                // console.log('the error is: ', error);
+                // // console.log('the error is: ', error);
                 return { error };
               }
               // message = 'hello'
             } else {
               // if the password is incorrect then send this message
-              message = 'Invalid Password';
+              message = "Invalid Password";
               sis_app_logger.error(
                 `${new Date()}=From nextauth signin=---=${
                   req.body.userid
@@ -538,7 +534,7 @@ export const authOptions = {
               );
             }
           } else {
-            message = 'user does not exist';
+            message = "user does not exist";
           }
 
           // connection.end();
@@ -551,10 +547,10 @@ export const authOptions = {
           // ); //email from req body
 
           // const userinfo = await Userinfo(connection, credentials.email); //email from req body
-          // // console.log(user);
-          // // console.log('User In Auth=', user);
+          // // // console.log(user);
+          // // // console.log('User In Auth=', user);
           // if (user.result) {
-          //   // console.log('User=', user);
+          //   // // console.log('User=', user);
           //   /* Checking if the user is verified and if the user is not obsolete. */
           //   if (
           //     bcryptjs.compareSync(
@@ -579,8 +575,8 @@ export const authOptions = {
           //         connection
           //       );
 
-          //       //console.log('User', userinfo)
-          //       //console.log(program.program)
+          //       //// console.log('User', userinfo)
+          //       //// console.log(program.program)
           //       await disconnect(connection);
           //       // Write to logger
           //       if (req) {
@@ -683,7 +679,7 @@ export const authOptions = {
           // }
         } //(!connection.success)
         else {
-          console.log('connection to DB unsucces nextauth signin');
+          // console.log('connection to DB unsucces nextauth signin');
           message = connection.message;
           sis_app_logger.error(
             `${new Date()}=From nextauth signin,connection unsuccess=---=${

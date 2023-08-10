@@ -20,7 +20,7 @@
 // //     const result = await slack.send({
 // //       text: error.message,
 // //     });
-// //     console.log(`Message sent to Slack: ${result.text}`);
+// //     // console.log(`Message sent to Slack: ${result.text}`);
 // //   } catch (error) {
 // //     console.error(`Error sending message to Slack: ${error}`);
 // //   }
@@ -32,9 +32,9 @@
 //     return res.status(400).send({ message: `${req.method} not supported` });
 //   }
 //   const encryptedBody = req.body.data;
-//   // console.log(encryptedBody);
+//   // // console.log(encryptedBody);
 //   const { text, channel } = JSON.parse(decrypt(encryptedBody));
-//   // console.log(email + ' is signing out.');
+//   // // console.log(email + ' is signing out.');
 //   const webClient = new WebClient(SLACK_APP_TOKEN || SLACK_BOT_TOKEN);
 
 //   try {
@@ -47,7 +47,7 @@
 //       headers: { 'Content-Type': 'application/json' },
 //       body: JSON.stringify(text),
 //     });
-//     console.log(`Message sent to Slack: ${result.text}`);
+//     // console.log(`Message sent to Slack: ${result.text}`);
 //   } catch (error) {
 //     console.error(`Error sending message to Slack: ${error}`);
 //   }

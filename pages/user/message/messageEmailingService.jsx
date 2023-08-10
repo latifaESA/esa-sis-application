@@ -7,15 +7,15 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import Link from 'next/link';
-import Head from 'next/head';
-import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import React from "react";
+import Link from "next/link";
+import Head from "next/head";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 // import selection_data from '../../../utilities/selection_data';
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 // import { getError } from '../../../utilities/error';
 // import { useForm } from 'react-hook-form';
@@ -49,12 +49,12 @@ const MessageEmailingService = () => {
     email = router.query.email;
   }
 
-  // console.log('Email=', router.query.email);
-  // console.log('message=', router.query.message);
+  // // console.log('Email=', router.query.email);
+  // // console.log('message=', router.query.message);
 
   useEffect(() => {
     if (!message && !email && session?.user) {
-      router.push(redirect || '/');
+      router.push(redirect || "/");
     }
   }, [email, isSignedIn, message, redirect, router, session]);
 
@@ -63,26 +63,26 @@ const MessageEmailingService = () => {
       <Head>
         <title>Invalid Emailing Service</title>
       </Head>
-      <div className=' flex-col m-auto  max-w-md flex-wrap content-center text-center'>
+      <div className=" flex-col m-auto  max-w-md flex-wrap content-center text-center">
         <Image
-          className='inline w-auto h-auto'
+          className="inline w-auto h-auto"
           src={appState.appVar.esa_logo}
-          alt='logo'
+          alt="logo"
           width={100}
           height={150}
         />
-        <h1 className='mb-4 text-3xl font-bold'>{title}</h1>
-        <h1 className='text-red-500 text-xl font-bold w-full text-center mt-4 mb-4'>
+        <h1 className="mb-4 text-3xl font-bold">{title}</h1>
+        <h1 className="text-red-500 text-xl font-bold w-full text-center mt-4 mb-4">
           {message}
         </h1>
-        <h2 className='mb-2 text-l'>{instructions}</h2>
-        <h2 className='mb-5 text-l font-bold underline text-blue-500'>
+        <h2 className="mb-2 text-l">{instructions}</h2>
+        <h2 className="mb-5 text-l font-bold underline text-blue-500">
           {serviceEmail}
         </h2>
-        <h2 className='mb-2 text-l font-bold'>{clarification}</h2>
+        <h2 className="mb-2 text-l font-bold">{clarification}</h2>
         {!session?.user && (
-          <Link href='/user/login' legacyBehavior>
-            <button className='bg-blue-800 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded border-b-4 border-blue-700'>
+          <Link href="/user/login" legacyBehavior>
+            <button className="bg-blue-800 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded border-b-4 border-blue-700">
               Login / Register
             </button>
           </Link>

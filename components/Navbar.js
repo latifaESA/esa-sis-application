@@ -6,23 +6,23 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { signOut, useSession } from 'next-auth/react';
-import { Menu } from '@headlessui/react';
-import DropdownLink from './DropdownLink';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
+import { Menu } from "@headlessui/react";
+import DropdownLink from "./DropdownLink";
 // import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { isLogout } from '../redux/slices/userSlice';
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import { isLogout } from "../redux/slices/userSlice";
 // import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import selection_data from '../utilities/selection_data';
-import NavigationRef from '../utilities/NavbarRef/navigationRef';
-import axios from 'axios';
-import encrypt from '../utilities/encrypt_decrypt/encryptText';
+import { useEffect } from "react";
+import { useState } from "react";
+import selection_data from "../utilities/selection_data";
+import NavigationRef from "../utilities/NavbarRef/navigationRef";
+import axios from "axios";
+import encrypt from "../utilities/encrypt_decrypt/encryptText";
 
 export const Navbar = () => {
   const { status, data: session } = useSession();
@@ -30,11 +30,11 @@ export const Navbar = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
   // const domain = router?.query?.domain ?? '';
-  // console.log(
+  // // console.log(
   //   'router==',
   //   `${window.location.origin}${selection_data.where_going_after_logout}`
   // );
-  // console.log('domain==', window.location.origin);
+  // // console.log('domain==', window.location.origin);
   const [href, sethref] = useState();
   // const [isLogOut, setisLogOut] = useState(false);
 
@@ -43,7 +43,7 @@ export const Navbar = () => {
   );
 
   //const appState = useSelector(
-    //(state) => state.persistedReducer.app_state.appState
+  //(state) => state.persistedReducer.app_state.appState
   //);
 
   const logoutClickHandler = async () => {
@@ -61,10 +61,10 @@ export const Navbar = () => {
       JSON.stringify({
         email: emailWas,
         role,
-        info: 'signout navbar',
+        info: "signout navbar",
       })
     );
-    await axios.put('/api/logger/sendInfoToLogger', {
+    await axios.put("/api/logger/sendInfoToLogger", {
       data: encryptedEmail,
     });
 
@@ -169,7 +169,7 @@ export const Navbar = () => {
                 >
                   <Image
                     src={
-                      'https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png'
+                      "https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png"
                     }
                     // src={appState.appVar.esa_logo}
                     alt="ESA logo"
@@ -220,21 +220,21 @@ export const Navbar = () => {
             <div>
               <div
                 className={`flex-1 justify-self-center pb-3 pl-4 md:block md:pb-0 md:mt-0 ${
-                  isOpen ? 'block' : 'hidden'
+                  isOpen ? "block" : "hidden"
                 }`}
               >
                 <ul className="items-center flex justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
                   <li className="text-gray-600 hover:text-blue-600">
                     <div>
-                      {status === 'loading' ? (
-                        'Checking Authentication ...'
+                      {status === "loading" ? (
+                        "Checking Authentication ..."
                       ) : session?.user ? (
                         <>
                           <div className="flex justify-center">
                             <Image
                               src={
                                 userState.user.profileUrl &&
-                                userState.user.profileUrl !== ' '
+                                userState.user.profileUrl !== " "
                                   ? userState.user.profileUrl
                                   : selection_data.user_Avatar
                               }
@@ -269,7 +269,7 @@ export const Navbar = () => {
                                 </Link>
                               </Menu.Item>
 
-                              {session.user.role === '1' && (
+                              {session.user.role === "1" && (
                                 <Menu.Item>
                                   <Link
                                     className="dropdown-link w-full"
@@ -283,7 +283,7 @@ export const Navbar = () => {
                                 </Menu.Item>
                               )}
 
-                              {session.user.role === '0' && (
+                              {session.user.role === "0" && (
                                 <Menu.Item>
                                   <DropdownLink
                                     className="dropdown-link"

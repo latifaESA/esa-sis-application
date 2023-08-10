@@ -6,17 +6,17 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import React from "react";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 // import selection_data from '../../../../utilities/selection_data';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import encrypt from '../../../../utilities/encrypt_decrypt/encryptText';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
-import { ErrorMessage } from '../../WarningMessage';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import encrypt from "../../../../utilities/encrypt_decrypt/encryptText";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
+import { ErrorMessage } from "../../WarningMessage";
 
 const ListTable = ({ value }) => {
   const [pageSize, setPageSize] = useState(5);
@@ -52,7 +52,7 @@ const ListTable = ({ value }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          '/api/controller/Dropdownitems?major=All'
+          "/api/controller/Dropdownitems?major=All"
         );
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
@@ -206,7 +206,7 @@ const ListTable = ({ value }) => {
       fr: item.healthproblem_fr,
     };
   });
-  // console.log(Payments)
+  // // console.log(Payments)
   const handleSave = async (
     dataType,
     id,
@@ -218,70 +218,70 @@ const ListTable = ({ value }) => {
     columfr,
     tableid
   ) => {
-    if (dataType === 'Academic Program') {
-      tablename = 'major';
-      tableid = 'major_id';
-      (columeng = 'program'), (columfr = 'programfr');
-    } else if (dataType === 'Payment') {
-      tablename = 'payment';
-      tableid = 'payment_id';
-      (columeng = 'payment_eng'), (columfr = 'payment_fr');
-    } else if (dataType === 'Business Activity') {
-      tablename = 'business_activity';
-      tableid = 'activity_id';
-      (columeng = 'activity_eng'), (columfr = 'activity_fr');
-    } else if (dataType === 'Functional Area') {
-      tablename = 'functionalarea';
-      tableid = 'area_id';
-      (columeng = 'area_eng'), (columfr = 'area_fr');
-    } else if (dataType === 'Position') {
-      tablename = 'experience_position';
-      tableid = 'position_id';
-      (columeng = 'position_eng'), (columfr = 'position_fr');
-    } else if (dataType === 'Experience Type') {
-      tablename = 'experience_type';
-      tableid = 'type_id';
-      (columeng = 'type_eng'), (columfr = 'type_fr');
-    } else if (dataType === 'Company') {
-      tablename = 'company_name';
-      tableid = 'name_id';
-      (columeng = 'name_eng'), (columfr = 'name_fr');
-    } else if (dataType === 'Source') {
-      tablename = 'source';
-      tableid = 'source_id';
-      (columeng = 'source_eng'), (columfr = 'source_fr');
-    } else if (dataType === 'Education Baccalaureate Option') {
-      tablename = 'baccalaureate_option';
-      tableid = 'baccalaureateoption_id';
-      (columeng = 'baccalaureate_eng'), (columfr = 'baccalaureate_fr');
-    } else if (dataType === 'Relationship') {
-      tablename = 'relationship';
-      tableid = 'relationship_id';
-      (columeng = 'relationship_eng'), (columfr = 'relationship_fr');
-    } else if (dataType === 'Education Degree Level') {
-      tablename = 'degreelevel';
-      tableid = 'degreelevel_id';
-      (columeng = 'degreelevel_eng'), (columfr = 'degreelevel_fr');
-    } else if (dataType === 'Emergency Contact Disease Type') {
-      tablename = 'healthproblem';
-      tableid = 'healthproblem_id';
-      (columeng = 'healthproblem_eng'), (columfr = 'healthproblem_fr');
-    } else if (dataType === 'Field of Study') {
-      tablename = 'discipline';
-      tableid = 'discipline_id';
-      (columeng = 'discipline_eng'), (columfr = 'discipline_fr');
-    } else if (dataType === 'Education Universities') {
-      tablename = 'university';
-      tableid = 'university_id';
-      (columeng = 'university_eng'), (columfr = 'university_fr');
-    } else if (dataType === 'Education Degree Level BBA') {
-      tablename = 'degree_level_bba';
-      tableid = 'degreelevel_id';
-      (columeng = 'degreelevel_eng'), (columfr = 'degreelevel_fr');
-    } else if (dataType === 'Education Institution') {
-      tablename = 'institution';
-      tableid = 'instituation_id';
-      (columeng = 'instituation_eng'), (columfr = 'instituation_fr');
+    if (dataType === "Academic Program") {
+      tablename = "major";
+      tableid = "major_id";
+      (columeng = "program"), (columfr = "programfr");
+    } else if (dataType === "Payment") {
+      tablename = "payment";
+      tableid = "payment_id";
+      (columeng = "payment_eng"), (columfr = "payment_fr");
+    } else if (dataType === "Business Activity") {
+      tablename = "business_activity";
+      tableid = "activity_id";
+      (columeng = "activity_eng"), (columfr = "activity_fr");
+    } else if (dataType === "Functional Area") {
+      tablename = "functionalarea";
+      tableid = "area_id";
+      (columeng = "area_eng"), (columfr = "area_fr");
+    } else if (dataType === "Position") {
+      tablename = "experience_position";
+      tableid = "position_id";
+      (columeng = "position_eng"), (columfr = "position_fr");
+    } else if (dataType === "Experience Type") {
+      tablename = "experience_type";
+      tableid = "type_id";
+      (columeng = "type_eng"), (columfr = "type_fr");
+    } else if (dataType === "Company") {
+      tablename = "company_name";
+      tableid = "name_id";
+      (columeng = "name_eng"), (columfr = "name_fr");
+    } else if (dataType === "Source") {
+      tablename = "source";
+      tableid = "source_id";
+      (columeng = "source_eng"), (columfr = "source_fr");
+    } else if (dataType === "Education Baccalaureate Option") {
+      tablename = "baccalaureate_option";
+      tableid = "baccalaureateoption_id";
+      (columeng = "baccalaureate_eng"), (columfr = "baccalaureate_fr");
+    } else if (dataType === "Relationship") {
+      tablename = "relationship";
+      tableid = "relationship_id";
+      (columeng = "relationship_eng"), (columfr = "relationship_fr");
+    } else if (dataType === "Education Degree Level") {
+      tablename = "degreelevel";
+      tableid = "degreelevel_id";
+      (columeng = "degreelevel_eng"), (columfr = "degreelevel_fr");
+    } else if (dataType === "Emergency Contact Disease Type") {
+      tablename = "healthproblem";
+      tableid = "healthproblem_id";
+      (columeng = "healthproblem_eng"), (columfr = "healthproblem_fr");
+    } else if (dataType === "Field of Study") {
+      tablename = "discipline";
+      tableid = "discipline_id";
+      (columeng = "discipline_eng"), (columfr = "discipline_fr");
+    } else if (dataType === "Education Universities") {
+      tablename = "university";
+      tableid = "university_id";
+      (columeng = "university_eng"), (columfr = "university_fr");
+    } else if (dataType === "Education Degree Level BBA") {
+      tablename = "degree_level_bba";
+      tableid = "degreelevel_id";
+      (columeng = "degreelevel_eng"), (columfr = "degreelevel_fr");
+    } else if (dataType === "Education Institution") {
+      tablename = "institution";
+      tableid = "instituation_id";
+      (columeng = "instituation_eng"), (columfr = "instituation_fr");
     }
     let payload = {
       tablename: tablename,
@@ -293,7 +293,7 @@ const ListTable = ({ value }) => {
       columfr: columfr,
     };
 
-    if (tablename === 'major') {
+    if (tablename === "major") {
       payload.promotion = promotion;
     }
     const encryptedBody = encrypt(JSON.stringify(payload));
@@ -308,59 +308,59 @@ const ListTable = ({ value }) => {
     } catch (error) {
       console.error(error);
       return {
-        message: 'Failed to Update table',
+        message: "Failed to Update table",
       };
     }
   };
   const handleDelete = async (dataType, id, tablename, tableid) => {
-    if (dataType === 'Academic Program') {
-      tablename = 'major';
-      tableid = 'major_id';
-    } else if (dataType === 'Payment') {
-      tablename = 'payment';
-      tableid = 'payment_id';
-    } else if (dataType === 'Business Activity') {
-      tablename = 'business_activity';
-      tableid = 'activity_id';
-    } else if (dataType === 'Functional Area') {
-      tablename = 'functionalarea';
-      tableid = 'area_id';
-    } else if (dataType === 'Position') {
-      tablename = 'experience_position';
-      tableid = 'position_id';
-    } else if (dataType === 'Experience Type') {
-      tablename = 'experience_type';
-      tableid = 'type_id';
-    } else if (dataType === 'Company') {
-      tablename = 'company_name';
-      tableid = 'name_id';
-    } else if (dataType === 'Source') {
-      tablename = 'source';
-      tableid = 'source_id';
-    } else if (dataType === 'Education Baccalaureate Option') {
-      tablename = 'baccalaureate_option';
-      tableid = 'baccalaureateoption_id';
-    } else if (dataType === 'Relationship') {
-      tablename = 'relationship';
-      tableid = 'relationship_id';
-    } else if (dataType === 'Education Degree Level') {
-      tablename = 'degreelevel';
-      tableid = 'degreelevel_id';
-    } else if (dataType === 'Emergency Contact Disease Type') {
-      tablename = 'healthproblem';
-      tableid = 'healthproblem_id';
-    } else if (dataType === 'Field of Study') {
-      tablename = 'discipline';
-      tableid = 'discipline_id';
-    } else if (dataType === 'Education Universities') {
-      tablename = 'university';
-      tableid = 'university_id';
-    } else if (dataType === 'Education Degree Level BBA') {
-      tablename = 'degree_level_bba';
-      tableid = 'degreelevel_id';
-    } else if (dataType === 'Education Institution') {
-      tablename = 'institution';
-      tableid = 'instituation_id';
+    if (dataType === "Academic Program") {
+      tablename = "major";
+      tableid = "major_id";
+    } else if (dataType === "Payment") {
+      tablename = "payment";
+      tableid = "payment_id";
+    } else if (dataType === "Business Activity") {
+      tablename = "business_activity";
+      tableid = "activity_id";
+    } else if (dataType === "Functional Area") {
+      tablename = "functionalarea";
+      tableid = "area_id";
+    } else if (dataType === "Position") {
+      tablename = "experience_position";
+      tableid = "position_id";
+    } else if (dataType === "Experience Type") {
+      tablename = "experience_type";
+      tableid = "type_id";
+    } else if (dataType === "Company") {
+      tablename = "company_name";
+      tableid = "name_id";
+    } else if (dataType === "Source") {
+      tablename = "source";
+      tableid = "source_id";
+    } else if (dataType === "Education Baccalaureate Option") {
+      tablename = "baccalaureate_option";
+      tableid = "baccalaureateoption_id";
+    } else if (dataType === "Relationship") {
+      tablename = "relationship";
+      tableid = "relationship_id";
+    } else if (dataType === "Education Degree Level") {
+      tablename = "degreelevel";
+      tableid = "degreelevel_id";
+    } else if (dataType === "Emergency Contact Disease Type") {
+      tablename = "healthproblem";
+      tableid = "healthproblem_id";
+    } else if (dataType === "Field of Study") {
+      tablename = "discipline";
+      tableid = "discipline_id";
+    } else if (dataType === "Education Universities") {
+      tablename = "university";
+      tableid = "university_id";
+    } else if (dataType === "Education Degree Level BBA") {
+      tablename = "degree_level_bba";
+      tableid = "degreelevel_id";
+    } else if (dataType === "Education Institution") {
+      tablename = "institution";
+      tableid = "instituation_id";
     }
     const payload = {
       dataType: dataType,
@@ -369,97 +369,97 @@ const ListTable = ({ value }) => {
       id: id,
     };
     const encryptedBody = encrypt(JSON.stringify(payload));
-    //console.log(encryptedBody)
+    //// console.log(encryptedBody)
     try {
       const response = await axios.delete(`/api/admin/setting/delete`, {
         data: encryptedBody,
       });
       if (response.status === 200) {
         // Filter out the deleted item from the payments2 state
-        if (dataType === 'Academic Program') {
+        if (dataType === "Academic Program") {
           setMajor((prevMajor) =>
             prevMajor.filter((major) => major.major_id !== id)
           );
-        } else if (dataType === 'Payment') {
+        } else if (dataType === "Payment") {
           setPayments((prevPayments) =>
             prevPayments.filter((payments) => payments.payment_id !== id)
           );
-        } else if (dataType === 'Business Activity') {
+        } else if (dataType === "Business Activity") {
           setBusiness_activity((prevBusiness_activity) =>
             prevBusiness_activity.filter(
               (business_activity) => business_activity.activity_id !== id
             )
           );
-        } else if (dataType === 'Functional Area') {
+        } else if (dataType === "Functional Area") {
           setFunctionalarea((prevFunctionalarea) =>
             prevFunctionalarea.filter(
               (functionalarea) => functionalarea.area_id !== id
             )
           );
-        } else if (dataType === 'Position') {
+        } else if (dataType === "Position") {
           setExperience_position((prevExperience_position) =>
             prevExperience_position.filter(
               (experience_position) => experience_position.position_id !== id
             )
           );
-        } else if (dataType === 'Experience Type') {
+        } else if (dataType === "Experience Type") {
           setExperience_type((prevExperience_type) =>
             prevExperience_type.filter(
               (experience_type) => experience_type.type_id !== id
             )
           );
-        } else if (dataType === 'Company') {
+        } else if (dataType === "Company") {
           setCompanyitem((prevCompanyitem) =>
             prevCompanyitem.filter((companyitem) => companyitem.name_id !== id)
           );
-        } else if (dataType === 'Source') {
+        } else if (dataType === "Source") {
           setSource((prevSource) =>
             prevSource.filter((source) => source.source_id !== id)
           );
-        } else if (dataType === 'Education Baccalaureate Option') {
+        } else if (dataType === "Education Baccalaureate Option") {
           setBaccalaureate_option((prevBaccalaureate_option) =>
             prevBaccalaureate_option.filter(
               (baccalaureate_option) =>
                 baccalaureate_option.baccalaureateoption_id !== id
             )
           );
-        } else if (dataType === 'Relationship') {
+        } else if (dataType === "Relationship") {
           setRelationship((prevRelationship) =>
             prevRelationship.filter(
               (relationship) => relationship.relationship_id !== id
             )
           );
-        } else if (dataType === 'Education Degree Level') {
+        } else if (dataType === "Education Degree Level") {
           setDegreelevel((prevDegreelevel) =>
             prevDegreelevel.filter(
               (degreelevel) => degreelevel.degreelevel_id !== id
             )
           );
-        } else if (dataType === 'Emergency Contact Disease Type') {
+        } else if (dataType === "Emergency Contact Disease Type") {
           setDiseasetype((prevDiseasetyp) =>
             prevDiseasetyp.filter(
               (diseasetype) => diseasetype.healthproblem_id !== id
             )
           );
-        } else if (dataType === 'Field of Study') {
+        } else if (dataType === "Field of Study") {
           setFieldofstudy((prevFieldofstudy) =>
             prevFieldofstudy.filter(
               (fieldofstudy) => fieldofstudy.discipline_id !== id
             )
           );
-        } else if (dataType === 'Education Universities') {
+        } else if (dataType === "Education Universities") {
           setUniversity((prevUniversity) =>
             prevUniversity.filter(
               (university) => university.university_id !== id
             )
           );
-        } else if (dataType === 'Education Degree Level BBA') {
+        } else if (dataType === "Education Degree Level BBA") {
           setDegreelevelBBA((prevDegreelevelBBA) =>
             prevDegreelevelBBA.filter(
               (degreelevelBBA) => degreelevelBBA.degreelevel_id !== id
             )
           );
-        } else if (dataType === 'Education Institution') {
+        } else if (dataType === "Education Institution") {
           setSchool((prevSchool) =>
             prevSchool.filter((school) => school.instituation_id !== id)
           );
@@ -473,41 +473,41 @@ const ListTable = ({ value }) => {
       // alert('Column already used by a user,you cant delete it');
 
       return {
-        message: 'Failed to delete table',
+        message: "Failed to delete table",
       };
     }
   };
 
-  //console.log(await DeletefromDropdown('payment','payment_id',8,connection));
+  //// console.log(await DeletefromDropdown('payment','payment_id',8,connection));
   //const [payments, setPayments] =  useState(Payments);
   //const [data, setData] = useState(AcademicProgram);
 
-  //console.log(Payments)
+  //// console.log(Payments)
 
   const columns = [
     {
-      field: 'en',
-      headerName: 'EN',
-      headerAlign: 'center',
-      align: 'center',
+      field: "en",
+      headerName: "EN",
+      headerAlign: "center",
+      align: "center",
       width: 440,
       editable: true,
     },
     {
-      field: 'fr',
-      headerName: 'FR',
-      headerAlign: 'center',
-      align: 'center',
+      field: "fr",
+      headerName: "FR",
+      headerAlign: "center",
+      align: "center",
       width: 440,
       editable: true,
     },
-    ...(value === 'Academic Program'
+    ...(value === "Academic Program"
       ? [
           {
-            field: 'promotion',
-            headerName: 'Promotion',
-            headerAlign: 'center',
-            align: 'center',
+            field: "promotion",
+            headerName: "Promotion",
+            headerAlign: "center",
+            align: "center",
             width: 440,
             editable: true,
           },
@@ -515,11 +515,11 @@ const ListTable = ({ value }) => {
       : []),
 
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 130,
-      headerAlign: 'center',
-      align: 'center',
+      headerAlign: "center",
+      align: "center",
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
@@ -553,41 +553,41 @@ const ListTable = ({ value }) => {
   return (
     <>
       {value && (
-        <Box sx={{ height: 400, width: '100%' }}>
+        <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
             getRowId={(r) => r.id}
             rows={
-              value === 'Academic Program'
+              value === "Academic Program"
                 ? Major
-                : value === 'Payment'
+                : value === "Payment"
                 ? Payments
-                : value === 'Business Activity'
+                : value === "Business Activity"
                 ? BusinessActivity
-                : value === 'Functional Area'
+                : value === "Functional Area"
                 ? Functionalarea
-                : value === 'Position'
+                : value === "Position"
                 ? Experience_position
-                : value === 'Experience Type'
+                : value === "Experience Type"
                 ? Experience_type
-                : value === 'Company'
+                : value === "Company"
                 ? Companyitem
-                : value === 'Source'
+                : value === "Source"
                 ? Source
-                : value === 'Education Baccalaureate Option'
+                : value === "Education Baccalaureate Option"
                 ? Baccalaureate_option
-                : value === 'Relationship'
+                : value === "Relationship"
                 ? Relationship
-                : value === 'Education Degree Level'
+                : value === "Education Degree Level"
                 ? Degreelevel
-                : value === 'Field of Study'
+                : value === "Field of Study"
                 ? Fieldofstudy
-                : value === 'Education Universities'
+                : value === "Education Universities"
                 ? University
-                : value === 'Emergency Contact Disease Type'
+                : value === "Emergency Contact Disease Type"
                 ? Diseasetype
-                : value === 'Education Degree Level BBA'
+                : value === "Education Degree Level BBA"
                 ? DegreelevelBBA
-                : value === 'Education Institution'
+                : value === "Education Institution"
                 ? School
                 : []
             }

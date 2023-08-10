@@ -18,17 +18,16 @@ export const config = {
 
 async function handler(req, res) {
   try {
-    if (req.method !== 'POST') {
+    if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
     const session = await getServerSession(req, res, authOptions);
 
     if (!session) {
-      return res.status(401).send({ message: 'Signin Required To Save Data' });
+      return res.status(401).send({ message: "Signin Required To Save Data" });
     }
 
     // const { user } = session;
-
 
     // const { formData, attendance } = req.body;
 
@@ -39,7 +38,7 @@ async function handler(req, res) {
 
     //     // eslint-disable-next-line no-unused-vars
     //     options.filename = (name, ext, path1, form) => {
-    //       // console.log("user",form)
+    //       // // console.log("user",form)
 
     //       if (
     //         // path1.mimetype === 'application/pdf' ||
@@ -57,7 +56,7 @@ async function handler(req, res) {
     //           const stats = fs.statSync(filePath);
     //           if (stats.isFile()) {
     //             // fs.unlinkSync(filePath);
-    //             // console.log('Deleted file:', filePath);
+    //             // // console.log('Deleted file:', filePath);
     //           }
     //         });
 
@@ -91,7 +90,6 @@ async function handler(req, res) {
 
     // const { user } = session;
 
-
     const readFile = (file, saveLocally, place) => {
       const options = {};
       if (saveLocally) {
@@ -99,7 +97,7 @@ async function handler(req, res) {
 
         // eslint-disable-next-line no-unused-vars
         options.filename = (name, ext, path1, form) => {
-          // console.log("user",form)
+          // // console.log("user",form)
 
           if (
             // path1.mimetype === "application/pdf" ||
@@ -108,7 +106,7 @@ async function handler(req, res) {
             // path1.mimetype === "image/jpeg" ||
             // path1.mimetype === "image/jpg" ||
             path1.mimetype ===
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           ) {
             let sourceDir = fs.readdirSync(place);
 
@@ -117,7 +115,7 @@ async function handler(req, res) {
               const stats = fs.statSync(filePath);
               if (stats.isFile()) {
                 // fs.unlinkSync(filePath);
-                // console.log('Deleted file:', filePath);
+                // // console.log('Deleted file:', filePath);
               }
             });
 
@@ -155,13 +153,13 @@ async function handler(req, res) {
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
-     await readFile(req, true, directory);
+    await readFile(req, true, directory);
 
     let course_file = await fs.readdirSync(directory);
 
     // Access the file path from the 'files' object
     // const buffer = attendance_file.slice(-1)
-    // console.log(directory)
+    // // console.log(directory)
     if (!course_file) {
       return res.status(400).json({
         success: false,

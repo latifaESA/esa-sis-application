@@ -12,16 +12,16 @@
 // import { getSession } from 'next-auth/client';
 // import UserProfile from '../../../../models/user/ProfileModel';
 // import db from '../../../../utilities/connectToDb';
-import { newpassword } from '../../controller/queries';
-import { connect, disconnect } from '../../../../utilities/db';
+import { newpassword } from "../../controller/queries";
+import { connect, disconnect } from "../../../../utilities/db";
 // import selection_data from '../../../../utilities/selection_data';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]';
-import sis_app_logger from '../../../api/logger';
-import useragent from 'useragent';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
+import sis_app_logger from "../../../api/logger";
+import useragent from "useragent";
 
 async function handler(req, res) {
-  if (req.method !== 'PUT') {
+  if (req.method !== "PUT") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   // const session = await getSession({ req });
@@ -29,25 +29,25 @@ async function handler(req, res) {
   if (!session) {
     return res
       .status(401)
-      .send({ message: 'Signin Required To Change Password' });
+      .send({ message: "Signin Required To Change Password" });
   }
   const { user } = session;
-  // console.log('req.body=', req.body);
+  // // console.log('req.body=', req.body);
   const password = req.body.password;
   // const email = req.body.email;
 
-  console.log('Password=', password);
-  console.log('userid=', user.userid);
+  // console.log('Password=', password);
+  // console.log('userid=', user.userid);
 
   const regularExpression =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
   if (!regularExpression.test(password)) {
     res.status(422).json({
-      message: 'Validation ERROR When Trying Update User Password',
+      message: "Validation ERROR When Trying Update User Password",
     });
     return;
   }
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
 
   if (password) {
@@ -66,14 +66,14 @@ async function handler(req, res) {
       });
     } else {
       await newpassword(connection, user.userid, password);
-      // console.log(update);
+      // // console.log(update);
       await disconnect(connection);
     }
   }
 
-  console.log('User Password Updated');
+  // console.log('User Password Updated');
   res.send({
-    message: 'User Password Updated',
+    message: "User Password Updated",
   });
 }
 

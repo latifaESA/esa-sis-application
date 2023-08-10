@@ -11,10 +11,10 @@
 // };
 // export default handler;
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const logDir = '../../logs'; // directory where log files are stored
+const logDir = "../../logs"; // directory where log files are stored
 const logFiles = fs.readdirSync(logDir); // get list of log files
 
 const logs = []; // array to store log objects
@@ -26,17 +26,16 @@ for (const file of logFiles) {
   if (match) {
     const date = match[1]; // extract date from file name
     const filePath = path.join(logDir, file); // build full file path
-    const fileContent = fs.readFileSync(filePath, 'utf8'); // read file contents
-    const lines = fileContent.trim().split('\n'); // split into lines
-    
+    const fileContent = fs.readFileSync(filePath, "utf8"); // read file contents
+    const lines = fileContent.trim().split("\n"); // split into lines
+
     for (const line of lines) {
       const { message } = JSON.parse(line); // parse JSON and extract message
-      // console.log('message=', message);
-      const parts = message.split('='); // split message into parts
+      // // console.log('message=', message);
+      const parts = message.split("="); // split message into parts
       logs.push({ date, parts }); // store log object with date and parts array
     }
   }
 }
 
-console.log(logs); // print array of log objects
-
+// console.log(logs); // print array of log objects

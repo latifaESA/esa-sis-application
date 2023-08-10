@@ -62,7 +62,7 @@ export default function CreateCourse() {
         course_type: course_type,
       };
       const { data } = await axios.post("/api/pmApi/createCourses", payload);
-      console.log("data", data);
+      // console.log("data", data);
       setData(data);
       setShowModal(true);
     } catch (error) {

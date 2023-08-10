@@ -45,7 +45,7 @@ export default function CopyClass({
           major_id: majorValue,
         };
         let { data } = await axios.post("/api/pmApi/copyClass", classValue);
-        console.log(data);
+        // console.log(data);
         if (data.success) {
           setOpenCopy(false);
           setClassID("");
@@ -60,7 +60,7 @@ export default function CopyClass({
         }
         // setOpen(false)
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
 
@@ -72,13 +72,13 @@ export default function CopyClass({
       ? setError("Please choose promotion")
       : (setError(""), copyClass());
 
-    console.log("courseValue : ", courseValue);
-    console.log("teacherValue : ", teacherValue);
-    console.log("promotionValueClass : ", promotionValueClass);
-    console.log("majorValue : ", majorValue);
-    console.log("dateFrom : ", dateFrom);
-    console.log("dateTo : ", dateTo);
-    console.log("pm id : ", session.user.userid);
+    // console.log("courseValue : ", courseValue);
+    // console.log("teacherValue : ", teacherValue);
+    // console.log("promotionValueClass : ", promotionValueClass);
+    // console.log("majorValue : ", majorValue);
+    // console.log("dateFrom : ", dateFrom);
+    // console.log("dateTo : ", dateTo);
+    // console.log("pm id : ", session.user.userid);
   };
 
   const handleCancelCopy = () => {
@@ -90,11 +90,11 @@ export default function CopyClass({
 
   const handlePromotionClass = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    // console.log("Selected Value:", selectedValue);
     setPromotionValueClass(selectedValue);
   };
 
-  console.log("users from custom element", users);
+  // console.log("users from custom element", users);
 
   const handleCourseCopy = (selectedValue) => {
     if (selectedValue == "") {
@@ -152,22 +152,22 @@ export default function CopyClass({
         users.filter((user) => user.course_id == selectedValue)[0].teacher_id
       );
 
-      console.log(selectedValue);
-      console.log(
-        users.filter((user) => user.course_id == selectedValue)[0].teacher_id
-      );
+      // console.log(selectedValue);
+      // console.log(
+      //   users.filter((user) => user.course_id == selectedValue)[0].teacher_id
+      // );
 
-      console.log(
-        users.filter((user) => user.course_id == selectedValue)[0].promotion
-      );
+      // console.log(
+      //   users.filter((user) => user.course_id == selectedValue)[0].promotion
+      // );
     }
   };
 
   const handleTeacher = (selectedValue) => {
-    console.log(
-      "select teacher: ",
-      selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
-    );
+    // console.log(
+    //   "select teacher: ",
+    //   selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
+    // );
     setTeacherValue(
       selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
     );

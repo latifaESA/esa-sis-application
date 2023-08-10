@@ -5,9 +5,9 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import React from 'react';
-import styles from '../../styles/FilePreview.module.css';
-import formatBytes from '../../utilities/formatbytes';
+import React from "react";
+import styles from "../../styles/FilePreview.module.css";
+import formatBytes from "../../utilities/formatbytes";
 
 const FilePreview = ({ fileData, dispatch }) => {
   return (
@@ -16,7 +16,7 @@ const FilePreview = ({ fileData, dispatch }) => {
         {/* loop over the fileData */}
 
         {fileData.fileList.map((f) => {
-          // console.log('fileData.fileList=', fileData.fileList);
+          // // console.log('fileData.fileList=', fileData.fileList);
           return (
             <ol key={f.lastModified}>
               <li className={styles.fileList}>
@@ -25,8 +25,8 @@ const FilePreview = ({ fileData, dispatch }) => {
                   key={f.name}
                   className={` ${
                     f.size > 2 * 1024 * 1024
-                      ? 'font-bold text-red-800'
-                      : ' text-stone-800 '
+                      ? "font-bold text-red-800"
+                      : " text-stone-800 "
                   }`}
                 >
                   {f.name}
@@ -36,8 +36,8 @@ const FilePreview = ({ fileData, dispatch }) => {
                     key={f.name}
                     className={` ${
                       f.size > 2 * 1024 * 1024
-                        ? 'font-bold text-red-800'
-                        : 'font-bold text-stone-800 '
+                        ? "font-bold text-red-800"
+                        : "font-bold text-stone-800 "
                     }`}
                   >
                     {formatBytes(f.size, 2)}
@@ -46,7 +46,7 @@ const FilePreview = ({ fileData, dispatch }) => {
                     className="ml-5"
                     type="button"
                     onClick={() => {
-                      dispatch({ type: 'REMOVE_FILE_FROM_LIST', f });
+                      dispatch({ type: "REMOVE_FILE_FROM_LIST", f });
                     }}
                   >
                     X

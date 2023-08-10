@@ -6,11 +6,11 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import decrypt from '../../../../utilities/encrypt_decrypt/decryptText';
-import Tooltip from '@mui/material/Tooltip';
-import HelpIcon from '@mui/icons-material/Help';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import decrypt from "../../../../utilities/encrypt_decrypt/decryptText";
+import Tooltip from "@mui/material/Tooltip";
+import HelpIcon from "@mui/icons-material/Help";
 
 const TopSettings = ({ register, errors, resetHandler }) => {
   const [auto_Save_Timing, setAuto_Save_Timing] = useState(0);
@@ -33,9 +33,9 @@ const TopSettings = ({ register, errors, resetHandler }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/settingdata');
+        const response = await axios.get("/api/controller/settingdata");
         const incomingData = JSON.parse(decrypt(response.data.data));
-        //console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
+        //// console.log(incomingData.setting[0].personalinfo_dob_min.split('T')[0])
         if (response.status === 200) {
           setAuto_Save_Timing(incomingData.setting[0].auto_Save_Timing);
           setMax_Characters_Count(incomingData.setting[0].max_characters_count);
@@ -46,10 +46,10 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             incomingData.setting[0].message_disapear_timing
           );
           setPersonalinfo_dob_min(
-            incomingData.setting[0].personalinfo_dob_min.split('T')[0]
+            incomingData.setting[0].personalinfo_dob_min.split("T")[0]
           );
           setPersonalinfo_dob_max(
-            incomingData.setting[0].personalinfo_dob_max.split('T')[0]
+            incomingData.setting[0].personalinfo_dob_max.split("T")[0]
           );
           setUpload_file_single_size(
             incomingData.setting[0].upload_file_single_size
@@ -83,41 +83,41 @@ const TopSettings = ({ register, errors, resetHandler }) => {
       console.error(error);
 
       return {
-        message: 'Failed to Reset table',
+        message: "Failed to Reset table",
       };
     }
   };
   const handleChange = (name, value) => {
-    //console.log("handleChange called with", name, value);
+    //// console.log("handleChange called with", name, value);
     switch (name) {
-      case 'AutoSavingTime':
+      case "AutoSavingTime":
         setAuto_Save_Timing(value);
         break;
-      case 'DisapearingMessageTime':
+      case "DisapearingMessageTime":
         setMessage_disapear_timing(value);
         break;
-      case 'DOBMinDate':
+      case "DOBMinDate":
         setPersonalinfo_dob_min(value);
         break;
-      case 'DOBMaxDate':
+      case "DOBMaxDate":
         setPersonalinfo_dob_max(value);
         break;
-      case 'YearOfAquisitionLimit':
+      case "YearOfAquisitionLimit":
         setYear_of_Acquisition_Limit(value);
         break;
-      case 'SingleFileUploadSize':
+      case "SingleFileUploadSize":
         setUpload_file_single_size(value);
         break;
-      case 'FileUploadTotalSize':
+      case "FileUploadTotalSize":
         setUpload_file_total_size(value);
         break;
-      case 'MaxCharacterCount':
+      case "MaxCharacterCount":
         setMax_Characters_Count(value);
         break;
-      case 'LoggerExpiryDay':
+      case "LoggerExpiryDay":
         setLogger_expiry_day(value);
         break;
-      case 'LoggerMaxFileSize':
+      case "LoggerMaxFileSize":
         setLogger_max_file_size(value);
         break;
 
@@ -127,22 +127,22 @@ const TopSettings = ({ register, errors, resetHandler }) => {
   };
 
   // Helping tips messages
-  const autoSavingTimeHelp = 'Set Application Auto Saving Timer.';
-  const disapearingMessageTimeHelp = 'Set messages Disapearing Timer.';
+  const autoSavingTimeHelp = "Set Application Auto Saving Timer.";
+  const disapearingMessageTimeHelp = "Set messages Disapearing Timer.";
   const DOBMinDateHelp =
-    'Set Applicant Minimun Date of Birth DOB MIN < DOB MAX.';
+    "Set Applicant Minimun Date of Birth DOB MIN < DOB MAX.";
   const DOBMaxDateHelp =
-    'Set Applicant Maximum Date of Birth DOB MAX > DOB MIN.';
+    "Set Applicant Maximum Date of Birth DOB MAX > DOB MIN.";
   const YearOfAquisitionLimitHelp =
-    'Specify Aquisition Years from Current year to 15 or 20 years ago.';
+    "Specify Aquisition Years from Current year to 15 or 20 years ago.";
   const SingleFileUploadSizeHelp =
-    'Set the max size for a single file upload in MB.';
+    "Set the max size for a single file upload in MB.";
   const FileUploadTotalSizeHelp =
-    'Set the max size for all the uploaded files in MB. Must be > than or = to Single File Upload Size.';
+    "Set the max size for all the uploaded files in MB. Must be > than or = to Single File Upload Size.";
   const MaxCharacterCountHelp =
-    'Set the Max Characters for questions in MBA & EMBA Forms.';
-  const LoggerExpiryDayHelp = 'Set max days for log files to be deleted.';
-  const LoggerMaxFileSizeHelp = 'Set max log file capacity.';
+    "Set the Max Characters for questions in MBA & EMBA Forms.";
+  const LoggerExpiryDayHelp = "Set max days for log files to be deleted.";
+  const LoggerMaxFileSizeHelp = "Set max log file capacity.";
 
   return (
     <>
@@ -152,11 +152,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="number"
           value={auto_Save_Timing}
           className={`md:w-[500px] ${
-            errors.AutoSavingTime && 'border border-red-500'
+            errors.AutoSavingTime && "border border-red-500"
           }`}
-          {...register('AutoSavingTime', {
+          {...register("AutoSavingTime", {
             onChange: (e) => {
-              handleChange('AutoSavingTime', e.target.value);
+              handleChange("AutoSavingTime", e.target.value);
             },
             //required: 'Set Auto Saving Time',
           })}
@@ -171,7 +171,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={autoSavingTimeHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -187,11 +187,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="number"
           value={message_disapear_timing}
           className={`md:w-[500px] ${
-            errors.DisapearingMessageTime && 'border border-red-500'
+            errors.DisapearingMessageTime && "border border-red-500"
           }`}
-          {...register('DisapearingMessageTime', {
+          {...register("DisapearingMessageTime", {
             onChange: (e) => {
-              handleChange('DisapearingMessageTime', e.target.value);
+              handleChange("DisapearingMessageTime", e.target.value);
             },
             //required: 'Set Disapearing Message Time',
           })}
@@ -206,7 +206,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={disapearingMessageTimeHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -222,11 +222,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="date"
           value={personalinfo_dob_min}
           className={`w-[500px] max-[767px]:w-[250px] ${
-            errors.DOBMinDate && 'border border-red-500'
+            errors.DOBMinDate && "border border-red-500"
           }`}
-          {...register('DOBMinDate', {
+          {...register("DOBMinDate", {
             onChange: (e) => {
-              handleChange('DOBMinDate', e.target.value);
+              handleChange("DOBMinDate", e.target.value);
             },
             // required: 'Enter Min DOB Date',
           })}
@@ -240,7 +240,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={DOBMinDateHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -256,11 +256,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="date"
           value={personalinfo_dob_max}
           className={`w-[500px] max-[767px]:w-[250px] ${
-            errors.DOBMaxDate && 'border border-red-500'
+            errors.DOBMaxDate && "border border-red-500"
           }`}
-          {...register('DOBMaxDate', {
+          {...register("DOBMaxDate", {
             onChange: (e) => {
-              handleChange('DOBMaxDate', e.target.value);
+              handleChange("DOBMaxDate", e.target.value);
             },
             //required: 'Enter Max DOB Date',
           })}
@@ -274,7 +274,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={DOBMaxDateHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -290,11 +290,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           value={Year_of_Acquisition_Limit}
           type="number"
           className={`md:w-[500px] ${
-            errors.YearOfAquisitionLimit && 'border border-red-500'
+            errors.YearOfAquisitionLimit && "border border-red-500"
           }`}
-          {...register('YearOfAquisitionLimit', {
+          {...register("YearOfAquisitionLimit", {
             onChange: (e) => {
-              handleChange('YearOfAquisitionLimit', e.target.value);
+              handleChange("YearOfAquisitionLimit", e.target.value);
             },
             //required: 'Enter Year of Aquisition',
           })}
@@ -309,7 +309,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={YearOfAquisitionLimitHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -325,11 +325,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           value={upload_file_single_size}
           type="number"
           className={`md:w-[500px] ${
-            errors.SingleFileUploadSize && 'border border-red-500'
+            errors.SingleFileUploadSize && "border border-red-500"
           }`}
-          {...register('SingleFileUploadSize', {
+          {...register("SingleFileUploadSize", {
             onChange: (e) => {
-              handleChange('SingleFileUploadSize', e.target.value);
+              handleChange("SingleFileUploadSize", e.target.value);
             },
             //required: 'Enter Single File Upload Size',
           })}
@@ -344,7 +344,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={SingleFileUploadSizeHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -360,11 +360,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           value={upload_file_total_size}
           type="number"
           className={`md:w-[500px] ${
-            errors.FileUploadTotalSize && 'border border-red-500'
+            errors.FileUploadTotalSize && "border border-red-500"
           }`}
-          {...register('FileUploadTotalSize', {
+          {...register("FileUploadTotalSize", {
             onChange: (e) => {
-              handleChange('SingleFileUploadSize', e.target.value);
+              handleChange("SingleFileUploadSize", e.target.value);
             },
             //required: 'Enter Upload Total Size',
           })}
@@ -379,7 +379,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={FileUploadTotalSizeHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -395,11 +395,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="number"
           value={max_characters_count}
           className={`md:w-[500px] ${
-            errors.MaxCharacterCount && 'border border-red-500'
+            errors.MaxCharacterCount && "border border-red-500"
           }`}
-          {...register('MaxCharacterCount', {
+          {...register("MaxCharacterCount", {
             onChange: (e) => {
-              handleChange('MaxCharacterCount', e.target.value);
+              handleChange("MaxCharacterCount", e.target.value);
             },
             //required: 'Enter Max Character Count',
           })}
@@ -414,7 +414,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={MaxCharacterCountHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -430,11 +430,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="number"
           value={logger_expiry_day}
           className={`md:w-[500px] ${
-            errors.LoggerExpiryDay && 'border border-red-500'
+            errors.LoggerExpiryDay && "border border-red-500"
           }`}
-          {...register('LoggerExpiryDay', {
+          {...register("LoggerExpiryDay", {
             onChange: (e) => {
-              handleChange('LoggerExpiryDay', e.target.value);
+              handleChange("LoggerExpiryDay", e.target.value);
             },
             //required: 'Set Logger Expiry Day',
           })}
@@ -449,7 +449,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={LoggerExpiryDayHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>
@@ -465,11 +465,11 @@ const TopSettings = ({ register, errors, resetHandler }) => {
           type="number"
           value={logger_max_file_size}
           className={`md:w-[500px] ${
-            errors.LoggerMaxFileSize && 'border border-red-500'
+            errors.LoggerMaxFileSize && "border border-red-500"
           }`}
-          {...register('LoggerMaxFileSize', {
+          {...register("LoggerMaxFileSize", {
             onChange: (e) => {
-              handleChange('LoggerMaxFileSize', e.target.value);
+              handleChange("LoggerMaxFileSize", e.target.value);
             },
             //required: 'Set Logger Max File Size',
           })}
@@ -484,7 +484,7 @@ const TopSettings = ({ register, errors, resetHandler }) => {
             disableTouchListener
             title={LoggerMaxFileSizeHelp}
           >
-            <HelpIcon style={{ color: 'gray' }} />
+            <HelpIcon style={{ color: "gray" }} />
           </Tooltip>
         </label>
       </div>

@@ -1,32 +1,30 @@
-
-const axios = require('axios')
+const axios = require("axios");
 
 // import axios from "axios";
 
 async function handler() {
-    console.log('hello')
-    try {
-        // let {data} = await axios.get("https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636");
+  // console.log('hello')
+  try {
+    // let {data} = await axios.get("https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636");
 
-        // "https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01"
+    // "https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01"
 
-        let {data} = await axios.get("https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01");
+    let { data } = await axios.get(
+      "https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01"
+    );
 
-        
-         console.log(data)
-        //  return data
-        
-    } catch (error) {
-        // return error;
-        console.log('the error is: ', error)
-    }
-
+    console.log(data);
+    //  return data
+  } catch (error) {
+    // return error;
+    console.log("the error is: ", error);
+  }
 }
 // export default handler;
 module.exports = handler;
 
 // export default async function Home({data}) {
-//     console.log(data)
+//     // console.log(data)
 //     // try {
 //     //     // let {data} = await axios.get("https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636");
 
@@ -34,13 +32,12 @@ module.exports = handler;
 
 //     //     let {data} = await axios.get("https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=201705636&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01");
 
-        
-//     //      console.log(data)
+//     //      // console.log(data)
 //     //     //  return data
-        
+
 //     // } catch (error) {
 //     //     // return error;
-//     //     console.log('the error is: ', error)
+//     //     // console.log('the error is: ', error)
 //     // }
 //   return (
 //     <>
@@ -59,7 +56,7 @@ module.exports = handler;
 // }
 
 // export async function getServerSideProps() {
-//     const {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636'); 
+//     const {data} = await axios.get('https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=201705636');
 
 //     return {
 //       props: {

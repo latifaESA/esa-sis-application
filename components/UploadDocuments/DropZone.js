@@ -6,15 +6,15 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import FilePreview from './FilePreview';
-import styles from '../../styles/DropZone.module.css';
-import formatBytes from '../../utilities/formatbytes';
-import useTranslation from 'next-translate/useTranslation';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import FilePreview from "./FilePreview";
+import styles from "../../styles/DropZone.module.css";
+import formatBytes from "../../utilities/formatbytes";
+import useTranslation from "next-translate/useTranslation";
 // import UploadFiles from '../utilities/uploadFiles';
-import selection_data from '../../utilities/selection_data';
-import { useSelector } from 'react-redux';
+import selection_data from "../../utilities/selection_data";
+import { useSelector } from "react-redux";
 
 const DropZone = ({ data, dispatch, type }) => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const DropZone = ({ data, dispatch, type }) => {
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch({ type: 'SET_IN_DROP_ZONE', inDropZone: true });
+    dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: true });
   };
 
   // onDragLeave sets inDropZone to false
@@ -36,7 +36,7 @@ const DropZone = ({ data, dispatch, type }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    dispatch({ type: 'SET_IN_DROP_ZONE', inDropZone: false });
+    dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
   };
 
   // onDragOver sets inDropZone to true
@@ -45,8 +45,8 @@ const DropZone = ({ data, dispatch, type }) => {
     e.stopPropagation();
 
     // set dropEffect to copy i.e copy of the source item
-    e.dataTransfer.dropEffect = 'copy';
-    dispatch({ type: 'SET_IN_DROP_ZONE', inDropZone: true });
+    e.dataTransfer.dropEffect = "copy";
+    dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: true });
   };
 
   // onDrop sets inDropZone to false and adds files to fileList
@@ -60,10 +60,10 @@ const DropZone = ({ data, dispatch, type }) => {
     if (files[0].size > appState.appVar.upload_file_single_size)
       setexceddSize(true);
     else setexceddSize(false);
-    type === 'photo'
+    type === "photo"
       ? (allowedExtensions = selection_data.upload_photo_allowedExtensions)
       : (allowedExtensions = selection_data.upload_file_allowedExtensions);
-    // console.log('allowedExtensions=', allowedExtensions);
+    // // console.log('allowedExtensions=', allowedExtensions);
     // ensure a file or files are dropped
     // FIXME: set totale number dynamic (10)
     if (
@@ -92,9 +92,9 @@ const DropZone = ({ data, dispatch, type }) => {
           selection_data.upload_file_total_number - data.fileList.length
       ) {
         // dispatch action to add droped file or files to fileList
-        dispatch({ type: 'ADD_FILE_TO_LIST', files });
+        dispatch({ type: "ADD_FILE_TO_LIST", files });
         // reset inDropZone to false
-        dispatch({ type: 'SET_IN_DROP_ZONE', inDropZone: false });
+        dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
       }
     }
   };
@@ -132,7 +132,7 @@ const DropZone = ({ data, dispatch, type }) => {
           selection_data.upload_file_total_number - data.fileList.length
       ) {
         // dispatch action to add selected file or files to fileList
-        dispatch({ type: 'ADD_FILE_TO_LIST', files });
+        dispatch({ type: "ADD_FILE_TO_LIST", files });
       }
     }
   };
@@ -148,7 +148,7 @@ const DropZone = ({ data, dispatch, type }) => {
 
   /* change the 'totalSize' */
   useEffect(() => {
-    dispatch({ type: 'CHANGE_TOTALSIZE', totalDocumentSize });
+    dispatch({ type: "CHANGE_TOTALSIZE", totalDocumentSize });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalDocumentSize]);
 
@@ -162,22 +162,22 @@ const DropZone = ({ data, dispatch, type }) => {
         onDragLeave={(e) => handleDragLeave(e)}
       >
         <Image
-          src='/upload.svg'
-          alt='upload'
+          src="/upload.svg"
+          alt="upload"
           height={50}
           width={50}
-          className='w-auto h-auto'
+          className="w-auto h-auto"
         />
 
         <input
           id={type}
           // id="fileSelect"
-          type='file'
+          type="file"
           // max-size="2048"
           // multiple
           // FIXME: Set dynamic filter
           accept={
-            type === 'photo'
+            type === "photo"
               ? selection_data.upload_photo_type
               : selection_data.upload_file_type
           }
@@ -187,49 +187,49 @@ const DropZone = ({ data, dispatch, type }) => {
         />
         <label htmlFor={type}>
           {/* <label htmlFor="fileSelect"> */}
-          {type === 'photo'
-            ? t('studentApp:uploadonephotofileselect')
-            : type === 'file'
-            ? t('You Can Upload Scanned')
-            : type === 'passport'
-            ? t('studentApp:uploadonepassportfileselect')
-            : type === 'RecommendationLetter'
-            ? t('studentApp:uploadRecommendationLetterfileselect')
-            : type === 'ResearchProposal'
-            ? t('studentApp:uploadResearchProposalfileselect')
-            : type === 'ProofOfM1'
-            ? t('studentApp:uploadProofOfM1fileselect')
-            : type === 'BACCertificate'
-            ? t('studentApp:uploadBACCertificatefileselect')
-            : type === 'Transcript'
-            ? t('studentApp:uploadTranscriptfileselect')
-            : ''}
+          {type === "photo"
+            ? t("studentApp:uploadonephotofileselect")
+            : type === "file"
+            ? t("You Can Upload Scanned")
+            : type === "passport"
+            ? t("studentApp:uploadonepassportfileselect")
+            : type === "RecommendationLetter"
+            ? t("studentApp:uploadRecommendationLetterfileselect")
+            : type === "ResearchProposal"
+            ? t("studentApp:uploadResearchProposalfileselect")
+            : type === "ProofOfM1"
+            ? t("studentApp:uploadProofOfM1fileselect")
+            : type === "BACCertificate"
+            ? t("studentApp:uploadBACCertificatefileselect")
+            : type === "Transcript"
+            ? t("studentApp:uploadTranscriptfileselect")
+            : ""}
         </label>
 
         <h3 className={styles.uploadMessage}>
-          {t('studentApp:uploadonedocumentmessage')}
+          {t("studentApp:uploadonedocumentmessage")}
         </h3>
       </div>
       {/* Total Documents Size */}
       {data.fileList.length > 0 && (
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <div
             className={`${
               data.fileList.length >= selection_data.upload_file_total_number
-                ? 'font-bold text-red-800'
-                : 'font-bold text-stone-800 '
+                ? "font-bold text-red-800"
+                : "font-bold text-stone-800 "
             }`}
           >
-            {data.fileList.length} {t('studentApp:uploaddocumentfilesselected')}
+            {data.fileList.length} {t("studentApp:uploaddocumentfilesselected")}
           </div>
           <div
             className={`' font-bold' ${
               totalDocumentSize >= selection_data.upload_file_total_size
-                ? 'font-bold text-red-800'
-                : 'font-bold text-stone-800 '
+                ? "font-bold text-red-800"
+                : "font-bold text-stone-800 "
             }`}
           >
-            {t('studentApp:uploadtotalDocumentSize')}
+            {t("studentApp:uploadtotalDocumentSize")}
 
             {formatBytes(totalDocumentSize, 2)}
           </div>
@@ -254,19 +254,19 @@ const DropZone = ({ data, dispatch, type }) => {
         )} */}
       {/* Message if more than 10 files selected */}
       {data.fileList.length > selection_data.upload_file_total_number && (
-        <div className='font-bold text-red-800'>
-          {t('studentApp:uploaddocumentalotoffilesselected')}
+        <div className="font-bold text-red-800">
+          {t("studentApp:uploaddocumentalotoffilesselected")}
         </div>
       )}
       {/* Message if more than 10 MB selected */}
       {totalDocumentSize > selection_data.upload_file_total_size && (
-        <div className='font-bold text-red-800'>
-          {t('studentApp:uploaddocumentmanyoffilesselected')}
+        <div className="font-bold text-red-800">
+          {t("studentApp:uploaddocumentmanyoffilesselected")}
         </div>
       )}
       {exceddSize && (
-        <div className='font-bold text-red-800'>
-          {t('studentApp:excedfilesize')}
+        <div className="font-bold text-red-800">
+          {t("studentApp:excedfilesize")}
         </div>
       )}
     </>

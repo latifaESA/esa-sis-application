@@ -40,7 +40,7 @@ function generatPassword(length) {
 }
 
 async function handler(req, res) {
-  console.log("head of handler");
+  // console.log("head of handler");
   if (req.method !== "GET") {
     return res
       .status(500)
@@ -56,16 +56,16 @@ async function handler(req, res) {
       : "http";
   // eslint-disable-next-line no-unused-vars
   const session = await getServerSession(req, res, authOptions);
-  console.log("after session");
+  // console.log("after session");
   const encryptedBody = req.query.query;
   const query = JSON.parse(decrypt(encryptedBody));
   const emailToken = query.token;
   const email = query.email;
   // const password = req.query.password;
-  console.log("quesries");
-  console.log(emailToken);
-  console.log(email);
-  console.log("quesries");
+  // console.log("quesries");
+  // console.log(emailToken);
+  // console.log(email);
+  // console.log("quesries");
   if (!emailToken) {
     res.status(422).json({
       message: "Pass an email Token",
@@ -104,8 +104,8 @@ async function handler(req, res) {
       "email",
       email
     );
-    // console.log("this is existing email user smthng");
-    // console.log(existingUserToken.rows[0]);
+    // // console.log("this is existing email user smthng");
+    // // console.log(existingUserToken.rows[0]);
     const existingUserToken = await findDataForResetPassword(
       connection,
       "users",
@@ -114,8 +114,8 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    // console.log("this is existing token user smthng");
-    // console.log(existingUserToken.rows[0]);
+    // // console.log("this is existing token user smthng");
+    // // console.log(existingUserToken.rows[0]);
 
     // for Program Manager
     const existingPMEmail = await findDataForResetPassword(
@@ -126,7 +126,7 @@ async function handler(req, res) {
       "pm_email",
       email
     );
-    // console.log("this is existing pm email user smthng");
+    // // console.log("this is existing pm email user smthng");
 
     const existingPMToken = await findDataForResetPassword(
       connection,
@@ -136,7 +136,7 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    // console.log("this is existing pm token user smthng");
+    // // console.log("this is existing pm token user smthng");
 
     // program manager assistance
     const existingPMAssistanceEmail = await findDataForResetPassword(
@@ -164,8 +164,8 @@ async function handler(req, res) {
       "adminemail",
       email
     );
-    console.log("this is existing admin user smthng");
-    console.log(existingAdminEmail.rows[0]);
+    // console.log("this is existing admin user smthng");
+    // console.log(existingAdminEmail.rows[0]);
     const existinAdminToken = await findDataForResetPassword(
       connection,
       "users",
@@ -174,8 +174,8 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    console.log("this is existing admin user smthng");
-    console.log(existinAdminToken.rows[0]);
+    // console.log("this is existing admin user smthng");
+    // console.log(existinAdminToken.rows[0]);
 
     // const user= await Userinfo(connection,email);
     //const updateToken=await UpdateToken(connection,emailToken);
@@ -194,7 +194,7 @@ async function handler(req, res) {
         const role = existingUserToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingUserEmail.rows[0].userid;
-        // console.log('newPassword=', newPassword);
+        // // console.log('newPassword=', newPassword);
         //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
         // await existingUserToken.save();
@@ -278,7 +278,7 @@ async function handler(req, res) {
         const role = existingPMToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingPMEmail.rows[0].userid;
-        // console.log('newPassword=', newPassword);
+        // // console.log('newPassword=', newPassword);
         //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
         // await existingUserToken.save();
@@ -365,7 +365,7 @@ async function handler(req, res) {
         const role = existingPMAssistanceToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingPMAssistanceEmail.rows[0].userid;
-        // console.log('newPassword=', newPassword);
+        // // console.log('newPassword=', newPassword);
         //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
         // await existingUserToken.save();
@@ -454,7 +454,7 @@ async function handler(req, res) {
         const role = existinAdminToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingAdminEmail.rows[0].userid;
-        // console.log('newPassword=', newPassword);
+        // // console.log('newPassword=', newPassword);
         //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
         // await existingUserToken.save();

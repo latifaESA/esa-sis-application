@@ -82,9 +82,9 @@ async function handler(req, res) {
       "pm_ass_email",
       email
     );
-    // console.log(validateUserEmail)
+    // // console.log(validateUserEmail)
     // const validateUserEmail = await UserProfile.findOne({ email });
-    // console.log(validateUserEmail.rows[0].userid)
+    // // console.log(validateUserEmail.rows[0].userid)
     if (validateUserEmail.rows[0] != null) {
       // Set the emailToken
       await newEmailToken(connection, validateUserEmail.rows[0].userid);
@@ -134,7 +134,7 @@ async function handler(req, res) {
       "adminemail",
       email
     );
-    // console.log("userinf ====", userinfo);
+    // // console.log("userinf ====", userinfo);
     if (userinfo.rows[0]) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",
@@ -166,8 +166,8 @@ async function handler(req, res) {
     }
 
     //email from req body
-    // console.log("userinfo");
-    // console.log(userinfo.rows[0].token);
+    // // console.log("userinfo");
+    // // console.log(userinfo.rows[0].token);
     // await UpdateData(connection, 'user_profile', userinfo.user_id, [
     //   'isreset',
     //   true,
@@ -176,15 +176,15 @@ async function handler(req, res) {
     //Update Activity time
 
     // await UpdateActivityTime(userinfo.rows[0].userid, connection);
-    // console.log('timeAct')
-    // console.log(UpdateActivityTime)
+    // // console.log('timeAct')
+    // // console.log(UpdateActivityTime)
     await disconnect(connection);
-    // console.log(UpdateData)
-    // console.log(email);
-    // console.log(userinfo.emailToken);
-    // console.log(userinfo.user_id);
-    // console.log(userinfo.firstname);
-    // console.log(userinfo.lastname);
+    // // console.log(UpdateData)
+    // // console.log(email);
+    // // console.log(userinfo.emailToken);
+    // // console.log(userinfo.user_id);
+    // // console.log(userinfo.firstname);
+    // // console.log(userinfo.lastname);
     // res.status(201).send({
     //   message: "Ready To send Reset Password Email",
     //   email: email,

@@ -49,25 +49,25 @@ export default function AttendanceModal({
         attendance_date: selectedDate,
         major_id: session.user.majorid,
       };
-      // console.log('payload')
+      // // console.log('payload')
       const data = await axios.post(
         "/api/pmApi/createAttendanceReport",
         payload
       );
-      // console.log(data.data)
+      // // console.log(data.data)
       setData(data.data);
-      // console.log("data",data.data)
+      // // console.log("data",data.data)
 
       const attendance_id = data.data.data;
-      // console.log('atttttt' , attendance_id)
+      // // console.log('atttttt' , attendance_id)
       if (attendance_id) {
         for (let i = 0; i < student.length; i++) {
-            const student_id = student[i].student_id;
-            const data2 = await axios.post("/api/pmApi/createAttendanceStudent", {
-              attendance_id,
-              student_id,
-            });
-          console.log("dataaa", data2.data)
+          const student_id = student[i].student_id;
+          const data2 = await axios.post("/api/pmApi/createAttendanceStudent", {
+            attendance_id,
+            student_id,
+          });
+          console.log(data2.data);
         }
       }
       setShowModal(true);

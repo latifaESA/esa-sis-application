@@ -8,7 +8,7 @@ async function handler(req, res) {
     const { course_id } = req.body;
     const response = await coursesTeachers(connection, course_id);
     await disconnect(connection);
-    // console.log(response)
+    // // console.log(response)
     if (response.length === 0) {
       return res.status(404).json({
         code: 404,
@@ -23,7 +23,7 @@ async function handler(req, res) {
       });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }
 module.exports = handler;

@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
 const InfoListTable = ({
   handleLogsChange,
   Filteredlogs,
@@ -23,9 +23,9 @@ const InfoListTable = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/logs?logtype=info');
+        const response = await axios.get("/api/controller/logs?logtype=info");
         const incomingData = response.data.data;
-        //console.log(incomingData);
+        //// console.log(incomingData);
         if (response.status === 200) {
           setLogs(incomingData);
           //setDatagridLogs(incomingData);
@@ -49,7 +49,7 @@ const InfoListTable = ({
   }, [Filteredlogs]);
 
   useEffect(() => {
-    //console.log('ttt');
+    //// console.log('ttt');
     //handleLogsChange(logs);
     setLogsfiltered(logs);
     setShowAll(0);
@@ -58,91 +58,91 @@ const InfoListTable = ({
 
   const columns = [
     {
-      field: 'level',
-      headerName: 'Level',
-      headerAlign: 'center',
-      align: 'center',
+      field: "level",
+      headerName: "Level",
+      headerAlign: "center",
+      align: "center",
       width: 80,
     },
     {
-      field: 'date',
-      headerName: 'Date',
-      headerAlign: 'center',
-      align: 'center',
+      field: "date",
+      headerName: "Date",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'Athour',
-      headerName: 'Hour',
-      headerAlign: 'center',
-      align: 'center',
+      field: "Athour",
+      headerName: "Hour",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'role',
-      headerName: 'Role',
-      headerAlign: 'center',
-      align: 'center',
+      field: "role",
+      headerName: "Role",
+      headerAlign: "center",
+      align: "center",
       width: 80,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      headerAlign: 'center',
-      align: 'center',
+      field: "email",
+      headerName: "Email",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'action',
-      headerName: 'Action',
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'os',
-      headerName: 'OS',
-      headerAlign: 'center',
-      align: 'center',
+      field: "os",
+      headerName: "OS",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'osVersion',
-      headerName: 'OS Version',
-      headerAlign: 'center',
-      align: 'center',
+      field: "osVersion",
+      headerName: "OS Version",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'browser',
-      headerName: 'Browser',
-      headerAlign: 'center',
-      align: 'center',
+      field: "browser",
+      headerName: "Browser",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
     {
-      field: 'browserSource',
-      headerName: 'Browser Source',
-      headerAlign: 'center',
-      align: 'center',
+      field: "browserSource",
+      headerName: "Browser Source",
+      headerAlign: "center",
+      align: "center",
       width: 250,
     },
     {
-      field: 'device',
-      headerName: 'Device',
-      headerAlign: 'center',
-      align: 'center',
+      field: "device",
+      headerName: "Device",
+      headerAlign: "center",
+      align: "center",
       width: 100,
     },
   ];
 
   return (
     <>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.id}
           rows={logsfiltered}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

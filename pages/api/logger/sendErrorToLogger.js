@@ -6,18 +6,18 @@
  * Copyright (c) 2023 ESA
  */
 
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
-import sis_app_logger from '../logger';
-import useragent from 'useragent';
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
+import sis_app_logger from "../logger";
+import useragent from "useragent";
 
 export default async function handler(req, res) {
-  if (req.method !== 'PUT') {
+  if (req.method !== "PUT") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   const encryptedBody = req.body.data;
-  // console.log(encryptedBody);
+  // // console.log(encryptedBody);
   const { email, role, info, error } = JSON.parse(decrypt(encryptedBody));
-  const userAgent = req.headers['user-agent'];
+  const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
   sis_app_logger.error(
     `${new Date()}=${role}=${info}=${email}=${error}=${
@@ -27,6 +27,6 @@ export default async function handler(req, res) {
     }=${userAgentinfo.device.family}`
   );
   res.send({
-    message: 'logged',
+    message: "logged",
   });
 }

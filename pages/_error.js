@@ -6,16 +6,16 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from 'react';
-import Link from 'next/link';
-import Head from 'next/head';
-import Image from 'next/image';
+import React, { useEffect } from "react";
+import Link from "next/link";
+import Head from "next/head";
+import Image from "next/image";
 // import selection_data from '../utilities/selection_data';
-import encrypt from '../utilities/encrypt_decrypt/encryptText';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import { useSelector } from 'react-redux';
-import { SignOut } from '../components/SignOut';
+import encrypt from "../utilities/encrypt_decrypt/encryptText";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
+import { SignOut } from "../components/SignOut";
 // import { getError } from '../utilities/error';
 // import { NextErrorComponent } from 'next/error';
 // import { NextErrorComponent } from 'next/dist/shared/lib/utils';
@@ -30,24 +30,24 @@ const ErrorOccur = (statusCode) => {
       JSON.stringify({
         email: session?.user.email,
         role: session?.user.role,
-        info: 'From _error,Unhandled ERROR',
+        info: "From _error,Unhandled ERROR",
         error: `${
           Object.keys(statusCode).length !== 0
             ? statusCode
-            : 'Undefined Error on client side'
+            : "Undefined Error on client side"
         }`,
       })
     );
-    await axios.put('/api/logger/sendWarnToLogger', {
+    await axios.put("/api/logger/sendWarnToLogger", {
       data: encryptedBody,
     });
   };
 
   useEffect(() => {
     sendwarn();
-    // console.log('statusCode=',statusCode);
-    // console.log('session?.user.email=',session?.user.email);
-    // console.log('session?.user.role=',session?.user.role);
+    // // console.log('statusCode=',statusCode);
+    // // console.log('session?.user.email=',session?.user.email);
+    // // console.log('session?.user.role=',session?.user.role);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session !== undefined && statusCode !== undefined]);
 
@@ -85,7 +85,7 @@ const ErrorOccur = (statusCode) => {
 };
 
 ErrorOccur.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : '';
+  const statusCode = res ? res.statusCode : err ? err.statusCode : "";
   return statusCode;
 };
 // export async function getStaticProps({ res, err }) {

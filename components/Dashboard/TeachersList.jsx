@@ -6,33 +6,33 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 // import Link from 'next/link';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
 // import moment from 'moment';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+import axios from "axios";
+import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from './LowerButtons';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+import { LowerButtons } from "./LowerButtons";
+import exportSelect from "../../utilities/ExcelExport/exportSelect";
+import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 // import {
 //   WarningMessageCancleIncomplete,
 //   WarningMessageIncomplete,
 //   WarningMessageObsolote,
 // } from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 // import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;
   // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
@@ -43,13 +43,13 @@ const TeachersList = ({ users, setUsers }) => {
   // const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-  console.log('===============')
-  console.log('=this is users=======')
-  console.log(users)
-  // console.log('====this is setUsers====')
-  // console.log(users.data[0].major_id)
-  console.log('===============')
-  console.log('===============')
+  // console.log('===============')
+  // console.log('=this is users=======')
+  // console.log(users)
+  // // console.log('====this is setUsers====')
+  // // console.log(users.data[0].major_id)
+  // console.log('===============')
+  // console.log('===============')
 
   //incomplete modal
   // const handleConfirmIncomplete = (user) => {
@@ -68,7 +68,7 @@ const TeachersList = ({ users, setUsers }) => {
   //   setSelectedUser(user);
   //   setCancleIncomplete(true);
   //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
+  //   // // console.log("prevStatus",prevStatus)
   //   setUsers((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -81,7 +81,7 @@ const TeachersList = ({ users, setUsers }) => {
   //   setConfirmOpenObsolote(false);
   //   setCancleIncomplete(false);
   //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
+  //   // // console.log("prevStatus",prevStatus)
   //   setUsers((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -101,7 +101,7 @@ const TeachersList = ({ users, setUsers }) => {
   //     })
   //     .then((response) => {
   //       // Handle success
-  //       console.log(response.data);
+  //       // console.log(response.data);
   //       setMessage('User Status Changed Succesfully!');
 
   //       //Update the user's status and major in the table
@@ -113,7 +113,7 @@ const TeachersList = ({ users, setUsers }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error);
+  //       // console.log(error);
   //     });
   // };
 
@@ -139,9 +139,9 @@ const TeachersList = ({ users, setUsers }) => {
   //     })
   //     .then(async (response) => {
   //       // Handle success
-  //       console.log(response.data);
-  //       //console.log(response.data.defaultpassword)
-  //       //console.log(response.data.newID)
+  //       // console.log(response.data);
+  //       //// console.log(response.data.defaultpassword)
+  //       //// console.log(response.data.newID)
   //       setMessage('User Major Changed Succesfully!');
   //         await EmailAfterChangMajor({
   //          lname:response.data.lastname ,
@@ -170,37 +170,37 @@ const TeachersList = ({ users, setUsers }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error.response.data);
+  //       // console.log(error.response.data);
   //     });
   // };
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: 'teacher_id',
-      headerName: 'ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "teacher_id",
+      headerName: "ID",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
 
     {
-      field: 'teacher_firstname',
-      headerName: 'First Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "teacher_firstname",
+      headerName: "First Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       // renderCell: (params) =>
       //   `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
     },
     {
-      field: 'teacher_lastname',
-      headerName: 'Last Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "teacher_lastname",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       // renderCell: (params) =>
       //   `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
@@ -265,12 +265,12 @@ const TeachersList = ({ users, setUsers }) => {
     // },
 
     {
-      field: 'teacher_mail',
-      headerName: 'E-mail',
-      headerAlign: 'center',
-      align: 'center',
+      field: "teacher_mail",
+      headerName: "E-mail",
+      headerAlign: "center",
+      align: "center",
       width: 300,
-      type: 'singleSelect',
+      type: "singleSelect",
     },
     // {
     //   field: 'promotion',
@@ -461,7 +461,6 @@ const TeachersList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
-
   ];
 
   // export select to excel
@@ -469,11 +468,11 @@ const TeachersList = ({ users, setUsers }) => {
   const exportButton = async () => {
     if (users.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+          // console.log('response', response);
+          // console.log('incomingData', incomingData);
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setUsers([]);
@@ -488,11 +487,11 @@ const TeachersList = ({ users, setUsers }) => {
   const exportAllButton = async () => {
     if (users.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          console.log('response', response);
-          console.log('incomingData', incomingData);
+          // console.log('response', response);
+          // console.log('incomingData', incomingData);
           await exportAll(incomingData, session);
         } else {
           setUsers([]);
@@ -504,18 +503,18 @@ const TeachersList = ({ users, setUsers }) => {
   };
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
-    console.log('selectedIDs', selectedIDs);
+    // console.log('selectedIDs', selectedIDs);
     const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-    console.log('selectedUsersbefore', selectedUsers);
+    // console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
         window.open(user.reportURL);
       } else {
-        setMessage('Please select a user with a report');
+        setMessage("Please select a user with a report");
       }
     });
 
-    console.log('selectedUsers', selectedUsers);
+    // console.log('selectedUsers', selectedUsers);
   };
 
   return (
@@ -542,12 +541,12 @@ const TeachersList = ({ users, setUsers }) => {
           handleConfirmClose={handleConfirmClose}
         />
       )} */}
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.teacher_id}
           rows={users}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -559,14 +558,14 @@ const TeachersList = ({ users, setUsers }) => {
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}

@@ -1,18 +1,16 @@
 // import { useDispatch } from 'react-redux';
 // import { LowerButtons } from '../../components/Admin/LowerButtons';
 // import { appIsWaiting } from '../../../redux/slices/appSlice';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 const StudentBlue = () => {
-  
   const [survey, setSurvey] = useState([]);
   const { data: session } = useSession();
 
-
   let userid = parseInt(session?.user.userid);
-  console.log("userID",userid);
+  // console.log("userID",userid);
 
   useEffect(() => {
     const BlueData = async () => {
@@ -24,14 +22,13 @@ const StudentBlue = () => {
         //   //     rejectUnauthorized: false,
         //   //   })
         //   }
-       
       );
-      console.log("dataTask",data.Tasks)    
+      // console.log("dataTask",data.Tasks)
       setSurvey(data.Tasks);
     };
     BlueData();
   }, []);
-  console.log(survey);
+  // console.log(survey);
   return (
     <>
       {/* Heading */}
@@ -54,7 +51,7 @@ const StudentBlue = () => {
               </p>
               <p className="text-gray-700 text-xl pt-5 mb-2">{Name}</p>
               <p className="text-gray-700 text-xl pt-5 mb-2">
-                Follow the Link to take the Survey{' '}
+                Follow the Link to take the Survey{" "}
                 <a className="underline" href={Link}>
                   Take Survey
                 </a>

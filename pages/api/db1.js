@@ -1,8 +1,6 @@
-
 // const { Client } = require('pg');
 
 const { default: client } = require("../../utilities/db1");
-
 
 // const client = new Client({
 //   user: 'postgres',
@@ -16,18 +14,24 @@ const { default: client } = require("../../utilities/db1");
 
 // client.query("Select * from major", (err, res) => {
 //   if(!err){
-//     console.log(res.rows);
+//     // console.log(res.rows);
 //   }else{
-//     console.log(res.message)
+//     // console.log(res.message)
 //   }
 //   client.end;
 // })
 
-client.query("Select * from major", (err, res) => {
-  if(!err){
-    console.log(res.rows);
-  }else{
-    console.log(res.message)
+client.query(
+  "Select * from major",
+  (
+    err
+    // ,res
+  ) => {
+    if (!err) {
+      // console.log(res.rows);
+    } else {
+      // console.log(res.message)
+    }
+    client.end;
   }
-  client.end;
-})
+);

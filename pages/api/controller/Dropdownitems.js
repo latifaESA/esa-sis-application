@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import nextConnect from 'next-connect';
-import { ReadDropdown, ReadDropdownSotred } from './queries';
-import { connect, disconnect } from '../../../utilities/db';
-import encrypt from '../../../utilities/encrypt_decrypt/encryptText';
+import nextConnect from "next-connect";
+import { ReadDropdown, ReadDropdownSotred } from "./queries";
+import { connect, disconnect } from "../../../utilities/db";
+import encrypt from "../../../utilities/encrypt_decrypt/encryptText";
 const handler = nextConnect();
 
 handler.get(async (req, res) => {
@@ -32,20 +32,20 @@ handler.get(async (req, res) => {
   // Taking comman data between all majors
   const healthproblem = await ReadDropdownSotred(
     connection,
-    'healthproblem',
-    'healthproblem_eng'
+    "healthproblem",
+    "healthproblem_eng"
   );
   const relationship = await ReadDropdownSotred(
     connection,
-    'relationship',
-    'relationship_eng'
+    "relationship",
+    "relationship_eng"
   );
   const baccalaureate_option = await ReadDropdownSotred(
     connection,
-    'baccalaureate_option',
-    'baccalaureate_eng'
+    "baccalaureate_option",
+    "baccalaureate_eng"
   );
-  const source = await ReadDropdownSotred(connection, 'source', 'source_eng');
+  const source = await ReadDropdownSotred(connection, "source", "source_eng");
   baccalaureate_option.forEach((item) => {
     baccalaureate_option_en.push(item.baccalaureate_eng);
   });
@@ -83,7 +83,7 @@ handler.get(async (req, res) => {
     source_fr: source_fr,
   };
   // Adding data needed for BBA if query was BBA
-  if (major === 'BBA') {
+  if (major === "BBA") {
     let [school_en, school_fr, degreelevel_en, degreelevel_fr] = [
       [],
       [],
@@ -92,18 +92,18 @@ handler.get(async (req, res) => {
     ];
     const institution = await ReadDropdownSotred(
       connection,
-      'institution',
-      'instituation_eng'
+      "institution",
+      "instituation_eng"
     );
     const degree_level_bba = await ReadDropdownSotred(
       connection,
-      'degree_level_bba',
-      'degreelevel_eng'
+      "degree_level_bba",
+      "degreelevel_eng"
     );
     institution.forEach((item) => {
       school_en.push(item.instituation_eng);
     });
-    // console.log('school_en==',school_en);
+    // // console.log('school_en==',school_en);
     institution.forEach((item) => {
       school_fr.push(item.instituation_fr);
     });
@@ -122,8 +122,8 @@ handler.get(async (req, res) => {
     };
   }
   // Major Other includes all data needed for all majors except BBA
-  else if (major === 'Other') {
-    // console.log("Entered Other")
+  else if (major === "Other") {
+    // // console.log("Entered Other")
     let [
       degreelevel_en,
       degreelevel_fr,
@@ -140,33 +140,33 @@ handler.get(async (req, res) => {
     ] = [[], [], [], [], [], [], [], [], [], [], [], []];
     const degreelevel = await ReadDropdownSotred(
       connection,
-      'degreelevel',
-      'degreelevel_eng'
+      "degreelevel",
+      "degreelevel_eng"
     );
     const discipline = await ReadDropdownSotred(
       connection,
-      'discipline',
-      'discipline_eng'
+      "discipline",
+      "discipline_eng"
     );
     const university = await ReadDropdownSotred(
       connection,
-      'university',
-      'university_eng'
+      "university",
+      "university_eng"
     );
     const company_name = await ReadDropdownSotred(
       connection,
-      'company_name',
-      'name_eng'
+      "company_name",
+      "name_eng"
     );
     const experience_type = await ReadDropdownSotred(
       connection,
-      'experience_type',
-      'type_eng'
+      "experience_type",
+      "type_eng"
     );
     const payment = await ReadDropdownSotred(
       connection,
-      'payment',
-      'payment_eng'
+      "payment",
+      "payment_eng"
     );
 
     degreelevel.forEach((item) => {
@@ -222,22 +222,22 @@ handler.get(async (req, res) => {
       payment_fr: payment_fr,
     };
     // Taking the data needed for MBA/EMBA if type was equal to MBA
-    if (type === 'MBA') {
-      // console.log("and here")
+    if (type === "MBA") {
+      // // console.log("and here")
       const functionalarea = await ReadDropdownSotred(
         connection,
-        'functionalarea',
-        'area_eng'
+        "functionalarea",
+        "area_eng"
       );
       const experience_position = await ReadDropdownSotred(
         connection,
-        'experience_position',
-        'position_eng'
+        "experience_position",
+        "position_eng"
       );
       const business_activity = await ReadDropdownSotred(
         connection,
-        'business_activity',
-        'activity_eng'
+        "business_activity",
+        "activity_eng"
       );
       let [
         functionalarea_en,
@@ -276,79 +276,79 @@ handler.get(async (req, res) => {
         business_activity_fr: business_activity_fr,
       };
     }
-  } else if (major === 'All') {
+  } else if (major === "All") {
     const healthproblem = await ReadDropdownSotred(
       connection,
-      'healthproblem',
-      'healthproblem_eng'
+      "healthproblem",
+      "healthproblem_eng"
     );
     const relationship = await ReadDropdownSotred(
       connection,
-      'relationship',
-      'relationship_eng'
+      "relationship",
+      "relationship_eng"
     );
     const baccalaureate_option = await ReadDropdownSotred(
       connection,
-      'baccalaureate_option',
-      'baccalaureate_eng'
+      "baccalaureate_option",
+      "baccalaureate_eng"
     );
-    const source = await ReadDropdownSotred(connection, 'source', 'source_eng');
+    const source = await ReadDropdownSotred(connection, "source", "source_eng");
     const institution = await ReadDropdownSotred(
       connection,
-      'institution',
-      'instituation_eng'
+      "institution",
+      "instituation_eng"
     );
     const degree_level_bba = await ReadDropdownSotred(
       connection,
-      'degree_level_bba',
-      'degreelevel_eng'
+      "degree_level_bba",
+      "degreelevel_eng"
     );
     const degreelevel = await ReadDropdownSotred(
       connection,
-      'degreelevel',
-      'degreelevel_eng'
+      "degreelevel",
+      "degreelevel_eng"
     );
     const discipline = await ReadDropdownSotred(
       connection,
-      'discipline',
-      'discipline_eng'
+      "discipline",
+      "discipline_eng"
     );
     const university = await ReadDropdownSotred(
       connection,
-      'university',
-      'university_eng'
+      "university",
+      "university_eng"
     );
     const company_name = await ReadDropdownSotred(
       connection,
-      'company_name',
-      'name_eng'
+      "company_name",
+      "name_eng"
     );
     const experience_type = await ReadDropdownSotred(
       connection,
-      'experience_type',
-      'type_eng'
+      "experience_type",
+      "type_eng"
     );
     const payment = await ReadDropdownSotred(
       connection,
-      'payment',
-      'payment_eng'
+      "payment",
+      "payment_eng"
     );
     const functionalarea = await ReadDropdownSotred(
       connection,
-      'functionalarea',
-      'area_eng'
+      "functionalarea",
+      "area_eng"
     );
     const experience_position = await ReadDropdownSotred(
       connection,
-      'experience_position',
-      'position_eng'
+      "experience_position",
+      "position_eng"
     );
     const business_activity = await ReadDropdownSotred(
       connection,
-      'business_activity',
-      'activity_eng'
+      "business_activity",
+      "activity_eng"
     );
-    const majors = await ReadDropdown(connection, 'major');
+    const majors = await ReadDropdown(connection, "major");
     All = {
       healthproblem: healthproblem,
       relationship: relationship,
@@ -371,14 +371,14 @@ handler.get(async (req, res) => {
 
   // If data is empty then the operation will fail
   if (!response) {
-    res.status(500).json({ message: 'failed' });
+    res.status(500).json({ message: "failed" });
   } else {
-    if (major === 'All') {
+    if (major === "All") {
       const encryptedBody = encrypt(JSON.stringify(All));
-      res.status(200).json({ message: 'success', data: encryptedBody });
+      res.status(200).json({ message: "success", data: encryptedBody });
     } else {
       const encryptedBody = encrypt(JSON.stringify(response));
-      res.status(200).json({ message: 'success', data: encryptedBody });
+      res.status(200).json({ message: "success", data: encryptedBody });
     }
   }
   // Disconnect from the database only once

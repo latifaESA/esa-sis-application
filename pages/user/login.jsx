@@ -1,43 +1,43 @@
 // import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { getError } from '../../utilities/error';
-import { signIn, useSession, getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import Head from 'next/head';
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { getError } from "../../utilities/error";
+import { signIn, useSession, getSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Head from "next/head";
 // import selection_data from '../../utilities/selection_data';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import esaBuilding from '../../public/images/ESA-building.png';
-import esaLogo from '../../public/images/esa.png';
+import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import esaBuilding from "../../public/images/ESA-building.png";
+import esaLogo from "../../public/images/esa.png";
 import {
   loginFailed,
   loginRequest,
   loginSuccess,
   logoutSuccess,
   isLogout,
-} from '../../redux/slices/userSlice';
-import encrypt from '../../utilities/encrypt_decrypt/encryptText';
-import axios from 'axios';
+} from "../../redux/slices/userSlice";
+import encrypt from "../../utilities/encrypt_decrypt/encryptText";
+import axios from "axios";
 // import selection_data from '../../utilities/selection_data';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useSelector } from 'react-redux';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useSelector } from "react-redux";
 // import Person2Icon from '@mui/icons-material/Person2';
 // import LockIcon from '@mui/icons-material/Lock';
-import Image from 'next/image';
-import { appSetting } from '../../redux/slices/appSlice';
+import Image from "next/image";
+import { appSetting } from "../../redux/slices/appSlice";
 
 export default function LoginScreen() {
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
   const { redirect } = router.query;
   const [showPassword, setShowPassword] = useState(false);
 
-  const [userInactive, setUserInactive] = useState('');
+  const [userInactive, setUserInactive] = useState("");
 
   const dispatch = useDispatch();
 
@@ -53,7 +53,7 @@ export default function LoginScreen() {
   //   (state) => state.persistedReducer.app_state.appState
   // );
 
-  // console.log(errorMessage);
+  // // console.log(errorMessage);
 
   // FIXME:Dear SIS team, please fix this useEffect to read SIS settings from the database
 
@@ -63,12 +63,12 @@ export default function LoginScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/controller/settingdata');
+        const response = await axios.get("/api/controller/settingdata");
         // const response = await axios.get('/api/controller/settingdata');
-        // console.log("hon",response.data.data)
+        // // console.log("hon",response.data.data)
         if (response.status === 200) {
           const incomingData = JSON.parse(decrypt(response.data.data));
-          // console.log("pppppppp",incomingData.upload_file_single_size)
+          // // console.log("pppppppp",incomingData.upload_file_single_size)
 
           dispatch(
             appSetting({
@@ -83,7 +83,7 @@ export default function LoginScreen() {
             })
           );
         } else {
-          console.log('error fetching data');
+          // console.log('error fetching data');
           // localStorage.clear();
           // sessionStorage.clear();
           // const encryptedBody = encrypt(
@@ -120,27 +120,27 @@ export default function LoginScreen() {
   }, []);
 
   useEffect(() => {
-    // console.log('this is session');
-    // console.log(session?.user.status);
+    // // console.log('this is session');
+    // // console.log(session?.user.status);
 
     if (session?.user && !userState.user.isLogOut) {
-      if (session?.user.role === '1') {
-        router.push(redirect || '/student/main');
+      if (session?.user.role === "1") {
+        router.push(redirect || "/student/main");
       } else if (
-        session?.user.role === '2' &&
-        session?.user.status == 'active'
+        session?.user.role === "2" &&
+        session?.user.status == "active"
       ) {
-        router.push(redirect || '/programManager/main');
-      } else if (session?.user.role === '0') {
-        router.push(redirect || '/admin/main');
+        router.push(redirect || "/programManager/main");
+      } else if (session?.user.role === "0") {
+        router.push(redirect || "/admin/main");
       } else if (
-        session?.user.role === '2' &&
-        session?.user.status == 'inactive'
+        session?.user.role === "2" &&
+        session?.user.status == "inactive"
       ) {
-        setUserInactive('Account Inactive');
+        setUserInactive("Account Inactive");
       }
     }
-    // console.log('userState.user.isLogOut==', userState.user.isLogOut);
+    // // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
       dispatch(logoutSuccess());
     }
@@ -156,18 +156,18 @@ export default function LoginScreen() {
 
   const submitHandler = async ({ userid, password }) => {
     try {
-      setErrorMessage('');
+      setErrorMessage("");
       dispatch(loginRequest());
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         redirect: false,
         userid,
         password,
       });
-      // console.log('this line: ', result);
+      // // console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();
-        // console.log('userSession==>', userSession);
+        // // console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
             loginSuccess({
@@ -177,31 +177,31 @@ export default function LoginScreen() {
               userid: userSession.user.userid,
               profileUrl: userSession.user.image,
               appisSaved:
-                typeof userSession.user.appisSaved !== 'undefined'
+                typeof userSession.user.appisSaved !== "undefined"
                   ? userSession.user.appisSaved
                   : false,
             })
           );
-          // console.log(userSession);
+          // // console.log(userSession);
           dispatch(isLogout(false));
         }
       } else {
-        // console.log(result.error);
+        // // console.log(result.error);
         dispatch(loginFailed(result.error));
         setErrorMessage(result.error);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setErrorMessage(getError(err));
       const encryptedBody = encrypt(
         JSON.stringify({
           userid: userid,
-          role: '---',
-          info: 'From login page, unable to reach signIn',
+          role: "---",
+          info: "From login page, unable to reach signIn",
           error: `${getError(err)}`,
         })
       );
-      await axios.put('/api/logger/sendErrorToLogger', {
+      await axios.put("/api/logger/sendErrorToLogger", {
         data: encryptedBody,
       });
     }
@@ -284,8 +284,8 @@ export default function LoginScreen() {
                       className="bg-white inputT ml-2"
                       type="text"
                       data-testid="userid"
-                      {...register('userid', {
-                        required: 'Please Enter username',
+                      {...register("userid", {
+                        required: "Please Enter username",
                         // pattern: {
                         //   value: /\S+@\S+\.\S+/,
                         //   message: 'Please Enter Valid Email',
@@ -303,13 +303,13 @@ export default function LoginScreen() {
                     <br />
                     <input
                       className="bg-white inputT focus:outline-none  ml-2"
-                      type={showPassword === false ? 'password' : 'text'}
+                      type={showPassword === false ? "password" : "text"}
                       data-testid="password"
-                      {...register('password', {
-                        required: 'Please enter password',
+                      {...register("password", {
+                        required: "Please enter password",
                         minLength: {
                           value: 7,
-                          message: 'password is more than 6 chars',
+                          message: "password is more than 6 chars",
                         },
                       })}
                     />

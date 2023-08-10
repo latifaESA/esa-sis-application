@@ -6,11 +6,11 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { Paper, Typography } from '@mui/material';
-import decrypt from '../../../utilities/encrypt_decrypt/decryptText';
+import React from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Paper, Typography } from "@mui/material";
+import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
 import {
   LineChart,
   Line,
@@ -20,7 +20,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
 const Chart = () => {
   const [users, setUsers] = useState([]);
@@ -28,11 +28,11 @@ const Chart = () => {
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const response = await axios.get('/api/admin/listusers');
+        const response = await axios.get("/api/admin/listusers");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
           setUsers(incomingData);
-          console.log(users);
+          // console.log(users);
         } else {
           // If the server sends an empty array of users,
           // set the message state to indicate that no users were found
@@ -108,106 +108,106 @@ const Chart = () => {
   users.forEach((user) => {
     const status = user.status;
     if (cumulative[status]) {
-      const month = new Date(user.updatedAt).toLocaleString('default', {
-        month: 'long',
+      const month = new Date(user.updatedAt).toLocaleString("default", {
+        month: "long",
       });
       const userYear = new Date(user.updatedAt).getFullYear();
       if (userYear === currentYear) {
         cumulative[status][month] += 1;
       }
     }
-    const month = new Date(user.createdAt).toLocaleString('default', {
-      month: 'long',
+    const month = new Date(user.createdAt).toLocaleString("default", {
+      month: "long",
     });
     Newappscumulative[month]++;
   });
-  const cumulativeObsolete = Object.values(cumulative['obsolete']);
-  const cumulativeSubmitted = Object.values(cumulative['submitted']);
-  const cumulativeAccepted = Object.values(cumulative['accepted']);
+  const cumulativeObsolete = Object.values(cumulative["obsolete"]);
+  const cumulativeSubmitted = Object.values(cumulative["submitted"]);
+  const cumulativeAccepted = Object.values(cumulative["accepted"]);
   const NewappseArray = [];
   for (const month in Newappscumulative) {
     NewappseArray.push(Newappscumulative[month]);
   }
   const data = [
     {
-      name: 'Jan',
+      name: "Jan",
       new: NewappseArray[0],
       acc: cumulativeAccepted[0],
       sub: cumulativeSubmitted[0],
       obs: cumulativeObsolete[0],
     },
     {
-      name: 'Feb',
+      name: "Feb",
       new: NewappseArray[1],
       acc: cumulativeAccepted[1],
       sub: cumulativeSubmitted[1],
       obs: cumulativeObsolete[1],
     },
     {
-      name: 'Mar',
+      name: "Mar",
       new: NewappseArray[2],
       acc: cumulativeAccepted[2],
       sub: cumulativeSubmitted[2],
       obs: cumulativeObsolete[2],
     },
     {
-      name: 'April',
+      name: "April",
       new: NewappseArray[3],
       acc: cumulativeAccepted[3],
       sub: cumulativeSubmitted[3],
       obs: cumulativeObsolete[3],
     },
     {
-      name: 'May',
+      name: "May",
       new: NewappseArray[4],
       acc: cumulativeAccepted[4],
       sub: cumulativeSubmitted[4],
       obs: cumulativeObsolete[4],
     },
     {
-      name: 'Jun',
+      name: "Jun",
       new: NewappseArray[5],
       acc: cumulativeAccepted[5],
       sub: cumulativeSubmitted[5],
       obs: cumulativeObsolete[5],
     },
     {
-      name: 'July',
+      name: "July",
       new: NewappseArray[6],
       acc: cumulativeAccepted[6],
       sub: cumulativeSubmitted[6],
       obs: cumulativeObsolete[6],
     },
     {
-      name: 'Aug',
+      name: "Aug",
       new: NewappseArray[7],
       acc: cumulativeAccepted[7],
       sub: cumulativeSubmitted[7],
       obs: cumulativeObsolete[7],
     },
     {
-      name: 'Sep',
+      name: "Sep",
       new: NewappseArray[8],
       acc: cumulativeAccepted[8],
       sub: cumulativeSubmitted[8],
       obs: cumulativeObsolete[8],
     },
     {
-      name: 'Oct',
+      name: "Oct",
       new: NewappseArray[9],
       acc: cumulativeAccepted[9],
       sub: cumulativeSubmitted[9],
       obs: cumulativeObsolete[9],
     },
     {
-      name: 'Nov',
+      name: "Nov",
       new: NewappseArray[10],
       acc: cumulativeAccepted[10],
       sub: cumulativeSubmitted[10],
       obs: cumulativeObsolete[10],
     },
     {
-      name: 'Dec',
+      name: "Dec",
       new: NewappseArray[11],
       acc: cumulativeAccepted[11],
       sub: cumulativeSubmitted[11],

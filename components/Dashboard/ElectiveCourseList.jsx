@@ -6,88 +6,84 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect } from "react";
+import { useState } from "react";
 
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import { LowerButtons } from './LowerButtons';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
+import { LowerButtons } from "./LowerButtons";
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 // import { WarningMessageObsolote } from './WarningMessage';
-import ElectiveModal from '../../pages/programManager/ModalForm/ElectiveModal';
-import axios from 'axios';
+import ElectiveModal from "../../pages/programManager/ModalForm/ElectiveModal";
+import axios from "axios";
 
-
-const ElectiveCourseList = ({ users, setUsers}) => {
-
-
+const ElectiveCourseList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
   // const [message, setMessage] = useState('');
   // const [OpenModal,setOpenModal] =useState(false)
   // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   // const [assigned , setAssigned] = useState(false)
- 
+
   // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   // const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   // const [selectedUser, setSelectedUser] = useState(null);
   // const [isAssignPage , setIsAssignPage] = useState(false)
   // const [details , setDetails] = useState([])
-  const [iselective , setElective] = useState(false)
+  const [iselective, setElective] = useState(false);
   // const [elective , setIsElective] = useState(true)
-  const [courses , setCourses] = useState([])
-  const [students , setStudents] = useState([])
+  const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
 
-const elective = true
-// console.log("users",users)
+  const elective = true;
+  // // console.log("users",users)
   // setTimeout(() => {
   //   setMessage('');
   // },10000);
- 
-  useEffect(()=>{
-     const fetchCourses = async()=>{
-        try {
-            const payload={ 
-                
-                major_id :session.user.majorid,
-                
-            }
-            console.log("majorid",payload)
-            const data = await axios.post('/api/pmApi/getElectiveCourse',payload)
-       
-            setCourses(data.data.data)
-        } catch (error) {
-            return error
-        }
-     };
-     fetchCourses()
-     const fetchStudent = async()=>{
-        try {
-            const payload = {
-    
-                major_id : session.user.majorid,
-                academic_year: new Date().getFullYear()
-            }
-            const data = await axios.post('/api/pmApi/getStudentByAcademicYear',payload)
-            setStudents(data.data.data)
-        } catch (error) {
-            return error
-        }
-    } ;
 
-    fetchStudent()  
-  },[])
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const payload = {
+          major_id: session.user.majorid,
+        };
+        // console.log("majorid",payload)
+        const data = await axios.post("/api/pmApi/getElectiveCourse", payload);
 
+        setCourses(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchCourses();
+    const fetchStudent = async () => {
+      try {
+        const payload = {
+          major_id: session.user.majorid,
+          academic_year: new Date().getFullYear(),
+        };
+        const data = await axios.post(
+          "/api/pmApi/getStudentByAcademicYear",
+          payload
+        );
+        setStudents(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+
+    fetchStudent();
+  }, []);
 
   // const handleConfirmClose = (user) => {
   //   setConfirmOpenIncomplete(false);
   //   setConfirmOpenDelete(false);
   //   // setConfirmOpenObsolote(false);
   //   // setCancleIncomplete(false);
-   
+
   // };
-  
+
   // const handleConfirmDelete = () => {
   //   unAssign(selectedUser);
   //   // handleSave(selectedUser);
@@ -99,52 +95,47 @@ const elective = true
   //   setSelectedUser(user);
   //   setConfirmOpenDelete(true);
   // };
-  const sortedstudent = [...users].sort((a, b) => a.assign_student_id - b.assign_student_id);
+  const sortedstudent = [...users].sort(
+    (a, b) => a.assign_student_id - b.assign_student_id
+  );
   const columns = [
-  
-
     {
-      field: 'student_firstname',
-      headerName: 'First Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "student_firstname",
+      headerName: "First Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
-  
     },
     {
-      field: 'student_lastname',
-      headerName: 'Last Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "student_lastname",
+      headerName: "Last Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
-    
     },
     {
-        field: 'promotion',
-        headerName: 'promotion Name',
-        headerAlign: 'center',
-        align: 'center',
-        width: 150,
-        
-      },
-
-    {
-      field: 'course_name',
-      headerName: 'course Name',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-      
-    },
-
-    {
-      field: 'course_id',
-      headerName: 'Course ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "promotion",
+      headerName: "promotion Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
 
+    {
+      field: "course_name",
+      headerName: "course Name",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+
+    {
+      field: "course_id",
+      headerName: "Course ID",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
 
     // {
     //   field: 'action',
@@ -165,9 +156,7 @@ const elective = true
     //     </div>
     //   ),
     // },
-
   ];
-
 
   return (
     <>
@@ -181,12 +170,20 @@ const elective = true
      
     />
   )} */}
-       {iselective && <ElectiveModal courses={courses} users={users} setElective={setElective} students={students} setUsers={setUsers}/>}
-      <Box sx={{ height: 400, width: '100%' }}>
+      {iselective && (
+        <ElectiveModal
+          courses={courses}
+          users={users}
+          setElective={setElective}
+          students={students}
+          setUsers={setUsers}
+        />
+      )}
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.assign_student_id}
           rows={sortedstudent}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -196,18 +193,19 @@ const elective = true
           disableSelectionOnClick
           components={{
             NoRowsOverlay: () => (
-              <div classNam
-              e='grid h-[100%] place-items-center'>No Data</div>
+              <div classNam e="grid h-[100%] place-items-center">
+                No Data
+              </div>
             ),
             Pagination: CustomPagination,
           }}
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm items-center'>
+      <div className="grid lg:grid-cols-1 p-5 shadow-sm items-center">
         <LowerButtons
-        elective={elective}
-        setElective={setElective}
+          elective={elective}
+          setElective={setElective}
           session={session}
         />
       </div>

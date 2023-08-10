@@ -6,39 +6,39 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 // import Link from 'next/link';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
 // import moment from 'moment';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+import axios from "axios";
+import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 // import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 // import major_code from '../../utilities/major_code';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import bcryptjs from 'bcryptjs';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import { LowerButtons } from './LowerButtons';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
-import generatePasswod from '../../utilities/generatePassword';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import bcryptjs from "bcryptjs";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import { LowerButtons } from "./LowerButtons";
+import exportSelect from "../../utilities/ExcelExport/exportSelect";
+import generatePasswod from "../../utilities/generatePassword";
+import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
   WarningMessageObsolote,
-} from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+} from "./WarningMessage";
+import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 // import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ assistance, setAssistance }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;
   // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
@@ -49,8 +49,6 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
-
-
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
@@ -75,7 +73,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
   //   setSelectedUser(user);
   //   setCancleIncomplete(true);
   //   const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
+  //   // // console.log("prevStatus",prevStatus)
   //   setAssistance((prevUsers) =>
   //     prevUsers.map((u) =>
   //       u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -89,7 +87,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     setConfirmOpenDelete(false);
     // setCancleIncomplete(false);
     const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
+    // // console.log("prevStatus",prevStatus)
     setAssistance((prevUsers) =>
       prevUsers.map((u) =>
         u.ID === user.ID ? { ...u, status: prevStatus } : u
@@ -100,15 +98,15 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const handleSave = (user) => {
     let sendData = {
       pm_ass_id: user.pm_ass_id,
-      pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
+      pm_ass_status: user.pm_ass_status == "active" ? "inactive" : "active",
     };
     axios
-      .put('/api/admin/adminApi/updateAssistance', sendData)
+      .put("/api/admin/adminApi/updateAssistance", sendData)
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        // console.log(response.data);
-        setMessage('User Status Changed Succesfully!');
+        console.log(response.data);
+        setMessage("User Status Changed Succesfully!");
 
         //Update the user's status and major in the table
         setAssistance((prevUsers) =>
@@ -117,7 +115,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
               ? {
                   ...u,
                   pm_ass_status:
-                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                    user.pm_ass_status == "active" ? "inactive" : "active",
                 }
               : u
           )
@@ -137,12 +135,12 @@ const TeachersList = ({ assistance, setAssistance }) => {
       userpassword: genPass,
     };
     axios
-      .post('/api/admin/adminApi/enableAs', sendData)
+      .post("/api/admin/adminApi/enableAs", sendData)
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        // console.log(response.data);
-        setMessage('User Status Changed Succesfully!');
+        console.log(response.data);
+        setMessage("User Status Changed Succesfully!");
 
         //Update the user's status and major in the table
         setAssistance((prevUsers) =>
@@ -151,7 +149,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
               ? {
                   ...u,
                   pm_ass_status:
-                    user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                    user.pm_ass_status == "active" ? "inactive" : "active",
                 }
               : u
           )
@@ -168,7 +166,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     };
     axios
       .post(
-        '/api/admin/adminApi/deletePm',
+        "/api/admin/adminApi/deletePm",
         sendData
         // {
         //   data: encrypt(
@@ -183,8 +181,8 @@ const TeachersList = ({ assistance, setAssistance }) => {
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        // console.log(response.data);
-        setMessage('User deleted Succesfully!');
+        console.log(response.data);
+        setMessage("User deleted Succesfully!");
 
         //Update the user's status and major in the table
         // eslint-disable-next-line no-undef
@@ -193,7 +191,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
             u.pm_id === user.pm_id
               ? {
                   ...u,
-                  pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+                  pm_status: user.pm_status == "active" ? "inactive" : "active",
                 }
               : u
           )
@@ -231,9 +229,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
   //     })
   //     .then(async (response) => {
   //       // Handle success
-  //       console.log(response.data);
-  //       //console.log(response.data.defaultpassword)
-  //       //console.log(response.data.newID)
+  //       // console.log(response.data);
+  //       //// console.log(response.data.defaultpassword)
+  //       //// console.log(response.data.newID)
   //       setMessage('User Major Changed Succesfully!');
   //         await EmailAfterChangMajor({
   //          lname:response.data.lastname ,
@@ -262,32 +260,32 @@ const TeachersList = ({ assistance, setAssistance }) => {
   //     })
   //     .catch((error) => {
   //       // Handle error
-  //       console.log(error.response.data);
+  //       // console.log(error.response.data);
   //     });
   // };
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: 'pm_ass_id',
-      headerName: 'ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "pm_ass_id",
+      headerName: "ID",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
 
     {
-      field: 'Name',
-      headerName: 'Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "Name",
+      headerName: "Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
       renderCell: (params) =>
-        `${params.row.pm_ass_firstname || ''} ${
-          params.row.pm_ass_lastname || ''
+        `${params.row.pm_ass_firstname || ""} ${
+          params.row.pm_ass_lastname || ""
         }`,
     },
 
@@ -350,18 +348,18 @@ const TeachersList = ({ assistance, setAssistance }) => {
     // },
 
     {
-      field: 'pm_ass_email',
-      headerName: 'E-mail',
-      headerAlign: 'center',
-      align: 'center',
+      field: "pm_ass_email",
+      headerName: "E-mail",
+      headerAlign: "center",
+      align: "center",
       width: 300,
-      type: 'singleSelect',
+      type: "singleSelect",
     },
     {
-      field: 'pm_ass_status',
-      headerName: 'Status',
-      headerAlign: 'center',
-      align: 'center',
+      field: "pm_ass_status",
+      headerName: "Status",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
     // {
@@ -489,17 +487,17 @@ const TeachersList = ({ assistance, setAssistance }) => {
     // },
 
     {
-      field: 'action',
-      headerName: 'Action',
-      width: `${session.user.role === '0' ? 300 : 150}`,
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      width: `${session.user.role === "0" ? 300 : 150}`,
+      headerAlign: "center",
+      align: "center",
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
           <button
             className="primary-button hover:text-white"
-            disabled={params.row.pm_ass_status == 'active' ? true : false}
+            disabled={params.row.pm_ass_status == "active" ? true : false}
             onClick={() => {
               // const prevStatus = assistance.find(
               //   (u) => u.pm_ass_id === params.row.pm_ass_id
@@ -514,7 +512,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           </button>
           <button
             className="primary-button hover:text-white"
-            disabled={params.row.pm_ass_status == 'inactive' ? true : false}
+            disabled={params.row.pm_ass_status == "inactive" ? true : false}
             onClick={() => {
               // const prevStatus = assistance.find(
               //   (u) => u.pm_ass_id === params.row.pm_ass_id
@@ -537,11 +535,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const exportButton = async () => {
     if (assistance.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          // console.log('response', response);
-          // console.log('incomingData', incomingData);
+          // // console.log('response', response);
+          // // console.log('incomingData', incomingData);
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setAssistance([]);
@@ -556,11 +554,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
   const exportAllButton = async () => {
     if (assistance.length > 0) {
       try {
-        const response = await axios.get('/api/admin/listusers/listexport');
+        const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          // console.log('response', response);
-          // console.log('incomingData', incomingData);
+          // // console.log('response', response);
+          // // console.log('incomingData', incomingData);
           await exportAll(incomingData, session);
         } else {
           setAssistance([]);
@@ -572,20 +570,20 @@ const TeachersList = ({ assistance, setAssistance }) => {
   };
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
-    // console.log('selectedIDs', selectedIDs);
+    // // console.log('selectedIDs', selectedIDs);
     const selectedUsers = assistance.filter((user) =>
       selectedIDs.includes(user.ID)
     );
-    // console.log('selectedUsersbefore', selectedUsers);
+    // // console.log('selectedUsersbefore', selectedUsers);
     selectedUsers.forEach((user) => {
       if (user.reportURL) {
         window.open(user.reportURL);
       } else {
-        setMessage('Please select a user with a report');
+        setMessage("Please select a user with a report");
       }
     });
 
-    // console.log('selectedUsers', selectedUsers);
+    // // console.log('selectedUsers', selectedUsers);
   };
 
   return (
@@ -605,11 +603,11 @@ const TeachersList = ({ assistance, setAssistance }) => {
         />
       )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.pm_ass_id}
           rows={assistance}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

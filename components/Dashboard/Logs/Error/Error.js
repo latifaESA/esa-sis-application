@@ -5,19 +5,19 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import { React, useState } from 'react';
-import ErrorSearch from './ErrorSearch';
+import { React, useState } from "react";
+import ErrorSearch from "./ErrorSearch";
 
 const SearchError = () => {
   const [searchParams, setSearchParams] = useState({
-    role: '',
-    email: '',
-    action: '',
-    message: '',
-    fromDate: '',
-    toDate: '',
-    browser: '',
-    os: '',
+    role: "",
+    email: "",
+    action: "",
+    message: "",
+    fromDate: "",
+    toDate: "",
+    browser: "",
+    os: "",
   });
   const [logs, setLogs] = useState([]);
   const [filteredLogs, setFilteredLogs] = useState([]);
@@ -50,36 +50,36 @@ const SearchError = () => {
       );
     }
     if (searchParams.os) {
-      console.log(searchParams.os);
+      // console.log(searchParams.os);
       newFilteredLogs = newFilteredLogs.filter(
         (log) => log.os === searchParams.os
       );
     }
     if (searchParams.fromDate && searchParams.toDate) {
-      console.log(searchParams.os);
+      // console.log(searchParams.os);
       newFilteredLogs = newFilteredLogs.filter(
         (log) =>
           log.date >= searchParams.fromDate && log.date <= searchParams.toDate
       );
     }
     setFilteredLogs(newFilteredLogs);
-    //console.log(newFilteredLogs)
+    //// console.log(newFilteredLogs)
     //return filteredLogs;
   };
 
   const handleSearchParamsChange = (name, value) => {
     setSearchParams((prevState) => ({ ...prevState, [name]: value }));
-    console.log(name);
-    console.log(value);
+    // console.log(name);
+    // console.log(value);
   };
 
   const handleLogsChange = async (newLogs) => {
-    //console.log('New logs:', newLogs);
+    //// console.log('New logs:', newLogs);
     setLogs(newLogs);
   };
 
   //const Filteredlogs=async(log)=>{
-  //console.log(log)
+  //// console.log(log)
   // return log;
   //}
 

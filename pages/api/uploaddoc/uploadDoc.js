@@ -33,7 +33,7 @@ async function handler(req, res) {
 
       // eslint-disable-next-line no-unused-vars
       options.filename = (name, ext, path1, form) => {
-        // console.log("user",form)
+        // // console.log("user",form)
 
         if (
           path1.mimetype === "application/pdf" ||
@@ -49,7 +49,7 @@ async function handler(req, res) {
             const stats = fs.statSync(filePath);
             if (stats.isFile()) {
               // fs.unlinkSync(filePath);
-              // console.log('Deleted file:', filePath);
+              // // console.log('Deleted file:', filePath);
             }
           });
 
@@ -87,19 +87,17 @@ async function handler(req, res) {
   //<<<<<<< batoul
 
   const { fields } = await readFile(req, true, directory);
-  console.log("fields", fields);
+  // console.log("fields", fields);
 
   //  let attendance_file = await fs.readdirSync(directory);
 
-  return res
-    .status(200)
-    .send({
-      url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
-    });
+  return res.status(200).send({
+    url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
+  });
   //=======
   // eslint-disable-next-line no-unused-vars
   // const { fields, files } = await readFile(req, true, directory);
-  // console.log('fields', fields);
+  // // console.log('fields', fields);
 
   // let attendance_file = await fs.readdirSync(directory);
   // const oldFilePath = path.join(directory, attendance_file.slice(-1)[0]);

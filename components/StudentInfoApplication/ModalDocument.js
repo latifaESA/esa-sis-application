@@ -5,10 +5,10 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import React from 'react';
-import { FaTimes } from 'react-icons/fa';
-import Image from 'next/image';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React from "react";
+import { FaTimes } from "react-icons/fa";
+import Image from "next/image";
+import { Document, Page, pdfjs } from "react-pdf";
 import { BsFillCloudArrowDownFill } from "react-icons/bs";
 
 // import { Link } from '@mui/material';
@@ -62,22 +62,21 @@ function CVModal({ closeModal, docUrl }) {
       {docUrl && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <div className='flex justify-between p-6'>
+            <div className="flex justify-between p-6">
               <a href={docUrl} download>
-                < BsFillCloudArrowDownFill className='w-10 h-10 bg-primary' />
+                <BsFillCloudArrowDownFill className="w-10 h-10 bg-primary" />
               </a>
               <button className="modal-close " onClick={closeModal}>
                 <FaTimes />
               </button>
             </div>
 
-            {docUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '800px', maxHeight: '500px' }}>
-
+            {docUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "800px", maxHeight: "500px" }}>
                 <Document
                   file={docUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading ....</a>}
                 >
@@ -92,7 +91,6 @@ function CVModal({ closeModal, docUrl }) {
               </div>
             ) : (
               <>
-
                 <Image
                   src={docUrl}
                   alt="Modal image"
@@ -100,10 +98,7 @@ function CVModal({ closeModal, docUrl }) {
                   height="600"
                   className="w-full h-auto"
                 />
-
-
               </>
-
             )}
           </div>
         </div>
@@ -121,12 +116,12 @@ function PassportModal({ closeModal, docPassportUrl }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docPassportUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
+            {docPassportUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "600px", maxHeight: "600px" }}>
                 <Document
                   file={docPassportUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading Passport...</a>}
                 >
@@ -165,12 +160,12 @@ function RecommandationModal({ closeModal, docRecommandationLetterUrl }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docRecommandationLetterUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '800px', maxHeight: '800px' }}>
+            {docRecommandationLetterUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "800px", maxHeight: "800px" }}>
                 <Document
                   file={docRecommandationLetterUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading Recommandation Letter...</a>}
                 >
@@ -209,12 +204,12 @@ function ProofOfM1Modal({ closeModal, docProofOfM1Url }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docProofOfM1Url.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '500px', maxHeight: '500px' }}>
+            {docProofOfM1Url.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "500px", maxHeight: "500px" }}>
                 <Document
                   file={docProofOfM1Url}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading ProofOfM1...</a>}
                 >
@@ -253,12 +248,12 @@ function BACCertificateModal({ closeModal, docBACCertificateUrl }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docBACCertificateUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
+            {docBACCertificateUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "600px", maxHeight: "600px" }}>
                 <Document
                   file={docBACCertificateUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading BACCertificate...</a>}
                 >
@@ -297,12 +292,12 @@ function TranscriptModal({ closeModal, docTranscriptUrl }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docTranscriptUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
+            {docTranscriptUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "600px", maxHeight: "600px" }}>
                 <Document
                   file={docTranscriptUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading Transcript...</a>}
                 >
@@ -341,12 +336,12 @@ function ResearchModal({ closeModal, docResearchUrl }) {
             <button className="modal-close" onClick={closeModal}>
               <FaTimes />
             </button>
-            {docResearchUrl.endsWith('.pdf') ? (
-              <div style={{ maxWidth: '600px', maxHeight: '600px' }}>
+            {docResearchUrl.endsWith(".pdf") ? (
+              <div style={{ maxWidth: "600px", maxHeight: "600px" }}>
                 <Document
                   file={docResearchUrl}
                   renderMode="canvas"
-                  onLoadSuccess={() => console.log('PDF rendered successfully')}
+                  // onLoadSuccess={() => // console.log('PDF rendered successfully')}
                   onLoadError={(error) => console.error(error)}
                   loading={<a>Loading Research...</a>}
                 >

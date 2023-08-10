@@ -1,50 +1,46 @@
-import Head from 'next/head';
+import Head from "next/head";
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 // import { appIsWaiting } from '../../redux/slices/appSlice';
-import AttendanceList from '../../components/Dashboard/AttendanceList'
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import AttendanceList from "../../components/Dashboard/AttendanceList";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 // import Link from 'next/link';
-import axios from 'axios';
-
+import axios from "axios";
 
 export default function Attendance() {
-
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
 
-  const router = useRouter()
+  const router = useRouter();
   const redirect = () => {
-    router.push('/AccessDenied')
-  }
+    router.push("/AccessDenied");
+  };
 
-  const [attendance_id, setAttendanceId] = useState('')
-  const [student_id, setStudentId] = useState('')
-  const [teacher_id, setTeacherId] = useState('')
+  const [attendance_id, setAttendanceId] = useState("");
+  const [student_id, setStudentId] = useState("");
+  const [teacher_id, setTeacherId] = useState("");
   // const [major_id, setMajorid] = useState('');
   const [major, setMajor] = useState([]);
   // const [allMajor, setAllMajor] = useState([])
-  const [course_id, setCourseId] = useState('')
-  const [present, setPresent] = useState('')
-  const [teacher_firstName, setTeacherFirstName] = useState('')
-  const [teacher_lastName, setTeacherLastName] = useState('')
-  const [attendance_date, setAttendanceDate] = useState('')
+  const [course_id, setCourseId] = useState("");
+  const [present, setPresent] = useState("");
+  const [teacher_firstName, setTeacherFirstName] = useState("");
+  const [teacher_lastName, setTeacherLastName] = useState("");
+  const [attendance_date, setAttendanceDate] = useState("");
   // const [major_name, setMajorName] = useState('')
   // // const [allmajor, setallMajor] = useState([])
   // const [majorValue, setMajorValue] = useState([])
   // const [test, setTest] = useState()
 
-
   useEffect(() => {
     const getMajor = async () => {
-      let table = 'major';
+      let table = "major";
 
-      let { data } = await axios.post('/api/pmApi/getAll', { table })
-
+      let { data } = await axios.post("/api/pmApi/getAll", { table });
 
       // console.log('major')
-      // console.log(data.rows)
+      // // console.log(data.rows)
       // setAllMajor(data.rows)
 
       const datesArray = [];
@@ -53,9 +49,9 @@ export default function Attendance() {
       });
 
       setMajor(datesArray);
-      console.log(major, 'before')
-    }
-    getMajor()
+      console.log(major);
+    };
+    getMajor();
 
     const fetchData = async () => {
       try {
@@ -67,25 +63,21 @@ export default function Attendance() {
           courseId: "",
           attendanceDate: "",
           present: "",
-          teacher_firstname: '',
-          teacher_lastname: '',
-          major_name: ''
+          teacher_firstname: "",
+          teacher_lastname: "",
+          major_name: "",
+        };
+        const result = await axios.post("/api/pmApi/filterAttendance", payload);
+        // console.log("data", result.data.data)
 
-
-        }
-        const result = await axios.post("/api/pmApi/filterAttendance", payload)
-        console.log("data", result.data.data)
-
-        setUsers(result.data.data)
+        setUsers(result.data.data);
       } catch (error) {
-        return error
+        return error;
       }
     };
     fetchData();
-
-  }, [])
-  console.log(session.user.majorid)
-
+  }, []);
+  // console.log(session.user.majorid)
 
   const handleShowAll = async () => {
     try {
@@ -97,37 +89,32 @@ export default function Attendance() {
         courseId: "",
         attendanceDate: "",
         present: "",
-        teacher_teacherfirstname: '',
-        teacher_teacherlastname: '',
+        teacher_teacherfirstname: "",
+        teacher_teacherlastname: "",
         major_name: "",
-
-      }
-      const result = await axios.post("/api/pmApi/filterAttendance", payload)
-      setUsers(result.data.data)
-      setAttendanceId('')
-      setCourseId('')
-      setTeacherId('')
-      setStudentId('')
-      setAttendanceDate('')
-      setPresent('')
-      setTeacherFirstName('')
-      setTeacherLastName('')
+      };
+      const result = await axios.post("/api/pmApi/filterAttendance", payload);
+      setUsers(result.data.data);
+      setAttendanceId("");
+      setCourseId("");
+      setTeacherId("");
+      setStudentId("");
+      setAttendanceDate("");
+      setPresent("");
+      setTeacherFirstName("");
+      setTeacherLastName("");
       // setMajorName('')
       // setMajorValue('')
       // setTest(true)
     } catch (error) {
-      return error
+      return error;
     }
-
-
-  }
-
+  };
 
   const handleAttendance = async () => {
     try {
-
       // Assuming attendance_id, student_id, teacher_id, session.user.majorid, course_id, attendance_date, present, teacher_firstName, and teacher_lastName are defined
-      
+
       const payload = {
         attendanceId: attendance_id,
         studentId: student_id,
@@ -139,31 +126,31 @@ export default function Attendance() {
         teacher_firstname: teacher_firstName,
         teacher_lastname: teacher_lastName,
       };
-      
-      const result = await axios.post('/api/pmApi/filterAttendance', payload);
-      
-      setUsers(result.data.data)
+
+      const result = await axios.post("/api/pmApi/filterAttendance", payload);
+
+      setUsers(result.data.data);
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
 
   // const handleMajor = (selectedValue) => {
   //   // Do something with the selected value
-  //   console.log("Selected Value:", selectedValue);
-  //   if(test){ 
+  //   // console.log("Selected Value:", selectedValue);
+  //   if(test){
   //     selectedValue == ''
   //   }
   //   if(selectedValue.trim() !== ''){
   //   let majorID = allMajor.filter(major => major.major_name === selectedValue);
-  //   console.log(majorID[0].major_id)
+  //   // console.log(majorID[0].major_id)
   //   setMajorValue(majorID[0].major_id)
 
   // }else{
   //   setMajorValue("")
 
   // }
-  // if(test == true){ 
+  // if(test == true){
   //   selectedValue === ' '
   // }
   // };
@@ -173,137 +160,149 @@ export default function Attendance() {
       <Head>
         <title>SIS Admin - Attendance</title>
       </Head>
-      {session?.user.role === '2' ? (<>
-        <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Attendance</p>
-        <form >
-          <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-          <label>
-            Date:
-            <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-              type="date"
-              name="date"
-              placeholder=""
-              id={'date'}
-              value={attendance_date}
-              onChange={(e) => { setAttendanceDate(e.target.value) }}
-            ></input>
-          </label>
+      {session?.user.role === "2" ? (
+        <>
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+            Attendance
+          </p>
+          <form>
+            <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
+              <label>
+                Date:
+                <input
+                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  type="date"
+                  name="date"
+                  placeholder=""
+                  id={"date"}
+                  value={attendance_date}
+                  onChange={(e) => {
+                    setAttendanceDate(e.target.value);
+                  }}
+                ></input>
+              </label>
 
-          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            First Name:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="text"
-              name="Fname"
-              placeholder="Teacher's First Name"
-              // value={formData.Fname}
-              onChange={() => { 
-                // setFname(e.target.value)
-              }}
-            ></input>
-          </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                First Name:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="text"
+                  name="Fname"
+                  placeholder="Teacher's First Name"
+                  // value={formData.Fname}
+                  onChange={() => {
+                    // setFname(e.target.value)
+                  }}
+                ></input>
+              </label>
 
-          <label>
-           Course ID:
-            <input
-              className="ml-1 w-40 max-[850px]:ml-1"
-              type="text"
-              name="Lname"
-              placeholder="Course ID"
-              id={'text'}
-              value={course_id}
-              onChange={(e) => { setCourseId(e.target.value) }}
-            ></input>
-          </label>
-          {/* </div>
+              <label>
+                Course ID:
+                <input
+                  className="ml-1 w-40 max-[850px]:ml-1"
+                  type="text"
+                  name="Lname"
+                  placeholder="Course ID"
+                  id={"text"}
+                  value={course_id}
+                  onChange={(e) => {
+                    setCourseId(e.target.value);
+                  }}
+                ></input>
+              </label>
+              {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-         <label>
-            First Name:
-            <input
-              className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
-              type="text"
-              name="firstname"
-              placeholder='First Name'
-              id={'teacherId'}
-              value={teacher_firstName}
-              onChange={(e) => { setTeacherFirstName(e.target.value) }}
+              <label>
+                First Name:
+                <input
+                  className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+                  type="text"
+                  name="firstname"
+                  placeholder="First Name"
+                  id={"teacherId"}
+                  value={teacher_firstName}
+                  onChange={(e) => {
+                    setTeacherFirstName(e.target.value);
+                  }}
+                ></input>
+              </label>
 
-            ></input>
-          </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                From:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="date"
+                  name="from"
+                  // value={formData.from}
+                  // onChange={handleChange}
+                ></input>
+              </label>
 
-
-          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            From:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="date"
-              name="from"
-              // value={formData.from}
-              // onChange={handleChange}
-            ></input>
-          </label>
-
-          <label>
-           Last Name:
-            <input
-              className="ml-1 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
-              type="text"
-              name="lastname"
-              placeholder="Last Name"
-              id={'teacherId'}
-              value={teacher_lastName}
-              onChange={(e) => { setTeacherLastName(e.target.value) }}
-            ></input>
-          </label>
-          {/* </div>
+              <label>
+                Last Name:
+                <input
+                  className="ml-1 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+                  type="text"
+                  name="lastname"
+                  placeholder="Last Name"
+                  id={"teacherId"}
+                  value={teacher_lastName}
+                  onChange={(e) => {
+                    setTeacherLastName(e.target.value);
+                  }}
+                ></input>
+              </label>
+              {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
-     
-        <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            Course ID:
-            <input
-              className="ml-3 w-40 max-[850px]:ml-2"
-              type="number"
-              name="course-id"
-              placeholder='Enter Course ID'
-              // value={formData.Fname}
-              onChange={() => { 
-                // setCourseId(e.target.value)
-              }}
-            ></input>
-         </label>
 
-         <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-            To:
-            <input
-              className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-              type="date"
-              name="to"
-              // value={formData.to}
-              // onChange={handleChange}
-            ></input>
-          </label>
-          <div className="flex flex-col min-[850px]:flex-row gap-4">
-            <button
-              className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-              type="button"
-              onClick={handleAttendance}
-            >
-              Search
-            </button>
-            <button
-              className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-              type="button"
-              onClick={handleShowAll}
-            >
-              Show All
-            </button>
-          </div>
-        </div>
-         
-          <AttendanceList users={users} setUsers={setUsers} />
-        </form>
-      </>) : redirect()}
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                Course ID:
+                <input
+                  className="ml-3 w-40 max-[850px]:ml-2"
+                  type="number"
+                  name="course-id"
+                  placeholder="Enter Course ID"
+                  // value={formData.Fname}
+                  onChange={() => {
+                    // setCourseId(e.target.value)
+                  }}
+                ></input>
+              </label>
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                  // value={formData.to}
+                  // onChange={handleChange}
+                ></input>
+              </label>
+              <div className="flex flex-col min-[850px]:flex-row gap-4">
+                <button
+                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleAttendance}
+                >
+                  Search
+                </button>
+                <button
+                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleShowAll}
+                >
+                  Show All
+                </button>
+              </div>
+            </div>
+
+            <AttendanceList users={users} setUsers={setUsers} />
+          </form>
+        </>
+      ) : (
+        redirect()
+      )}
     </>
   );
 }
