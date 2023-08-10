@@ -78,9 +78,13 @@ export default function Create() {
         "/api/admin/adminApi/createPMAccount",
         sendData
       );
-
-      console.log(data[0].rowCount);
-      if (data[0].rowCount == 0) {
+       console.log("data",data)
+      if(data === true){
+        setConfirmOpenMessage(true);
+        setMessages(`Account Program Manager Already Exist`)
+      }
+      // console.log(data[0].rowCount);
+      else if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
@@ -130,8 +134,9 @@ export default function Create() {
       let sendADData = {
         adminid: gen.trim(),
         adminemail: email.trim(),
-        adminname: fname.trim(),
+        admin_firstname: fname.trim(),
         userpassword: genPass,
+        admin_lastname:lname.trim()
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -140,13 +145,20 @@ export default function Create() {
         sendADData
       );
 
-      if (data[0].rowCount == 0) {
+    console.log(data)
+
+      if(data === true){
+        setConfirmOpenMessage(true);
+        setMessages(`Account Admin Already Exist`)
+      }else if (data[0].rowCount == 0) {
+        
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
         setMessages(`Admin Account Create Successfully 
         With Username : ${gen.trim()} 
         and password :   ${generatedPass} `);
+
       }
     }
     if (fname == "" && email == "") {
@@ -178,6 +190,7 @@ export default function Create() {
           handleOpenNotificatonMessages={handleOpenNotificatonMessages}
           handleCloseNotificatonMessages={handleCloseNotificatonMessages}
           messages={messages}
+
         />
       )}
       <Head>
@@ -214,7 +227,7 @@ export default function Create() {
                   name="Fname"
                   required
                   placeholder="First Name"
-                  disabled={role == "0" ? true : false}
+                  // disabled={role == "0" ? true : false}
                   // value={formData.Fname}
                   onChange={(e) => {
                     setLname(e.target.value);

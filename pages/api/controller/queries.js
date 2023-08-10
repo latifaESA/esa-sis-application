@@ -1012,10 +1012,14 @@ async function enableUserAs(connection, pm_ass_id, userpassword) {
 async function deleteUserpm(connection, pm_id) {
   try {
     let query = `
-    DELETE FROM users
-    WHERE userid = '${pm_id}'`;
+    DELETE FROM users 
+    WHERE userid = '${pm_id}';
+    DELETE FROM user_document WHERE user_document.userid='${pm_id}'
 
+    `;
+   
     const result = await connection.query(query);
+  
     return result;
   } catch (err) {
     return err;
@@ -1437,13 +1441,14 @@ async function createAdmin(
   connection,
   adminid,
   adminemail,
-  adminname,
-  userpassword
+  admin_firstname,
+  userpassword,
+  admin_lastname
 ) {
   try {
     let query = `
-    insert into admin(adminid, adminemail, adminname)
-    values ('${adminid}', '${adminemail}', '${adminname}') on conflict (adminid) do nothing
+    insert into admin(adminid, adminemail, admin_firstname , admin_lastname)
+    values ('${adminid}', '${adminemail}', '${admin_firstname}' , '${admin_lastname}') on conflict (adminid) do nothing
     RETURNING CASE
     WHEN adminid = '${adminid}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
@@ -1463,6 +1468,43 @@ async function createAdmin(
     return result;
   } catch (err) {
     return err;
+  }
+}
+
+//exist PM
+async function getExistPM(
+  connection , 
+  pm_firstname, 
+  pm_lastname, 
+  pm_email , 
+  major_id
+
+){
+  try {
+    const query = `SELECT * FROM program_manager WHERE pm_firstname='${pm_firstname}' 
+    AND pm_lastname='${pm_lastname}' AND pm_email='${pm_email}' AND major_id= '${major_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function getExistTeacher(
+  connection , 
+  teacher_firstname, 
+  teacher_lastname, 
+  teacher_mail , 
+
+
+){
+  try {
+    const query = `SELECT * FROM teachers WHERE teacher_firstname='${teacher_firstname}' 
+    AND teacher_lastname='${teacher_lastname}' AND teacher_mail='${teacher_mail}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
   }
 }
 
@@ -1841,6 +1883,7 @@ async function ActiveUser(
         '1',
         '${userpassword}'
       )`
+      console.log('users',query)
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -1849,10 +1892,13 @@ async function ActiveUser(
 }
 async function userDocument(
   connection,
-  { userid,
-    profileurl }
+  { 
+    userid,
+    profileurl 
+  }
 
 ) {
+  
   try {
     const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}')`
     const res = connection.query(query)
@@ -1861,6 +1907,36 @@ async function userDocument(
     return error
   }
 }
+
+async function getAdminExist(
+connection ,
+admin_firstname,
+admin_lastname,
+adminemail
+){
+  try {
+    const query = `SELECT * FROM admin WHERE admin_firstname='${admin_firstname}' 
+    AND admin_lastname='${admin_lastname}' AND adminemail='${adminemail}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function studentExist(
+connection,
+email
+){
+  try {
+    const query = `SELECT * FROM user_contact WHERE email='${email}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -1927,6 +2003,7 @@ module.exports = {
   updateCourse,
   filterCourseMajor,
   createClass,
+  studentExist,
   getAllCourses,
   createSchedule,
   getAttendanceByCTD,
@@ -1942,8 +2019,11 @@ module.exports = {
   getTeachersCourses,
   getUserTeacher,
   uploadFile,
+  getExistPM,
+  getExistTeacher,
   getAllMajor,
   createASAccount,
   createPMAccount,
   createAdmin,
+  getAdminExist
 };

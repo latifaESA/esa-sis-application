@@ -1,5 +1,6 @@
 const { connect , disconnect} = require("../../../../utilities/db");
 const { createTeacher } = require("../../controller/queries");
+const { default: teacherExist } = require("./ExistTeacher");
 
 
 
@@ -13,6 +14,14 @@ async function handler(req, res) {
         teacher_mail,
         teacher_lastname
      } = req.body;
+     const exist = await teacherExist(connection , teacher_firstname , teacher_lastname , teacher_mail)
+     if(exist){
+       return res.status(200).json({
+        success:true,
+        code:200,
+        message:'Teacher Already Exist!'
+       })
+     }
     const response = await createTeacher(
       connection,
       teacher_id,

@@ -582,7 +582,7 @@ const CourseList = ({ users, setUsers }) => {
         />
       </Box>
 
-      <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
+      {/* <div className='grid lg:grid-cols-1 p-5 shadow-sm'>
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
@@ -590,7 +590,7 @@ const CourseList = ({ users, setUsers }) => {
           handlePrintSelected={handlePrintSelected}
           session={session}
         />
-      </div>
+      </div> */}
     </>
   );
 };

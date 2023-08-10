@@ -13,7 +13,8 @@ const {
   uploadInfo,
   uploadStudent,
   ActiveUser,
-  userDocument,
+  // userDocument,
+  studentExist
 } = require("../../controller/queries");
 
 import xlsx from "xlsx";
@@ -30,7 +31,7 @@ export const config = {
 
 async function handler(req, res) {
   try {
-    const message ='';
+    // const message = '';
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
@@ -61,7 +62,7 @@ async function handler(req, res) {
             // path1.mimetype === "image/jpeg" ||
             // path1.mimetype === "image/jpg" ||
             path1.mimetype ===
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           ) {
             let sourceDir = fs.readdirSync(place);
 
@@ -109,6 +110,7 @@ async function handler(req, res) {
       fs.mkdirSync(directory, { recursive: true });
     }
     const { fields } = await readFile(req, true, directory);
+
 
     let student_file = await fs.readdirSync(directory);
 
@@ -162,104 +164,122 @@ async function handler(req, res) {
 
     for (const row of data) {
       try {
-        const password = fields.passwordRe;
-        const userpasswordref = await hash(password);
-
         const major = await getMajor(connection, row.MajorName);
         if (!major || major.rows.length === 0) {
           console.error(`Major not found for row: `, row);
           continue; // Skip this row if the major is not found
         }
 
-        const majorid = major.rows[0].major_id;
-        await ActiveUser(connection, {
-          userid: row.StudentID,
-          userpassword: userpasswordref,
-          token: "",
-          isVerified: "",
-          update_time: "",
-        });
-        await userDocument(connection, {
-          userid: row.StudentID,
-          profileurl: "",
-        });
 
-        await uploadAddress(connection, {
-          userid: row.StudentID,
-          address_country: row.Country,
-          address_region: row.Region,
-          address_city: row.City,
-          address_street: row.Street,
-          address_building: row.Building,
-          address_floor: row.Floor,
-          address_postal: row.Postal,
-        });
-        await uploadContact(connection, {
-          userid: row.StudentID,
-          email: row.Email,
-          email_two: row.SecondEmail,
-          mobile_number: row.MobileNumber,
-          landline_number: row.LandLineNumber,
-        });
-        await uploadEducation(connection, {
-          userid: row.StudentID,
-          degree_level: row.Degree,
-          series: row.Series,
-          obtain_date: row.DateObtain,
-          education_country: row.EducationCountry,
-          establishment: row.Establishment,
-          other_establishment: row.otherEstablishment,
-        });
-        await uploadEmerg(connection, {
-          userid: row.StudentID,
-          prefix: row.EmergencePrefix,
-          emerg_firstname: row.EmergenceFirstName,
-          emerg_middlename: row.EmergenceMiddleName,
-          emerg_lastname: row.EmergenceLastName,
-          emerg_phonenumber: row.EmergencePhoneNumber,
-          emerg_relationship: row.EmergenceRelationShip,
-          emerg_medicalhealth: row.EmergenceMedicalHealth,
-          emerg_diseasetype: row.EmergenceDisease,
-        });
-     await uploadInfo(
+        const majorid = major.rows[0].major_id;
+        const StudentArray = Object.values(fields);
+        const uploadPromises = StudentArray.map(async (student) => {
+          const userpasswordref = await hash(student.userpassword);
+          const exist = await studentExist(connection,student.Email)
+          console.log(exist)
+          if(exist.rowCount === 0){
+              return res.status(200).json({
+                code:200,
+                success:true,
+                message:`Student Already Exist!`
+              })
+          }
+
+         await ActiveUser(connection, {
+            userid: student.student_id,
+            userpassword: userpasswordref,
+            token: "",
+            isVerified: "",
+            update_time: "",
+          });
+          
+        // await userDocument(connection, {
+        //     userid: student.student_id,
+        //     profileurl: "",
+        //   });
+          
+          await uploadAddress(connection, {
+            userid: student.student_id,
+            address_country: student.Country,
+            address_region: student.Region,
+            address_city: student.City,
+            address_street: student.Street,
+            address_building: student.Building,
+            address_floor: student.Floor,
+            address_postal: student.Postal,
+          });
+          await uploadContact(connection, {
+            userid: student.student_id,
+            email: student.Email,
+            email_two: student.SecondEmail,
+            mobile_number: student.MobileNumber,
+            landline_number: student.LandLineNumber,
+          });
+          await uploadEducation(connection, {
+            userid: student.student_id,
+            degree_level: student.Degree,
+            series: student.Series,
+            obtain_date: student.DateObtain,
+            education_country: student.EducationCountry,
+            establishment: student.Establishment,
+            other_establishment: student.otherEstablishment,
+          });
+          await uploadEmerg(connection, {
+            userid: student.student_id,
+            prefix: student.EmergencePrefix,
+            emerg_firstname: student.EmergenceFirstName,
+            emerg_middlename: student.EmergenceMiddleName,
+            emerg_lastname: student.EmergenceLastName,
+            emerg_phonenumber: student.EmergencePhoneNumber,
+            emerg_relationship: student.EmergenceRelationShip,
+            emerg_medicalhealth: student.EmergenceMedicalHealth,
+            emerg_diseasetype: student.EmergenceDisease,
+          });
+          await uploadInfo(
             connection,
             {
-                userid: row.StudentID,
-                title: row.Title,
-                firstname:row.StudentFirstName,
-                fathername:row.FatherName,
-                lastname:row.StudentLastName,
-                maidename:row.maidename,
-                mothername:row.MotherName,
-                gender:row.Gender,
-                dateofbirth:new Date((row.DateOfBirth - 25569) * 86400 * 1000), // Convert Excel date to JavaScript date,
-                countryofbirth:row.CountryOfBirth,
-                placeofbirth:row.PlaceOfBirth,
-                registernumber:row.RegisterNumber,
-                martialstatus:row.MartialStatus,
-                firstnationality:row.FirstNationality,
-                secondnationality:row.SecondNationality
+              userid: student.student_id,
+              title: student.Title,
+              firstname: student.StudentFirstName,
+              fathername: student.FatherName,
+              lastname: student.StudentLastName,
+              maidename: student.maidename,
+              mothername: student.MotherName,
+              gender: student.Gender,
+              dateofbirth: new Date((student.DateOfBirth - 25569) * 86400 * 1000), // Convert Excel date to JavaScript date,
+              countryofbirth: student.CountryOfBirth,
+              placeofbirth: student.PlaceOfBirth,
+              registernumber: student.RegisterNumber,
+              martialstatus: student.MartialStatus,
+              firstnationality: student.FirstNationality,
+              secondnationality: student.SecondNationality
             }
-        )
-       
-        const response = await uploadStudent(connection, {
-          student_id: row.StudentID,
-          status: "active",
-          promotion: row.Promotion.replace(/\s+/g, '').toUpperCase(),
-          academic_year: row.AcademicYear,
-          student_firstname: row.StudentFirstName,
-          student_lastname: row.StudentLastName,
-          major_id: majorid,
-        });
+          )
 
-        await SendEmail(
-          row.StudentFirstName,
-          row.Email,
-          password,
-          row.StudentID
-        );
+        const response= await uploadStudent(connection, {
+            student_id: student.student_id,
+            status: "active",
+            promotion: student.Promotion.replace(/\s+/g, '').toUpperCase(),
+            academic_year: student.AcademicYear,
+            student_firstname: student.StudentFirstName,
+            student_lastname: student.StudentLastName,
+            major_id: majorid,
+          });
 
-        if (response) {
+          await SendEmail(
+            student.StudentFirstName,
+            student.Email,
+            student.userpassword,
+            student.student_id
+          );
+   
+           return response
+      
+        })
+      
+        const responses = await Promise.all(uploadPromises);
+      
+        if (responses) {
           countSaved++; // Increment the count of saved records
         } else {
           console.error(`Failed to save row: `, row);
@@ -268,7 +288,7 @@ async function handler(req, res) {
         return res.status(500).json({
           success: false,
           code: 500,
-          message: message.error,
+          message: error.message,
         });
       }
     }

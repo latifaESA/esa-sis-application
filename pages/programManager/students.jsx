@@ -35,22 +35,24 @@ export default function Students() {
   }
 
   useEffect(() => { 
-    const getMajor = async () => { 
-      let table = 'major';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
+    // const getMajor = async () => { 
+    //   let table = 'promotions';
+    //   let Where='major_id';
+    //   let id = session.user.majorid;
+    //   let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where, id})
 
+    //      console.log("data"  , data)
+    //   setallMajor(data.data)
 
-      setallMajor(data.rows)
+    //   const datesArray = [];
+    //   data.data.forEach((promotion) => {
+    //     datesArray.push(promotion.promotion_name);
+    //   });
 
-      const datesArray = [];
-      data.rows.forEach((student) => {
-        datesArray.push(student.major_name);
-      });
+    //   setPromotionValue(datesArray);
 
-      setMajor(datesArray);
-
-    }
-    getMajor()
+    // }
+    // getMajor()
 
 
 
@@ -75,8 +77,11 @@ export default function Students() {
     getStatus();
 
     const getPromotion = async () => { 
-      let table = 'student';
-      let {data} = await axios.post('/api/pmApi/getAll', {table})
+      let table = 'promotions';
+      let Where='major_id';
+      let id = session.user.majorid;
+      let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where, id})
+      console.log('data',data.data.data)
 
 
       // setUsers(data)
@@ -86,8 +91,8 @@ export default function Students() {
       //   dates.push(student.student_firstname)
       //   )
       const datesArray = [];
-      data.rows.forEach((student) => {
-        datesArray.push(student.promotion);
+      data.data.forEach((promotion) => {
+        datesArray.push(promotion.promotion_name);
       });
 
       setPromotion(datesArray);
@@ -242,11 +247,12 @@ export default function Students() {
           </label>
           {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-          <label>
+          <label className='invisible max-[850px]:visible max-[850px]:hidden'>
             Major:
 
               {/* Start select box */}
             <CustomSelectBox 
+            className='ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10'
             options={major}
             placeholder="Select Major"
             onSelect={handleMajor}
