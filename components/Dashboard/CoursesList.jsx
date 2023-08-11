@@ -1,90 +1,96 @@
 /*
- * Created By: 
+ * Created By:
  * Project: SIS Application
  * File: components\Admin\StudentsList.js
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import { TextField, MenuItem } from '@mui/material';
+// import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+// import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import { TextField, MenuItem } from "@mui/material";
 
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
-import { LowerButtons } from './LowerButtons';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
-import generatePasswod from '../../utilities/generatePassword';
-import bcryptjs from 'bcryptjs';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
+import axios from "axios";
+import selection_data from "../../utilities/selection_data";
+// import { LowerButtons } from './LowerButtons';
+// import exportSelect from '../../utilities/ExcelExport/exportSelect';
+// import generatePasswod from '../../utilities/generatePassword';
+// import bcryptjs from 'bcryptjs';
+// import exportAll from '../../utilities/ExcelExport/exportAll';
 import {
-  WarningMessageIncomplete,
-  WarningMessageObsolote,
+  // WarningMessageIncomplete,
+  // WarningMessageObsolote,
   WarningMessageUpdateCourse,
-} from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+} from "./WarningMessage";
+// import decrypt from '../../utilities/encrypt_decrypt/decryptText';
+import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 
 // import { Pagination, Stack } from '@mui/material';
 
-const CoursesList = ({ users, setUsers }) => {
+const CoursesList = ({
+  users,
+  // , setUsers
+}) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [message, setMessage] = useState("");
+  // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
-  const [major, setMajor] = useState([]);
+  // const [major, setMajor] = useState([]);
   const [allMajor, setAllMajor] = useState([]);
-  const [selectedMajor, setSelectedMajor] = useState('');
+  // const [selectedMajor, setSelectedMajor] = useState('');
   const [selectedMajorMap, setSelectedMajorMap] = useState({});
   const [majorNameChanges, setMajorNameChanges] = useState({});
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
+  // const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
 
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-    // const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // // console.log("prevStatus",prevStatus)
-    // setUsers((prevUsers) =>
-    //   prevUsers.map((u) =>
-    //     u.ID === user.ID ? { ...u, status: prevStatus } : u
-    //   )
-    // );
-  };
+  const handleConfirmClose = () =>
+    // user
+    {
+      setConfirmOpenIncomplete(false);
+      // setConfirmOpenDelete(false);
+      // setConfirmOpenObsolote(false);
+      // setCancleIncomplete(false);
+      // const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+      // // console.log("prevStatus",prevStatus)
+      // setUsers((prevUsers) =>
+      //   prevUsers.map((u) =>
+      //     u.ID === user.ID ? { ...u, status: prevStatus } : u
+      //   )
+      // );
+    };
   const handleEnable = async (user) => {
     let sendData = {
       course_id: user.course_id,
       major_name: user.major_name,
     };
     axios
-      .post(
-        '/api/admin/adminApi/updateCourse',
-        sendData
-      )
-      .then((response) => {
-        // Handle success
-        setMessage('Course Major Changed Succesfully!');
+      .post("/api/admin/adminApi/updateCourse", sendData)
+      .then(() =>
+        // response
+        {
+          // Handle success
+          setMessage("Course Major Changed Succesfully!");
 
-        //Update the user's status and major in the table
-        // setUsers((prevUsers) =>
-        //   prevUsers.map((u) =>
-        //     u.major_name === user.major_name
-        //       ? u
-        //       : {
-        //         ...u,
-        //         major_name : user.major_name 
-        //       }
-        //   )
-        // );
-      }).catch((error) => {
-    //     // Handle error
+          //Update the user's status and major in the table
+          // setUsers((prevUsers) =>
+          //   prevUsers.map((u) =>
+          //     u.major_name === user.major_name
+          //       ? u
+          //       : {
+          //         ...u,
+          //         major_name : user.major_name
+          //       }
+          //   )
+          // );
+        }
+      )
+      .catch((error) => {
+        //     // Handle error
         console.log(error);
       });
   };
@@ -95,33 +101,33 @@ const CoursesList = ({ users, setUsers }) => {
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
   };
-  const handleConfirmDelete = () => {
-    handleDelete(selectedUser);
-    handleSave(selectedUser);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
+  // const handleConfirmDelete = () => {
+  //   handleDelete(selectedUser);
+  //   handleSave(selectedUser);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
+
+  const handleMajorNameChange = (event, params) => {
+    const { value } = event.target;
+    params.row.major_name = event.target.value;
+    // Update the majorNameChanges object with the new value for the specific course_id
+    setMajorNameChanges((prevChanges) => ({
+      ...prevChanges,
+      [params.row.course_id]: value,
+    }));
   };
 
-const handleMajorNameChange = (event, params) => {
-  const { value } = event.target;
-params.row.major_name = event.target.value;
-  // Update the majorNameChanges object with the new value for the specific course_id
-  setMajorNameChanges((prevChanges) => ({
-    ...prevChanges,
-    [params.row.course_id]: value,
-  }));
-};
-
-    //incomplete modal
-    const handleConfirmIncomplete = (user) => {
-      setSelectedUser(user);
-      setConfirmOpenIncomplete(true);
-    };
-    const handleConfirmDel = (user) => {
-      setSelectedUser(user);
-      setConfirmOpenDelete(true);
-    };
+  //incomplete modal
+  const handleConfirmIncomplete = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenIncomplete(true);
+  };
+  // const handleConfirmDel = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenDelete(true);
+  // };
 
   // console.log('check the boolean:::',!majorNameChanges[params.row.course_id])
   // const handleMajorChange = (event, params) => {
@@ -133,7 +139,7 @@ params.row.major_name = event.target.value;
 
   const handleMajorChange = (event, params) => {
     const { value } = event.target;
-  
+
     // Update the selectedMajorMap with the new value for the specific course_id
     setSelectedMajorMap((prevMap) => ({
       ...prevMap,
@@ -141,14 +147,14 @@ params.row.major_name = event.target.value;
     }));
   };
   // async function setTheMajor(){
-  //   await users.map(user => 
+  //   await users.map(user =>
   //    setSelectedMajorMap((prevMap) => ({
   //      ...prevMap,
   //      [user.course_id]: user.major_name,
   //    }))
   //    )
   //    console.log('selected Major ===>>> ',selectedMajorMap )
-     
+
   //  }
   async function setTheMajor() {
     await Promise.all(
@@ -162,56 +168,52 @@ params.row.major_name = event.target.value;
   }
   useEffect(() => {
     setTheMajor();
-    
+
     handleShowAll();
   }, []);
 
   const handleShowAll = async () => {
-    let table = 'major';
-    let {data} = await axios.post('/api/pmApi/getAll', {table})
-    setMajor(data.rows)
+    let table = "major";
+    let { data } = await axios.post("/api/pmApi/getAll", { table });
+    // setMajor(data.rows)
 
     const datesArray = [];
     data.rows.forEach((major) => {
       datesArray.push(major.major_name);
     });
 
-    
-    setAllMajor(['',...datesArray]);
-
-
-
+    setAllMajor(["", ...datesArray]);
   };
-
+  console.log(majorNameChanges);
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: 'course_id',
-      headerName: 'Course_ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_id",
+      headerName: "Course_ID",
+      headerAlign: "center",
+      align: "center",
       width: 90,
     },
 
     {
-      field: 'course_name',
-      headerName: 'Course_Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_name",
+      headerName: "Course_Name",
+      headerAlign: "center",
+      align: "center",
       width: 150,
-    //   renderCell: (params) =>
-    //     `${params.row.pm_firstname || ''} ${params.row.pm_lastname || ''}`,
+      //   renderCell: (params) =>
+      //     `${params.row.pm_firstname || ''} ${params.row.pm_lastname || ''}`,
     },
     {
-      field: 'course_credit',
-      headerName: 'Course_Credit',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_credit",
+      headerName: "Course_Credit",
+      headerAlign: "center",
+      align: "center",
       width: 300,
-      type: 'singleSelect',
+      type: "singleSelect",
     },
     // {
     //   field: 'major_id',
@@ -282,16 +284,18 @@ params.row.major_name = event.target.value;
     //   valueOptions: allMajor,
     // },
     {
-      field: 'major_name',
-      headerName: 'Major',
-      headerAlign: 'center',
-      align: 'center',
+      field: "major_name",
+      headerName: "Major",
+      headerAlign: "center",
+      align: "center",
       width: 300,
       editable: true,
       renderCell: (params) => (
         <TextField
           select
-          value={ params.row.major_name || selectedMajorMap[params.row.course_id]}
+          value={
+            params.row.major_name || selectedMajorMap[params.row.course_id]
+          }
           onChange={(event) => {
             handleMajorNameChange(event, params);
             handleMajorChange(event, params);
@@ -306,13 +310,13 @@ params.row.major_name = event.target.value;
         </TextField>
       ),
     },
-    
+
     {
-      field: 'action',
-      headerName: 'Action',
-      width: `${session.user.role === '0' ? 300 : 150}`,
-      headerAlign: 'center',
-      align: 'center',
+      field: "action",
+      headerName: "Action",
+      width: `${session.user.role === "0" ? 300 : 150}`,
+      headerAlign: "center",
+      align: "center",
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
@@ -329,13 +333,12 @@ params.row.major_name = event.target.value;
           </button>
         </div>
       ),
-    }
+    },
   ];
-
 
   return (
     <>
-          {confirmOpenIncomplete && (
+      {confirmOpenIncomplete && (
         <WarningMessageUpdateCourse
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
@@ -343,17 +346,17 @@ params.row.major_name = event.target.value;
         />
       )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.course_id}
           rows={users}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
@@ -365,7 +368,6 @@ params.row.major_name = event.target.value;
           }}
         />
       </Box>
-
     </>
   );
 };
