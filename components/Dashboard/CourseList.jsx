@@ -6,45 +6,46 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 // import Link from 'next/link';
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
+import { DataGrid } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
 // import moment from 'moment';
-import axios from 'axios';
-import selection_data from '../../utilities/selection_data';
+// import axios from "axios";
+import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from './LowerButtons';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+// import { LowerButtons } from './LowerButtons';
+// import exportSelect from "../../utilities/ExcelExport/exportSelect";
+// import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 // import {
 //   WarningMessageCancleIncomplete,
 //   WarningMessageIncomplete,
 //   WarningMessageObsolote,
 // } from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from 'next-auth/react';
-import CustomPagination from './Pagination';
+// import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+// import { useSession } from "next-auth/react";
+import CustomPagination from "./Pagination";
 
-const CourseList = ({ users, setUsers }) => {
-  console.log("usssssssssssser", users)
+const CourseList = ({
+  users,
+  // , setUsers
+}) => {
+  // console.log("usssssssssssser", users);
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;
   // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   // const [selectedUser, setSelectedUser] = useState(null);
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-
- 
   //incomplete modal
   // const handleConfirmIncomplete = (user) => {
   //   setSelectedUser(user);
@@ -169,43 +170,43 @@ const CourseList = ({ users, setUsers }) => {
   // };
 
   setTimeout(() => {
-    setMessage('');
+    setMessage("");
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: 'course_id',
-      headerName: 'Course ID',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_id",
+      headerName: "Course ID",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
     {
-      field: 'course_name',
-      headerName: 'Course Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_name",
+      headerName: "Course Name",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'course_credit',
-      headerName: 'Course Credit',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_credit",
+      headerName: "Course Credit",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
     {
-      field: 'major_name',
-      headerName: 'Major Name',
-      headerAlign: 'center',
-      align: 'center',
+      field: "major_name",
+      headerName: "Major Name",
+      headerAlign: "center",
+      align: "center",
       width: 200,
     },
     {
-      field: 'course_type',
-      headerName: 'Course Type',
-      headerAlign: 'center',
-      align: 'center',
+      field: "course_type",
+      headerName: "Course Type",
+      headerAlign: "center",
+      align: "center",
       width: 150,
     },
 
@@ -478,60 +479,58 @@ const CourseList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
-
   ];
 
   // export select to excel
 
-  const exportButton = async () => {
-    if (users.length > 0) {
-      try {
-        const response = await axios.get('/api/admin/listusers/listexport');
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-         
-          await exportSelect(selectedRows, incomingData, session);
-        } else {
-          setUsers([]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  // const exportButton = async () => {
+  //   if (users.length > 0) {
+  //     try {
+  //       const response = await axios.get('/api/admin/listusers/listexport');
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
+
+  //         await exportSelect(selectedRows, incomingData, session);
+  //       } else {
+  //         setUsers([]);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
   // export all to excel
-  const exportAllButton = async () => {
-    if (users.length > 0) {
-      try {
-        const response = await axios.get('/api/admin/listusers/listexport');
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-      
-          await exportAll(incomingData, session);
-        } else {
-          setUsers([]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-  const handlePrintSelected = () => {
-    const selectedIDs = selectedRows;
-   
-    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-   
-    selectedUsers.forEach((user) => {
-      if (user.reportURL) {
-        window.open(user.reportURL);
-      } else {
-        setMessage('Please select a user with a report');
-      }
-    });
+  // const exportAllButton = async () => {
+  //   if (users.length > 0) {
+  //     try {
+  //       const response = await axios.get('/api/admin/listusers/listexport');
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
 
-  
-  };
+  //         await exportAll(incomingData, session);
+  //       } else {
+  //         setUsers([]);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+  // const handlePrintSelected = () => {
+  //   const selectedIDs = selectedRows;
+
+  //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+
+  //   selectedUsers.forEach((user) => {
+  //     if (user.reportURL) {
+  //       window.open(user.reportURL);
+  //     } else {
+  //       setMessage('Please select a user with a report');
+  //     }
+  //   });
+
+  // };
 
   return (
     <>
@@ -557,25 +556,25 @@ const CourseList = ({ users, setUsers }) => {
           handleConfirmClose={handleConfirmClose}
         />
       )} */}
-      <div className='text-center text-red-500 font-bold p-2'>{message}</div>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <div className="text-center text-red-500 font-bold p-2">{message}</div>
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           getRowId={(r) => r.course_id}
           rows={users}
-          getRowHeight={() => 'auto'}
+          getRowHeight={() => "auto"}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           // pagination
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{
             NoRowsOverlay: () => (
-              <div className='grid h-[100%] place-items-center'>No Data</div>
+              <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
           }}

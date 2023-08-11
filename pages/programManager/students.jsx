@@ -14,7 +14,7 @@ export default function Students() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
   const router = useRouter();
-  const [major, setMajor] = useState([]);
+  // const [major, setMajor] = useState([]);
   const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
@@ -135,6 +135,7 @@ export default function Students() {
     setMajorValue("");
     setTest(true);
     setIdValue("");
+    setallMajor([]);
     setFirstnameValue("");
     setLastnameValue("");
     setStatusValue("");
@@ -253,7 +254,7 @@ export default function Students() {
                 {/* Start select box */}
                 <CustomSelectBox
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-                  options={major}
+                  // options={major}
                   placeholder="Select Major"
                   onSelect={handleMajor}
                   styled={
