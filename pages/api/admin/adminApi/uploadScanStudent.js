@@ -13,8 +13,8 @@ const {
   uploadInfo,
   uploadStudent,
   ActiveUser,
-  // userDocument,
-  studentExist
+  userDocument,
+
 } = require("../../controller/queries");
 
 import xlsx from "xlsx";
@@ -22,6 +22,7 @@ import xlsx from "xlsx";
 import { authOptions } from "../../auth/[...nextauth]";
 import SendEmail from "./emailFormat";
 import hash from "./hash";
+import StudentExist from "./studentExist";
 
 export const config = {
   api: {
@@ -162,29 +163,43 @@ async function handler(req, res) {
 
     let countSaved = 0; // Add a variable to track the number of records saved
 
+   
+
+    let idx = 0;
+
     for (const row of data) {
+       console.log(row)
       try {
+      
         const major = await getMajor(connection, row.MajorName);
         if (!major || major.rows.length === 0) {
           console.error(`Major not found for row: `, row);
           continue; // Skip this row if the major is not found
         }
 
-
+      
         const majorid = major.rows[0].major_id;
-        const StudentArray = Object.values(fields);
-        const uploadPromises = StudentArray.map(async (student) => {
-          const userpasswordref = await hash(student.userpassword);
-          const exist = await studentExist(connection,student.Email)
-          console.log(exist)
-          if(exist.rowCount === 0){
-              return res.status(200).json({
-                code:200,
-                success:true,
-                message:`Student Already Exist!`
-              })
+
+        let field = fields[idx];
+
+        idx++;
+           const exist = await StudentExist(connection,field.Email,majorid)
+        
+          if(exist){
+            return res.status(200).json({
+              success:true,
+              code:200,
+              message:`student Already  Exist!`
+            })
           }
 
+        const StudentArray = Object.values({field});
+  
+        const uploadPromises = StudentArray.map(async (student) => {
+          const userpasswordref = await hash(student.userpassword);
+
+      
+          
          await ActiveUser(connection, {
             userid: student.student_id,
             userpassword: userpasswordref,
@@ -193,10 +208,10 @@ async function handler(req, res) {
             update_time: "",
           });
           
-        // await userDocument(connection, {
-        //     userid: student.student_id,
-        //     profileurl: "",
-        //   });
+        await userDocument(connection, {
+            userid: student.student_id,
+            profileurl: "",
+          });
           
           await uploadAddress(connection, {
             userid: student.student_id,

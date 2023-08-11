@@ -530,7 +530,7 @@ async function filterStudent(
       LEFT JOIN major ON student.major_id = major.major_id
       LEFT JOIN user_contact ON student_id = user_contact.userid
       WHERE student.major_id = '${major}'`;
-    console.log(query)
+  
 
     if (id.trim() != "") {
       query += ` AND lower(trim(student_id)) LIKE lower(trim('%${id}%'))`;
@@ -727,7 +727,7 @@ async function filterAttendances(
 async function getCourse(connection, table, where, id) {
   try {
     let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
-    console.log(query);
+    
     const response = await connection.query(query);
     return response;
   } catch (error) {
@@ -1501,6 +1501,7 @@ async function getExistTeacher(
   try {
     const query = `SELECT * FROM teachers WHERE teacher_firstname='${teacher_firstname}' 
     AND teacher_lastname='${teacher_lastname}' AND teacher_mail='${teacher_mail}'`
+   
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -1673,6 +1674,7 @@ async function uploadStudent(
         $6,
         $7
       )
+      on conflict (student_id) do nothing
       `,
 
       values: [
@@ -1723,7 +1725,7 @@ async function uploadInfo(connection, {
         (userid, title, firstname, fathername, lastname,
         maidename, mothername, gender, dateofbirth, countryofbirth, placeofbirth,
         registrationnumber, maritalstatus, firstnationality, secondnationality)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)  on conflict (userid) do nothing`,
       values: [
         userid, title, firstname, fathername, lastname,
         maidename, mothername, gender, formattedDateOfBirth, countryofbirth,
@@ -1753,7 +1755,7 @@ async function uploadContact(
       text: ` 
         INSERT INTO user_contact 
         (userid , email , email_two , mobile_number , landline_number)
-        VALUES($1 , $2, $3 , $4 , $5)`,
+        VALUES($1 , $2, $3 , $4 , $5)  on conflict (userid) do nothing`,
       values: [userid, email, email_two, mobile_number, landline_number]
     }
     const res = await connection.query(query)
@@ -1783,7 +1785,7 @@ async function uploadEmerg(
           userid , prefix , emerg_firstname , emerg_middlename, emerg_lastname, 
           emerg_phonenumber , emerg_relationship , emerg_medicalhealth , emerg_diseasetype
           )
-        VALUES($1 , $2, $3 , $4 , $5 , $6 , $7 , $8 , $9)`,
+        VALUES($1 , $2, $3 , $4 , $5 , $6 , $7 , $8 , $9)  on conflict (userid) do nothing`,
       values: [userid,
         prefix,
         emerg_firstname,
@@ -1883,7 +1885,7 @@ async function ActiveUser(
         '1',
         '${userpassword}'
       )`
-      console.log('users',query)
+
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -1900,7 +1902,8 @@ async function userDocument(
 ) {
   
   try {
-    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}')`
+    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}') on conflict (userid) do nothing`
+  
     const res = connection.query(query)
     return res
   } catch (error) {
@@ -1926,11 +1929,17 @@ adminemail
 
 async function studentExist(
 connection,
-email
+
+email,
+major_id
 ){
   try {
-    const query = `SELECT * FROM user_contact WHERE email='${email}'`
+    const query = `SELECT user_contact.* , student.major_id FROM user_contact 
+    INNER JOIN users ON user_contact.userid = users.userid
+    INNER JOIN student ON users.userid = student.student_id
+    WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `
     const res = await connection.query(query)
+  
     return res
   } catch (error) {
     return error

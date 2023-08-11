@@ -63,7 +63,7 @@ export default function Archive({
       // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
-          //<<<<<<< batoul
+       
           const date = details[0].attendance_date;
 
           const DateFormat = moment(date).format("DD_MM_YYYY");
@@ -81,27 +81,6 @@ export default function Archive({
           formData.append("teacher_id", details[0].teacher_id);
           formData.append("attendance_date", DateFormat);
           formData.append("ext", fileExtension);
-          // console.log('fileList', uploadPhotoData.fileList[0].name);
-
-          //=======
-          // const attendanceDate = new Date(details[0].attendance_date);
-          // const day = attendanceDate.getDate().toString().padStart(2, '0');
-          // const month = (attendanceDate.getMonth() + 1)
-          //   .toString()
-          //   .padStart(2, '0');
-          // const year = attendanceDate.getFullYear().toString();
-          // const formattedDate = `${day}-${month}-${year}`.replace(/-/g, '_');
-
-          // const formData = new FormData();
-          // formData.append('files', uploadPhotoData.fileList[0]);
-          // formData.append(
-          //   'attendance',
-          //   `attendance-${details[0].attendance_id}-${details[0].course_id}-${details[0].teacher_id}-${formattedDate}`
-          // );
-          // formData.append(
-          //   'files',
-          //   'attendance'
-          // );
 
           const { data } = await axios.post(
             "/api/uploaddoc/uploadDoc",
@@ -137,38 +116,6 @@ export default function Archive({
       return error;
     }
   };
-
-  //<<<<<<< batoul
-  //      {!showProfileModal ? <>
-  //        <div
-  //          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-  //        >
-  //          <div className="relative  w-1/2 overflow-y-auto  my-6 mx-auto max-w-3xl">
-  //            {/*content*/}
-  //            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-  //            {/*header*/}
-  //          <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-  //          <h3 className="text-gray-700 text-3xl font-bold">
-  //          Upload File
-  //      </h3>
-  //    <button
-  //    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-  //  onClick={() => { setShowArchive(false), setDetails([]) }}
-  //                >
-  //                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-  //                    <BsX className=" text-gray-700 font-bold" />
-  //                  </span>
-  //                </button>
-  //              </div>
-  //              {/*body*/}
-  //              <div className="relative p-6 flex-auto">
-  //                <div className="my-4 text-slate-500 text-lg leading-relaxed">
-  //                  {message && (
-  //                   <div className=" text-gray-600 item-center pt-5 mb-1 font-bold p-2">
-  //                      {message}
-  //                   </div>
-  //=======
-
   return (
     <>
       {!showProfileModal ? (
@@ -267,17 +214,6 @@ export default function Archive({
                   docUrl={docUrl}
                 />
               </div>
-              {/*footer*/}
-              {/*              
-              <div className="flex items-center justify-end p-6 rounded-b">
-                <button
-                  className="primary-button btnCol text-white  w-screen hover:text-white hover:font-bold "
-                  type="button"
-                  onClick={() => handleFile()}
-                >
-                  Upload
-                </button>
-              </div> */}
             </div>
           </div>
         </div>

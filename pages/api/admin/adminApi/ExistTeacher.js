@@ -4,7 +4,7 @@ const teacherExist = async( connection ,teacher_firstname, teacher_lastname, tea
 
     
     const exist = await getExistTeacher(connection , teacher_firstname, teacher_lastname, teacher_mail)
-    console.log('exist' , exist)
+
     if(exist.rowCount === 0){
         return false
     }else{

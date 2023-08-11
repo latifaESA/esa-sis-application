@@ -9,6 +9,7 @@ const { uploadTeacher } = require("../../controller/queries");
 import xlsx from "xlsx";
 
 import { authOptions } from "../../auth/[...nextauth]";
+// import teacherExist from "./ExistTeacher";
 
 export const config = {
   api: {
@@ -148,9 +149,26 @@ async function handler(req, res) {
     for (const row of data) {
       try {
         // const teacherId = fields[0].teacher_id
+  
         const teacherArray = Object.values(fields);
-
+        // const exist = await teacherExist(connection ,
+        //   fields.FirstName ,
+        //   fields.LastName,
+        //   fields.Email
+        //   )
+        //   console.log(exist)
+        //   if(exist){
+        //     return res.status(200).json({
+        //       success:true,
+        //       code:200,
+        //       message:`Teacher Already Exist!`
+        //     })
+        //   }
+              
+     
         const uploadPromises = teacherArray.map(async (teacher) => {
+
+        
           const response = await uploadTeacher(connection, {
             teacher_id: teacher.teacher_id,
             teacher_firstname: teacher.firstName,
@@ -158,7 +176,7 @@ async function handler(req, res) {
             teacher_lastname: teacher.lastName,
           });
 
-          // You can handle the response here if needed
+          
 
           return response;
         });
@@ -166,7 +184,6 @@ async function handler(req, res) {
         // Wait for all promises to resolve
         const responses = await Promise.all(uploadPromises);
 
-        // // console.log(fields)
         if (responses) {
           countSaved++; // Increment the count of saved records
         } else {

@@ -58,19 +58,19 @@ export default function UploadCourses() {
     }
     const validateColumnHeaders = (columnA) => {
         const templateFields = [
-            'Title', 'StudentFirstName', 'StudentLastName', 'Gender', 'DateOfBirth',
+            'Title', 'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(e.g:(mm/dd/yyy))',
 
-            'AcademicYear', 'Promotion', 'MajorName', 'Email', 'SecondEmail', 'MobileNumber', 'LandLineNumber',
+            'AcademicYear(required)', 'Promotion(e.g:promo(promoNumber))', 'MajorName', 'Email(required)', 'SecondEmail', 'MobileNumber(required)', 'LandLineNumber',
 
             'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
 
-            'FirstNationality', 'SecondNationality', 'Country', 'Region', 'City', 'Street', 'Building', 'Floor', 'Postal',
+            'FirstNationality(required)', 'SecondNationality', 'Country(required)', 'Region', 'City(required)', 'Street', 'Building', 'Floor', 'Postal',
 
-            'Degree', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
+            'Degree(required)', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
 
-            'EmergencePrefix', 'EmergenceFirstName', 'EmergenceMiddleName', 'EmergenceLastName', 'EmergencePhoneNumber',
+            'EmergencePrefix', 'EmergenceFirstName(required)', 'EmergenceMiddleName', 'EmergenceLastName(required)', 'EmergencePhoneNumber(required)',
 
-            'EmergenceRelationShip', 'EmergenceMedicalHealth', 'EmergenceDisease'
+            'EmergenceRelationShip', 'EmergenceMedicalHealth(required)', 'EmergenceDisease(required)'
         ]; // Replace with your actual template fields
 
         // Check if all template fields exist in columnA
@@ -138,12 +138,11 @@ export default function UploadCourses() {
                         if (isValidHeaders) {
                             // Data is valid, proceed with uploading and other actions
 
-                            await axios.post(
+                           await axios.post(
                                 '/api/admin/adminApi/uploadScanStudent',
                                 formData,
 
                             );
-
 
                         }
 
@@ -200,7 +199,7 @@ export default function UploadCourses() {
                     for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                         const record = records[rowIndex];
                         const student_id = generateID(year, majorId);
-                        const userpassword = generateRandomPassword(5)
+                        const userpassword = generateRandomPassword(8)
                         const studentDataArray = {
                             student_id,
                             userpassword,
