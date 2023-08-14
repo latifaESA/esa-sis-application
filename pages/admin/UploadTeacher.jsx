@@ -177,7 +177,7 @@ export default function UploadTeacher() {
           } else {
             setIsClick(false);
             setConfirmOpenMessage(true);
-            setMessages("Error File! Please upload Template");
+            setMessages("Error File! please upload Template And Don't change The Header");
           }
         };
 
