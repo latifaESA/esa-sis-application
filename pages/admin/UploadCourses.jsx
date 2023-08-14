@@ -112,7 +112,7 @@ export default function UploadCourses() {
             } else {
               // Data is not valid, show a warning or take appropriate action
               setConfirmOpenMessage(true);
-              setMessages(`Error File! please upload Template`);
+              setMessages(`Error File! please upload Template And Don't change The Header`);
             }
           };
 
