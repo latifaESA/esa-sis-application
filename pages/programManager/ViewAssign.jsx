@@ -19,7 +19,7 @@ export default function ViewAssign() {
                 <title>SIS PM - Assign</title>
             </Head>
 
-            {session?.user.role === "2" ? (
+            {session?.user.role === "2" || session?.user.role === "3"? (
                 <>
                     <div className="flex items-center justify-center h-[300px] gap-6">
                         <div className="flex font-bold text-xl">
@@ -32,7 +32,7 @@ export default function ViewAssign() {
                                 </button>
                             </Link>
                         </div>
-                        {session?.user.role === "2" && (session?.user.majorid === "13" || session?.user.majorid === '15') ? 
+                        {(session?.user.role === "2" || session?.user.role === "3") && (session?.user.majorid === "13" || session?.user.majorid === '15') ? 
                         <div className="flex font-bold text-xl">
                             <Link href="/programManager/ElectiveCourse">
                                 <button

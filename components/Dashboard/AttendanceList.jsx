@@ -276,7 +276,7 @@ const AttendanceList = ({ users }) => {
     {
       field: "action",
       headerName: "Action",
-      width: `${session.user.role === "2" ? 300 : 150}`,
+      width: `${(session?.user.role === "2" || session?.user.role === "3") ? 300 : 150}`,
       headerAlign: "center",
       align: "center",
       sortable: false,
@@ -292,7 +292,7 @@ const AttendanceList = ({ users }) => {
             // disabled={params.id !== presentEnable}
             type="button"
             hidden={
-              session.user.role === "1" || session.user.role === "3"
+              session.user.role === "1" || session.user.role === "0"
                 ? true
                 : false
             }

@@ -202,7 +202,7 @@ export default function Students() {
       <Head>
         <title>SIS Admin - Students</title>
       </Head>
-      {session?.user.role === "2" ? (
+      {session?.user.role === "2" || session?.user.role === "3"? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Students

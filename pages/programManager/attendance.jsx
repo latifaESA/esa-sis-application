@@ -160,7 +160,7 @@ export default function Attendance() {
       <Head>
         <title>SIS Admin - Attendance</title>
       </Head>
-      {session?.user.role === "2" ? (
+      {session?.user.role === "2" || session?.user.role === "3" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Attendance

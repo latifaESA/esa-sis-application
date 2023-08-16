@@ -1,5 +1,6 @@
 const { connect } = require("../../../../utilities/db");
 const { createASAccount } = require("../../controller/queries");
+const { default: AsPMExist } = require("./ExistAsPM");
 
 // const axios = require('axios')
 // import https from 'https';
@@ -20,6 +21,11 @@ async function handler(req, res) {
     } = req.body;
     // console.log('======this=====')
     // console.log(pm_id)
+
+    const exist = await AsPMExist(connection , pm_ass_email , major_id)
+    if(exist){
+      return res.status(200).send(exist)
+    }
     const data = await createASAccount(
       connection,
       pm_ass_id,

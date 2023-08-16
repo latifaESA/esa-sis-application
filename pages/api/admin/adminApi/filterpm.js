@@ -8,14 +8,15 @@ async function handler(req, res) {
   try {
     const connection = await connect();
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
-    const { pm_id, pm_firstname, pm_lastname, pm_email, pm_status } = req.body;
+    const { pm_id, pm_firstname, pm_lastname, pm_email, pm_status , majorName } = req.body;
     const data = await filterpm(
       connection,
       pm_id,
       pm_firstname,
       pm_lastname,
       pm_email,
-      pm_status
+      pm_status,
+      majorName
     );
     // console.log(data.rows)
     return res.status("200").send(data.rows);

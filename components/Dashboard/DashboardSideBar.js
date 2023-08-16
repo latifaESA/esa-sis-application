@@ -55,7 +55,7 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
 
         {session?.user.role === "1" && <StudentView />}
 
-        {session?.user.role === "2" && <ProgramManagerView />}
+        {(session?.user.role === "2" || session?.user.role === "3" )&& <ProgramManagerView />}
       </div>
     </>
   );

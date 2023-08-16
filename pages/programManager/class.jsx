@@ -251,7 +251,7 @@ export default function Students() {
   };
   const getClasses = async () => {
     try {
-      let val = session.user.userid;
+      let val = session.user.majorid;
       let { data } = await axios.post("/api/pmApi/getuserteacher", {
         pmID: val,
       });
@@ -358,7 +358,7 @@ export default function Students() {
       <Head>
         <title>SIS Admin - Teachers</title>
       </Head>
-      {session?.user.role === "2" ? (
+      {session?.user.role === "2" || session?.user.role === "3" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Classes

@@ -34,6 +34,7 @@ import {
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
+
 // import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ assistance, setAssistance }) => {
@@ -106,7 +107,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       .then((response) => {
         // Handle success
         console.log(response.data);
-        setMessage("User Status Changed Succesfully!");
+        setMessage("User Status Changed Successfully!");
 
         //Update the user's status and major in the table
         setAssistance((prevUsers) =>
@@ -127,9 +128,9 @@ const TeachersList = ({ assistance, setAssistance }) => {
       });
   };
   const handleEnable = async (user) => {
-    let genPass = generatePasswod(8);
+    let genPassword = generatePasswod(8);
     const salt = await bcryptjs.genSalt(8);
-    genPass = await bcryptjs.hash(genPass, salt);
+    const genPass = await bcryptjs.hash(genPassword, salt);
     let sendData = {
       pm_ass_id: user.pm_ass_id,
       userpassword: genPass,
@@ -140,7 +141,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       .then((response) => {
         // Handle success
         console.log(response.data);
-        setMessage("User Status Changed Succesfully!");
+        setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
         setAssistance((prevUsers) =>
@@ -148,12 +149,19 @@ const TeachersList = ({ assistance, setAssistance }) => {
             u.pm_ass_id === user.pm_ass_id
               ? {
                   ...u,
-                  pm_ass_status:
-                    user.pm_ass_status == "active" ? "inactive" : "active",
+                  pm_ass_status: user.pm_ass_status == 'active' ? 'inactive' : 'active',
+                  note: `the current password is: ${genPassword}`,
                 }
               : u
-          )
-        );
+          ))
+        console.log(response.data);
+        setMessage("User Status Changed Succesfully!");
+
+        //Update the user's status and major in the table
+        setTimeout(() => {
+          setAssistance(prevUsers => prevUsers.filter(u => u.pm_ass_status === 'inactive'));
+        }, 10000); // 10000 milliseconds = 10 seconds
+    
       })
       .catch((error) => {
         // Handle error
@@ -181,27 +189,21 @@ const TeachersList = ({ assistance, setAssistance }) => {
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
-        setMessage("User deleted Succesfully!");
-
-        //Update the user's status and major in the table
-        // eslint-disable-next-line no-undef
-        setUsers((prevUsers) =>
-          prevUsers.map((u) =>
-            u.pm_id === user.pm_id
-              ? {
-                  ...u,
-                  pm_status: user.pm_status == "active" ? "inactive" : "active",
-                }
-              : u
-          )
-        );
+        setTimeout(() => {
+          setAssistance(prevUsers => prevUsers.filter(u => u.pm_ass_status
+            === 'active'));
+        }, 1000); // 10000 milliseconds = 10 seconds
+    
+        // Handle success
+        // console.log(response.data);
+        setMessage('User deleted Succesfully!');
       })
       .catch((error) => {
         // Handle error
         console.log(error);
       });
   };
+  console.log(assistance)
   const handleConfirmDel = (user) => {
     setSelectedUser(user);
     setConfirmOpenDelete(true);
@@ -346,6 +348,13 @@ const TeachersList = ({ assistance, setAssistance }) => {
     //   align: 'center',
     //   width: 100,
     // },
+    {
+      field: "major_name",
+      headerName: "Major",
+      headerAlign: "center",
+      align: "center",
+      width: 90,
+    },
 
     {
       field: "pm_ass_email",
@@ -527,6 +536,13 @@ const TeachersList = ({ assistance, setAssistance }) => {
           </button>
         </div>
       ),
+    },
+    {
+      field: 'note',
+      headerName: 'Notes',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
     },
   ];
 

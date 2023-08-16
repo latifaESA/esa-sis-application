@@ -115,7 +115,7 @@ export default function ElectiveCourse() {
       <Head>
         <title>SIS Admin - Assign Elective</title>
       </Head>
-      {(session?.user.role === "2" && session?.user.majorid === "13") ||
+      {((session?.user.role === "2" || session?.user.role === "3") && session?.user.majorid === "13") ||
       session?.user.majorid === "15" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">

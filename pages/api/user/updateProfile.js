@@ -136,6 +136,27 @@ async function handler(req, res) {
           user.userid
         );
       }
+    } else if (user.role === "3") {
+      if (fname) {
+        await updateUser(
+          connection,
+          "program_manager_assistance",
+          "pm_ass_id",
+          "pm_ass_firstname",
+          fname,
+          user.userid
+        );
+      }
+      if (lname) {
+        await updateUser(
+          connection,
+          "program_manager_assistance",
+          "pm_ass_id",
+          "pm_ass_lastname",
+          lname,
+          user.userid
+        );
+      }
     }
 
     if (password) {
