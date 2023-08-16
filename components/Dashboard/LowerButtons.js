@@ -20,7 +20,7 @@ export const LowerButtons = ({
         Create Attendance
        </button> */}
 
-        {session.user.role === '2' && assigned ? <>
+        {(session.user.role === '2' || session.user.role === '3') && assigned ? <>
          <form>
          <button
             className="primary-button btnCol text-white  hover:text-white"
@@ -34,7 +34,7 @@ export const LowerButtons = ({
 
         </> : <>
         </>}
-        {session.user.role === '2' && elective && (session.user.majorid === '13' || session.user.majorid === '15') ?
+        {(session.user.role === '2' || session.user.role === '3') && elective && (session.user.majorid === '13' || session.user.majorid === '15') ?
           <>
           <form>
           <button

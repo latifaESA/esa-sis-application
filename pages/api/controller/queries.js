@@ -388,7 +388,7 @@ async function getScheduleByPM(connection, pmID) {
   JOIN 
     rooms ON rooms.room_id = tmpschedule.room
   WHERE
-    tmpclass.pm_id = '${pmID}';
+    tmpclass.major_id = '${pmID}';
     `);
     return result;
   } catch (err) {
@@ -605,7 +605,7 @@ async function getUserTeacher(connection, pmID) {
     JOIN
     teachers ON teachers.teacher_id = tmpclass.teacher_id
     WHERE 
-    pm_id = '${pmID}'
+    tmpclass.major_id = '${pmID}'
     `;
     const result = await connection.query(query);
     return result;
@@ -860,11 +860,13 @@ async function filterpm(
   pm_firstname,
   pm_lastname,
   pm_email,
-  pm_status
+  pm_status,
+  majorName
 ) {
   try {
     let query = `
-      SELECT * FROM program_manager
+      SELECT program_manager.* , major.major_name FROM program_manager 
+      INNER JOIN major ON program_manager.major_id = major.major_id
       WHERE 1=1`;
 
     if (pm_id != "") {
@@ -872,6 +874,9 @@ async function filterpm(
     }
     if (pm_firstname.trim() != "") {
       query += ` AND lower(trim(pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
+    }
+    if (majorName.trim() != "") {
+      query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
     }
     if (pm_lastname.trim() != "") {
       query += ` AND lower(trim(pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
@@ -895,15 +900,20 @@ async function filterassistance(
   pm_ass_firstname,
   pm_ass_lastname,
   pm_ass_email,
-  pm_ass_status
+  pm_ass_status,
+  majorName
 ) {
   try {
     let query = `
-      SELECT * FROM program_manager_assistance
+      SELECT program_manager_assistance.* , major.major_name FROM program_manager_assistance
+      INNER JOIN major ON program_manager_assistance.major_id = major.major_id
       WHERE 1=1`;
 
     if (pm_ass_id.trim() != "") {
       query += ` AND lower(trim(pm_ass_id)) LIKE lower(trim('%${pm_ass_id}%'))`;
+    }
+    if (majorName.trim() != "") {
+      query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
     }
     if (pm_ass_firstname.trim() != "") {
       query += ` AND lower(trim(pm_ass_firstname)) LIKE lower(trim('%${pm_ass_firstname}%'))`;
@@ -1474,22 +1484,32 @@ async function createAdmin(
 //exist PM
 async function getExistPM(
   connection , 
-  pm_firstname, 
-  pm_lastname, 
   pm_email , 
   major_id
 
 ){
   try {
-    const query = `SELECT * FROM program_manager WHERE pm_firstname='${pm_firstname}' 
-    AND pm_lastname='${pm_lastname}' AND pm_email='${pm_email}' AND major_id= '${major_id}'`
+    const query = `SELECT * FROM program_manager WHERE  pm_email='${pm_email}' AND major_id= '${major_id}'`
     const res = await connection.query(query)
     return res
   } catch (error) {
     return error
   }
 }
+async function getExistASPM(
+  connection , 
+  pm_ass_email , 
+  major_id
 
+){
+  try {
+    const query = `SELECT * FROM program_manager_assistance WHERE  pm_ass_email='${pm_ass_email}' AND major_id= '${major_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 async function getExistTeacher(
   connection , 
   teacher_firstname, 
@@ -1938,6 +1958,8 @@ major_id
     INNER JOIN users ON user_contact.userid = users.userid
     INNER JOIN student ON users.userid = student.student_id
     WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `
+
+    console.log("query" , query)
     const res = await connection.query(query)
   
     return res
@@ -2028,6 +2050,7 @@ module.exports = {
   getTeachersCourses,
   getUserTeacher,
   uploadFile,
+  getExistASPM,
   getExistPM,
   getExistTeacher,
   getAllMajor,

@@ -194,7 +194,7 @@ export default function Modal({
 
             type="button"
             hidden={
-              session.user.role === '1' || session.user.role === '3'
+              session.user.role === '1' || session.user.role === '0'
                 ? true
                 : false
             }

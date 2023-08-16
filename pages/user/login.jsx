@@ -131,7 +131,14 @@ export default function LoginScreen() {
         session?.user.status == "active"
       ) {
         router.push(redirect || "/programManager/main");
-      } else if (session?.user.role === "0") {
+      } 
+      else if (
+        session?.user.role === "3" &&
+        session?.user.status == "active"
+      ) {
+        router.push(redirect || "/programManager/main");
+      }
+      else if (session?.user.role === "0") {
         router.push(redirect || "/admin/main");
       } else if (
         session?.user.role === "2" &&

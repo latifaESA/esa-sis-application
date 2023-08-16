@@ -121,7 +121,7 @@ export default function TeacherCourse() {
       <Head>
         <title>SIS Admin - assigned</title>
       </Head>
-      {session?.user.role === "2" ? (
+      {session?.user.role === "2" || session?.user.role === "3"? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Assign</p>
           <form>

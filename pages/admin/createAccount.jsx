@@ -121,8 +121,10 @@ export default function Create() {
         "/api/admin/adminApi/createASAccount",
         sendASData
       );
-
-      if (data[0].rowCount == 0) {
+      if (data === true) {
+        setConfirmOpenMessage(true);
+        setMessages(`Account Program Manager Assistance Already Exist`);
+      } else  if (data[0].rowCount == 0) {
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);

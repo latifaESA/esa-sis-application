@@ -26,63 +26,111 @@ export default function Create() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const [role, setRole] = useState("2");
+  const [majorName , setMajorName] = useState("")
+  const [major , setMajor] = useState([])
 
   const redirect = () => {
     router.push("/AccessDenied");
   };
 
   useEffect(() => {
-    handleShowAll();
-    handleShow();
-  }, []);
+    handleDataFetch(); // Call the common data fetch function when role changes
+    handleMajor()
+  }, [role]); // Add 'role' as a dependency to re-run the effect when it changes
+
+  const handleDataFetch = async () => {
+    if (role === "2") {
+      handleShowAll();
+    } else if (role === "3") {
+      handleShow();
+    }
+  };
+
+
+const handleMajor = async()=>{
+  try {
+    const table = 'major'
+    const data = await axios.post('/api/pmApi/getAll' , {table})
+    setMajor(data.data.rows)
+
+  } catch (error) {
+    return error
+  }
+}
 
   const handleShowAll = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
-    setRole("2");
-    let sendpmData = {
-      pm_id: "".trim(),
-      pm_firstname: "".trim(),
-      pm_lastname: "".trim(),
-      pm_email: "".trim(),
-      pm_status: "active".trim(),
-    };
-
-    // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/admin/adminApi/filterpm", sendpmData);
-
-    // console.log(data);
-    setUsers(data);
-    // // console.log('this is users')
-    // // console.log(users)
     setFname("");
     setLname("");
     setIDvalue("");
     setEmail("");
-    setStatus("");
-    setRole("active");
-  };
+    setStatus("active");
+
+    setMajorName("")
+ 
+    setRole("2");
+
+
+        let sendpmData = {
+        pm_id: "".trim(),
+        pm_firstname: "".trim(),
+        pm_lastname: "".trim(),
+        pm_email: "".trim(),
+        pm_status: "active".trim(),
+        majorName:""
+      };
+       try {
+              // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post("/api/admin/adminApi/filterpm", sendpmData);
+  
+      // console.log(data);
+      setUsers(data);
+       } catch (error) {
+        return error
+       }
+
+      // // console.log('this is users')
+      // // console.log(users)
+
+    };
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
-    let sendData = {
-      pm_ass_id: "".trim(),
-      pm_ass_firstname: "".trim(),
-      pm_ass_lastname: "".trim(),
-      pm_ass_email: "".trim(),
-      pm_ass_status: "active".trim(),
-    };
-    // console.log(sendData);
-    // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post(
-      "/api/admin/adminApi/filterassistance",
-      sendData
-    );
+    setRole("3");
+    setFname("");
+    setLname("");
+    setIDvalue("");
+    setEmail("");
+    setStatus("active");
+    setMajorName("")
+      let sendData = {
+        pm_ass_id: "".trim(),
+        pm_ass_firstname: "".trim(),
+        pm_ass_lastname: "".trim(),
+        pm_ass_email: "".trim(),
+        pm_ass_status: "active".trim(),
+        majorName:""
+      };
+      // console.log(sendData);
+      // id,firstname,lastname,major,promotion,status
+      try {
+        let { data } = await axios.post(
+          "/api/admin/adminApi/filterassistance",
+          sendData
+        );
+    
+        // console.log(sendData);
+        setAssistance(data.rows);
+      } catch (error) {
+        return error
+      }
 
-    // console.log(sendData);
-    setAssistance(data.rows);
-  };
 
-  const handleAccounts = async (e) => {
-    e.preventDefault();
+   
+ 
+      };
+  
+  const handleAccounts = async () => {
+    // e.preventDefault();
     // // console.log(idvalue, fname, lname, email, courseid)
     if (role == "3") {
       let sendData = {
@@ -91,6 +139,7 @@ export default function Create() {
         pm_ass_lastname: lname.trim(),
         pm_ass_email: email.trim(),
         pm_ass_status: status.trim(),
+        majorName: majorName
       };
       // console.log(sendData);
       // id,firstname,lastname,major,promotion,status
@@ -107,6 +156,7 @@ export default function Create() {
         pm_lastname: lname.trim(),
         pm_email: email.trim(),
         pm_status: status.trim(),
+        majorName:majorName
       };
       // // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
@@ -117,7 +167,7 @@ export default function Create() {
       setUsers(data);
     }
   };
-
+console.log( "active" ,status , majorName , role)
   return (
     <>
       <Head>
@@ -139,6 +189,7 @@ export default function Create() {
                   name="ID"
                   placeholder="ID"
                   // value={formData.ID}
+                  value={idvalue}
                   onChange={(e) => {
                     setIDvalue(e.target.value);
                   }}
@@ -152,6 +203,7 @@ export default function Create() {
                   type="text"
                   name="Fname"
                   placeholder="First Name"
+                  value={fname}
                   // value={formData.Fname}
                   onChange={(e) => {
                     setFname(e.target.value);
@@ -167,6 +219,7 @@ export default function Create() {
                   name="Lname"
                   placeholder="Last Name"
                   // value={formData.Lname}
+                  value={lname}
                   onChange={(e) => {
                     setLname(e.target.value);
                   }}
@@ -182,6 +235,7 @@ export default function Create() {
                   name="email"
                   placeholder="Email"
                   // value={formData.Fname}
+                  value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
@@ -199,23 +253,34 @@ export default function Create() {
                 ></input>
               </label>
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                new:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
+              <label className="">
+                Major:
+                <select  
+                 className="ml-9 w-40"
+                 value={majorName}
+                onChange={(e)=>setMajorName(e.target.value)}>
+                  <option value=" ">Major</option>
+                  <>
+                  <>{major.length > 0 ? major.map((item, index) => (
+              <option key={index} value={item.major_name} >{item.major_name}</option>
+
+            )) : <option value={""}>NO major</option>}</>
+
+                  </>
+
+                  
+                </select>
               </label>
+              
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+          
 
               <label>
                 Status:
                 <select
                   className="ml-9 w-40"
+                  value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   {/* <option value="">Choose Value..</option> */}
@@ -227,28 +292,51 @@ export default function Create() {
               <label className="">
                 Role:
                 <select
+                value={role}
                   className="ml-9 w-40 max-[840px]:ml-[50px]"
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={(e) => 
+                  {
+                  setRole(e.target.value) ;
+                  setFname("");
+                  setLname("");
+                  setIDvalue("");
+                  setEmail("");
+                  setStatus("active");
+                  setMajorName("") ;
+                }}
+                
                 >
-                  <option defaultValue="2">Program Manager</option>
-                  <option value="3">Assistance</option>
+                  <option value="2">Program Manager</option>
+                  <option value="3"> Assistance</option>
                 </select>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                  type="submit"
+                  type="button"
                   onClick={handleAccounts}
                 >
                   Search
                 </button>
+                {role == "2" ?<>
+                
                 <button
                   className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                  type="reset"
+                  type="button"
                   onClick={handleShowAll}
                 >
                   Show All
                 </button>
+                </>:<>
+                <button
+                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleShow}
+                >
+                  Show All
+                </button>
+                </>}
+
               </div>
             </div>
             {role == "3" ? (

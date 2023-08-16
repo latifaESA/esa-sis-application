@@ -68,8 +68,9 @@ export const Calender = () => {
   };
 
   const getSchedule = async () => {
-    let pmID = session.user.userid;
+    let pmID = session.user.majorid;
     let { data } = await axios.post("/api/pmApi/getScheduleByPMId", { pmID });
+
 
     const datesArray = [];
     data.data.forEach((sched) => {

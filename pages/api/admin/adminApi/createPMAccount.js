@@ -10,7 +10,7 @@ async function handler(req, res) {
         const connection = await connect();
         // filterStudent(connection, id, firstname, lastname, major, promotion, status);
         const {pm_id, pm_firstname, pm_lastname, pm_email, pm_status, userpassword, major_id} = req.body;
-        const exist = await PMExist(connection , pm_firstname, pm_lastname, pm_email , major_id)
+        const exist = await PMExist(connection , pm_email , major_id)
         if(exist){
             return res.status(200).send(exist)
         }

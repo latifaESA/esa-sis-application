@@ -14,6 +14,7 @@ async function handler(req, res) {
       pm_ass_lastname,
       pm_ass_email,
       pm_ass_status,
+      majorName
     } = req.body;
     const data = await filterassistance(
       connection,
@@ -21,7 +22,8 @@ async function handler(req, res) {
       pm_ass_firstname,
       pm_ass_lastname,
       pm_ass_email,
-      pm_ass_status
+      pm_ass_status,
+      majorName
     );
     // console.log(data)
     return res.status("200").send(data);

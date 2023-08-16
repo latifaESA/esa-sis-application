@@ -453,7 +453,9 @@ export const authOptions = {
                       email: AS.rows[0].pm_ass_email,
                       role: user.rows[0].role.toString(),
                       userid: user.rows[0].userid,
-                      // image: userinfo.rows[0].profileurl,
+                      status: AS.rows[0].pm_ass_status,
+                      majorid: AS.rows[0].major_id,
+                      image: userinfo.rows[0].profileurl,
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend

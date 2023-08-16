@@ -210,7 +210,10 @@ const TeachersList = ({ users, setUsers }) => {
         
 
         //Update the user's status and major in the table
-        setUsers(prevUsers => prevUsers.filter(u => u.pm_status === 'active'));
+        setTimeout(() => {
+          setUsers(prevUsers => prevUsers.filter(u => u.pm_status === 'active'));
+        }, 1000); // 10000 milliseconds = 10 seconds
+    
         // Handle success
         // console.log(response.data);
         setMessage('User deleted Succesfully!');
@@ -368,13 +371,20 @@ const TeachersList = ({ users, setUsers }) => {
     //   align: 'center',
     //   width: 100,
     // },
+    {
+      field: 'major_name',
+      headerName: 'Major',
+      headerAlign: 'center',
+      align: 'center',
+      width: 120,
+    },
 
     {
       field: 'pm_email',
       headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 300,
+      width: 120,
       type: 'singleSelect',
     },
     {
