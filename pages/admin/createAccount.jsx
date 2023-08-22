@@ -176,13 +176,21 @@ export default function Create() {
       if (fname == "" && lname == "" && email == "") {
         setMessage("Please Fill all the required Fields");
       }
+ 
     }
+    setEmail('')
+    setFname('')
+    setLname('')
+    setRole('')
+    setStatus('active')
+    setMajorValue('')
   };
   const handleOpenNotificatonMessages = () => {
     setConfirmOpenMessage(true);
   };
   const handleCloseNotificatonMessages = () => {
     setConfirmOpenMessage(false);
+
   };
 
   return (
@@ -213,7 +221,7 @@ export default function Create() {
                   name="ID"
                   required
                   placeholder="First Name"
-                  // value={formData.ID}
+                  value={fname}
                   onChange={(e) => {
                     setFname(e.target.value);
                   }}
@@ -229,7 +237,7 @@ export default function Create() {
                   required
                   placeholder="First Name"
                   // disabled={role == "0" ? true : false}
-                  // value={formData.Fname}
+                  value={lname}
                   onChange={(e) => {
                     setLname(e.target.value);
                   }}
@@ -243,7 +251,7 @@ export default function Create() {
                   type="email"
                   name="email"
                   placeholder="Email"
-                  // value={formData.Fname}
+                  value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
@@ -255,6 +263,7 @@ export default function Create() {
                 Major:
                 <select
                   onChange={(e) => setMajorValue(e.target.value)}
+                  value={majorValue}
                   className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
                   disabled={role == "0" ? true : false}
                 >
@@ -301,6 +310,7 @@ export default function Create() {
                 <select
                   className="ml-9 w-40"
                   onChange={(e) => setStatus(e.target.value)}
+                  value={status}
                   disabled={role == "0" ? true : false}
                 >
                   {/* <option value="">Choose Value..</option> */}
@@ -312,6 +322,7 @@ export default function Create() {
               <label className="">
                 Role:
                 <select
+                value={role}
                   className="ml-9 w-40 max-[840px]:ml-[50px]"
                   onChange={(e) => setRole(e.target.value)}
                 >

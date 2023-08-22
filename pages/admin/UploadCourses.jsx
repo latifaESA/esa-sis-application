@@ -1,27 +1,17 @@
-import React, { useEffect, useReducer, useState } from "react";
-
-// import { useDispatch } from 'react-redux';
-
+import React, { useReducer, useState } from "react";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 import * as XLSX from "xlsx";
 import { useSession } from "next-auth/react";
-
 import { useRouter } from "next/router";
 import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
 export default function UploadCourses() {
-  // const [showProfileModal, setShowProfileModal] = useState(false);
-  // const [message, setMessage] = useState('');
-  // const [docUrl, setDocUrl] = useState(false);
-  // const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
-  //     useState(false);
-  // const [profileUrl, setProfileUrl] = useState(null);
   const { data: session } = useSession();
   const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
   const [messages, setMessages] = useState("");
-  // const [confirmCancleMessage, setConfirmCancleMessage] = useState(false)
+  const [isClick, setIsClick] = useState(false);
   const router = useRouter();
 
   const redirect = () => {
@@ -37,9 +27,12 @@ export default function UploadCourses() {
   const handleOpenNotificatonMessages = () => {
     setConfirmOpenMessage(true);
   };
+
   const handleCloseNotificatonMessages = () => {
     setConfirmOpenMessage(false);
+    setIsClick(false);
   };
+
   const validateColumnHeaders = (columnA) => {
     const templateFields = [
       "CourseID",
@@ -62,69 +55,99 @@ export default function UploadCourses() {
       return false;
     }
   };
-  useEffect(() => {
-    if (uploadPhotoData.fileList.length !== 0) {
-      // setupdateProfileButtonDisable(true);
-      const handleUpload = async () => {
+  const validateRow = (rowData) => {
+    const requiredFields = ["CourseID", "CourseName", "CourseCredit", "CourseType"];
+    
+    for (const field of requiredFields) {
+      if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+        return false; // Missing or empty required field
+      }else{
+        return true; // All required fields are present and not empty
+      }
+    }
+    
+   
+  };
+  
+  // ...
+  
+  const handleAdd = async () => {
+    try {
+      setIsClick(true);
+      const file = uploadPhotoData.fileList[0];
+      const reader = new FileReader();
+  
+      reader.onload = async function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+  
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+  
+        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+  
+        if (rows.length < 2) {
+          setConfirmOpenMessage(true);
+          setMessages("Error: File is empty!");
+          return;
+        }
+  
+        const firstRow = rows[0];
+        const isValidHeaders = validateColumnHeaders(firstRow);
+        if (!isValidHeaders) {
+          setConfirmOpenMessage(true);
+          setMessages("Error File! please upload Course Template And Don't change The Header.");
+          return;
+        }
+  
+        // Iterate through data rows (starting from index 1)
+        for (let i = 1; i < rows.length; i++) {
+          const rowData = {}; // Create an object to store data from the current row
+        
+          for (let j = 0; j < firstRow.length; j++) {
+            rowData[firstRow[j]] = rows[i][j]; // Assign values using header keys
+            
+          }
+        
+          if (!validateRow(rowData)) {
+
+            setConfirmOpenMessage(true);
+            setMessages("No data was uploaded due to missing required information.");
+            return;
+          }
+        }
+  
+        // All validation checks passed, proceed with API call
+        const formData = new FormData();
+        formData.append("files", file);
+  
         try {
-          const formData = new FormData();
-          formData.append("files", uploadPhotoData.fileList[0]);
-
-          // Assuming you have a reference to the uploaded file in uploadPhotoData.fileList[0]
-          const file = uploadPhotoData.fileList[0];
-
-          // Assuming you have retrieved the file from the FormData object
-          const reader = new FileReader();
-
-          reader.onload = async function (event) {
-            const data = new Uint8Array(event.target.result);
-            const workbook = XLSX.read(data, { type: "array" });
-
-            // Assuming you are interested in the first sheet of the workbook
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-
-            // Parse columns or specific cells here
-            // For example, let's say you want to extract data from column A
-            const columnHeaders = [];
-
-            Object.keys(worksheet).forEach((cell) => {
-              const cellRef = XLSX.utils.decode_cell(cell);
-              if (cellRef.r === 0) {
-                columnHeaders[cellRef.c] = worksheet[cell].v;
-              }
-            });
-
-            const isValidHeaders = validateColumnHeaders(columnHeaders);
-
-            if (isValidHeaders) {
-              // Data is valid, proceed with uploading and other actions
-
-              const { data } = await axios.post(
-                "/api/admin/adminApi/uploadFileCourse",
-                formData
-              );
-              // console.log('URL', data);
-              if (data.success === true) {
-                setConfirmOpenMessage(true);
-                setMessages(data.message);
-              }
-            } else {
-              // Data is not valid, show a warning or take appropriate action
-              setConfirmOpenMessage(true);
-              setMessages(`Error File! please upload Template And Don't change The Header`);
-            }
-          };
-
-          reader.readAsArrayBuffer(file);
+          const { data } = await axios.post(
+            "/api/admin/adminApi/uploadFileCourse",
+            formData
+          );
+  
+          if (data.success === true) {
+            setConfirmOpenMessage(true);
+            setMessages(data.message);
+          }
         } catch (error) {
-          // console.log(error.response?.data);
+          if (error.response && error.response.data.success === false) {
+            setConfirmOpenMessage(true);
+            setIsClick(false);
+            setMessages(error.response.data.message);
+          }
         }
       };
-      handleUpload();
+  
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      setConfirmOpenMessage(true);
+      setMessages("Something went wrong. Please try again later.");
     }
-  }, [uploadPhotoData.fileList]); // Only re-run the effect if fileList changes
-
+  };
+  
+  
   return (
     <>
       {confirmOpenMessage && (
@@ -134,6 +157,7 @@ export default function UploadCourses() {
           messages={messages}
         />
       )}
+
       {session?.user.role === "0" ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
@@ -153,6 +177,26 @@ export default function UploadCourses() {
                 </div>
               </div>
             </div>
+            <div className='p-4 ml-2 flex flex-column justify-center'>
+            {isClick ? (
+                    <button
+                      className="primary-button cursor-not-allowed rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                      type="button"
+                      disabled
+                    >
+                      Scan
+                    </button>
+                  ) : (
+                    <button
+                      className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                      type="button"
+                      onClick={handleAdd}
+                    >
+                      Scan
+                    </button>
+                  )}
+
+            </div>
           </form>
         </>
       ) : (
@@ -161,5 +205,6 @@ export default function UploadCourses() {
     </>
   );
 }
+
 UploadCourses.auth = true;
 UploadCourses.adminOnly = true;

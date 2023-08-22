@@ -14,7 +14,7 @@ async function handler(req, res) {
         teacher_mail,
         teacher_lastname
      } = req.body;
-     const exist = await teacherExist(connection , teacher_firstname , teacher_lastname , teacher_mail)
+     const exist = await teacherExist(connection , teacher_mail)
      if(exist){
        return res.status(200).json({
         success:true,
@@ -22,19 +22,18 @@ async function handler(req, res) {
         message:'Teacher Already Exist!'
        })
      }
-    const response = await createTeacher(
+    await createTeacher(
       connection,
       teacher_id,
       teacher_firstname ,
         teacher_mail,
         teacher_lastname
     );
-    console.log(response)
     await disconnect(connection)
     return res.status(201).json({
         success:true,
         code:201,
-        message:"Teacher Create Successfully "
+        message:"Teacher Created Successfully !"
     })
   } catch (error) {
     return res.status(500).json({

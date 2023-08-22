@@ -21,19 +21,19 @@ export default function DownloadCourseStudent() {
 
   const headerStudent = [
     [
-        'Title', 'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(e.g:(mm/dd/yyy))',
+      'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
 
-        'AcademicYear(required)', 'Promotion(e.g:promo(promoNumber))', 'MajorName', 'Email(required)', 'SecondEmail', 'MobileNumber(required)', 'LandLineNumber',
+      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'Title','SecondEmail', 'LandLineNumber',
 
-        'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
+      'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
 
-        'FirstNationality(required)', 'SecondNationality', 'Country(required)', 'Region', 'City(required)', 'Street', 'Building', 'Floor', 'Postal',
+      'FirstNationality', 'SecondNationality', 'Country', 'Region', 'City', 'Street', 'Building', 'Floor', 'Postal',
 
-        'Degree(required)', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
+      'Degree', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
 
-        'EmergencePrefix', 'EmergenceFirstName(required)', 'EmergenceMiddleName', 'EmergenceLastName(required)', 'EmergencePhoneNumber(required)',
+      'EmergencePrefix', 'EmergenceFirstName', 'EmergenceMiddleName', 'EmergenceLastName', 'EmergencePhoneNumber',
 
-        'EmergenceRelationShip', 'EmergenceMedicalHealth(required)', 'EmergenceDisease(required)'
+      'EmergenceRelationShip', 'EmergenceMedicalHealth', 'EmergenceDisease'
 
     ],
 
@@ -99,7 +99,7 @@ export default function DownloadCourseStudent() {
   
   const createExcelTemplateStudent = () => {
     const data2 = headerStudent.concat([
-        ['', '', '', '', '', '', '', majors, '', '', '', '', '', '', '', '', '', '', '', '',
+        ['', '', '', '', '', '', majors, '', '', '', '', '', '', '', '', '', '', '', '', '',
 
             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 
