@@ -48,6 +48,9 @@ export default function CreateTeacher() {
         "/api/admin/adminApi/createTeacher",
         payload
       );
+      setTeacherFirstname('')
+      setTeacherLastname("")
+      setTeacherMail("")
       // console.log(data.data.message);
       setConfirmOpenMessage(true);
       setMessages(data.data.message);
@@ -104,6 +107,7 @@ export default function CreateTeacher() {
                   name="Fname"
                   required
                   placeholder="Last Name"
+                  value={teacher_lastname}
                   onChange={(e) => {
                     setTeacherLastname(e.target.value);
                   }}

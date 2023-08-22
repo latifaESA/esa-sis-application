@@ -2,20 +2,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import MessageModal from "../programManager/ModalForm/MessageModal";
+import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 
 export default function CreateCourse() {
   const [course_id, setCourseID] = useState("");
   const [course_name, setCourseName] = useState("");
   const [course_credit, setCredit] = useState("");
-  const [data, setData] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  // const [data, setData] = useState([]);
+  // const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
   const [formErrors, setFormErrors] = useState({});
   const [major, setMajor] = useState();
   const [majorValue, setMajorValue] = useState("");
   const [course_type, setCourse_type] = useState([]);
-
+  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
+  const [messages, setMessages] = useState("");
   const router = useRouter();
 
   const redirect = () => {
@@ -30,6 +31,14 @@ export default function CreateCourse() {
   useEffect(() => {
     getAllMajors();
   }, []);
+  const handleOpenNotificatonMessages = () => {
+    setConfirmOpenMessage(true);
+  };
+  const handleCloseNotificatonMessages = () => {
+    setConfirmOpenMessage(false);
+    
+
+  };
 
   const handleAdd = async () => {
     try {
@@ -62,11 +71,21 @@ export default function CreateCourse() {
         course_type: course_type,
       };
       const { data } = await axios.post("/api/pmApi/createCourses", payload);
-      // console.log("data", data);
-      setData(data);
-      setShowModal(true);
+      console.log("data", data);
+      // setData(data);
+      // setShowModal(true);
+      if (data.success === true) {
+        setConfirmOpenMessage(true);
+        setMessages(data.message)
+        setCourseID('')
+    setCourseName('')
+    setCourse_type('')
+    setCredit('')
+    setMajorValue('')
+      }
     } catch (error) {
-      return error;
+      setConfirmOpenMessage(true);
+      setMessages(error)
     }
   };
   return (
@@ -77,11 +96,18 @@ export default function CreateCourse() {
             Create Course
           </p>
           <form>
-            {showModal && (
+            {/* {showModal && (
               <MessageModal
                 showModal={showModal}
                 setShowModal={setShowModal}
                 data={data}
+              />
+            )} */}
+            {confirmOpenMessage && (
+              <NotificatonMessage
+                handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+                handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+                messages={messages}
               />
             )}
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
@@ -150,6 +176,7 @@ export default function CreateCourse() {
                 Major:
                 <select
                   onChange={(e) => setMajorValue(e.target.value)}
+                  value={majorValue}
                   className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
                 >
                   <option key={"uu2isdvf"} value="">
@@ -177,8 +204,8 @@ export default function CreateCourse() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -188,8 +215,8 @@ export default function CreateCourse() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -199,6 +226,7 @@ export default function CreateCourse() {
                 Type:
                 <select
                   className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  value={course_type}
                   onChange={(e) => setCourse_type(e.target.value)}
                 >
                   <option value="">Choose Type..</option>
@@ -218,7 +246,7 @@ export default function CreateCourse() {
                 Role:
                 <select
                   className="ml-9 w-40 invisible max-[850px]:visible max-[850px]:hidden  max-[840px]:ml-[50px]"
-                  //   onChange={(e) => setRole(e.target.value)}
+                //   onChange={(e) => setRole(e.target.value)}
                 >
                   <option defaultValue="">Choose a Role</option>
                   <option value="2">Program Manager</option>

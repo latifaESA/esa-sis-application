@@ -700,9 +700,6 @@ async function filterAttendances(
     if (teacher_lastname) {
       query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`;
     }
-    if (major_id != "") {
-      query += ` AND major.major_id= '${major_id}'`;
-    }
     if (major_name) {
       query += ` AND lower(trim(major.major_name) LIKE lower(trim('%${major_name}%'))`;
     }
@@ -775,7 +772,7 @@ async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
 }
 
 async function updatePresent(connection, present, student_id, attendance_id) {
-  console.log(attendance_id);
+
   try {
     const query = `UPDATE attendance SET present = ${present} 
     
@@ -1512,17 +1509,13 @@ async function getExistASPM(
 }
 async function getExistTeacher(
   connection , 
-  teacher_firstname, 
-  teacher_lastname, 
-  teacher_mail , 
-
-
+  teacher_mail 
 ){
   try {
-    const query = `SELECT * FROM teachers WHERE teacher_firstname='${teacher_firstname}' 
-    AND teacher_lastname='${teacher_lastname}' AND teacher_mail='${teacher_mail}'`
+    const query = `SELECT * FROM teachers WHERE  teacher_mail='${teacher_mail}'`
    
     const res = await connection.query(query)
+ 
     return res
   } catch (error) {
     return error
@@ -1615,6 +1608,7 @@ async function uploadTeacher(
         teacher_mail,
         teacher_lastname
       ]
+   
     }
     const res = await connection.query(query)
     return res
@@ -1630,7 +1624,7 @@ async function getSchedulePromotion(connection, major_id, attendance_date) {
     inner join tmpclass on tmpschedule.class_id = tmpclass.tmpclass_id 
     
     WHERE tmpschedule.day = '${attendance_date}' AND tmpclass.major_id = '${major_id}'`
-    const res = connection.query(query)
+    const res = await connection.query(query)
     return res
   } catch (error) {
     return error
@@ -1924,7 +1918,7 @@ async function userDocument(
   try {
     const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}') on conflict (userid) do nothing`
   
-    const res = connection.query(query)
+    const res = await connection.query(query)
     return res
   } catch (error) {
     return error
@@ -1968,9 +1962,39 @@ major_id
   }
 }
 
+async function promotionExist (
+  connection ,
+  promotion_name
+){
+  try {
+    const query = `SELECT * FROM promotions WHERE promotion_name= '${promotion_name}'`
+
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function isPromotionMajor(
+connection , 
+promotion_name,
+major_id
+){
+  try {
+    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`
+    const res = await connection.query(query)
+    console.log(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
+  isPromotionMajor,
+  promotionExist,
   userDocument,
   ActiveUser,
   uploadAddress,

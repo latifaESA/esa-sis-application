@@ -16,25 +16,32 @@ async function handler(req, res) {
       major_name,
     } = req.body;
 
+    let modifiedAttendanceDate = attendanceDate; // Create a variable to modify attendanceDate
+
+    if (modifiedAttendanceDate === null) {
+      modifiedAttendanceDate = ""; // Set attendanceDate to an empty string if it's null
+    }
+
     const response = await filterAttendances(
       connection,
       attendanceId,
       teacherId,
       majorId,
       courseId,
-      attendanceDate,
+      modifiedAttendanceDate, // Use modifiedAttendanceDate
       present,
       teacher_firstname,
       teacher_lastname,
       major_name
     );
+  
     await disconnect(connection);
 
     if (response.rows.length === 0) {
       return res.status(404).json({
         success: false,
         code: 404,
-        message: `attendance not found`,
+        message: `Attendance not found`,
       });
     } else {
       return res.status(200).json({
@@ -44,7 +51,6 @@ async function handler(req, res) {
       });
     }
   } catch (error) {
-    // // console.log(message.error);
     return res.status(500).json({
       success: false,
       code: 500,
@@ -52,4 +58,5 @@ async function handler(req, res) {
     });
   }
 }
+
 module.exports = handler;

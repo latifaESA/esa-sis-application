@@ -9,7 +9,7 @@ const { uploadTeacher } = require("../../controller/queries");
 import xlsx from "xlsx";
 
 import { authOptions } from "../../auth/[...nextauth]";
-// import teacherExist from "./ExistTeacher";
+import teacherExist from "./ExistTeacher";
 
 export const config = {
   api: {
@@ -95,9 +95,11 @@ async function handler(req, res) {
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
+ 
     const { fields } = await readFile(req, true, directory);
-
     let course_file = await fs.readdirSync(directory);
+
+
 
     // Access the file path from the 'files' object
     // const buffer = attendance_file.slice(-1)
@@ -141,34 +143,51 @@ async function handler(req, res) {
     const worksheet = workbook.Sheets[sheetName];
 
     const data = xlsx.utils.sheet_to_json(worksheet);
-    // ... (previous code)
+
+    // Check if the data array is empty
+    if (data.length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: "Excel file is empty. No data to upload.",
+      });
+    }
+
 
     const connection = await connect();
     let countSaved = 0; // Add a variable to track the number of records saved
-
     for (const row of data) {
       try {
         // const teacherId = fields[0].teacher_id
-  
-        const teacherArray = Object.values(fields);
-        // const exist = await teacherExist(connection ,
-        //   fields.FirstName ,
-        //   fields.LastName,
-        //   fields.Email
-        //   )
-        //   console.log(exist)
-        //   if(exist){
-        //     return res.status(200).json({
-        //       success:true,
-        //       code:200,
-        //       message:`Teacher Already Exist!`
-        //     })
-        //   }
-              
-     
-        const uploadPromises = teacherArray.map(async (teacher) => {
+          const teacherArray = Object.values(fields);
 
-        
+        const uploadPromises = teacherArray.map(async (teacher) => {
+          const exist = await teacherExist(connection ,
+            teacher.email
+            )
+          
+            if(exist){
+              return res.status(200).json({
+                success:true,
+                code:200,
+                message:`Teachers Already Exist! ${countSaved === 0 ? 'No Teachers Saved' : `${countSaved} Teachers Saved`}`
+              })
+            }
+          if (
+            teacher.firstName === undefined ||
+            teacher.lastName === undefined ||
+            teacher.email === undefined ||
+            teacher.firstName === '' ||
+            teacher.lastName === '' ||
+            teacher.email === ''
+          ) {
+            return res.status(400).json({
+              success: false,
+              code: 400,
+              message: `No data was uploaded due to missing required information.`
+            })
+          }
+
           const response = await uploadTeacher(connection, {
             teacher_id: teacher.teacher_id,
             teacher_firstname: teacher.firstName,
@@ -176,8 +195,8 @@ async function handler(req, res) {
             teacher_lastname: teacher.lastName,
           });
 
-          
 
+          countSaved++; // Increment the count of saved records
           return response;
         });
 
@@ -185,27 +204,27 @@ async function handler(req, res) {
         const responses = await Promise.all(uploadPromises);
 
         if (responses) {
-          countSaved++; // Increment the count of saved records
+          return res.status(201).json({
+            success: true,
+            code: 201,
+            message: `Teachers Uploaded Successfully! ${countSaved} Teachers saved.`,
+          });
         } else {
           return res.status(401).json({
             success: false,
             code: 401,
-            message: `Error In Create `,
+            message: `Failed to save row: ${row} `,
           });
         }
       } catch (error) {
-        console.error(`Error while processing row: `, row, "\nError: ", error);
+         return error
       }
     }
 
     // Close the database connection after all operations
     await disconnect(connection);
 
-    return res.status(201).json({
-      success: true,
-      code: 201,
-      message: `Teachers Uploaded Successfully! ${countSaved} Teachers saved.`,
-    });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
