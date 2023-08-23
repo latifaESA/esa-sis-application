@@ -170,6 +170,12 @@ export default function UploadCourses() {
     
     
                     const majorNameValue = firstRowData[columnHeaders.indexOf('MajorName')];
+                    
+                    if(majorNameValue === undefined ){
+                        setIsClick(false);
+                        setConfirmOpenMessage(true);
+                        setMessages(`No data was uploaded due to missing MajorName.`);
+                    }
     
                     const response = await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
                     const studentData = [];
@@ -177,7 +183,24 @@ export default function UploadCourses() {
                     for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                         const record = records[rowIndex];
                         const year = record[4];
-                        
+                        if(record[0]=== undefined || record[1] === undefined 
+                            || record[2] === undefined || record[3] === undefined 
+                            || record[4] === undefined || record[5] === undefined || record[7] === undefined 
+                            || record[8]=== undefined){
+                                setIsClick(false);
+                                setConfirmOpenMessage(true);
+                                setMessages(`No data was uploaded due to missing required information.`);
+                                return;
+                            }
+                            if(record[0]=== '' && record[1] === '' 
+                                && record[2] === '' && record[3] === '' 
+                                && record[4] === '' && record[5] === '' && record[7] === '' 
+                                && record[8]=== '' ){
+                                    setIsClick(false);
+                                    setConfirmOpenMessage(true);
+                                    setMessages(`Error File: File is empty`);
+                                    return;
+                                }
                         const student_id = generateID(year, response.data.data[0].major_id);
                         const userpassword = generateRandomPassword(8);
                      

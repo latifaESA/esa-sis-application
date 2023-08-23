@@ -11,6 +11,13 @@ async function handler(req, res) {
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
     
     const { adminid, adminemail, admin_firstname, userpassword , admin_lastname } = req.body;
+    if(adminemail === '' || admin_firstname === '' || admin_lastname === ''){
+      return res.status(400).json({
+        success:false,
+        code : 400,
+        message:`Fields is Required`
+      })
+    }
     const exist = await adminExist(connection , admin_firstname , admin_lastname , adminemail)
     if(exist){
       return res.status(200).send(exist);
