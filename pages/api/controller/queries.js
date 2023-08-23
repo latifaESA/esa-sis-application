@@ -1125,7 +1125,7 @@ async function uploadFile(connection, Url, attendance_id) {
   try {
     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id ='${attendance_id}'`;
     const res = await connection.query(query);
-    console.log(query);
+    // console.log(query);
     return res;
   } catch (error) {
     return error;
@@ -1953,7 +1953,7 @@ major_id
     INNER JOIN student ON users.userid = student.student_id
     WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `
 
-    console.log("query" , query)
+    // console.log("query" , query)
     const res = await connection.query(query)
   
     return res
@@ -1983,7 +1983,7 @@ major_id
   try {
     const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`
     const res = await connection.query(query)
-    console.log(query)
+    // console.log(query)
     return res
   } catch (error) {
     return error
