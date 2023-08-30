@@ -11,23 +11,7 @@ export default function Schedule() {
   const { data: session } = useSession();
   const router = useRouter();
   const [promotion, setPromotion] = useState([]);
-  // const [major, setMajor] = useState([]);
-
-  // const [majorValue, setMajorValue] = useState('');
-  // const [promotionValue, setPromotionValue] = useState('');
-
-  const handlePromotion = (selectedValue) => {
-    // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
-    setPromotion(selectedValue);
-  };
-
-  // const handleMajor = (selectedValue) => {
-  //   // Do something with the selected value
-  //   // console.log("Selected Value:", selectedValue);
-  //   setMajorValue(selectedValue)
-  // };
-
+  const [promotionSchedule, setPromotionSchedule] = useState('');
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -45,22 +29,40 @@ export default function Schedule() {
     };
     getMajor();
 
-    const getPromotion = async () => {
-      let table = "promotions";
-      let { data } = await axios.post("/api/pmApi/getAll", { table });
-
-      // // console.log(data.rows, "asdasdads");
-
-      const datesArray = [];
-      data.rows.forEach((prom) => {
-        datesArray.push(prom.promotion_name);
-      });
-
-      setPromotion(datesArray);
-      // console.log(datesArray, "asdadddddsdads");
-    };
+   
     getPromotion();
   }, []);
+  const getPromotion = async () => {
+    let table = "promotions";
+    let Where = "major_id";
+    let id = session.user.majorid
+    let { data } = await axios.post("/api/pmApi/getAllCourses", { table , Where , id });
+ 
+    console.log(data.data, "asdasdads");
+
+    const datesArray = [];
+    data.data.forEach((prom) => {
+      datesArray.push(prom.promotion_name);
+    });
+
+    setPromotion(datesArray);
+   
+  };
+  
+  const handlePromotion = async (event) => {
+  try {
+    const payload = {
+      promotion_name: event,
+      major_id : session.user.majorid
+    }
+    const data = await axios.post('/api/pmApi/filterSchedule' , payload)
+    console.log(data.data)
+    setPromotionSchedule(data.data)
+  } catch (error) {
+    return error
+  }
+ 
+  };
 
   return (
     <>
@@ -79,7 +81,7 @@ export default function Schedule() {
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
               <label className="w-[350px]">
                 Promotion:
-                {
+                {/* {
                   <CustomSelectBox
                     options={promotion}
                     placeholder="Select Promotion"
@@ -88,7 +90,24 @@ export default function Schedule() {
                       "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
                     }
                   />
-                }
+                } */}
+                 
+                <select  
+                 className="ml-9 w-40"
+                //  value={promotion}
+                onChange={(e)=>handlePromotion(e.target.value)}>
+                  <option value=" ">Promotion</option>
+                  <>
+                  <>{promotion.length > 0 ? promotion.map((item, index) => (
+                    // console.log(item)
+              <option key={index} value={item} >{item}</option>
+
+            )) : <option value={""}>NO promotion</option>}</>
+
+                  </>
+
+                  
+                </select>
               </label>
 
               {/* <label>

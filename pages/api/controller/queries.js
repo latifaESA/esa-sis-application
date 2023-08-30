@@ -250,15 +250,16 @@ async function createSchedule(
   fromTime,
   toTime,
   room,
-  pmID
+  pmID,
+  attendanceId
 ) {
   try {
     let res = null;
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
       const query = `
-        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id)
+        VALUES ($1, $2, $3, $4, $5, $6 , $7)
       `;
       res = await connection.query(query, [
         classId,
@@ -267,6 +268,7 @@ async function createSchedule(
         toTime,
         room,
         pmID,
+        attendanceId
       ]);
     }
     return res;
@@ -1989,6 +1991,20 @@ major_id
     return error
   }
 }
+//filter schedule 
+async function getScheduleByPromo (connection , promotion_name , major_id){
+  try {
+    const query = `SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id FROM tmpschedule 
+    INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
+        WHERE tmpclass.major_id = '${major_id}' AND tmpclass.promotion='${promotion_name}'`;
+   
+    const res = await connection.query(query)
+    return res
+
+  } catch (error) {
+    return error
+  }
+}
 
 /* End Postegresql */
 
@@ -2006,6 +2022,7 @@ module.exports = {
   getMajor,
   CreateCourse,
   createTeacher,
+  getScheduleByPromo,
   filterStudentAttendance,
   getStudentAssigned,
   getElectiveCourse,

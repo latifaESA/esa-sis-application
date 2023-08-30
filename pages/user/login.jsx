@@ -125,21 +125,21 @@ export default function LoginScreen() {
 
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === "1") {
-        router.push(redirect || "/student/main");
+        router.push(redirect || "/student/schedule");
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "active"
       ) {
-        router.push(redirect || "/programManager/main");
+        router.push(redirect || "/programManager/students");
       } 
       else if (
         session?.user.role === "3" &&
         session?.user.status == "active"
       ) {
-        router.push(redirect || "/programManager/main");
+        router.push(redirect || "/programManager/students");
       }
       else if (session?.user.role === "0") {
-        router.push(redirect || "/admin/main");
+        router.push(redirect || "/admin/Accounts");
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "inactive"

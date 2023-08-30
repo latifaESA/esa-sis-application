@@ -10,8 +10,9 @@ async function handler(req, res) {
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
     const { table, colName, id } = req.body;
     const data = await deleteByID(connection, table, colName, id);
-    return res.status("200").send(data);
     // await disconnect(connection)
+    return res.status("200").send(data);
+    
   } catch (error) {
     // console.log("the error is: ", error);
     return res.status("401").send(error);
