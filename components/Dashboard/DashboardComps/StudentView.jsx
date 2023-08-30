@@ -53,9 +53,9 @@ const StudentView = () => {
               </div>
             </Link>
 
-            {/* Classes Section */}
+            {/* Financial Section */}
 
-            <Link href='/student/classes'>
+            <Link href='/student/financial'>
               <div
                 className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                   router.pathname == '/student/classes'
