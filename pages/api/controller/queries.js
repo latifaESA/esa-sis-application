@@ -268,7 +268,7 @@ async function createSchedule(
         toTime,
         room,
         pmID,
-        attendanceId
+        attendanceId,
       ]);
     }
     return res;
@@ -943,9 +943,9 @@ async function filterAdmin(
     let query = `
       SELECT * FROM Admin
       WHERE 1=1`;
-      if (adminid.trim() != "") {
-        query += ` AND lower(trim(adminid)) LIKE lower(trim('%${adminid}%'))`;
-      }
+    if (adminid.trim() != "") {
+      query += ` AND lower(trim(adminid)) LIKE lower(trim('%${adminid}%'))`;
+    }
     if (adminemail.trim() != "") {
       query += ` AND lower(trim(adminemail)) LIKE lower(trim('%${adminemail}%'))`;
     }
@@ -958,7 +958,6 @@ async function filterAdmin(
     if (admin_status != "") {
       query += ` AND admin_status='${admin_status}'`;
     }
-   
 
     const result = await connection.query(query);
     return result;
@@ -966,15 +965,15 @@ async function filterAdmin(
     return err;
   }
 }
-async function UpdateAdminStatus(connection , admin_status , adminid){
+async function UpdateAdminStatus(connection, admin_status, adminid) {
   try {
     let query = `UPDATE admin
     SET admin_status = '${admin_status}'
     WHERE adminid = '${adminid}'`;
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function updateStatusPM(connection, pm_id, pm_status) {
@@ -1495,7 +1494,7 @@ async function createAdmin(
   adminemail,
   admin_firstname,
   userpassword,
-  admin_lastname ,
+  admin_lastname,
   admin_status
 ) {
   try {
@@ -1987,15 +1986,10 @@ async function studentExist(
     INNER JOIN student ON users.userid = student.student_id
     WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `;
 
-    console.log("query", query);
+    // console.log("query" , query)
     const res = await connection.query(query);
 
-
-    // console.log("query" , query)
-    const res = await connection.query(query)
-  
-    return res
-
+    return res;
   } catch (error) {
     return error;
   }
@@ -2013,12 +2007,10 @@ async function promotionExist(connection, promotion_name) {
 }
 async function isPromotionMajor(connection, promotion_name, major_id) {
   try {
-
-    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`
-    const res = await connection.query(query)
+    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`;
+    const res = await connection.query(query);
     // console.log(query)
-    return res
-
+    return res;
   } catch (error) {
     return error;
   }
@@ -2099,18 +2091,17 @@ async function addStudentActivityToLogs(
     return err;
   }
 }
-//filter schedule 
-async function getScheduleByPromo (connection , promotion_name , major_id){
+//filter schedule
+async function getScheduleByPromo(connection, promotion_name, major_id) {
   try {
     const query = `SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id FROM tmpschedule 
     INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
         WHERE tmpclass.major_id = '${major_id}' AND tmpclass.promotion='${promotion_name}'`;
-   
-    const res = await connection.query(query)
-    return res
 
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
@@ -2211,5 +2202,5 @@ module.exports = {
   createPMAccount,
   createAdmin,
   filterAdmin,
-  getAdminExist
+  getAdminExist,
 };
