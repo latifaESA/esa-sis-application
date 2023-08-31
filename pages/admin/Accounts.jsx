@@ -22,7 +22,7 @@ export default function Accounts() {
         <>
           <h2 className="text-gray-700 text-3xl pt-5  font-bold">Accounts</h2>
           <div className="flex gap-4 max-[850px]:flex-col max-[850px]:mt-32 max-[850px]:ml-0  h-[30vh] place-items-center">
-          <Link href="/admin/CreateTeacherAccount">
+            <Link href="/admin/CreateTeacherAccount">
               <div className=" ">
                 <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
                   Create Teacher Account
@@ -36,7 +36,7 @@ export default function Accounts() {
                 </button>
               </div>
             </Link>
-            
+
             <Link href="/admin/create">
               <div className=" ">
                 <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
@@ -60,7 +60,14 @@ export default function Accounts() {
                 </button>
               </div>
             </Link>
-            </div>
+            <Link href="/admin/StudentAccount">
+              <div className="  ">
+                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                  Students Account
+                </button>
+              </div>
+            </Link>
+          </div>
         </>
       ) : (
         redirect()
