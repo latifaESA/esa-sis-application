@@ -76,28 +76,30 @@ const ClassList = ({ users }) => {
     }
   };
 
-  const handleFrom = (selectedValue) => {
-    // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
-    setFromTime(selectedValue);
-  };
+  // const handleFrom = (selectedValue) => {
+  //   // Do something with the selected value
+  //   // console.log("Selected Value:", selectedValue);
+  //   setFromTime(selectedValue);
+  // };
 
-  const handleTo = (selectedValue) => {
-    // Do something with the selected value
-    // console.log("Selected Value:", selectedValue);
-    setToTime(selectedValue);
-  };
+  // const handleTo = (selectedValue) => {
+  //   // Do something with the selected value
+  //   // console.log("Selected Value:", selectedValue);
+  //   setToTime(selectedValue);
+  // };
 
+
+  const handleFrom = (e)=>{
+    setFromTime(e.target.value)
+    console.log(e.target.value)
+  };
+  const handleTo = (e)=>{
+    setToTime(e.target.value)
+    
+    
+  }
   const handleLocation = (selectedValue) => {
-    // Do something with the selected value
-    // // console.log("Selected Location:", selectedValue);
-    // // console.log(
-    //   selectedValue.length > 0 &&
-    //   theRoom.filter(room => room.room_name === selectedValue
-    //   )[0].room_id
-    // )
-    // // console.log('hello')
-    // // console.log(theRoom)
+
     setLocation(
       selectedValue.length > 0 &&
         theRoom.filter((room) => room.room_name === selectedValue)[0].room_id
@@ -118,15 +120,7 @@ const ClassList = ({ users }) => {
   };
   const getDetails = async (event) => {
     try {
-      // const tmpclass_id = event.tmpclass_id
-      // const { data } = await axios.post(`/api/pmApi/getDetailsClass`, { tmpclass_id })
-      // // // console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa",data.data[0].teacher_firstname)
-      // setTeacherValue(data.data[0].teacher_id)
-      // setCourseValue(data.data[0].course_id)
-      // setDateFrom(data.data[0].startdate)
-      // setDateTo(data.data[0].enddate)
-      // setPromotions(data.data[0].promotion)
-      // console.log("detailsssssssss", event);
+
       setTeacherValue(event.teacher_id);
       setCourseValue(event.course_id);
       setDateFrom(event.startdate);
@@ -136,132 +130,6 @@ const ClassList = ({ users }) => {
       return error;
     }
   };
-
-  // const handlcourseType = async(event)=>{
-  //   try {
-  //     const payload = {
-  //       table:'courses',
-  //       Where :'course_id',
-  //       id: event.course_id
-  //     }
-  //           const response = await axios.post('/api/pmApi/getAllCourses' , payload)
-  //           setCourseType(response.data.data[0].course_type)
-  //   } catch (error) {
-  //     return error
-  //   }
-  // }
-
-  //   const getStudent = async (event) => {
-
-  //     try {
-
-  //           const payload = {
-  //             table:'courses',
-  //             Where :'course_id',
-  //             id: event.course_id
-  //           }
-  //                 const response = await axios.post('/api/pmApi/getAllCourses' , payload)
-  //                 setCourseType(response.data.data[0].course_type)
-  //             // console.log("typeeeeeeeeeeee",response.data.data[0].course_type)
-  //             if(response.data.data[0].course_type === 'Elective'){
-  //               const payload = {
-  //                 promotion: event.promotion,
-  //                 major_id: session.user.majorid,
-  //                 course_id: event.course_id
-  //               }
-  //               // console.log('payload',payload)
-  //               const data = await axios.post('/api/pmApi/getStudentAssign' , payload)
-  //               // console.log(data.data.code)
-  //               if(data.data.code === 404){
-  //                 try {
-  // let major_id = session.user.majorid
-  // let promotion = event.promotion.replace(/\s/g, '');
-  // // let promotion = promotionName
-  // // console.log('promotion',promotions)
-  // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-  //                   // // console.log(data.data)
-  //                   // // console.log(data.data)
-  //                   setStudent(data.data)
-  //                 } catch (error)
-  //                 {
-  //                    return error
-  //                 }
-
-  //               }else{
-  //                 setStudent(data.data.data);
-  //               }
-
-  //             }else{
-
-  //               let major_id = session.user.majorid
-  //               let promotion = event.promotion
-  //               // let promotion = promotionName
-  //               const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-  //               // // console.log(data.data)
-  //               // // console.log(data.data)
-  //               setStudent(data.data)
-
-  //             }
-
-  //     } catch (error) {
-  //         return error
-  //     }
-
-  // }
-  // const getStudent = async (event) => {
-  //   try {
-  // const payload = {
-  //   table: 'courses',
-  //   Where: 'course_id',
-  //   id: event.course_id
-  // };
-
-  // const response = await axios.post('/api/pmApi/getAllCourses', payload);
-  // setCourseType(response.data.data[0].course_type);
-  //     // console.log("typeeeeeeeeeeee", response.data.data[0].course_type);
-
-  //     if (response.data.data[0].course_type === 'Elective') {
-  //       try {
-  // const payload = {
-  //   promotion: event.promotion,
-  //   major_id: session.user.majorid,
-  //   course_id: event.course_id
-  // };
-  //         // console.log('payload', payload);
-
-  // const data = await axios.post('/api/pmApi/getStudentAssign', payload);
-  // // console.log(data.data.code);
-
-  //         if (data.data.code === 404) {
-  //           let major_id = session.user.majorid;
-  //           let promotion = event.promotion.replace(/\s/g, '');
-  //           // console.log('promotion', promotions);
-
-  //           try {
-  //             // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
-  //             // setStudent(data.data);
-  //           } catch (error) {
-  //             const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
-  //             setStudent(data.data);
-  //           }
-  //         } else {
-  //           setStudent(data.data.data);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error in getStudentAssign:', error);
-  //         setStudent([]);
-  //       }
-  //     } else {
-  // let major_id = session.user.majorid;
-  // let promotion = event.promotion.replace(/\s/g, '');
-  // const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id, promotion });
-  // setStudent(data.data);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in getAllCourses:', error);
-  //     setStudent([]);
-  //   }
-  // };
 
   const getStudent = async (event) => {
     try {
@@ -345,16 +213,10 @@ const ClassList = ({ users }) => {
 
     if (
       selectedValues.length == 0 ||
-      fromTime.length == 0 ||
-      toTime.length == 0 ||
+      // fromTime.va == 0 ||
+      // toTime.length == 0 ||
       location.length == 0
     ) {
-      // console.log(
-      //   selectedValues.length == 0,
-      //   fromTime.length == 0,
-      //   toTime.length == 0,
-      //   location.length == 0
-      // );
       alert("Please fill all the data");
       setIsClicked(false);
     } else {
@@ -368,14 +230,7 @@ const ClassList = ({ users }) => {
         // console.log("date", formattedDates);
         setWeekDays(formattedDates);
 
-        let scheduleData = {
-          classId: classID,
-          days: weekDays,
-          fromTime: fromTime,
-          toTime: toTime,
-          room: location,
-          pmID: session.user.userid,
-        };
+
         // const payload = {
         //   teacher_id: teacherValue,
         //   course_id: courseValue,
@@ -389,97 +244,66 @@ const ClassList = ({ users }) => {
         };
 
         try {
+          const createdAttendanceIds = [];
+        
           for (let i = 0; i < weekDays.length; i++) {
             const attendance_date = weekDays[i];
-
             const payload2 = { ...payload, attendance_date };
-
             const data3 = await axios.post(
               "/api/pmApi/createAttendanceReport",
               payload2
             );
-
             const attendance_id = data3.data.data;
-
-            if (attendance_id) {
-              for (let j = 0; j < student.length; j++) {
-                const student_id = student[j].student_id;
-                await axios.post("/api/pmApi/createAttendanceStudent", {
-                  attendance_id,
-                  student_id,
-                });
-              }
+            createdAttendanceIds.push(attendance_id);
+        
+            for (let j = 0; j < student.length; j++) {
+              const student_id = student[j].student_id;
+              await axios.post("/api/pmApi/createAttendanceStudent", {
+                attendance_id,
+                student_id,
+              });
             }
           }
-
-          let { data } = await axios.post(
-            "/api/pmApi/createSchedule",
-            scheduleData
-          );
-
-          if (data.success) {
-            setIsAddSchedule(false);
-            setSelectedValues([]);
+        
+          for (let i = 0; i < createdAttendanceIds.length; i++) {
+            const attendance_id = createdAttendanceIds[i];
+            const scheduleData = {
+              classId: classID,
+              days: [weekDays[i]],
+              fromTime: fromTime,
+              toTime: toTime,
+              room: location,
+              pmID: session.user.userid,
+              attendanceId: attendance_id,
+            };
+            const { data } = await axios.post(
+              "/api/pmApi/createSchedule",
+              scheduleData
+            );
+        
+            if (data.success) {
+              setIsClicked(false);
+              setIsAddSchedule(false);
+              setSelectedValues([]);
+            }
           }
         } catch (error) {
-          // console.log(error);
+          console.error(error);
         }
+        
       };
-
-      // const createAttendance = async () => {
-      //   try {
-
-      //     const payload = {
-      //       teacher_id: teacherValue,
-      //       course_id: courseValue,
-      //       attendance_date: dateFrom,
-      //       major_id: session.user.majorid
-      //     }
-      //     // // console.log('payload')
-      //     const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
-      //     // // console.log(data.data)
-      //     setData(data.data);
-      //     // // console.log("data",data.data)
-
-      //     const attendance_id = data.data.data
-      //     // // console.log('atttttt' , attendance_id)
-      //     if (attendance_id) {
-      //       for (let i = 0; i < student.length; i++) {
-      //         const student_id = student[i].student_id
-      //         const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
-      //         // // console.log("dataaa", data2.data)
-      //       }
-
-      //     }
-
-      //   } catch (error) {
-      //     return error
-      //   }
-
-      // }
       createTheSchedule();
     }
   };
 
   const handleShowAll = async (tmpclass_id) => {
     console.log("tmpclass_id ==> ", tmpclass_id);
-    // try {
-    //   // setEditModal(true)
-    //   // console.log(attendance_id)
-    //   const {data} = await axios.post(`/api/pmApi/getAllAttendance`,attendance_id)
-    //   setAttendance(data.data)
-    // } catch (error) {
-    //   return error
-    // }
   };
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
 
-  // console.log("course", courseValue);
-  // console.log("course", course_type);
-  // console.log("promotions", promotions);
-  // console.log("studentsssssssss", student);
+
 
   const columns = [
     {
@@ -679,6 +503,7 @@ const ClassList = ({ users }) => {
         <AddSchedule
           handleFrom={handleFrom}
           handleTo={handleTo}
+          setIsClicked={setIsClicked}
           handleLocation={handleLocation}
           handleSelect={handleSelect}
           selectedValues={selectedValues}

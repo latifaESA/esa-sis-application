@@ -9,6 +9,9 @@ const { getMajor, CreateCourse } = require("../../controller/queries");
 import xlsx from "xlsx";
 // import { env } from 'process';
 import { authOptions } from "../../auth/[...nextauth]";
+import CourseExist from "../../pmApi/exist/getCourses";
+
+
 
 export const config = {
   api: {
@@ -199,7 +202,13 @@ async function handler(req, res) {
     const worksheet = workbook.Sheets[sheetName];
 
     const data = xlsx.utils.sheet_to_json(worksheet);
-    // ... (previous code)
+    if (data.length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: "Excel file is empty. No data to upload.",
+      });
+    }
 
     const connection = await connect();
     let countSaved = 0; // Add a variable to track the number of records saved
@@ -213,6 +222,25 @@ async function handler(req, res) {
         }
 
         const majorid = major.rows[0].major_id;
+       
+        if(row.CourseID === undefined || row.CourseName === undefined || row.MajorName === undefined 
+          || row.CourseCredit === undefined || row.CourseType === undefined || row.CourseID === '' || row.MajorName=== ''|| row.CourseName === '' 
+          || row.CourseCredit === '' || row.CourseType === ''){
+            return res.status(400).json({
+              success:false ,
+              code : 400,
+              message:`No data was uploaded due to missing required information.`
+            })
+          }
+          const exist = await CourseExist(connection , row.CourseID , majorid)
+     
+          if(exist){
+            return res.status(400).json({
+              success:false ,
+              code : 400,
+              message:`Courses Already Exist! ${countSaved === 0 ? 'No Courses Saved' : `${countSaved} Courses Saved`} `
+            })
+          }
         const response = await CreateCourse(connection, {
           course_id: row.CourseID,
           course_name: row.CourseName,

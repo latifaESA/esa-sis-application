@@ -5,6 +5,7 @@ import AccountsList from "../../components/Dashboard/AccountsList";
 import AccountsAssistance from "../../components/Dashboard/AccountsAssistance";
 import axios from "axios";
 import { useRouter } from "next/router";
+import AdminList from "../../components/Dashboard/AdminList";
 
 // import Link from 'next/link';
 // import TeachersList from '../../components/Dashboard/TeachersList'
@@ -26,8 +27,9 @@ export default function Create() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const [role, setRole] = useState("2");
-  const [majorName , setMajorName] = useState("")
-  const [major , setMajor] = useState([])
+  const [majorName, setMajorName] = useState("")
+  const [major, setMajor] = useState([])
+  const [admin, setAdminList] = useState([])
 
   const redirect = () => {
     router.push("/AccessDenied");
@@ -43,20 +45,22 @@ export default function Create() {
       handleShowAll();
     } else if (role === "3") {
       handleShow();
+    } else if (role === "4") {
+      handleShowAdmin();
     }
   };
 
 
-const handleMajor = async()=>{
-  try {
-    const table = 'major'
-    const data = await axios.post('/api/pmApi/getAll' , {table})
-    setMajor(data.data.rows)
+  const handleMajor = async () => {
+    try {
+      const table = 'major'
+      const data = await axios.post('/api/pmApi/getAll', { table })
+      setMajor(data.data.rows)
 
-  } catch (error) {
-    return error
+    } catch (error) {
+      return error
+    }
   }
-}
 
   const handleShowAll = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
@@ -67,32 +71,32 @@ const handleMajor = async()=>{
     setStatus("active");
 
     setMajorName("")
- 
+
     setRole("2");
 
 
-        let sendpmData = {
-        pm_id: "".trim(),
-        pm_firstname: "".trim(),
-        pm_lastname: "".trim(),
-        pm_email: "".trim(),
-        pm_status: "active".trim(),
-        majorName:""
-      };
-       try {
-              // id,firstname,lastname,major,promotion,status
+    let sendpmData = {
+      pm_id: "".trim(),
+      pm_firstname: "".trim(),
+      pm_lastname: "".trim(),
+      pm_email: "".trim(),
+      pm_status: "active".trim(),
+      majorName: ""
+    };
+    try {
+      // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post("/api/admin/adminApi/filterpm", sendpmData);
-  
+
       // console.log(data);
       setUsers(data);
-       } catch (error) {
-        return error
-       }
+    } catch (error) {
+      return error
+    }
 
-      // // console.log('this is users')
-      // // console.log(users)
+    // // console.log('this is users')
+    // // console.log(users)
 
-    };
+  };
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
     setRole("3");
@@ -102,33 +106,61 @@ const handleMajor = async()=>{
     setEmail("");
     setStatus("active");
     setMajorName("")
-      let sendData = {
-        pm_ass_id: "".trim(),
-        pm_ass_firstname: "".trim(),
-        pm_ass_lastname: "".trim(),
-        pm_ass_email: "".trim(),
-        pm_ass_status: "active".trim(),
-        majorName:""
-      };
+    let sendData = {
+      pm_ass_id: "".trim(),
+      pm_ass_firstname: "".trim(),
+      pm_ass_lastname: "".trim(),
+      pm_ass_email: "".trim(),
+      pm_ass_status: "active".trim(),
+      majorName: ""
+    };
+    // console.log(sendData);
+    // id,firstname,lastname,major,promotion,status
+    try {
+      let { data } = await axios.post(
+        "/api/admin/adminApi/filterassistance",
+        sendData
+      );
+
       // console.log(sendData);
-      // id,firstname,lastname,major,promotion,status
-      try {
-        let { data } = await axios.post(
-          "/api/admin/adminApi/filterassistance",
-          sendData
-        );
-    
-        // console.log(sendData);
-        setAssistance(data.rows);
-      } catch (error) {
-        return error
-      }
+      setAssistance(data.rows);
+    } catch (error) {
+      return error
+    }
 
 
-   
- 
-      };
-  
+
+
+  };
+
+  const handleShowAdmin = async () => {
+    setRole("4");
+    setFname("");
+    setLname("");
+    setIDvalue("");
+    setEmail("");
+    setStatus("active");
+    setMajorName("")
+    let sendDataAdmin = {
+      adminid: "".trim(),
+      admin_firstname: "".trim(),
+      admin_lastname: "".trim(),
+      adminemail: "".trim(),
+      admin_status: "active".trim(),
+    };
+    try {
+
+      let { data } = await axios.post(
+        "/api/admin/adminApi/filterAdmin",
+        sendDataAdmin
+      );
+      setAdminList(data.rows)
+
+    } catch (error) {
+      return error
+    }
+  }
+
   const handleAccounts = async () => {
     // e.preventDefault();
     // // console.log(idvalue, fname, lname, email, courseid)
@@ -149,6 +181,20 @@ const handleMajor = async()=>{
       );
 
       setAssistance(data.rows);
+    } else if (role == '4') {
+      let sendDataAdmin = {
+        adminid: idvalue.trim(),
+        admin_firstname: fname.trim(),
+        admin_lastname: lname.trim(),
+        adminemail: email.trim(),
+        admin_status: status.trim(),
+      };
+      let { data } = await axios.post(
+        "/api/admin/adminApi/filterAdmin",
+        sendDataAdmin
+      );
+      setAdminList(data.rows)
+
     } else {
       let sendpmData = {
         pm_id: idvalue.trim(),
@@ -156,7 +202,7 @@ const handleMajor = async()=>{
         pm_lastname: lname.trim(),
         pm_email: email.trim(),
         pm_status: status.trim(),
-        majorName:majorName
+        majorName: majorName
       };
       // // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
@@ -167,7 +213,8 @@ const handleMajor = async()=>{
       setUsers(data);
     }
   };
-console.log( "active" ,status , majorName , role)
+
+
   return (
     <>
       <Head>
@@ -248,33 +295,58 @@ console.log( "active" ,status , majorName , role)
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
+              {role === "4" ?
 
-              <label className="">
-                Major:
-                <select  
-                 className="ml-9 w-40"
-                 value={majorName}
-                onChange={(e)=>setMajorName(e.target.value)}>
-                  <option value=" ">Major</option>
-                  <>
-                  <>{major.length > 0 ? major.map((item, index) => (
-              <option key={index} value={item.major_name} >{item.major_name}</option>
+                <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                  Major:
+                  <select
+                    className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                    value={majorName}
+                    onChange={(e) => setMajorName(e.target.value)}>
+                    <option value=" ">Major</option>
+                    <>
+                      <>{major.length > 0 ? major.map((item, index) => (
+                        <option key={index} value={item.major_name} >{item.major_name}</option>
 
-            )) : <option value={""}>NO major</option>}</>
+                      )) : <option value={""}>NO major</option>}</>
 
-                  </>
+                    </>
 
-                  
-                </select>
-              </label>
-              
+
+                  </select>
+                </label>
+
+                :
+
+                <label className="">
+                  Major:
+                  <select
+                    className="ml-9 w-40"
+                    value={majorName}
+                    onChange={(e) => setMajorName(e.target.value)}>
+                    <option value=" ">Major</option>
+                    <>
+                      <>{major.length > 0 ? major.map((item, index) => (
+                        <option key={index} value={item.major_name} >{item.major_name}</option>
+
+                      )) : <option value={""}>NO major</option>}</>
+
+                    </>
+
+
+                  </select>
+                </label>
+
+              }
+
+
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
-          
+
 
               <label>
                 Status:
@@ -292,22 +364,22 @@ console.log( "active" ,status , majorName , role)
               <label className="">
                 Role:
                 <select
-                value={role}
+                  value={role}
                   className="ml-9 w-40 max-[840px]:ml-[50px]"
-                  onChange={(e) => 
-                  {
-                  setRole(e.target.value) ;
-                  setFname("");
-                  setLname("");
-                  setIDvalue("");
-                  setEmail("");
-                  setStatus("active");
-                  setMajorName("") ;
-                }}
-                
+                  onChange={(e) => {
+                    setRole(e.target.value);
+                    setFname("");
+                    setLname("");
+                    setIDvalue("");
+                    setEmail("");
+                    setStatus("active");
+                    setMajorName("");
+                  }}
+
                 >
                   <option value="2">Program Manager</option>
                   <option value="3"> Assistance</option>
+                  <option value="4"> admin</option>
                 </select>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
@@ -318,36 +390,68 @@ console.log( "active" ,status , majorName , role)
                 >
                   Search
                 </button>
-                {role == "2" ?<>
-                
-                <button
+                {/* {role == "2" ? <>
+
+                  <button
+                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleShowAll}
+                  >
+                    Show All
+                  </button>
+                </> : <>
+                  <button
+                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleShow}
+                  >
+                    Show All
+                  </button>
+                </>} */}
+                {role === "4" ? (
+                   <button
+                   className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                   type="button"
+                   onClick={handleShowAdmin}
+                 >
+                   Show All
+                 </button>
+                ) : role === "3" ? (
+                 
+                  <button
+                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleShow}
+                  >
+                    Show All
+                  </button>
+                ) : (
+                  <button
                   className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleShowAll}
                 >
                   Show All
                 </button>
-                </>:<>
-                <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={handleShow}
-                >
-                  Show All
-                </button>
-                </>}
+                )}
 
               </div>
             </div>
-            {role == "3" ? (
-              <AccountsAssistance
-                assistance={assistance}
-                setAssistance={setAssistance}
-              />
-            ) : (
-              <AccountsList users={users} setUsers={setUsers} />
-            )}
+
           </form>
+          {role === "4" ? (
+            // Render AdminList for role 4 users
+            <AdminList admin={admin} setAdminList={setAdminList} />
+          ) : role === "3" ? (
+            // Render AccountsAssistance for role 3 users
+            <AccountsAssistance
+              assistance={assistance}
+              setAssistance={setAssistance}
+            />
+          ) : (
+            // Render AccountsList for role 2 users
+            <AccountsList users={users} setUsers={setUsers} />
+          )}
         </>
       ) : (
         redirect()

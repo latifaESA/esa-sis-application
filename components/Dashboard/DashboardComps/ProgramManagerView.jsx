@@ -26,34 +26,17 @@ const ProgramManagerView = () => {
   return (
     <>
       <div className="flex flex-col">
-        {/* Dashboard Section */}
-        <Link href="/programManager/main">
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/main'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <ComputerDesktopIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Main Board</p>
-            </div>
-          </div>
-        </Link>
+
 
         {/* Courses Section */}
 
         <Link href="/programManager/students">
           {/* <Link href='/admin/courses'> */}
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/students'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/students'
+              ? 'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
             disabled={true}
           >
             <div className="mr-2">
@@ -69,11 +52,10 @@ const ProgramManagerView = () => {
 
         <Link href="/programManager/teachers">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/teachers'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/teachers'
+              ? 'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <UserGroupIcon className="h-5 w-5" />
@@ -84,33 +66,17 @@ const ProgramManagerView = () => {
           </div>
         </Link>
 
-        <Link href="/programManager/schedule">
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/schedule'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <AcademicCapIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Grades</p>
-            </div>
-          </div>
-        </Link>
+
 
         {/* Report Section */}
 
-                {/* Class Section */}
-                <Link href="/programManager/class">
+        {/* Class Section */}
+        <Link href="/programManager/class">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/schedule'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/class'
+              ? 'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <AcademicCapIcon className="h-5 w-5" />
@@ -123,11 +89,10 @@ const ProgramManagerView = () => {
 
         <Link href="/programManager/Schedule">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/Schedule'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/Schedule'
+              ? 'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <CalendarDaysIcon className="h-5 w-5" />
@@ -141,8 +106,8 @@ const ProgramManagerView = () => {
         {/* Payment Section */}
 
         {/* <Link href="/programManager/attendance"> */}
-          {/* <Link href='/admin/payments'> */}
-          {/* <div
+        {/* <Link href='/admin/payments'> */}
+        {/* <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
               router.pathname == '/programManager/attendance'
                 ? // router.pathname == '/admin/Payments'
@@ -162,13 +127,13 @@ const ProgramManagerView = () => {
         <Link href="/programManager/Create/PMmain">
           {/* <Link href='/admin/payments'> */}
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/Create/mainPM' 
-              // router.pathname == '/programManager/Create/createAttendance'
-                ? // router.pathname == '/admin/Payments'
-                  'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/Create/PMmain'
+             || router.pathname == '/programManager/Create/createAttendance'
+             || router.pathname == '/programManager/attendance'
+              ? 
+              'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <CreditCardIcon className="h-5 w-5" />
@@ -183,13 +148,12 @@ const ProgramManagerView = () => {
         <Link href="/programManager/ViewAssign">
           {/* <Link href='/admin/payments'> */}
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/ViewAssign' 
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/ViewAssign'
               // router.pathname == '/programManager/Create/createAttendance'
-                ? // router.pathname == '/admin/Payments'
-                  'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+              ? // router.pathname == '/admin/Payments'
+              'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <UserGroupIcon className="h-5 w-5" />
@@ -199,8 +163,8 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
-           {/* course Management system */}
-  
+        {/* course Management system */}
+
 
 
         {/* Edit Profile */}
@@ -208,11 +172,10 @@ const ProgramManagerView = () => {
         <Link href="/programManager/courses">
           {/* <Link href='/admin/profile'> */}
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/courses'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/courses'
+              ? 'bg-blue-100 text-blue-500'
+              : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <WalletIcon className="h-5 w-5" />
@@ -223,27 +186,6 @@ const ProgramManagerView = () => {
           </div>
         </Link>
 
-        {/* Settings Section */}
-
-        <Link href="/programManager/Settings/Settings">
-          {/* <Link href='/admin/Settings/Settings'> */}
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/Settings/Settings' ||
-              router.pathname == '/admin/Settings/General' ||
-              router.pathname == '/admin/Settings/DropDownList'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <ClipboardDocumentListIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Reports</p>
-            </div>
-          </div>
-        </Link>
         <Link href="/programManager/profile">
           {/* <Link href='/admin/Settings/Settings'> */}
           <div
@@ -254,7 +196,7 @@ const ProgramManagerView = () => {
               router.pathname == '/programManager/profile'
                 ? 'bg-blue-100 text-blue-500'
                 : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
+              }`}
           >
             <div className="mr-2">
               <PencilIcon className="h-5 w-5" />
@@ -283,6 +225,53 @@ const ProgramManagerView = () => {
       </div>
     </div>
   </Link> */}
+        <Link href="/programManager/schedule" disabled>
+          <div
+            className={`pl-2 py-3 mx-5  text-red-400 hover:bg-red-100 hover:text-red-500 rounded text-center cursor-pointer mb-3 flex items-center transition-colors bg-red-100 text-red-500"
+                
+  `}
+          >
+            <div className="mr-2">
+              <AcademicCapIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Grades</p>
+            </div>
+          </div>
+        </Link>
+        {/* Dashboard Section */}
+        <Link href="/programManager/main">
+          <div
+            className={`pl-2 py-3 mx-5  text-red-400 hover:bg-red-100 hover:text-red-500 rounded text-center cursor-pointer mb-3 flex items-center transition-colors bg-red-100 text-red-500"
+                
+             `}
+          >
+            <div className="mr-2">
+              <ComputerDesktopIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Main Board</p>
+            </div>
+          </div>
+        </Link>
+
+        {/* Settings Section */}
+
+        <Link href="/programManager/main" >
+          {/* <Link href='/admin/Settings/Settings'> */}
+          <div
+            className={`pl-2 py-3 mx-5  text-red-400 hover:bg-red-100 hover:text-red-500 rounded text-center cursor-pointer mb-3 flex items-center transition-colors bg-red-100 text-red-500"
+                
+          `}
+          >
+            <div className="mr-2">
+              <ClipboardDocumentListIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Reports</p>
+            </div>
+          </div>
+        </Link>
       </div>
     </>
   );

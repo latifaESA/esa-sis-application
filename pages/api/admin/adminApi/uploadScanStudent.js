@@ -23,6 +23,8 @@ import { authOptions } from "../../auth/[...nextauth]";
 import SendEmail from "./emailFormat";
 import hash from "./hash";
 import StudentExist from "./studentExist";
+import PromotionExist from "./promotionExist";
+import PromotionMajorExist from "./isPromotionToMajor";
 
 export const config = {
   api: {
@@ -157,7 +159,14 @@ async function handler(req, res) {
     const worksheet = workbook.Sheets[sheetName];
 
     const data = xlsx.utils.sheet_to_json(worksheet);
-    // ... (previous code)
+    if (data.length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: "Excel file is empty. No data to upload.",
+      });
+    }
+ 
 
     const connection = await connect();
 
@@ -168,9 +177,9 @@ async function handler(req, res) {
     let idx = 0;
 
     for (const row of data) {
-       console.log(row)
+       
       try {
-      
+
         const major = await getMajor(connection, row.MajorName);
         if (!major || major.rows.length === 0) {
           console.error(`Major not found for row: `, row);
@@ -179,17 +188,56 @@ async function handler(req, res) {
 
       
         const majorid = major.rows[0].major_id;
+        
 
         let field = fields[idx];
 
         idx++;
-           const exist = await StudentExist(connection,field.Email,majorid)
-        
+        // console.log('field.Email\n' , field.Email , 'field.Promotion\n',
+        // field.Promotion, 
+        // 'field.MobileNumber\n',field.MobileNumber , 'field.Gender\n' , field.Gender , 
+        // 'field.StudentFirstName\n',field.StudentFirstName,
+        // 'field.StudentLastName\n',field.StudentLastName,
+        // 'field.AcademicYear\n',field.AcademicYear,
+        // 'field.DateOfBirth\n' , field.DateOfBirth
+        // )
+        if(field.Email === undefined || field.Promotion === undefined|| field.MobileNumber === undefined || field.Gender === undefined
+          || field.StudentFirstName === undefined || field.AcademicYear === undefined || field.DateOfBirth === undefined ||field.StudentLastName === undefined || field.Email === '' || field.MobileNumber === '' 
+          || field.StudentFirstName === '' || field.Promotion === '' ||  field.AcademicYear === '' || field.Gender === '' || field.StudentLastName ==='' || field.DateOfBirth==='' ){
+            return res.status(400).json({
+              success:false ,
+              code : 400,
+              message:`No data was uploaded due to missing required information.`
+            })
+          } 
+           const promotion_name = field.Promotion.replace(/\s+/g, '').toUpperCase()
+           const promotion_exist = await PromotionExist(connection , promotion_name)
+         
+           if(!promotion_exist){
+             return res.status(400).json({
+               code:400,
+               success:false,
+               message:`Promotion ${promotion_name} not Found`
+             })
+           }
+            const major_exist = await PromotionMajorExist(connection , promotion_name , majorid)
+           
+            if (!major_exist){
+              return res.status(400).json({
+                success:false,
+                code:400,
+                message :`promotion ${promotion_name} Not in major ${row.MajorName}`
+              })
+            }
+      
+           const exist = await StudentExist(connection,field.Email , majorid)
+           
           if(exist){
+           
             return res.status(200).json({
               success:true,
               code:200,
-              message:`student Already  Exist!`
+              message:`student Already  Exist!${countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`}`
             })
           }
 

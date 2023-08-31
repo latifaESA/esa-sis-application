@@ -31,8 +31,8 @@ export default function Courses() {
             </Link>
             <Link href="/admin/assign">
               <div className=" ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Edit Course Assignment
+                <button className="primary-button rounded w-80 btnCol text-white hover:text-white hover:font-bold">
+                Edit Course Assignment to Major
                 </button>
               </div>
             </Link>

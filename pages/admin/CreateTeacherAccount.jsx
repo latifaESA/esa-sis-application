@@ -15,6 +15,7 @@ function generateID(prefix) {
 }
 
 export default function CreateTeacher() {
+  const [formErrors, setFormErrors] = useState({});
   const { data: session } = useSession();
   // const [users, setUsers] = useState([]);
   // const [assistance, setAssistance] = useState([]);
@@ -34,6 +35,22 @@ export default function CreateTeacher() {
   };
 
   const handleAdd = async () => {
+    const errors = {};
+    if (teacher_firstname.trim() === "") {
+      errors.teacher_firstname = "First Name is required.";
+    }
+    if (teacher_lastname.trim() === "") {
+      errors.teacher_lastname = "Last Name is required.";
+    }
+    if (teacher_mail.trim() === "") {
+      errors.teacher_mail = "Email is required."
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     let prefix = 5;
     let teacherId = generateID(prefix);
     const payload = {
@@ -48,6 +65,9 @@ export default function CreateTeacher() {
         "/api/admin/adminApi/createTeacher",
         payload
       );
+      setTeacherFirstname('')
+      setTeacherLastname("")
+      setTeacherMail("")
       // console.log(data.data.message);
       setConfirmOpenMessage(true);
       setMessages(data.data.message);
@@ -94,6 +114,11 @@ export default function CreateTeacher() {
                   value={teacher_firstname}
                   onChange={(e) => setTeacherFirstname(e.target.value)}
                 ></input>
+                {formErrors.teacher_firstname && (
+                  <div className="text-center text-red-500 font-bold">
+                    {formErrors.teacher_firstname}
+                  </div>
+                )}
               </label>
 
               <label>
@@ -104,10 +129,16 @@ export default function CreateTeacher() {
                   name="Fname"
                   required
                   placeholder="Last Name"
+                  value={teacher_lastname}
                   onChange={(e) => {
                     setTeacherLastname(e.target.value);
                   }}
                 ></input>
+                {formErrors.teacher_lastname && (
+                  <div className="text-center text-red-500 font-bold ">
+                    {formErrors.teacher_lastname}
+                  </div>
+                )}
               </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
@@ -137,8 +168,8 @@ export default function CreateTeacher() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -148,8 +179,8 @@ export default function CreateTeacher() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -164,7 +195,13 @@ export default function CreateTeacher() {
                   value={teacher_mail}
                   onChange={(e) => setTeacherMail(e.target.value)}
                 ></input>
+                {formErrors.teacher_mail && (
+                  <div className="text-center text-red-500 font-bold ">
+                    {formErrors.teacher_mail}
+                  </div>
+                )}
               </label>
+
 
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button

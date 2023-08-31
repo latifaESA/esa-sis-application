@@ -1,9 +1,9 @@
 const { getExistTeacher } = require("../../controller/queries");
 
-const teacherExist = async( connection ,teacher_firstname, teacher_lastname, teacher_mail)=>{
+const teacherExist = async( connection , teacher_mail)=>{
 
     
-    const exist = await getExistTeacher(connection , teacher_firstname, teacher_lastname, teacher_mail)
+    const exist = await getExistTeacher(connection , teacher_mail)
 
     if(exist.rowCount === 0){
         return false
