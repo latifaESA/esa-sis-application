@@ -21,10 +21,14 @@ export default function CopyClass({
   const [teacherValue, setTeacherValue] = useState("");
   const [oldteach, setoldteach] = useState("");
   const [classID, setClassID] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
 
-  const handleSaveCopy = () => {
-    let copyClass = async () => {
+  const [errorCourse, setErrorCourse] = useState("");
+
+  const handleSaveCopy =async () => {
+    if (courseValue.length === 0) {
+      setErrorCourse("Please choose course")
+    }
       // Create a new Date object with the desired date
       const fromDate = new Date(dateFrom);
       const toDate = new Date(dateTo);
@@ -44,46 +48,39 @@ export default function CopyClass({
           pm_id: session.user.userid,
           major_id: majorValue,
         };
-        let { data } = await axios.post("/api/pmApi/copyClass", classValue);
-        // console.log(data);
-        if (data.success) {
-          setOpenCopy(false);
-          setClassID("");
-          setCourseValue("");
-          setMajorValue("");
-          setTeacherValue("");
-          setDateFrom("");
-          setDateTo("");
-          getClasses();
-        } else {
-          alert("Error copying class");
+        if(errorCourse === ''){
+          let { data } = await axios.post("/api/pmApi/copyClass", classValue);
+          // console.log(data);
+          if (data.success) {
+            setOpenCopy(false);
+            setClassID("");
+            setCourseValue("");
+            setMajorValue("");
+            setTeacherValue("");
+            setDateFrom("");
+            setDateTo("");
+            getClasses();
+          } else {
+            alert("Error copying class");
+          }
         }
+        
         // setOpen(false)
       } catch (err) {
         // console.log(err);
       }
-    };
+    
 
-    courseValue.length === 0
-      ? setError("Please choose course")
-      : teacherValue.length === 0
-      ? setError("Please choose teacher")
-      : promotionValueClass.length === 0
-      ? setError("Please choose promotion")
-      : (setError(""), copyClass());
 
-    // console.log("courseValue : ", courseValue);
-    // console.log("teacherValue : ", teacherValue);
-    // console.log("promotionValueClass : ", promotionValueClass);
-    // console.log("majorValue : ", majorValue);
-    // console.log("dateFrom : ", dateFrom);
-    // console.log("dateTo : ", dateTo);
-    // console.log("pm id : ", session.user.userid);
+   
+
+
   };
 
   const handleCancelCopy = () => {
     setOpenCopy(false);
     setPromotionValueClass("");
+    setErrorCourse('')
     setCourseValue("");
     setTeacherValue("");
   };
@@ -174,72 +171,119 @@ export default function CopyClass({
   };
 
   return (
-    <div className="fixed top-1/3 left-0 bg-white h-3/6 overflow-y-auto flex flex-col p-5 lg:left-2/4 md:left-1/4 component-shadow z-10">
-      <label className="w-[350px] flex justify-between mb-3">
-        Course:
-        {
-          <CustomSelectBox
-            options={courses}
-            placeholder="Select Course"
-            onSelect={handleCourseCopy}
-            styled={
-              "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-            }
-            enable={false}
-          />
-        }
-      </label>
+    <>
 
-      {teacherValue.length > 0 && (
-        <label className="w-[350px] flex justify-between mb-3">
-          Teacher:
-          {
-            <CustomSelectBox
-              options={teachers}
-              placeholder="Select Teacher"
-              onSelect={handleTeacher}
-              styled={
-                "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-              }
-              enable={false}
-              oldvalue={oldteach}
-            />
-          }
-        </label>
-      )}
-      {promotionValueClass.length > 0 && (
-        <label className="w-[350px] flex justify-between mb-3">
-          Promotion:
-          {
-            <CustomSelectBox
-              options={promotion}
-              placeholder="Select Promotion"
-              onSelect={handlePromotionClass}
-              styled={
-                "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-              }
-              enable={false}
-              oldvalue={promotionValueClass}
-            />
-          }
-        </label>
-      )}
-      <div className="text-red-500 self-center">{error}</div>
+      <>
+        <div
+          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        >
+          <div className="relative w-1/2 my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              {/*header*/}
+              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                <h3 className="text-gray-700 text-3xl font-bold">
+                  Copy Class
+                </h3>
+                <button
+                  className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                  onClick={() => setShowModal(false)}
+                >
+                  <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    ×
+                  </span>
+                </button>
+              </div>
+              {/*body*/}
+              <div className="relative p-6 flex-auto  justify-center overflow-y-auto">
+                <div className="flex flex-col">
+                  <label className="text-gray-700 mb-20 items-center">
+                    Course:
+                    {
 
-      <div className="flex justify-between">
-        <button
-          onClick={handleSaveCopy}
-          className="p-3 bg-green-500 hover:bg-green-400 active:bg-green-300"
-        >
-          Save
-        </button>
-        <button
-          onClick={handleCancelCopy}
-          className="p-3 bg-red-500 hover:bg-red-400 active:bg-red-300"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+                      <CustomSelectBox
+                        options={courses}
+                        placeholder="Select Course"
+                        onSelect={handleCourseCopy}
+                        styled={
+                          "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                        }
+                        enable={false}
+                      />
+                    }
+                    <div className="text-red-500 self-center">{errorCourse}</div>
+
+                  </label>
+
+                </div>
+
+
+                <div className="flex flex-row ">
+                  {teacherValue.length > 0 && (
+                    <label className="mb-3 mr-6">
+                      Teacher:
+                      {
+                        <CustomSelectBox
+                          options={teachers}
+                          placeholder="Select Teacher"
+                          onSelect={handleTeacher}
+                          styled={
+                            "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                          }
+                          enable={false}
+                          oldvalue={oldteach}
+                        />
+                      }
+
+                    </label>
+                  )}
+                  {promotionValueClass.length > 0 && (
+                    <label className="mb-3">
+                      Promotion:
+                      {
+                        <CustomSelectBox
+                          options={promotion}
+                          placeholder="Select Promotion"
+                          onSelect={handlePromotionClass}
+                          styled={
+                            "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                          }
+                          enable={false}
+                          oldvalue={promotionValueClass}
+                        />
+                      }
+
+
+                    </label>
+                  )}
+
+                </div>
+              </div>
+              {/*footer*/}
+              <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                <button
+                  className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
+                  type="button"
+                  onClick={handleSaveCopy}
+                >
+                  Save Changes
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                  type="button"
+                  onClick={handleCancelCopy}
+                >
+                  Close
+                </button>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </>
+
+    </>
   );
 }

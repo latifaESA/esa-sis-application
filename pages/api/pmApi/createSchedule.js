@@ -6,9 +6,10 @@ async function handler(req , res){
     try {
         const connection = await connect();
         const {
-            classId, days, fromTime, toTime, room, pmID
+            classId, days, fromTime, toTime, room, pmID , attendanceId
         }=req.body;
-        const response = await createSchedule(connection,classId, days, fromTime, toTime, room, pmID);
+        const response = await createSchedule(connection,classId, days, fromTime, toTime, room, pmID , attendanceId);
+        console.log("response")
         await disconnect(connection)
         if(response.rowCount > 0){
             return res.status(201).json({

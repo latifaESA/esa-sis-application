@@ -14,6 +14,13 @@ async function handler(req, res) {
         teacher_mail,
         teacher_lastname
      } = req.body;
+     if(teacher_firstname === '' || teacher_mail === '' || teacher_lastname === ''){
+      return res.status(400).json({
+        success:false,
+        code:400,
+        message:`Field is required!`
+      })
+     }
      const exist = await teacherExist(connection , teacher_mail)
      if(exist){
        return res.status(200).json({

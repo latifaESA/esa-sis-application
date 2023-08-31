@@ -141,6 +141,7 @@ export default function Create() {
         admin_firstname: fname.trim(),
         userpassword: genPass,
         admin_lastname: lname.trim(),
+        admin_status: status.trim(),
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -311,7 +312,7 @@ export default function Create() {
                   className="ml-9 w-40"
                   onChange={(e) => setStatus(e.target.value)}
                   value={status}
-                  disabled={role == "0" ? true : false}
+                  // disabled={role == "0" ? true : false}
                 >
                   {/* <option value="">Choose Value..</option> */}
                   <option value="active">Active</option>

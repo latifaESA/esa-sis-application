@@ -250,15 +250,16 @@ async function createSchedule(
   fromTime,
   toTime,
   room,
-  pmID
+  pmID,
+  attendanceId
 ) {
   try {
     let res = null;
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
       const query = `
-        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id)
+        VALUES ($1, $2, $3, $4, $5, $6 , $7)
       `;
       res = await connection.query(query, [
         classId,
@@ -267,6 +268,7 @@ async function createSchedule(
         toTime,
         room,
         pmID,
+        attendanceId
       ]);
     }
     return res;
@@ -929,6 +931,52 @@ async function filterassistance(
     return err;
   }
 }
+async function filterAdmin(
+  connection,
+  adminid,
+  adminemail,
+  admin_firstname,
+  admin_lastname,
+  admin_status
+) {
+  try {
+    let query = `
+      SELECT * FROM Admin
+      WHERE 1=1`;
+      if (adminid.trim() != "") {
+        query += ` AND lower(trim(adminid)) LIKE lower(trim('%${adminid}%'))`;
+      }
+    if (adminemail.trim() != "") {
+      query += ` AND lower(trim(adminemail)) LIKE lower(trim('%${adminemail}%'))`;
+    }
+    if (admin_firstname.trim() != "") {
+      query += ` AND lower(trim(admin_firstname)) LIKE lower(trim('%${admin_firstname}%'))`;
+    }
+    if (admin_lastname.trim() != "") {
+      query += ` AND lower(trim(admin_lastname)) LIKE lower(trim('%${admin_lastname}%'))`;
+    }
+    if (admin_status != "") {
+      query += ` AND admin_status='${admin_status}'`;
+    }
+   
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function UpdateAdminStatus(connection , admin_status , adminid){
+  try {
+    let query = `UPDATE admin
+    SET admin_status = '${admin_status}'
+    WHERE adminid = '${adminid}'`;
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 async function updateStatusPM(connection, pm_id, pm_status) {
   try {
     let query = `
@@ -1123,7 +1171,7 @@ async function uploadFile(connection, Url, attendance_id) {
   try {
     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id ='${attendance_id}'`;
     const res = await connection.query(query);
-    console.log(query);
+    // console.log(query);
     return res;
   } catch (error) {
     return error;
@@ -1447,12 +1495,13 @@ async function createAdmin(
   adminemail,
   admin_firstname,
   userpassword,
-  admin_lastname
+  admin_lastname ,
+  admin_status
 ) {
   try {
     let query = `
-    insert into admin(adminid, adminemail, admin_firstname , admin_lastname)
-    values ('${adminid}', '${adminemail}', '${admin_firstname}' , '${admin_lastname}') on conflict (adminid) do nothing
+    insert into admin(adminid, adminemail, admin_firstname , admin_lastname , admin_status)
+    values ('${adminid}', '${adminemail}', '${admin_firstname}' , '${admin_lastname}' , '${admin_status}') on conflict (adminid) do nothing
     RETURNING CASE
     WHEN adminid = '${adminid}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
@@ -1941,7 +1990,12 @@ async function studentExist(
     console.log("query", query);
     const res = await connection.query(query);
 
-    return res;
+
+    // console.log("query" , query)
+    const res = await connection.query(query)
+  
+    return res
+
   } catch (error) {
     return error;
   }
@@ -1959,10 +2013,12 @@ async function promotionExist(connection, promotion_name) {
 }
 async function isPromotionMajor(connection, promotion_name, major_id) {
   try {
-    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`;
-    const res = await connection.query(query);
-    console.log(query);
-    return res;
+
+    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`
+    const res = await connection.query(query)
+    // console.log(query)
+    return res
+
   } catch (error) {
     return error;
   }
@@ -2043,6 +2099,20 @@ async function addStudentActivityToLogs(
     return err;
   }
 }
+//filter schedule 
+async function getScheduleByPromo (connection , promotion_name , major_id){
+  try {
+    const query = `SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id FROM tmpschedule 
+    INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
+        WHERE tmpclass.major_id = '${major_id}' AND tmpclass.promotion='${promotion_name}'`;
+   
+    const res = await connection.query(query)
+    return res
+
+  } catch (error) {
+    return error
+  }
+}
 
 /* End Postegresql */
 
@@ -2061,6 +2131,7 @@ module.exports = {
   CreateCourse,
   addStudentActivityToLogs,
   createTeacher,
+  getScheduleByPromo,
   filterStudentAttendance,
   getStudentAssigned,
   getElectiveCourse,
@@ -2127,6 +2198,7 @@ module.exports = {
   updateSchedule,
   copySchedule,
   copyClass,
+  UpdateAdminStatus,
   insertPromotion,
   getTeachersCourses,
   getUserTeacher,
@@ -2138,5 +2210,6 @@ module.exports = {
   createASAccount,
   createPMAccount,
   createAdmin,
-  getAdminExist,
+  filterAdmin,
+  getAdminExist
 };

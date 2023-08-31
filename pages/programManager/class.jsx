@@ -8,7 +8,7 @@ import ClassList from "../../components/Dashboard/ClassList";
 import CopyClass from "../../components/copyClass";
 // import Link from 'next/link';
 
-export default function Students() {
+export default function classs() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
   // const [promotionValue, setPromotionValue] = useState('');
@@ -29,11 +29,22 @@ export default function Students() {
   const [teacherValue, setTeacherValue] = useState("");
   const [teachers, setTeachers] = useState([]);
   const [allTeacher, setAllTeacher] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
+  const [errorCourse, setErrorCourse] = useState('');
+  const [errorTeacher, setErrorTeacher] = useState('');
+  const [errorPromotion, setErrorPromotion] = useState('');
+  const [errorStart, setErrorStart] = useState('');
+  const [errorEnd, setErrorEnd] = useState('');
   const [searchCourse, setSearchCourse] = useState("");
+ 
 
   const handleCancel = () => {
     setOpen(false);
+    setErrorEnd("")
+    setErrorStart("")
+    setErrorCourse('');
+    setErrorPromotion('')
+    setErrorTeacher('')
     // setPromotionValue('');
     setCourseValue("");
     setTeacherValue("");
@@ -48,10 +59,24 @@ export default function Students() {
   //   setTeacherValue('');
   // }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // console.log('save')
-    let createClass = async () => {
       try {
+        if(courseValue.length === 0){
+          setErrorCourse('Select At least one Course')
+        }
+        if(teacherValue.length === 0){
+          setErrorTeacher('Select At least one Teacher')
+        }
+        if(promotionValueClass.length === 0){
+          setErrorPromotion('Select At least one Promotion ')
+        }
+        if(dateFrom === ''){
+          setErrorStart('Please Fill The Start Date')
+        }
+        if(dateTo === ''){
+          setErrorEnd('Please Fill The End Date')
+        }
         const payload = {
           major_id: session.user.majorid,
           teachers_fullname: teacherValue,
@@ -70,39 +95,33 @@ export default function Students() {
           pm_id: session.user.userid,
           major_id: majorValue,
         };
+     
         // console.log("payload", payload)
-
-        let { data } = await axios.post("/api/pmApi/createClass", classValue);
-        // console.log(data)
-        if (data.success) {
-          setOpen(false);
-          // setPromotionValue('');
-          setCourseValue("");
-          setMajorValue("");
-          setTeacherValue("");
-          setDateFrom("");
-          setDateTo("");
-          getClasses();
-        } else {
-          alert("Error creating class");
-        }
+       
+          let { data } = await axios.post("/api/pmApi/createClass", classValue);
+          // console.log(data)
+          if (data.success) {
+            setOpen(false);
+            // setPromotionValue('');
+            setCourseValue("");
+            setMajorValue("");
+            setTeacherValue("");
+            setDateFrom("");
+            setDateTo("");
+            getClasses();
+          } else {
+            alert("Error creating class");
+          }
+        
+      
         // setOpen(false)
       } catch (err) {
-        // console.log(err)
+        console.log(err)
       }
     };
-    courseValue.length === 0
-      ? setError("Please choose course")
-      : teacherValue.length === 0
-      ? setError("Please choose teacher")
-      : promotionValueClass.length === 0
-      ? setError("Please choose promotion")
-      : dateFrom.length === 0
-      ? setError("Please choose date from")
-      : dateTo.length === 0
-      ? setError("Please choose date to")
-      : (setError(""), createClass());
-  };
+    
+  
+
 
   const handleSaveCopy = () => {
     let createClass = async () => {
@@ -371,8 +390,15 @@ export default function Students() {
               dateFrom={dateFrom}
               handleDateFromChange={handleDateFromChange}
               dateTo={dateTo}
+              errorCourse={errorCourse}
+              errorTeacher={errorTeacher}
               handleDateToChange={handleDateToChange}
+               errorPromotion ={errorPromotion}
               courses={courses}
+              errorStart={errorStart}
+              errorEnd={errorEnd}
+              courseValue={courseValue}
+              teacherValue={teacherValue}
               handleCourse={handleCourse}
               teachers={teachers}
               handleTeacher={handleTeacher}
@@ -454,9 +480,52 @@ export default function Students() {
                 >
                   Show All
                 </button>
+              </div>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                Course:
+                <input
+                  type="text"
+                  placeholder="type course id"
+                  className=" invisible max-[850px]:visible max-[850px]:hidden "
+                  onChange={(e) => setSearchCourse(e.target.value)}
+                />
+                {/* {
+              <CustomSelectBox
+              options={promotion}
+              placeholder="Select Course"
+              onSelect={handlePromotion}
+              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
+              />
+            } */}
+              </label>
+
+              {/* <label className='w-[350px]'>
+            Promotion:
+            {
+              <CustomSelectBox
+              options={promotion}
+              placeholder="Select Promotion"
+              onSelect={handlePromotion}
+              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
+              />
+            }
+          </label> */}
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                  // value={formData.to}
+                  // onChange={handleChange}
+                ></input>
+              </label>
+              <div className="flex flex-col  min-[850px]:flex-row gap-4">
+               
 
                 <button
-                  className="secondary-button text-white rounded w-60 bg-green-600 hover:text-white hover:font-bold"
+                  className="py-1 px-2 primary-button hover:text-white w-40 bg-green-600  hover:font-bold"
                   type="button"
                   onClick={handleClass}
                 >
@@ -464,11 +533,12 @@ export default function Students() {
                 </button>
 
                 <button
-                  className="secondary-button text-white rounded w-96 bg-green-600 hover:text-white hover:font-bold"
+                  className="py-1 px-2 primary-button  w-40 bg-green-600 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleCopyClass}
                 >
                   Copy Schedule
+                  
                 </button>
               </div>
             </div>
@@ -481,5 +551,5 @@ export default function Students() {
     </>
   );
 }
-Students.auth = true;
-Students.adminOnly = true;
+classs.auth = true;
+classs.adminOnly = true;

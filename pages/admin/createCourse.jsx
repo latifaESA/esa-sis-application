@@ -56,7 +56,7 @@ export default function CreateCourse() {
         errors.majorValue = "Major is required";
       }
       if (course_type.length === 0) {
-        errors.majorValue = "Course Type is required";
+        errors.course_type = "Course Type is required";
       }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
@@ -255,7 +255,7 @@ export default function CreateCourse() {
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
-                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  className="primary-button rounded w-60 btnCol  text-white hover:text-white hover:font-bold"
                   type="button"
                   onClick={() => handleAdd()}
                 >

@@ -18,6 +18,7 @@ export default function AddSchedule({
   // setIsAddSchedule,
   setPromotions,
   setCourseValue,
+
   // weekDays,
   // dateFrom,
   // dateTo,
@@ -52,128 +53,7 @@ export default function AddSchedule({
     }
   });
 
-  //   const handleSave = async () => {
-  //     try {
 
-  //         const payload = {
-  //             teacher_id: teacherValue,
-  //             course_id: courseValue,
-  //             attendance_date: dateFrom,
-  //             major_id: session.user.majorid
-  //         }
-  //         // // console.log('payload')
-  //         const data = await axios.post('/api/pmApi/createAttendanceReport', payload)
-  //         // // console.log(data.data)
-  //         setData(data.data);
-  //         // // console.log("data",data.data)
-
-  //         const attendance_id = data.data.data
-  //         // // console.log('atttttt' , attendance_id)
-  //         if (attendance_id) {
-  //             for (let i = 0; i < student.length; i++) {
-  //                 const student_id = student[i].student_id
-  //                 const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id })
-  //                 // // console.log("dataaa", data2.data)
-  //             }
-
-  //         }
-  //         setShowModal(true)
-
-  //     } catch (error) {
-  //         return error
-  //     }
-
-  // }
-  //   useEffect(()=>{
-
-  //   const getStudent = async () => {
-  //     try {
-  //            const payload = {
-  //              table:'courses',
-  //              Where :'course_id',
-  //              id: courseValue
-  //            }
-  //             const response = await axios.post('/api/pmApi/getAllCourses' , payload)
-  //             // console.log(response.data.data[0].course_type)
-  //             setCourseType(response.data.data[0].course_type)
-
-  //             if(course_type !== 'Elective'){
-  //               let major_id = session.user.majorid
-  //               let promotion = promotions.replace(/\s/g, '');
-  //               // let promotion = promotionName
-  //               const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-  //               // // console.log(data.data)
-  //               // // console.log(data.data)
-  //               setStudent(data.data)
-
-  //             }else{
-  //               const payload = {
-  //                 promotion: promotions,
-  //                 major_id: session.user.majorid,
-  //                 course_id: courseValue
-  //               }
-  //               // console.log('payload',payload)
-  //               const data = await axios.post('/api/pmApi/getStudentAssign' , payload)
-  //               // console.log(data)
-  //               if(data.code === 404){
-  //                 let major_id = session.user.majorid
-  //                 let promotion = promotions.replace(/\s/g, '');
-  //                 // let promotion = promotionName
-  //                 // console.log('promotion',promotions)
-  //                 const { data } = await axios.post('/api/pmApi/getAllStudent', { major_id , promotion})
-  //                 // // console.log(data.data)
-  //                 // // console.log(data.data)
-  //                 setStudent(data.data)
-
-  //               }else{
-  //                 setStudent(data.data.data);
-  //               }
-
-  //             }
-
-  //     } catch (error) {
-  //         return error
-  //     }
-
-  // }
-  //     getStudent()
-  //   },[ null])
-
-  //  const handleSaveAttendance = async()=>{
-
-  //     const payload = {
-  //       teacher_id: teacherValue,
-  //       course_id: courseValue,
-  //       major_id: session.user.majorid
-  //     }
-
-  //        try {
-
-  //         for (let i = 0; i < weekDays.length; i++) {
-  //           const attendance_date = weekDays[i];
-
-  //           const payload2 = { ...payload, attendance_date }
-
-  //           const data3 = await axios.post('/api/pmApi/createAttendanceReport', payload2);
-
-  //           const attendance_id = data3.data.data;
-
-  //           if (attendance_id) {
-
-  //             for (let j = 0; j < student.length; j++) {
-
-  //               const student_id = student[j].student_id;
-  //               const data2 = await axios.post('/api/pmApi/createAttendanceStudent', { attendance_id, student_id });
-
-  //             }
-  //           }
-  //           setIsAddSchedule(false)
-  //         }
-  //        } catch (error) {
-  //         return error
-  //        }
-
-  //   }
 
   const handleSaveAll = async () => {
     try {
@@ -185,210 +65,224 @@ export default function AddSchedule({
       setCourseType("");
       setCourseValue("");
       setPromotions("");
+   
     } catch (error) {
       // Handle any errors that may occur during the API calls.
       console.error("Error occurred while saving: ", error);
     }
   };
 
-  // // console.log('clicked', isClicked)
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-non">
+
+      <>
         <div
-          className="
-    fixed top-1/3 bg-white  w-1/3 max-h-screen  
-    m-4
-    left-0 
-    shadow-lg 
-    shadow-indigo-500/40
-    rounded-lg
-    md:w-1/3
-    md:h-1/2
-    overflow-y-auto 
-    flex flex-col p-5 lg:left-2/4 md:left-1/2 "
+          className="justify-center items-center flex  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
         >
-          <div className="flex justify-between mb-3">
-            <span
-              className={`bg-green-500 py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(1)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(1)}
-            >
-              Mon
-            </span>
-            <span
-              className={`py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(2)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(2)}
-            >
-              Tue
-            </span>
-            <span
-              className={`py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(3)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(3)}
-            >
-              Wed
-            </span>
-            <span
-              className={`py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(4)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(4)}
-            >
-              Thurs
-            </span>
-            <span
-              className={`py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(5)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(5)}
-            >
-              Fri
-            </span>
-            <span
-              className={`py-1 px-2 cursor-pointer hover:bg-green-400 ${
-                selectedValues.includes(6)
-                  ? "bg-green-700 text-white"
-                  : "bg-green-500"
-              }`}
-              onClick={() => handleSelect(6)}
-            >
-              Sat
-            </span>
-          </div>
-
-          <label className="w-[350px] flex justify-between mb-3">
-            From :
-            {
-              <CustomSelectBox
-                options={HOURS}
-                placeholder="Select Time"
-                onSelect={handleFrom}
-                styled={
-                  "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-                }
-              />
-            }
-          </label>
-
-          <label className="w-[350px] flex justify-between mb-3">
-            To :
-            {
-              <CustomSelectBox
-                options={HOURS}
-                placeholder="Select Time"
-                onSelect={handleTo}
-                styled={
-                  "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-                }
-                enable={false}
-              />
-            }
-          </label>
-
-          <label className="w-[350px] flex justify-between mb-3">
-            Building :
-            {
-              <CustomSelectBox
-                options={allStages}
-                placeholder="Select Location"
-                onSelect={handleStages}
-                styled={
-                  "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-                }
-                enable={false}
-              />
-            }
-          </label>
-
-          {building.length > 0 && allrooms.length > 0 && (
-            <label className="w-[350px] flex justify-between mb-3">
-              Location :
-              {
-                <CustomSelectBox
-                  options={allrooms}
-                  placeholder="Select Location"
-                  onSelect={handleLocation}
-                  styled={
-                    "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
-                  }
-                  enable={false}
-                />
-              }
-            </label>
-          )}
-
-          <div className="flex justify-between">
-            {isClicked ? (
-              <>
+          <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            {/*content*/}
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none ">
+              {/*header*/}
+              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                <h3 className="text-gray-700 text-3xl font-bold">
+                  Create Schedule
+                </h3>
                 <button
-                  className="primary-button 
-             cursor-not-allowed
-             rounded w-30 btnCol text-white hover:text-white hover:font-bold "
-                  disabled
-                  type="button"
+                  className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                  onClick={() => setShowModal(false)}
                 >
-                  Save
+                  <span className="bg-transparent  text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    ×
+                  </span>
                 </button>
-                <button
-                  disabled
-                  type="button"
-                  onClick={() => {
-                    handleCancelSchedule();
-                    setStudent([]);
-                    setDetails([]);
-                    setCourseType("");
-                    setCourseValue("");
-                    setPromotions("");
-                  }}
-                  className="bg-red-400 text-white active:bg-red-400  cursor-not-allowed text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={() => handleSaveAll()}
-                  className="primary-button rounded w-30 btnCol text-white hover:text-white hover:font-bold"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleCancelSchedule();
-                    setStudent([]);
-                    setDetails([]);
-                    setCourseType("");
-                    setCourseValue("");
-                    setPromotions("");
-                  }}
-                  className="bg-red-500 text-white active:bg-red-600  cursor-pointer text-sm px-6 py-3 w-30 rounded hover:font-bold outline-none focus:outline-none mr-1 mb-1"
-                >
-                  Cancel
-                </button>
-              </>
-            )}
+              </div>
+              {/*body*/}
+              <div className="relative p-6 pr-12 h-3/4  flex-auto overflow-y-scroll">
+                <div className="flex flex-col mb-6 mr-0">
+                  <div className="flex flex-row justify-between">
+                    <span
+                      className={` py-1 px-2 primary-button hover:text-white cursor-pointer  ${selectedValues.includes(1)
+                        ? " primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(1)}
+                    >
+                      Mon
+                    </span>
+                    <span
+                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(2)
+                        ? "primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(2)}
+                    >
+                      Tue
+                    </span>
+                    <span
+                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(3)
+                        ? "primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(3)}
+                    >
+                      Wed
+                    </span>
+                    <span
+                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(4)
+                        ? "primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(4)}
+                    >
+                      Thurs
+                    </span>
+                    <span
+                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(5)
+                        ? "primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(5)}
+                    >
+                      Fri
+                    </span>
+                    <span
+                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(6)
+                        ? "primary-button btnCol text-white"
+                        : "bg-green-500"
+                        }`}
+                      onClick={() => handleSelect(6)}
+                    >
+                      Sat
+                    </span>
+                  </div>
+
+                </div>
+                  <div className="flex  flex-col">
+                  <div className="flex flex-row justify-center mb-6">
+                  <div className="flex flex-col">
+                    <label className="text-gray-700 mr-20">
+                      From :
+                      <input type={'time'}
+                        onChange={(e) => handleFrom(e)}
+                        className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                      />
+                    </label>
+                  </div>
+
+
+                  <div className="flex flex-col">
+                    <label className="text-gray-700">
+                      To :
+                      <input
+                        type={'time'}
+                        onChange={(e) => handleTo(e)}
+                        className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]" />
+                    </label>
+                  </div>
+
+
+
+
+                </div>
+                  <div className="flex flex-row  mb-4">
+                    <div className="flex flex-col">
+                      <label className="text-gray-700 mr-20 ">
+                        Building :
+                        {
+                          <CustomSelectBox
+                            options={allStages}
+                            placeholder="Select Location"
+                            onSelect={handleStages}
+                            styled={
+                              "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                            }
+                            enable={false}
+                          />
+                        }
+                      </label>
+                    </div>
+                    <div className="flex flex-col">
+                      {building.length > 0 && allrooms.length > 0 && (
+                        <label className=" text-gray-700">
+                          Location :
+                          {
+                            <CustomSelectBox
+                              options={allrooms}
+                              placeholder="Select Location"
+                              onSelect={handleLocation}
+                              styled={
+                                "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                              }
+                              enable={false}
+                            />
+                          }
+                        </label>
+                      )}
+                    </div>
+
+                  </div>
+                  </div>
+              </div>
+              {/*footer*/}
+              <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                {isClicked ? (
+                  <>
+                    <button
+                      className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4 cursor-not-allowed text-white hover:text-white hover:text-white  px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 "
+                      disabled
+                      type="button"
+                    >
+                      Save
+                    </button>
+                    <button
+                      disabled
+                      type="button"
+                      onClick={() => {
+                        handleCancelSchedule();
+                        setStudent([]);
+                        setDetails([]);
+                        setCourseType("");
+                        setCourseValue("");
+                        setPromotions("");
+                      }}
+                      className="bg-red-400 text-white px-4 py-2 rounded mr-4 text-white active:bg-red-400  cursor-not-allowed text-sm px-6 py-3 w-30 rounded  outline-none focus:outline-none mr-1 mb-1"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveAll()}
+                      className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
+
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                      onClick={() => {
+                        handleCancelSchedule();
+                        setStudent([]);
+                        setDetails([]);
+                        setCourseType("");
+                        setCourseValue("");
+                        setPromotions("");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      </>
+
     </>
   );
 }
