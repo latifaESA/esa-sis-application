@@ -73,7 +73,10 @@ function ReasonForDeactivation({
             Cancel
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            disabled={reason == "" ? true : false}
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+              reason == "" ? "bg-gray-500" : ""
+            }`}
             onClick={() => {
               handleConfirm(reason);
             }}
@@ -115,7 +118,10 @@ function ReasonForActivation({
             Cancel
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            disabled={reason == "" ? true : false}
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+              reason == "" ? "bg-gray-500" : ""
+            }`}
             onClick={() => {
               handleConfirm(reason);
             }}
