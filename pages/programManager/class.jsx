@@ -97,21 +97,23 @@ export default function classs() {
         };
      
         // console.log("payload", payload)
-
-        let { data } = await axios.post("/api/pmApi/createClass", classValue);
-        // console.log(data)
-        if (data.success) {
-          setOpen(false);
-          // setPromotionValue('');
-          setCourseValue("");
-          setMajorValue("");
-          setTeacherValue("");
-          setDateFrom("");
-          setDateTo("");
-          getClasses();
-        } else {
-          alert("Error creating class");
-        }
+       
+          let { data } = await axios.post("/api/pmApi/createClass", classValue);
+          // console.log(data)
+          if (data.success) {
+            setOpen(false);
+            // setPromotionValue('');
+            setCourseValue("");
+            setMajorValue("");
+            setTeacherValue("");
+            setDateFrom("");
+            setDateTo("");
+            getClasses();
+          } else {
+            alert("Error creating class");
+          }
+        
+      
         // setOpen(false)
       } catch (err) {
         console.log(err)

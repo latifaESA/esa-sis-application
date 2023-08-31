@@ -933,6 +933,52 @@ async function filterassistance(
     return err;
   }
 }
+async function filterAdmin(
+  connection,
+  adminid,
+  adminemail,
+  admin_firstname,
+  admin_lastname,
+  admin_status
+) {
+  try {
+    let query = `
+      SELECT * FROM Admin
+      WHERE 1=1`;
+      if (adminid.trim() != "") {
+        query += ` AND lower(trim(adminid)) LIKE lower(trim('%${adminid}%'))`;
+      }
+    if (adminemail.trim() != "") {
+      query += ` AND lower(trim(adminemail)) LIKE lower(trim('%${adminemail}%'))`;
+    }
+    if (admin_firstname.trim() != "") {
+      query += ` AND lower(trim(admin_firstname)) LIKE lower(trim('%${admin_firstname}%'))`;
+    }
+    if (admin_lastname.trim() != "") {
+      query += ` AND lower(trim(admin_lastname)) LIKE lower(trim('%${admin_lastname}%'))`;
+    }
+    if (admin_status != "") {
+      query += ` AND admin_status='${admin_status}'`;
+    }
+   
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+async function UpdateAdminStatus(connection , admin_status , adminid){
+  try {
+    let query = `UPDATE admin
+    SET admin_status = '${admin_status}'
+    WHERE adminid = '${adminid}'`;
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 async function updateStatusPM(connection, pm_id, pm_status) {
   try {
     let query = `
@@ -1452,12 +1498,13 @@ async function createAdmin(
   adminemail,
   admin_firstname,
   userpassword,
-  admin_lastname
+  admin_lastname ,
+  admin_status
 ) {
   try {
     let query = `
-    insert into admin(adminid, adminemail, admin_firstname , admin_lastname)
-    values ('${adminid}', '${adminemail}', '${admin_firstname}' , '${admin_lastname}') on conflict (adminid) do nothing
+    insert into admin(adminid, adminemail, admin_firstname , admin_lastname , admin_status)
+    values ('${adminid}', '${adminemail}', '${admin_firstname}' , '${admin_lastname}' , '${admin_status}') on conflict (adminid) do nothing
     RETURNING CASE
     WHEN adminid = '${adminid}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
@@ -2087,6 +2134,7 @@ module.exports = {
   updateSchedule,
   copySchedule,
   copyClass,
+  UpdateAdminStatus,
   insertPromotion,
   getTeachersCourses,
   getUserTeacher,
@@ -2098,5 +2146,6 @@ module.exports = {
   createASAccount,
   createPMAccount,
   createAdmin,
+  filterAdmin,
   getAdminExist
 };
