@@ -23,14 +23,16 @@ import selection_data from "../../utilities/selection_data";
 import { LowerButtons } from "./LowerButtons";
 // import AddIcon from '@mui/icons-material/Add';
 import exportSelect from "../../utilities/ExcelExport/exportSelect";
-import generatePasswod from "../../utilities/generatePassword";
-import bcryptjs from "bcryptjs";
+// import generatePasswod from "../../utilities/generatePassword";
+// import bcryptjs from "bcryptjs";
 import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
   WarningMessageObsolote,
+  ReasonForDeactivation,
+  ReasonForActivation,
 } from "./WarningMessage";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
@@ -47,6 +49,9 @@ const TeachersList = ({ users, setUsers }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
+  const [reasons, setReasons] = useState("");
+  const [confirmActivation, setconfirmActivation] = useState(false);
+  const [resultForActivation, setResultForActivation] = useState(false);
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -55,11 +60,12 @@ const TeachersList = ({ users, setUsers }) => {
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
     setSelectedUser(user);
-    setConfirmOpenIncomplete(true);
+    setResultForActivation(true);
   };
   const handleConfirmDel = (user) => {
     setSelectedUser(user);
-    setConfirmOpenDelete(true);
+    // setConfirmOpenDelete(true);
+    setconfirmActivation(true);
   };
 
   console.log(session?.user.name);
@@ -82,19 +88,23 @@ const TeachersList = ({ users, setUsers }) => {
   //   );
   // };
 
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  const handleConfirmClose = () =>
+    // user
+    {
+      setConfirmOpenIncomplete(false);
+      setConfirmOpenDelete(false);
+      setconfirmActivation(false);
+      setResultForActivation(false);
+      // setConfirmOpenObsolote(false);
+      // setCancleIncomplete(false);
+      // const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+      // // console.log("prevStatus",prevStatus)
+      // setUsers((prevUsers) =>
+      //   prevUsers.map((u) =>
+      //     u.ID === user.ID ? { ...u, status: prevStatus } : u
+      //   )
+      // );
+    };
 
   function formatDate(date) {
     const day = date.getDate().toString().padStart(2, "0");
@@ -155,16 +165,12 @@ const TeachersList = ({ users, setUsers }) => {
       student_id: user.student_id,
       action: "status",
       result: "active",
-      reason: "",
+      reason: reasons,
       done_by: session?.user.name,
       date_time: formattedCurrentDate,
     };
 
     axios.post("/api/admin/adminApi/addStudentActivityToLogs", sendToLogs);
-
-    console.log("asdasd");
-
-    console.log("asdasd");
   };
   // const handleEnable = async (user) => {
   //   let genPassword = generatePasswod(8);
@@ -264,7 +270,7 @@ const TeachersList = ({ users, setUsers }) => {
       student_id: user.student_id,
       action: "status",
       result: "inactive",
-      reason: "",
+      reason: reasons,
       done_by: session?.user.name,
       date_time: formattedCurrentDate,
     };
@@ -281,10 +287,26 @@ const TeachersList = ({ users, setUsers }) => {
   };
   const handleConfirmDelete = () => {
     handleDelete(selectedUser);
-    handleSave(selectedUser);
+    // handleSave(selectedUser);
     setConfirmOpenDelete(false);
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
+  };
+  const handleConfirmActivation = (reason) => {
+    console.log("--------------------");
+    console.log(reason);
+    setReasons(reason);
+    console.log("--------------------");
+    setConfirmOpenDelete(true);
+    setconfirmActivation(false);
+  };
+  const handleConfirmReason = (reason) => {
+    console.log("--------------------");
+    console.log(reason);
+    setReasons(reason);
+    console.log("--------------------");
+    setConfirmOpenIncomplete(true);
+    setResultForActivation(false);
   };
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
@@ -722,6 +744,20 @@ const TeachersList = ({ users, setUsers }) => {
           confirmOpenObsolote={confirmOpenDelete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirmDelete}
+        />
+      )}
+      {confirmActivation && (
+        <ReasonForDeactivation
+          confirmOpenIncomplete={confirmActivation}
+          handleConfirmClose={handleConfirmClose}
+          handleConfirm={handleConfirmActivation}
+        />
+      )}
+      {resultForActivation && (
+        <ReasonForActivation
+          confirmOpenIncomplete={resultForActivation}
+          handleConfirmClose={handleConfirmClose}
+          handleConfirm={handleConfirmReason}
         />
       )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
