@@ -11,7 +11,7 @@ import {
   PortalWrapper,
   ScheduleForm,
 } from "./Calender.styled";
-import { DAYS, HOURS, MOCKAPPS } from "./conts";
+import { DAYS, MOCKAPPS } from "./conts";
 import {
   datesAreOnSameDay,
   // getDarkColor,
@@ -42,15 +42,6 @@ const formatTime = (timeWithTimeZone) => {
   const period = parseInt(hours) < 12 ? "AM" : "PM";
   return `${formattedHours}:${minutes} ${period}`;
 };
-function convertToISOTime(inputTime) {
-  const [time, ampm] = inputTime.split(" ");
-  const [hours, minutes] = time.split(":");
-  const isAM = ampm.toLowerCase() === "am";
-  const adjustedHours = isAM ? parseInt(hours, 10) : parseInt(hours, 10) + 12;
-  const isoTime = `${adjustedHours.toString().padStart(2, "0")}:${minutes}:00`;
-  console.log("isoTime", isoTime , isAM)
-  return  `${isoTime}${isAM ? "+03:00" : "+04:00"}`; // Adjust the time zone offset as needed
-}
 
 
 

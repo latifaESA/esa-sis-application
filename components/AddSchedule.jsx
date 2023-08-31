@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CustomSelectBox from "../pages/programManager/customSelectBox";
-import { HOURS } from "../components/calenderComponent/conts";
+// import { HOURS } from "../components/calenderComponent/conts";
 // import { useSession } from 'next-auth/react';
 // import axios from 'axios';
 export default function AddSchedule({
@@ -89,7 +89,7 @@ export default function AddSchedule({
                 </h3>
                 <button
                   className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                  onClick={() => setShowModal(false)}
+                  // onClick={() => setShowModal(false)}
                 >
                   <span className="bg-transparent  text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
                     ×

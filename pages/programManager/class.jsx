@@ -8,7 +8,7 @@ import ClassList from "../../components/Dashboard/ClassList";
 import CopyClass from "../../components/copyClass";
 // import Link from 'next/link';
 
-export default function classs() {
+export default function Class() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
   // const [promotionValue, setPromotionValue] = useState('');
@@ -551,5 +551,5 @@ export default function classs() {
     </>
   );
 }
-classs.auth = true;
-classs.adminOnly = true;
+Class.auth = true;
+Class.adminOnly = true;

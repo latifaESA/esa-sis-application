@@ -13,20 +13,20 @@ const SendEmail = async (name, email, password, studentId) => {
     const link  = `${process.env.NEXTAUTH_URL}`
     const bccEmail = emailing_data.bccEmail;
     const subject = `Welcome to ESA`;
-    const esa_logo = 'C:\\Users\\user\\Desktop\\ese-SiS-project\\esa-project-sis-app\\public\\esa.png';
-    const attachments = [
-      {
-        path: `${esa_logo}`,
-        cid: 'esalogo',
-      },
-    ];
+    // const esa_logo = 'C:\\Users\\user\\Desktop\\ese-SiS-project\\esa-project-sis-app\\public\\esa.png';
+    // const attachments = [
+    //   {
+    //     path: `${esa_logo}`,
+    //     cid: 'esalogo',
+    //   },
+    // ];
      
     const emailBody =
       '<!DOCTYPE html>' +
       '<html><head><title>Appointment</title>' +
       '</head><body><div>' +
       `<div style="text-align: center;">
-         <img src='cid:esalogoAt' alt="" width="120">
+         <img src='' alt="" width="120">
          </div>` +
       `</br>` +
       `<p>Dear <span style="font-weight: bold">${name}</span>,</p>` +
@@ -65,7 +65,7 @@ const SendEmail = async (name, email, password, studentId) => {
       bcc: bccEmail,
       subject: subject,
       html: emailBody,
-      attachments: attachments,
+      // attachments: attachments,
       purpose: 'New Active Student',
     };
 

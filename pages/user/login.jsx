@@ -151,11 +151,6 @@ export default function LoginScreen() {
         session?.user.status == "inactive"
       ) {
         setUserInactive("Account Inactive");
-      }else if (
-        session?.user.role === "0" &&
-        session?.user.status == "inactive"
-      ) {
-        setUserInactive("Account Inactive");
       }
     }
     // // console.log('userState.user.isLogOut==', userState.user.isLogOut);

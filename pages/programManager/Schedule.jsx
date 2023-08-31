@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import CustomSelectBox from "./customSelectBox";
+// import CustomSelectBox from "./customSelectBox";
 import { useEffect, useState } from "react";
 import axios from "axios";
 // import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
@@ -11,7 +11,7 @@ export default function Schedule() {
   const { data: session } = useSession();
   const router = useRouter();
   const [promotion, setPromotion] = useState([]);
-  const [promotionSchedule, setPromotionSchedule] = useState('');
+  // const [promotionSchedule, setPromotionSchedule] = useState('');
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -55,9 +55,8 @@ export default function Schedule() {
       promotion_name: event,
       major_id : session.user.majorid
     }
-    const data = await axios.post('/api/pmApi/filterSchedule' , payload)
-    console.log(data.data)
-    setPromotionSchedule(data.data)
+     await axios.post('/api/pmApi/filterSchedule' , payload)
+    
   } catch (error) {
     return error
   }

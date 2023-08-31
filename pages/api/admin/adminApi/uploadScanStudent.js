@@ -335,7 +335,6 @@ async function handler(req, res) {
             student.userpassword,
             student.student_id
           );
-   
            return response
       
         })
