@@ -530,7 +530,6 @@ async function filterStudent(
       LEFT JOIN major ON student.major_id = major.major_id
       LEFT JOIN user_contact ON student_id = user_contact.userid
       WHERE student.major_id = '${major}'`;
-  
 
     if (id.trim() != "") {
       query += ` AND lower(trim(student_id)) LIKE lower(trim('%${id}%'))`;
@@ -663,7 +662,7 @@ async function getAllCourses(connection, course_id, major_id) {
 
     return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //filter attendance
@@ -724,7 +723,7 @@ async function filterAttendances(
 async function getCourse(connection, table, where, id) {
   try {
     let query = `SELECT * FROM ${table} WHERE ${where}='${id}'`;
-    
+
     const response = await connection.query(query);
     return response;
   } catch (error) {
@@ -772,7 +771,6 @@ async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
 }
 
 async function updatePresent(connection, present, student_id, attendance_id) {
-
   try {
     const query = `UPDATE attendance SET present = ${present} 
     
@@ -1024,9 +1022,9 @@ async function deleteUserpm(connection, pm_id) {
     DELETE FROM user_document WHERE user_document.userid='${pm_id}'
 
     `;
-   
+
     const result = await connection.query(query);
-  
+
     return result;
   } catch (err) {
     return err;
@@ -1304,7 +1302,6 @@ async function ExistElective(connection, course_id, student_id) {
 //   }
 // }
 async function filterElective(
-
   connection,
   major_id,
   course_id,
@@ -1479,50 +1476,37 @@ async function createAdmin(
 }
 
 //exist PM
-async function getExistPM(
-  connection , 
-  pm_email , 
-  major_id
-
-){
+async function getExistPM(connection, pm_email, major_id) {
   try {
-    const query = `SELECT * FROM program_manager WHERE  pm_email='${pm_email}' AND major_id= '${major_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM program_manager WHERE  pm_email='${pm_email}' AND major_id= '${major_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function getExistASPM(
-  connection , 
-  pm_ass_email , 
-  major_id
-
-){
+async function getExistASPM(connection, pm_ass_email, major_id) {
   try {
-    const query = `SELECT * FROM program_manager_assistance WHERE  pm_ass_email='${pm_ass_email}' AND major_id= '${major_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM program_manager_assistance WHERE  pm_ass_email='${pm_ass_email}' AND major_id= '${major_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function getExistTeacher(
-  connection , 
-  teacher_mail 
-){
+async function getExistTeacher(connection, teacher_mail) {
   try {
-    const query = `SELECT * FROM teachers WHERE  teacher_mail='${teacher_mail}'`
-   
-    const res = await connection.query(query)
- 
-    return res
+    const query = `SELECT * FROM teachers WHERE  teacher_mail='${teacher_mail}'`;
+
+    const res = await connection.query(query);
+
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-//filter AttendanceStudent 
+//filter AttendanceStudent
 async function filterStudentAttendance(
   connection,
   major_id,
@@ -1531,9 +1515,8 @@ async function filterStudentAttendance(
   teacher_firstname,
   teacher_lastname,
   attendance_date,
-  present,
+  present
 ) {
-
   try {
     let query = `SELECT attendance .* , attendance_report.attendance_date , courses.course_name , 
     teachers.teacher_firstname , teachers.teacher_lastname 
@@ -1542,10 +1525,9 @@ async function filterStudentAttendance(
     INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id 
     INNER JOIN courses ON  attendance_report.course_id = courses.course_id 
     WHERE attendance_report.major_id = '${major_id}' AND attendance.student_id= '${student_id}' 
-    `
+    `;
     if (teacher_firstname) {
       query += ` AND lower(trim(teachers.teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%')) `;
-
     }
     if (teacher_lastname) {
       query += ` AND lower(trim(teachers.teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%')) `;
@@ -1553,20 +1535,20 @@ async function filterStudentAttendance(
     if (course_name) {
       query += ` AND lower(trim(courses.course_name)) LIKE lower(trim('%${course_name}%')) `;
     }
-    if (attendance_date != '') {
-      query += ` AND attendance_report.attendance_date = '${attendance_date}'`
+    if (attendance_date != "") {
+      query += ` AND attendance_report.attendance_date = '${attendance_date}'`;
     }
-    if (present != '') {
-      query += ` AND present = ${present}`
+    if (present != "") {
+      query += ` AND present = ${present}`;
     }
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-//create Teacher 
+//create Teacher
 
 async function createTeacher(
   connection,
@@ -1574,26 +1556,21 @@ async function createTeacher(
   teacher_firstname,
   teacher_mail,
   teacher_lastname
-
 ) {
   try {
     const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
       ${teacher_id},
-      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') `
-    const res = await connection.query(query)
-    return res
+      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') `;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 async function uploadTeacher(
   connection,
-  { teacher_id,
-    teacher_firstname,
-    teacher_mail,
-    teacher_lastname }
-
+  { teacher_id, teacher_firstname, teacher_mail, teacher_lastname }
 ) {
   try {
     const query = {
@@ -1602,18 +1579,12 @@ async function uploadTeacher(
       $2, 
       $3,
       $4)`,
-      values: 
-      [  teacher_id,
-        teacher_firstname,
-        teacher_mail,
-        teacher_lastname
-      ]
-   
-    }
-    const res = await connection.query(query)
-    return res
+      values: [teacher_id, teacher_firstname, teacher_mail, teacher_lastname],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //get promotion
@@ -1623,36 +1594,38 @@ async function getSchedulePromotion(connection, major_id, attendance_date) {
     from tmpschedule 
     inner join tmpclass on tmpschedule.class_id = tmpclass.tmpclass_id 
     
-    WHERE tmpschedule.day = '${attendance_date}' AND tmpclass.major_id = '${major_id}'`
-    const res = await connection.query(query)
-    return res
+    WHERE tmpschedule.day = '${attendance_date}' AND tmpclass.major_id = '${major_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
-
 }
-async function CreateCourse(connection, { course_id, course_name, course_credit, course_type, major_id }) {
+async function CreateCourse(
+  connection,
+  { course_id, course_name, course_credit, course_type, major_id }
+) {
   try {
     const query = {
       text: `INSERT INTO courses (course_id , course_name , course_credit , major_id , course_type) VALUES 
            ($1 , $2 , $3 ,$4 , $5)`,
-      values: [course_id, course_name, course_credit, major_id, course_type]
-    }
-    const res = await connection.query(query)
+      values: [course_id, course_name, course_credit, major_id, course_type],
+    };
+    const res = await connection.query(query);
 
-    return res
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 async function getMajor(connection, major_name) {
   try {
-    const query = `SELECT * FROM major WHERE major_name='${major_name}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM major WHERE major_name='${major_name}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 //scan student
@@ -1665,11 +1638,11 @@ async function uploadStudent(
     academic_year,
     student_firstname,
     student_lastname,
-    major_id }
+    major_id,
+  }
 ) {
   try {
     const query = {
-
       text: `
         INSERT INTO student (
         student_id , 
@@ -1698,40 +1671,43 @@ async function uploadStudent(
         academic_year,
         student_firstname,
         student_lastname,
-        major_id]
-
-    }
-    const res = await connection.query(query)
-    return res
+        major_id,
+      ],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-async function uploadInfo(connection, {
-  userid,
-  title,
-  firstname,
-  fathername,
-  lastname,
-  maidename,
-  mothername,
-  gender,
-  dateofbirth,
-  countryofbirth,
-  placeofbirth,
-  registernumber,
-  martialstatus,
-  firstnationality,
-  secondnationality
-}) {
+async function uploadInfo(
+  connection,
+  {
+    userid,
+    title,
+    firstname,
+    fathername,
+    lastname,
+    maidename,
+    mothername,
+    gender,
+    dateofbirth,
+    countryofbirth,
+    placeofbirth,
+    registernumber,
+    martialstatus,
+    firstnationality,
+    secondnationality,
+  }
+) {
   try {
     // Perform date validation and conversion
     const validDate = new Date(dateofbirth);
     if (isNaN(validDate)) {
       throw new Error("Invalid date format for dateofbirth.");
     }
-    const formattedDateOfBirth = dateofbirth.toISOString().split('T')[0];
+    const formattedDateOfBirth = dateofbirth.toISOString().split("T")[0];
 
     const query = {
       text: `  
@@ -1741,10 +1717,22 @@ async function uploadInfo(connection, {
         registrationnumber, maritalstatus, firstnationality, secondnationality)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)  on conflict (userid) do nothing`,
       values: [
-        userid, title, firstname, fathername, lastname,
-        maidename, mothername, gender, formattedDateOfBirth, countryofbirth,
-        placeofbirth, registernumber, martialstatus, firstnationality, secondnationality
-      ]
+        userid,
+        title,
+        firstname,
+        fathername,
+        lastname,
+        maidename,
+        mothername,
+        gender,
+        formattedDateOfBirth,
+        countryofbirth,
+        placeofbirth,
+        registernumber,
+        martialstatus,
+        firstnationality,
+        secondnationality,
+      ],
     };
 
     const res = await connection.query(query);
@@ -1756,13 +1744,7 @@ async function uploadInfo(connection, {
 
 async function uploadContact(
   connection,
-  {
-    userid,
-    email,
-    email_two,
-    mobile_number,
-    landline_number
-  }
+  { userid, email, email_two, mobile_number, landline_number }
 ) {
   try {
     const query = {
@@ -1770,12 +1752,12 @@ async function uploadContact(
         INSERT INTO user_contact 
         (userid , email , email_two , mobile_number , landline_number)
         VALUES($1 , $2, $3 , $4 , $5)  on conflict (userid) do nothing`,
-      values: [userid, email, email_two, mobile_number, landline_number]
-    }
-    const res = await connection.query(query)
-    return res
+      values: [userid, email, email_two, mobile_number, landline_number],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function uploadEmerg(
@@ -1789,7 +1771,7 @@ async function uploadEmerg(
     emerg_phonenumber,
     emerg_relationship,
     emerg_medicalhealth,
-    emerg_diseasetype
+    emerg_diseasetype,
   }
 ) {
   try {
@@ -1800,7 +1782,8 @@ async function uploadEmerg(
           emerg_phonenumber , emerg_relationship , emerg_medicalhealth , emerg_diseasetype
           )
         VALUES($1 , $2, $3 , $4 , $5 , $6 , $7 , $8 , $9)  on conflict (userid) do nothing`,
-      values: [userid,
+      values: [
+        userid,
         prefix,
         emerg_firstname,
         emerg_middlename,
@@ -1808,12 +1791,13 @@ async function uploadEmerg(
         emerg_phonenumber,
         emerg_relationship,
         emerg_medicalhealth,
-        emerg_diseasetype]
-    }
-    const res = await connection.query(query)
-    return res
+        emerg_diseasetype,
+      ],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function uploadEducation(
@@ -1825,9 +1809,8 @@ async function uploadEducation(
     obtain_date,
     education_country,
     establishment,
-    other_establishment
+    other_establishment,
   }
-
 ) {
   try {
     const query = {
@@ -1841,25 +1824,27 @@ async function uploadEducation(
         obtain_date,
         education_country,
         establishment,
-        other_establishment]
-    }
-    const res = await connection.query(query)
-    return res
-
+        other_establishment,
+      ],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function uploadAddress(
   connection,
-  { userid,
+  {
+    userid,
     address_country,
     address_region,
     address_city,
     address_street,
     address_building,
     address_floor,
-    address_postal }
+    address_postal,
+  }
 ) {
   try {
     const query = {
@@ -1869,13 +1854,21 @@ async function uploadAddress(
           address_building, address_floor , address_postal
           )
         VALUES($1 , $2, $3 , $4 , $5 , $6 , $7 , $8 )`,
-      values: [userid, address_country, address_region, address_city, address_street,
-        address_building, address_floor, address_postal]
-    }
-    const res = await connection.query(query)
-    return res
+      values: [
+        userid,
+        address_country,
+        address_region,
+        address_city,
+        address_street,
+        address_building,
+        address_floor,
+        address_postal,
+      ],
+    };
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function ActiveUser(
@@ -1898,95 +1891,156 @@ async function ActiveUser(
         '${userid}',
         '1',
         '${userpassword}'
-      )`
+      )`;
 
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function userDocument(
-  connection,
-  { 
-    userid,
-    profileurl 
-  }
-
-) {
-  
+async function userDocument(connection, { userid, profileurl }) {
   try {
-    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}') on conflict (userid) do nothing`
-  
-    const res = await connection.query(query)
-    return res
+    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}') on conflict (userid) do nothing`;
+
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 async function getAdminExist(
-connection ,
-admin_firstname,
-admin_lastname,
-adminemail
-){
+  connection,
+  admin_firstname,
+  admin_lastname,
+  adminemail
+) {
   try {
     const query = `SELECT * FROM admin WHERE admin_firstname='${admin_firstname}' 
-    AND admin_lastname='${admin_lastname}' AND adminemail='${adminemail}'`
-    const res = await connection.query(query)
-    return res
+    AND admin_lastname='${admin_lastname}' AND adminemail='${adminemail}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 async function studentExist(
-connection,
+  connection,
 
-email,
-major_id
-){
+  email,
+  major_id
+) {
   try {
     const query = `SELECT user_contact.* , student.major_id FROM user_contact 
     INNER JOIN users ON user_contact.userid = users.userid
     INNER JOIN student ON users.userid = student.student_id
-    WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `
+    WHERE user_contact.email='${email}' AND  student.major_id='${major_id}' `;
 
-    console.log("query" , query)
-    const res = await connection.query(query)
-  
-    return res
+    console.log("query", query);
+    const res = await connection.query(query);
+
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-async function promotionExist (
-  connection ,
-  promotion_name
-){
+async function promotionExist(connection, promotion_name) {
   try {
-    const query = `SELECT * FROM promotions WHERE promotion_name= '${promotion_name}'`
+    const query = `SELECT * FROM promotions WHERE promotion_name= '${promotion_name}'`;
 
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function isPromotionMajor(
-connection , 
-promotion_name,
-major_id
-){
+async function isPromotionMajor(connection, promotion_name, major_id) {
   try {
-    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`
-    const res = await connection.query(query)
-    console.log(query)
-    return res
+    const query = `SELECT * FROM promotions WHERE promotion_name = '${promotion_name}' AND major_id = '${major_id}'`;
+    const res = await connection.query(query);
+    console.log(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
+  }
+}
+async function filterStudentAdmin(
+  connection,
+  student_id,
+  status,
+  promotion,
+  student_firstname,
+  student_lastname
+  // major_id
+) {
+  try {
+    let query = `
+      SELECT student.* , major.major_name FROM student
+      INNER JOIN major ON student.major_id = major.major_id
+      WHERE 1=1`;
+
+    if (student_id.trim() != "") {
+      query += ` AND lower(trim(student_id)) LIKE lower(trim('%${student_id}%'))`;
+    }
+    if (status.trim() != "") {
+      query += ` AND lower(trim(status)) LIKE lower(trim('%${status}%'))`;
+    }
+    if (promotion.trim() != "") {
+      query += ` AND lower(trim(promotion)) LIKE lower(trim('%${promotion}%'))`;
+    }
+    if (student_firstname.trim() != "") {
+      query += ` AND lower(trim(student_firstname)) LIKE lower(trim('%${student_firstname}%'))`;
+    }
+    if (student_lastname != "") {
+      query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
+    }
+
+    // if (status.trim() != "") {
+    //   query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${status}%'))`;
+    // }
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function updateStatusStudent(connection, student_id, status) {
+  try {
+    let query = `
+    UPDATE student
+    SET status = '${status}'
+    WHERE student_id = '${student_id}'`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
+async function addStudentActivityToLogs(
+  connection,
+  student_id,
+  action,
+  result,
+  reason,
+  done_by,
+  date_time
+) {
+  try {
+    let query = `
+    INSERT INTO student_logs (student_id, action, result, reason, done_by, date_time) 
+    VALUES ('${student_id}' , '${action}', '${result}', '${reason}', '${done_by}', '${date_time}') `;
+
+    const response = await connection.query(query);
+    return response;
+  } catch (err) {
+    return err;
   }
 }
 
@@ -2005,6 +2059,7 @@ module.exports = {
   uploadStudent,
   getMajor,
   CreateCourse,
+  addStudentActivityToLogs,
   createTeacher,
   filterStudentAttendance,
   getStudentAssigned,
@@ -2054,12 +2109,14 @@ module.exports = {
   getClassDetails,
   UpdateToken,
   newpassword,
+  filterStudentAdmin,
   getCourseMajor,
   updateCourse,
   filterCourseMajor,
   createClass,
   studentExist,
   getAllCourses,
+  updateStatusStudent,
   createSchedule,
   getAttendanceByCTD,
   getAllById,
@@ -2081,5 +2138,5 @@ module.exports = {
   createASAccount,
   createPMAccount,
   createAdmin,
-  getAdminExist
+  getAdminExist,
 };
