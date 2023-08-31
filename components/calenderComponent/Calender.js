@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+
 import {
   SevenColGrid,
   Wrapper,
@@ -32,6 +33,26 @@ import {
 } from "@heroicons/react/24/solid";
 import CustomSelectBox from "../../pages/programManager/customSelectBox";
 import axios from "axios";
+const formatTime = (timeWithTimeZone) => {
+
+  const [time] = timeWithTimeZone.split("+"); // Remove the timezone offset
+  const [hours, minutes] = time.split(":");
+  const formattedHours = parseInt(hours) % 12 === 0 ? 12 : parseInt(hours) % 12;
+
+  const period = parseInt(hours) < 12 ? "AM" : "PM";
+  return `${formattedHours}:${minutes} ${period}`;
+};
+function convertToISOTime(inputTime) {
+  const [time, ampm] = inputTime.split(" ");
+  const [hours, minutes] = time.split(":");
+  const isAM = ampm.toLowerCase() === "am";
+  const adjustedHours = isAM ? parseInt(hours, 10) : parseInt(hours, 10) + 12;
+  const isoTime = `${adjustedHours.toString().padStart(2, "0")}:${minutes}:00`;
+  console.log("isoTime", isoTime , isAM)
+  return  `${isoTime}${isAM ? "+03:00" : "+04:00"}`; // Adjust the time zone offset as needed
+}
+
+
 
 export const Calender = () => {
   const { data: session } = useSession();
@@ -67,6 +88,7 @@ export const Calender = () => {
     }
   };
 
+
   const getSchedule = async () => {
     let pmID = session.user.majorid;
     let { data } = await axios.post("/api/pmApi/getScheduleByPMId", { pmID });
@@ -74,6 +96,7 @@ export const Calender = () => {
 
     const datesArray = [];
     data.data.forEach((sched) => {
+      
       datesArray.push({
         tmpschedule_id: sched.tmpschedule_id,
         class_id: sched.class_id,
@@ -87,10 +110,11 @@ export const Calender = () => {
         to: sched.to_time,
         room_building: sched.room_building,
         room_name: sched.room_name,
+        attendanceId : sched.attendance_id,
         color: "#0ba388",
       });
     });
-
+  
     setScheduleDate(datesArray);
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
@@ -248,16 +272,17 @@ export const Calender = () => {
     );
   };
 
-  const handleFrom = (selectedValue) => {
+  const handleFrom = (e) => {
+    setFromTime(e.target.value)
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
-    setFromTime(selectedValue);
+    // setFromTime(selectedValue);
   };
 
-  const handleTo = (selectedValue) => {
+  const handleTo = (e) => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
-    setToTime(selectedValue);
+    setToTime(e.target.value);
   };
 
   const handleClass = (selectedValue) => {
@@ -308,6 +333,7 @@ export const Calender = () => {
   };
 
   const handleOnClickEvent = (event) => {
+    console.log(event)
     setShowPortal(true);
     setPortalData(event);
   };
@@ -319,7 +345,19 @@ export const Calender = () => {
     //   prevEvents.filter((ev) => ev.date !== portalData.date)
     // );
     // handlePotalClose();
-
+    const payload ={
+      table:"attendance",
+      colName:"attendance_id",
+      id:portalData.attendanceId
+    }
+    const payload2 ={
+      table:"attendance_report",
+      colName:"attendance_id",
+      id:portalData.attendanceId
+    }
+    let { data1 } = await axios.post("/api/pmApi/delete",payload);
+    console.log(data1)
+ 
     let table = "tmpschedule";
     let colName = "tmpschedule_id";
     let id = portalData.tmpschedule_id;
@@ -328,6 +366,11 @@ export const Calender = () => {
       colName,
       id,
     });
+
+      await axios.post("/api/pmApi/delete",payload2);
+
+ 
+  
     // console.log("deleted:  ==> ", data);
     if (data.rowCount > 0) {
       handlePotalClose();
@@ -395,14 +438,15 @@ export const Calender = () => {
     e.preventDefault();
     // console.log(event);
     setShowFormEdit(true);
-    setFromTime(event.from);
-    setToTime(event.to);
+    setFromTime(formatTime(event.from));
+    setToTime(formatTime(event.to));
     setClasses(event.courseID);
     setRoomBuilding(event.room_building);
     setRoomName(event.room_name);
     setTheDate(date);
     setTmpscheduleID(event.tmpschedule_id);
   };
+
   return (
     <Wrapper>
       <DateControls>
@@ -543,6 +587,7 @@ export const Calender = () => {
             <EventWrapper>
               {scheduleDate.map(
                 (ev, index) =>
+               
                   datesAreOnSameDay(
                     ev.date,
                     new Date(
@@ -550,7 +595,9 @@ export const Calender = () => {
                       currentDate.getMonth(),
                       day
                     )
+                    
                   ) && (
+                   
                     <StyledEvent
                       className="StyledEvent"
                       onDragStart={(e) => drag(index, e)}
@@ -580,8 +627,8 @@ export const Calender = () => {
                       {/* <div>{ev.title}</div> */}
                       <div>{ev.type}</div>
                       <div>{ev.teacher}</div>
-                      <div>{ev.from}</div>
-                      <div>{ev.to}</div>
+                      <div>{formatTime(ev.from)}</div>
+                      <div>{formatTime(ev.to)}</div>
                       <div>{ev.room_building}</div>
                       <div>{ev.room_name}</div>
                       <div name="actors">
@@ -757,6 +804,9 @@ const AddSchedule = ({
   theroomname,
   isEdit,
 }) => {
+ 
+  
+  
   let classNames = allClasses.map((clss) => clss.course_id);
 
   const [allrooms, setAllrooms] = useState([]);
@@ -790,6 +840,8 @@ const AddSchedule = ({
       allStages.push(room.room_building);
     }
   });
+ 
+console.log('thefrom' , thefrom.split(' ')[1])
 
   return (
     <ScheduleForm>
@@ -811,21 +863,13 @@ const AddSchedule = ({
       <label className="w-full">
         time Picker :
         <label className="flex justify-between items-center w-full">
-          From :{/* Start select box */}
-          <CustomSelectBox
-            options={HOURS}
-            placeholder="Select Time From"
-            onSelect={handleFrom}
-            styled={
-              "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10 mt-5 mb-5"
-            }
-            enable={false}
-            oldvalue={thefrom}
-          />
+          From :
+  
+          <input type={'time'} defaultValue={`${thefrom.split(' ')[0]}` }   onChange={(e)=>handleFrom(e)} />
         </label>
         <label className="flex justify-between items-center w-full">
           To :{/* Start select box */}
-          <CustomSelectBox
+          {/* <CustomSelectBox
             options={HOURS}
             placeholder="Select Time To"
             onSelect={handleTo}
@@ -834,7 +878,15 @@ const AddSchedule = ({
             }
             enable={false}
             oldvalue={theto}
-          />
+          /> */}
+      <input
+    type="time"
+    defaultValue={theto.split(' ')[0] }
+    onChange={(e) => handleTo(e)}
+
+   
+  />
+
         </label>
       </label>
 
