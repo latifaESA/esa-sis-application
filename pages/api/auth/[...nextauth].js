@@ -274,6 +274,7 @@ export const authOptions = {
                       //=======
                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
+                      status: admin.rows[0].admin_status,
                       role: user.rows[0].role.toString(),
                       userid: `${user.rows[0].userid}`,
                       image: userinfo.rows[0].profileurl,

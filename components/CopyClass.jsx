@@ -25,8 +25,10 @@ export default function CopyClass({
 
   const [errorCourse, setErrorCourse] = useState("");
 
-  const handleSaveCopy = () => {
-    let copyClass = async () => {
+  const handleSaveCopy =async () => {
+    if (courseValue.length === 0) {
+      setErrorCourse("Please choose course")
+    }
       // Create a new Date object with the desired date
       const fromDate = new Date(dateFrom);
       const toDate = new Date(dateTo);
@@ -46,30 +48,31 @@ export default function CopyClass({
           pm_id: session.user.userid,
           major_id: majorValue,
         };
-        let { data } = await axios.post("/api/pmApi/copyClass", classValue);
-        // console.log(data);
-        if (data.success) {
-          setOpenCopy(false);
-          setClassID("");
-          setCourseValue("");
-          setMajorValue("");
-          setTeacherValue("");
-          setDateFrom("");
-          setDateTo("");
-          getClasses();
-        } else {
-          alert("Error copying class");
+        if(errorCourse === ''){
+          let { data } = await axios.post("/api/pmApi/copyClass", classValue);
+          // console.log(data);
+          if (data.success) {
+            setOpenCopy(false);
+            setClassID("");
+            setCourseValue("");
+            setMajorValue("");
+            setTeacherValue("");
+            setDateFrom("");
+            setDateTo("");
+            getClasses();
+          } else {
+            alert("Error copying class");
+          }
         }
+        
         // setOpen(false)
       } catch (err) {
         // console.log(err);
       }
-    };
+    
 
 
-    if (courseValue.length === 0) {
-      setErrorCourse("Please choose course")
-    }
+   
 
 
   };

@@ -146,6 +146,17 @@ export default function LoginScreen() {
       ) {
         setUserInactive("Account Inactive");
       }
+      else if (
+        session?.user.role === "3" &&
+        session?.user.status == "inactive"
+      ) {
+        setUserInactive("Account Inactive");
+      }else if (
+        session?.user.role === "0" &&
+        session?.user.status == "inactive"
+      ) {
+        setUserInactive("Account Inactive");
+      }
     }
     // // console.log('userState.user.isLogOut==', userState.user.isLogOut);
     if (!session?.user && !userState.user.isLogOut) {
