@@ -116,7 +116,7 @@ export default function Create() {
                   type="email"
                   name="email"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  // onChange={(e) => setEmail(e.target.value)}
                 ></input>
               </label>
 

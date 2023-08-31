@@ -20,32 +20,32 @@ import selection_data from '../../utilities/selection_data';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from './LowerButtons';
-// import AddIcon from '@mui/icons-material/Add';
-import exportSelect from '../../utilities/ExcelExport/exportSelect';
+// import { LowerButtons } from './LowerButtons';
+// // import AddIcon from '@mui/icons-material/Add';
+// import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import generatePasswod from '../../utilities/generatePassword';
 import bcryptjs from 'bcryptjs';
-import exportAll from '../../utilities/ExcelExport/exportAll';
+// import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
   WarningMessageObsolote,
 } from './WarningMessage';
-import decrypt from '../../utilities/encrypt_decrypt/decryptText';
+// import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 
 // import { Pagination, Stack } from '@mui/material';
 
-const adminList= ({ admin, setAdminList }) => {
+const AdminList= ({ admin, setAdminList }) => {
  console.log(admin)
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
   // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
@@ -457,55 +457,55 @@ const adminList= ({ admin, setAdminList }) => {
 
   // export select to excel
 
-  const exportButton = async () => {
-    if (admin.length > 0) {
-      try {
-        const response = await axios.get('/api/admin/listusers/listexport');
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
+  // const exportButton = async () => {
+  //   if (admin.length > 0) {
+  //     try {
+  //       const response = await axios.get('/api/admin/listusers/listexport');
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
         
-          await exportSelect(selectedRows, incomingData, session);
-        } else {
-          setAdminList([]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  //         await exportSelect(selectedRows, incomingData, session);
+  //       } else {
+  //         setAdminList([]);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
-  // export all to excel
-  const exportAllButton = async () => {
-    if (users.length > 0) {
-      try {
-        const response = await axios.get('/api/admin/listusers/listexport');
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
+  // // export all to excel
+  // const exportAllButton = async () => {
+  //   if (users.length > 0) {
+  //     try {
+  //       const response = await axios.get('/api/admin/listusers/listexport');
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
          
-          await exportAll(incomingData, session);
-        } else {
-          setUsers([]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-  const handlePrintSelected = () => {
-    const selectedIDs = selectedRows;
+  //         await exportAll(incomingData, session);
+  //       } else {
+  //         setUsers([]);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+  // const handlePrintSelected = () => {
+  //   const selectedIDs = selectedRows;
    
-    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+  //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
    
-    selectedUsers.forEach((user) => {
-      if (user.reportURL) {
-        window.open(user.reportURL);
-      } else {
-        setMessage('Please select a user with a report');
-      }
-    });
+  //   selectedUsers.forEach((user) => {
+  //     if (user.reportURL) {
+  //       window.open(user.reportURL);
+  //     } else {
+  //       setMessage('Please select a user with a report');
+  //     }
+  //   });
 
    
-  };
+  // };
 
   return (
     <>
@@ -534,7 +534,7 @@ const adminList= ({ admin, setAdminList }) => {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
@@ -548,16 +548,16 @@ const adminList= ({ admin, setAdminList }) => {
       </Box>
 
       <div className="grid lg:grid-cols-1 p-5 shadow-sm">
-        <LowerButtons
+        {/* <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
           exportAllButton={exportAllButton}
           handlePrintSelected={handlePrintSelected}
           session={session}
-        />
+        /> */}
       </div>
     </>
   );
 };
 
-export default adminList;
+export default AdminList;
