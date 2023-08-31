@@ -23,7 +23,7 @@ export default function Create() {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [status, setStatus] = useState("active");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
 
   const handleShowAll = async () => {
     let sendData = {
@@ -41,7 +41,7 @@ export default function Create() {
     setStudentId("");
     setFname("");
     setLname("");
-    setEmail("");
+    // setEmail("");
   };
 
   const handleSearch = async () => {
