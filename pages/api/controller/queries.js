@@ -1153,6 +1153,15 @@ async function getScheduleToStudents(connection, major_id, promotion) {
     return error;
   }
 }
+async function getAllMajors(connection) {
+  try {
+    const query = `SELECT * FROM promotions`;
+    const result = await connection.query(query);
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
 //unassign teacher to course
 
 async function unassign(connection, teacher_id, course_id) {
@@ -2022,20 +2031,19 @@ async function filterStudentAdmin(
   promotion,
   student_firstname,
   student_lastname
-  // major_id
 ) {
   try {
     let query = `
       SELECT student.* , major.major_name FROM student
       INNER JOIN major ON student.major_id = major.major_id
       WHERE 1=1`;
-
-    if (student_id.trim() != "") {
-      query += ` AND lower(trim(student_id)) LIKE lower(trim('%${student_id}%'))`;
-    }
     if (status.trim() != "") {
       query += ` AND lower(trim(status)) LIKE lower(trim('%${status}%'))`;
     }
+    if (student_id.trim() != "") {
+      query += ` AND lower(trim(student_id)) LIKE lower(trim('%${student_id}%'))`;
+    }
+
     if (promotion.trim() != "") {
       query += ` AND lower(trim(promotion)) LIKE lower(trim('%${promotion}%'))`;
     }
@@ -2045,9 +2053,8 @@ async function filterStudentAdmin(
     if (student_lastname != "") {
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
     }
-
-    // if (status.trim() != "") {
-    //   query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${status}%'))`;
+    // if (majorName.trim() != "") {
+    //   query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
     // }
 
     const result = await connection.query(query);
@@ -2203,4 +2210,5 @@ module.exports = {
   createAdmin,
   filterAdmin,
   getAdminExist,
+  getAllMajors,
 };

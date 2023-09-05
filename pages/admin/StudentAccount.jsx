@@ -17,18 +17,21 @@ export default function Create() {
 
   useEffect(() => {
     handleShowAll();
+    getAllMajors();
   }, []);
 
   const [studentId, setStudentId] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [status, setStatus] = useState("active");
-  // const [email, setEmail] = useState("");
+  const [major, setMajor] = useState([]);
+  const [majorValue, setMajorValue] = useState("");
 
   const handleShowAll = async () => {
     let sendData = {
+      status: "active",
       student_id: "",
-      status: "",
+
       promotion: "",
       student_firstname: "",
       student_lastname: "",
@@ -37,10 +40,13 @@ export default function Create() {
       "/api/admin/adminApi/filterStudentAdmin",
       sendData
     );
+    console.log("==========");
+    console.log(data.data.rows);
     setUsers(data.data.rows);
     setStudentId("");
     setFname("");
     setLname("");
+    setMajorValue("");
     // setEmail("");
   };
 
@@ -48,10 +54,11 @@ export default function Create() {
     let sendData = {
       student_id: studentId,
       status: status,
-      promotion: "",
+      promotion: majorValue,
       student_firstname: fname,
       student_lastname: lname,
     };
+    console.log(sendData);
     const data = await axios.post(
       "/api/admin/adminApi/filterStudentAdmin",
       sendData
@@ -59,6 +66,12 @@ export default function Create() {
     setUsers(data.data.rows);
     console.log(status);
     console.log(data.data.rows);
+  };
+
+  const getAllMajors = async () => {
+    let data = await axios.get("/api/admin/adminApi/getAllMajors");
+
+    setMajor(data.data.rows);
   };
   return (
     <>
@@ -137,21 +150,24 @@ export default function Create() {
                 ></input>
               </label>
 
-              <label className="">
-                Major:
-                <select className="ml-9 w-40">
-                  <option value=" ">Major</option>
+              <label className="w-[350px]">
+                Promotion:
+                <select
+                  className="ml-1 w-40"
+                  onChange={(e) => setMajorValue(e.target.value)}
+                >
+                  <option value=" ">Choose a Promotion</option>
                   <>
                     <>
-                      {/* {major.length > 0 ? (
+                      {major.length > 0 ? (
                         major.map((item, index) => (
-                          <option key={index} value={item.major_name}>
-                            {item.major_name}
+                          <option key={index} value={item.promotion_name}>
+                            {item.promotion_name}
                           </option>
                         ))
                       ) : (
                         <option value={""}>NO major</option>
-                      )} */}
+                      )}
                     </>
                   </>
                 </select>
@@ -165,6 +181,7 @@ export default function Create() {
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
+                  <option value="hold">Hold</option>
                 </select>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">

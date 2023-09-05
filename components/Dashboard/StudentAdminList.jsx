@@ -7,6 +7,7 @@
  */
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 import React from "react";
 import { useState } from "react";
 // import Link from 'next/link';
@@ -33,6 +34,7 @@ import {
   WarningMessageObsolote,
   ReasonForDeactivation,
   ReasonForActivation,
+  ReasonForHolding,
 } from "./WarningMessage";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
@@ -52,6 +54,7 @@ const TeachersList = ({ users, setUsers }) => {
   const [reasons, setReasons] = useState("");
   const [confirmActivation, setconfirmActivation] = useState(false);
   const [resultForActivation, setResultForActivation] = useState(false);
+  const [status, setStatus] = useState("");
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -118,7 +121,7 @@ const TeachersList = ({ users, setUsers }) => {
   const handleSave = async (user) => {
     let sendData = {
       student_id: user.student_id,
-      status: user.status == "active" ? "inactive" : "active",
+      status: status,
     };
     axios
       .put(
@@ -147,7 +150,7 @@ const TeachersList = ({ users, setUsers }) => {
             u.student_id === user.student_id
               ? {
                   ...u,
-                  status: user.status == "active" ? "inactive" : "active",
+                  status: user.status,
                 }
               : u
           )
@@ -164,7 +167,7 @@ const TeachersList = ({ users, setUsers }) => {
     let sendToLogs = {
       student_id: user.student_id,
       action: "status",
-      result: "active",
+      result: status,
       reason: reasons,
       done_by: session?.user.name,
       date_time: formattedCurrentDate,
@@ -363,6 +366,7 @@ const TeachersList = ({ users, setUsers }) => {
     setMessage("");
   }, selection_data.message_disapear_timing);
 
+  const statusData = ["active", "inactive", "hold"];
   const columns = [
     {
       field: "student_id",
@@ -456,12 +460,30 @@ const TeachersList = ({ users, setUsers }) => {
     //   width: 120,
     //   type: "singleSelect",
     // },
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   headerAlign: "center",
+    //   align: "center",
+    //   width: 100,
+    // },
     {
       field: "status",
       headerName: "Status",
       headerAlign: "center",
       align: "center",
       width: 100,
+      editable: true,
+      cellClassName: (params) =>
+        params.row.status === "active"
+          ? "text-green-600 font-bold"
+          : params.row.status === "inactive"
+          ? "text-red-600 font-bold"
+          : "" || params.row.status === "hold"
+          ? "text-yellow-900 font-bold"
+          : "",
+      type: "singleSelect",
+      valueOptions: statusData,
     },
     {
       field: "promotion",
@@ -597,14 +619,25 @@ const TeachersList = ({ users, setUsers }) => {
 
     {
       field: "action",
-      headerName: "Action",
+      headerName: "Change Status",
       width: `${session.user.role === "0" ? 300 : 150}`,
       headerAlign: "center",
       align: "center",
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
+          {/* old buttons */}
           <button
+            onClick={(e) => {
+              e.preventDefault();
+              setStatus(params.row.status);
+              handleConfirmIncomplete(params.row);
+            }}
+            className="primary-button hover:text-white"
+          >
+            Save
+          </button>
+          {/* <button
             disabled={params.row.status == "active" ? true : false}
             className="primary-button hover:text-white"
             onClick={() => {
@@ -628,6 +661,22 @@ const TeachersList = ({ users, setUsers }) => {
           >
             <PersonRemoveIcon />
           </button>
+          <button
+            className="primary-button hover:text-white"
+            disabled={params.row.status == "hold" ? true : false}
+            onClick={() => {
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleConfirmDel(params.row);
+              // handleDelete(params.row)
+            }}
+            type="button"
+          >
+            <PersonOffIcon />
+          </button> */}
+
+          {/* end of old buttons */}
+
           {/* <Link
             className='text-black'
             target='_blank'

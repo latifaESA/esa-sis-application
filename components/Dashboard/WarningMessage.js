@@ -21,7 +21,7 @@ function WarningMessageIncomplete({
     >
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
         <p className="text-gray-700 mb-4">
-          Are you sure you want to Activate this User ?
+          Are you sure you want to Change this User's Status ?
         </p>
         <div className="flex justify-end">
           <button
@@ -89,6 +89,51 @@ function ReasonForDeactivation({
   );
 }
 function ReasonForActivation({
+  confirmOpenIncomplete,
+  handleConfirmClose,
+  handleConfirm,
+}) {
+  const [reason, setReason] = React.useState("");
+  return (
+    <Modal
+      open={confirmOpenIncomplete}
+      onClose={handleConfirmClose}
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
+    >
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
+          State a reason for changing User Status
+        </p>
+        <input
+          type="text"
+          value={reason}
+          className="w-full mb-5"
+          onChange={(e) => setReason(e.target.value)}
+        />
+        <div className="flex justify-end">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+            onClick={handleConfirmClose}
+          >
+            Cancel
+          </button>
+          <button
+            disabled={reason == "" ? true : false}
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+              reason == "" ? "bg-gray-500" : ""
+            }`}
+            onClick={() => {
+              handleConfirm(reason);
+            }}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+function ReasonForHolding({
   confirmOpenIncomplete,
   handleConfirmClose,
   handleConfirm,
@@ -456,4 +501,5 @@ export {
   WarningMessageNotVerified,
   WarningMessageVerified,
   NotificatonMessages,
+  ReasonForHolding,
 };
