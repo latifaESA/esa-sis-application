@@ -5,9 +5,9 @@
  * École Supérieure des Affaires (ESA)
  * Copyright (c) 2023 ESA
  */
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import PersonOffIcon from "@mui/icons-material/PersonOff";
+// import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+// import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+// import PersonOffIcon from "@mui/icons-material/PersonOff";
 import React from "react";
 import { useState } from "react";
 // import Link from 'next/link';
@@ -34,7 +34,7 @@ import {
   WarningMessageObsolote,
   ReasonForDeactivation,
   ReasonForActivation,
-  ReasonForHolding,
+  // ReasonForHolding,
 } from "./WarningMessage";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
@@ -65,11 +65,11 @@ const TeachersList = ({ users, setUsers }) => {
     setSelectedUser(user);
     setResultForActivation(true);
   };
-  const handleConfirmDel = (user) => {
-    setSelectedUser(user);
-    // setConfirmOpenDelete(true);
-    setconfirmActivation(true);
-  };
+  // const handleConfirmDel = (user) => {
+  //   setSelectedUser(user);
+  //   // setConfirmOpenDelete(true);
+  //   setconfirmActivation(true);
+  // };
 
   console.log(session?.user.name);
   //obsolete modal
