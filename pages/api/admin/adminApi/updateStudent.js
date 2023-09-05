@@ -9,7 +9,6 @@ async function handler(req, res) {
   try {
     const { student_id, status } = req.body;
     const data = await updateStatusStudent(connection, student_id, status);
-    console.log("sssss", status);
     return res.status("200").send(data);
   } catch (error) {
     // console.log('the error is: ', error)
