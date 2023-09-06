@@ -67,6 +67,13 @@ export default function Accounts() {
                 </button>
               </div>
             </Link>
+            <Link href="/admin/UploadSTAlumni">
+              <div className="  ">
+                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                  upload Alumni Students
+                </button>
+              </div>
+            </Link>
           </div>
         </>
       ) : (

@@ -25,6 +25,8 @@ import hash from "./hash";
 import StudentExist from "./studentExist";
 import PromotionExist from "./promotionExist";
 import PromotionMajorExist from "./isPromotionToMajor";
+import DataSettings from "../../controller/getDataSettings";
+
 
 export const config = {
   api: {
@@ -240,7 +242,10 @@ async function handler(req, res) {
               message:`student Already  Exist!${countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`}`
             })
           }
-
+          const settings = await DataSettings(connection , 'settings')
+         
+          const esa_logo = settings[0].esa_logo
+          
         const StudentArray = Object.values({field});
   
         const uploadPromises = StudentArray.map(async (student) => {
@@ -333,11 +338,14 @@ async function handler(req, res) {
             student.StudentFirstName,
             student.Email,
             student.userpassword,
-            student.student_id
+            student.student_id,
+            esa_logo
           );
+        
            return response
       
         })
+
       
         const responses = await Promise.all(uploadPromises);
       

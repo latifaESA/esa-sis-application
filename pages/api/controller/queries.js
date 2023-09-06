@@ -418,12 +418,14 @@ async function addSchedule(
   fromTime,
   toTime,
   room_id,
-  pm_id
+  pm_id,
+  attendanceId
 ) {
   try {
     // classID, day, fromTime, toTime, room_id, pm_id
     const result = connection.query(
-      `INSERT INTO tmpschedule (day, from_time, to_time, room, pm_id,class_id) VALUES ('${day}','${fromTime}','${toTime}', ${room_id}, '${pm_id}' , ${classID})`
+      `INSERT INTO tmpschedule (day, from_time, to_time, room, pm_id,class_id , attendance_id) VALUES 
+      ('${day}','${fromTime}','${toTime}', ${room_id}, '${pm_id}' , ${classID} , '${attendanceId}')`
     );
     return result;
   } catch (error) {
@@ -787,7 +789,7 @@ async function updatePresent(connection, present, student_id, attendance_id) {
 
 async function getAllStudent(connection, major_id, promotion) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}'`;
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}' AND status = 'active'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2093,21 +2095,127 @@ async function addStudentActivityToLogs(
 }
 //filter schedule
 async function getScheduleByPromo(connection, promotion_name, major_id) {
-  try {
-    const query = `SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id FROM tmpschedule 
-    INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
-        WHERE tmpclass.major_id = '${major_id}' AND tmpclass.promotion='${promotion_name}'`;
 
+  try {
+    let query = `
+    SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id , tmpclass.teacher_id,
+tmpclass.course_id , courses.course_name , courses.course_type,rooms.room_name,
+rooms.room_building , teachers.teacher_firstname,teachers.teacher_lastname
+FROM tmpschedule
+    INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
+	INNER JOIN courses ON tmpclass.course_id = courses.course_id 
+	INNER JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id
+	INNER JOIN rooms ON tmpschedule.room = rooms.room_id
+        WHERE tmpclass.major_id = '${major_id}'
+    `;
+    if (promotion_name != undefined && promotion_name !='') {
+      query += ` AND tmpclass.promotion ='${promotion_name}'`
+    }
+   
     const res = await connection.query(query);
     return res;
   } catch (error) {
     return error;
   }
 }
+async function createPromotion (
+  connection,
+  promotion_name,
+  academic_year,
+  major_id
 
+){
+   try {
+    const query = `INSERT INTO promotions (promotion_name , academic_year , major_id)  VALUES ('${promotion_name}' , '${academic_year}' , ${major_id})`
+    const res= await connection.query(query)
+    return res
+   } catch (error) {
+    return error
+   }
+}
+async function createMajor(
+  connection ,
+  major_id,
+  major_name
+
+){
+  try {
+    const query = `INSERT INTO major (major_id , major_name) VALUES ('${major_id}' , '${major_name}')`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function create(
+  connection ,
+  table,
+  column,
+  value
+
+){
+
+  try {
+    const query = `INSERT INTO ${table} (${column}) VALUES ('${value}')`
+    
+    const res = await connection.query(query)
+    
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function existMajor(
+  connection,
+  major_name
+){
+  try {
+    const query = `SELECT * FROM major WHERE major_name = '${major_name}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function existType(
+  connection,
+  value
+){
+  try {
+    const query = `SELECT * FROM course_type  WHERE course_type ='${value}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function updateStudentStatus(
+connection,
+{status,
+  graduated_year,
+student_id
+}
+){
+  try {
+    const query = `UPDATE student SET status = '${status}' , graduated_year='${graduated_year}' WHERE
+    student_id = '${student_id}'
+    `
+   
+    const res = await connection.query(query)
+
+    return res
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
+  updateStudentStatus,
+  existType,
+  existMajor,
+  create,
+  createPromotion,
   isPromotionMajor,
   promotionExist,
   userDocument,
@@ -2147,6 +2255,7 @@ module.exports = {
   getAll,
   getExistCourse,
   createAttendance,
+  createMajor,
   updatePresent,
   insertData,
   getCourse,

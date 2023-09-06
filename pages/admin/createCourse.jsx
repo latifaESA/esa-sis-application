@@ -15,6 +15,7 @@ export default function CreateCourse() {
   const [major, setMajor] = useState();
   const [majorValue, setMajorValue] = useState("");
   const [course_type, setCourse_type] = useState([]);
+  const [type , setType]= useState([])
   const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
   const [messages, setMessages] = useState("");
   const router = useRouter();
@@ -28,7 +29,14 @@ export default function CreateCourse() {
 
     setMajor(majorData.data);
   };
+  const getAllType = async()=>{
+    let table = 'course_type'
+    let typeCourse = await axios.post('/api/pmApi/getAll' , {table})
+    console.log(typeCourse)
+    setType(typeCourse.data.rows)
+  }
   useEffect(() => {
+    getAllType();
     getAllMajors();
   }, []);
   const handleOpenNotificatonMessages = () => {
@@ -196,6 +204,7 @@ export default function CreateCourse() {
                     {formErrors.majorValue}
                   </div>
                 )}
+
               </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
@@ -230,10 +239,14 @@ export default function CreateCourse() {
                   onChange={(e) => setCourse_type(e.target.value)}
                 >
                   <option value="">Choose Type..</option>
-                  <option value="Core Course">Core Course</option>
-                  <option value="Elective">Elective</option>
-                  <option value="Seminar">Seminar</option>
-                  <option value="Workshop">Workshop</option>
+                  {type &&
+                    type.map((type) => (
+                      <>
+                        <option key={type.course_type} value={type.course_type}>
+                          {type.course_type}
+                        </option>
+                      </>
+                    ))}
                 </select>
                 {formErrors.course_type && (
                   <div className="text-center text-red-500 font-bold p-2">

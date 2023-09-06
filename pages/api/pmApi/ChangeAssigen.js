@@ -39,6 +39,7 @@ async function handler(req, res) {
     );
     // // console.log(existCourseC)
     // // console.log('existCourse' , existCourse)
+   await disconnect(connection)
     if (existCourseC) {
       return res.status(200).json({
         code: 200,

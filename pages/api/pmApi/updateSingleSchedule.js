@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect , disconnect} = require("../../../utilities/db");
 const { updateSchedule } = require("../controller/queries");
 
 async function handler(req, res) {
@@ -18,7 +18,7 @@ async function handler(req, res) {
       pm_id,
       tmpscheduleID
     );
-
+    await disconnect(connection)
     // console.log(response)
 
     if (response.rowCount > 0) {

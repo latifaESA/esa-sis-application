@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect , disconnect} = require("../../../../utilities/db");
 const { filterassistance } = require("../../controller/queries");
 
 // const axios = require('axios')
@@ -26,6 +26,7 @@ async function handler(req, res) {
       majorName
     );
     // console.log(data)
+    await disconnect(connection);
     return res.status("200").send(data);
   } catch (error) {
     // console.log('the error is: ', error)

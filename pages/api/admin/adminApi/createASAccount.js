@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect , disconnect } = require("../../../../utilities/db");
 const { createASAccount } = require("../../controller/queries");
 const { default: AsPMExist } = require("./ExistAsPM");
 
@@ -36,6 +36,7 @@ async function handler(req, res) {
       userpassword,
       major_id
     );
+    await disconnect(connection);
     // console.log(data)
     return res.status("200").send(data);
   } catch (error) {

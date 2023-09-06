@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect  , disconnect} = require("../../../../utilities/db");
 const { createPMAccount } = require("../../controller/queries");
 const { default: PMExist } = require("./ExistPM");
 
@@ -16,6 +16,7 @@ async function handler(req, res) {
         }
         const data = await createPMAccount(connection, pm_id, pm_firstname, pm_lastname, pm_email, pm_status, userpassword,major_id);
         console.log(data)
+        await disconnect(connection);
         return res.status('200').send(data)
         
     } catch (error) {
