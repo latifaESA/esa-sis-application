@@ -40,7 +40,7 @@ export default function DownloadCourseStudent() {
 ];
 
   const headerTeacher = [['FirstName' , 'LastName' , 'Email']];
-
+  const headerAluminStudent = [['StudentID' , 'Status' , 'GraduatedYear']];
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -136,6 +136,24 @@ export default function DownloadCourseStudent() {
     });
     saveAs(excelBlob, 'Teacher.xlsx');
   };
+  const createExcelTemplateAlumni = () => {
+    const data= headerAluminStudent.concat([
+      ['', 'Alumni', ''], // MajorName data
+  ])
+    const columnWidths = calculateColumnWidths(data);
+     const worksheet = XLSX.utils.aoa_to_sheet(data);
+     worksheet['!cols'] = columnWidths;
+ 
+     const workbook = XLSX.utils.book_new();
+ 
+     XLSX.utils.book_append_sheet(workbook, worksheet, 'Student Alumni');
+ 
+     const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+     const excelBlob = new Blob([excelBuffer], {
+       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+     });
+     saveAs(excelBlob, 'AlumniStudent.xlsx');
+   };
   
   return (
     <>
@@ -186,6 +204,11 @@ export default function DownloadCourseStudent() {
                     <div className="my-4 text-slate-500 text-lg leading-relaxed">
                                 <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateTeacher} />
                                 <p className="pt-5 mb-10 font-bold">Download Teacher Template</p>
+                            </div>
+
+                            <div className="my-4 text-slate-500 text-lg leading-relaxed">
+                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateAlumni} />
+                                <p className="pt-5 mb-10 font-bold">Download  Alumin Student Template</p>
                             </div>
 
 

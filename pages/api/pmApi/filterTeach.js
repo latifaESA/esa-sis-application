@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect , disconnect } = require("../../../utilities/db");
 const { filterTeacher } = require("../controller/queries");
 
 // const axios = require('axios')
@@ -18,6 +18,7 @@ async function handler(req, res) {
       courseid
     );
     // console.log(data.rows)
+    await disconnect(connection)
     return res.status("200").send(data.rows);
   } catch (error) {
     // console.log('the error is: ', error)

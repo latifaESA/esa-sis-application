@@ -32,7 +32,12 @@ const AdminView = () => {
         <Link href="/admin/Accounts">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/Accounts"
+              router.pathname == "/admin/Accounts" 
+              ||router.pathname == "/admin/CreateTeacherAccount" 
+              || router.pathname == "/admin/createAccount" 
+              || router.pathname == "/admin/create" 
+              || router.pathname == "/admin/UploadStudent"
+              || router.pathname == "/admin/UploadTeacher"
                 ? "bg-blue-100 text-blue-500"
                 : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
@@ -87,7 +92,10 @@ const AdminView = () => {
         <Link href="/admin/Courses">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/Courses"
+              router.pathname == "/admin/Courses" ||
+              router.pathname == '/admin/createCourse' || 
+              router.pathname == '/admin/assign'  || 
+              router.pathname == '/admin/UploadCourses'
                 ? "bg-blue-100 text-blue-500"
                 : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
             }`}
@@ -98,6 +106,24 @@ const AdminView = () => {
             </div>
             <div>
               <p>Courses</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/admin/Addition">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/AdditionList'
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
+            disabled={true}
+          >
+            <div className="mr-2">
+              <UserPlusIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Addition</p>
             </div>
           </div>
         </Link>
@@ -162,7 +188,7 @@ const AdminView = () => {
           </div>
         </Link>
          {/* Settings Section */}
-        <Link href="/admin/Settings/Settings">
+        <Link href="/admin/main">
           <div
             // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
             //   router.pathname == "/admin/main"

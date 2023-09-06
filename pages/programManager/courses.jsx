@@ -18,11 +18,17 @@ export default function Courses() {
   const [courseCredit, setcourseCredit] = useState("");
   const [courseType, setcourseType] = useState("");
   const router = useRouter();
+  const [type, setType] = useState([])
 
   const redirect = () => {
     router.push("/AccessDenied");
   };
-
+  const getAllType = async () => {
+    let table = 'course_type'
+    let typeCourse = await axios.post('/api/pmApi/getAll', { table })
+    console.log(typeCourse)
+    setType(typeCourse.data.rows)
+  }
   const handleCourses = async () => {
     // console.log(courseid, courseName, courseCredit, majorid)
     let sendData = {
@@ -43,6 +49,7 @@ export default function Courses() {
   };
   useEffect(() => {
     handleShowAll();
+    getAllType()
   }, []);
 
   const handleShowAll = async () => {
@@ -57,7 +64,7 @@ export default function Courses() {
     console.log(sendData);
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
-    console.log("datttttta", data.data);
+    
     setUsers(data.data);
     // setMajorid('')
     setCourseid("");
@@ -126,8 +133,8 @@ export default function Courses() {
                   type="number"
                   name="major_id"
                   placeholder="Major Name"
-                  // value={formData.ID}
-                  // onChange={(e) => {setMajorid(e.target.value)}}
+                // value={formData.ID}
+                // onChange={(e) => {setMajorid(e.target.value)}}
                 ></input>
               </label>
               <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
@@ -136,8 +143,8 @@ export default function Courses() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -147,8 +154,8 @@ export default function Courses() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -157,16 +164,21 @@ export default function Courses() {
               <label className="">
                 Type:
                 <select
-                  className="ml-5 w-40 max-[850px]:ml-3"
+                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
                   value={courseType}
                   onChange={(e) => setcourseType(e.target.value)}
                 >
-                  <option value="">Select Type</option>
-                  <option value="Core Course">Core Course</option>
-                  <option value="Seminar">Seminar</option>
-                  <option value="Elective">Elective</option>
-                  <option value="Workshop">Workshop</option>
+                  <option value="">Choose Type..</option>
+                  {type &&
+                    type.map((type) => (
+                      <>
+                        <option key={type.course_type} value={type.course_type}>
+                          {type.course_type}
+                        </option>
+                      </>
+                    ))}
                 </select>
+
               </label>
 
               <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
@@ -174,8 +186,8 @@ export default function Courses() {
                 <select
                   className="ml-5 w-40 max-[850px]:ml-[52px] invisible max-[850px]:visible max-[850px]:hidden"
                   name="status"
-                  // value={formData.status}
-                  // onChange={(e) => {setPresence(e.target.value)}}
+                // value={formData.status}
+                // onChange={(e) => {setPresence(e.target.value)}}
                 >
                   <option value={""}>Choose Value...</option>
                   <option value={true}>Present</option>

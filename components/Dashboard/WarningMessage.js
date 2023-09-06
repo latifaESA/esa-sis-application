@@ -487,11 +487,52 @@ function WarningMessageVerified({
     </Modal>
   );
 }
+function WarningMessageSchedule({
+  confirmOpenDelete,
+  handleConfirmClose,
+  details
+}) {
+  console.log("details" , details)
+  console.log("date" , details.date.toDateString())
+  return (
+    <Modal
+      open={confirmOpenDelete}
+      onClose={handleConfirmClose}
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
+    >
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <h1 className="text-red-700 font-bold text-4xl text-center mb-6">
+         {details.course}
+        </h1>
+        <h3 className="text-slate-500 font-bold text-base text-center mb-6">
+         {details.date.toDateString()}
+        </h3>
+        <div className="flex justify-end">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+            onClick={handleConfirmClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              confirmOpenDelete();
+            }}
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 export {
   WarningMessageIncomplete,
   WarningMessageUpdateCourse,
   WarningMessageObsolote,
+  WarningMessageSchedule,
   WarningMessageCancleIncomplete,
   ReasonForDeactivation,
   ErrorMessage,

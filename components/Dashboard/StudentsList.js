@@ -30,6 +30,7 @@ import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 
 const StudentsList = ({ users, setUsers }) => {
+  console.log(users)
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const statusData = selection_data.application_status_inList;
@@ -168,8 +169,20 @@ const StudentsList = ({ users, setUsers }) => {
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
+  const excludedStatuses = ["", "active", "hold", "limit"];
 
-  const columns = [
+  // Check if the "status" is not in the excluded statuses list
+  const shouldIncludeGraduatedYear = (user) => {
+    // Ensure that the user object has a "status" field
+    if (user && user.status) {
+      return !excludedStatuses.includes(user.status);
+    }
+    // If "status" is not defined in the user object, exclude by default
+    return false;
+  };
+  
+  // Define the initial columns array with common columns
+  const commonColumns = [
     {
       field: "student_id",
       headerName: "ID",
@@ -286,7 +299,8 @@ const StudentsList = ({ users, setUsers }) => {
           ? "text-red-600 font-bold"
           : "" || params.row.status === "Inactive"
           ? "text-blue-600 font-bold"
-          : "",
+          : ""  || params.row.status === "Alumni"
+          ? "text-green-600 font-bold" :"",
       type: "singleSelect",
       valueOptions: statusData,
     },
@@ -304,175 +318,24 @@ const StudentsList = ({ users, setUsers }) => {
       align: "center",
       width: 150,
     },
-    // {
-    //   field: 'submissionDate',
-    //   headerName: 'Submission Date',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 150,
-    // },
-
-    // {
-    //   field: 'createdAt',
-    //   headerName: 'Initial Date',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   type: 'date',
-    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
-    // },
-    // {
-    //   field: 'updatedAt',
-    //   headerName: 'Submition Date',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   type: 'date',
-    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
-    // },
-    // {
-    //   field: 'reportURL',
-    //   headerName: 'Report',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 200,
-    //   renderCell: (params) => {
-    //     return params.row.status === 'incomplete' ? (
-    //       ''
-    //     ) : (
-    //       <Link target='_blank' href={`${params.row.reportURL}`}>
-    //         {params.row.reportURL
-    //           ? `${params.row.fname} ${params.row.lname}'s Report`
-    //           : ''}
-    //       </Link>
-    //     );
-    //   },
-    // },
-
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: `${session.user.role === '0' ? 300 : 150}`,
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <div className='flex gap-2'>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => {
-    //           const prevStatus = users.find(
-    //             (u) => u.ID === params.row.ID
-    //           )?.status;
-    //           if (prevStatus === 'incomplete') {
-    //             handleCancleIncomplete(params.row);
-    //           } else if (params.row.status === 'incomplete') {
-    //             handleConfirmIncomplete(params.row);
-    //           } else if (params.row.status === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else if (prevStatus === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else {
-    //             handleSave(params.row);
-    //           }
-    //         }}
-    //         type='button'
-    //       >
-    //         Save
-    //       </button>
-    //       <Link
-    //         className='text-black'
-    //         target='_blank'
-    //         href={`${params.row.reportURL}`}
-    //       >
-    //         <button
-    //           className='primary-button hover:text-white'
-    //           disabled={params.row.reportURL ? false : true}
-    //           type='button'
-    //         >
-    //           Print
-    //         </button>
-    //       </Link>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => handleChangeMajor(params.row)}
-    //         disabled={params.id !== majorEnable}
-    //         type='button'
-    //         hidden={
-    //           session.user.role === '2' || session.user.role === '3'
-    //             ? true
-    //             : false
-    //         }
-    //       >
-    //         Change Major
-    //       </button>
-    //     </div>
-    //   ),
-    // },
-
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: `${session.user.role === '0' ? 300 : 150}`,
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <div className='flex gap-2'>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => {
-    //           const prevStatus = users.find(
-    //             (u) => u.ID === params.row.ID
-    //           )?.status;
-    //           if (prevStatus === 'incomplete') {
-    //             handleCancleIncomplete(params.row);
-    //           } else if (params.row.status === 'incomplete') {
-    //             handleConfirmIncomplete(params.row);
-    //           } else if (params.row.status === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else if (prevStatus === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else {
-    //             handleSave(params.row);
-    //           }
-    //         }}
-    //         type='button'
-    //       >
-    //         Save
-    //       </button>
-    //       <Link
-    //         className='text-black'
-    //         target='_blank'
-    //         href={`${params.row.reportURL}`}
-    //       >
-    //         <button
-    //           className='primary-button hover:text-white'
-    //           disabled={params.row.reportURL ? false : true}
-    //           type='button'
-    //         >
-    //           Print
-    //         </button>
-    //       </Link>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => handleChangeMajor(params.row)}
-    //         disabled={params.id !== majorEnable}
-    //         type='button'
-    //         hidden={
-    //           session.user.role === '2' || session.user.role === '3'
-    //             ? true
-    //             : false
-    //         }
-    //       >
-    //         Change Major
-    //       </button>
-    //     </div>
-    //   ),
-    // },
   ];
+  
 
-  // export select to excel
+  
+  // Create a new columns array based on the conditions
+  const columns = shouldIncludeGraduatedYear(users[0]) // Check with the first user
+    ? [...commonColumns, // Include common columns
+       {
+         field: "graduated_year",
+         headerName: "Graduated Year",
+         headerAlign: "center",
+         align: "center",
+         width: 150,
+       }]
+    : commonColumns; // Exclude "graduated_year" column
+  
+  // Now the "columns" array will only include "graduated_year" for users with valid statuses
+  
 
   const exportButton = async () => {
     if (users.length > 0) {

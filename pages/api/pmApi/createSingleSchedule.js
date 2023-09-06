@@ -4,7 +4,7 @@ const { addSchedule } = require("../controller/queries");
 async function handler(req, res) {
   try {
     const connection = await connect();
-    const { classID, day, fromTime, toTime, room_id, pm_id } = req.body;
+    const { classID, day, fromTime, toTime, room_id, pm_id , attendanceId } = req.body;
 
     // // console.log(classID, day, fromTime, toTime, room_id, pm_id)
     const response = await addSchedule(
@@ -14,7 +14,8 @@ async function handler(req, res) {
       fromTime,
       toTime,
       room_id,
-      pm_id
+      pm_id,
+      attendanceId
     );
     await disconnect(connection);
 

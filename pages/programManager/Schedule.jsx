@@ -11,6 +11,7 @@ export default function Schedule() {
   const { data: session } = useSession();
   const router = useRouter();
   const [promotion, setPromotion] = useState([]);
+  const [schedule , setSchedule] = useState([])
   // const [promotionSchedule, setPromotionSchedule] = useState('');
   const redirect = () => {
     router.push("/AccessDenied");
@@ -38,8 +39,6 @@ export default function Schedule() {
     let id = session.user.majorid
     let { data } = await axios.post("/api/pmApi/getAllCourses", { table , Where , id });
  
-    console.log(data.data, "asdasdads");
-
     const datesArray = [];
     data.data.forEach((prom) => {
       datesArray.push(prom.promotion_name);
@@ -49,19 +48,22 @@ export default function Schedule() {
    
   };
   
+  useEffect(()=>{    
+handlePromotion()
+  },[null])
   const handlePromotion = async (event) => {
-  try {
-    const payload = {
-      promotion_name: event,
-      major_id : session.user.majorid
+    try {
+      const payload = {
+        promotion_name: event,
+        major_id : session.user.majorid
+      }
+     const data =  await axios.post('/api/pmApi/filterSchedule' , payload)
+      setSchedule(data.data.data)
+    } catch (error) {
+      return error
     }
-     await axios.post('/api/pmApi/filterSchedule' , payload)
-    
-  } catch (error) {
-    return error
-  }
- 
-  };
+   
+    };
 
   return (
     <>
@@ -75,7 +77,7 @@ export default function Schedule() {
             Schedule
           </p>
 
-          <div className="grid lg:grid-cols-1 gap-5 mb-5">Schedule Table</div>
+          <div className="grid lg:grid-cols-1 gap-5 mb-5"></div>
           <form>
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
               <label className="w-[350px]">
@@ -95,7 +97,7 @@ export default function Schedule() {
                  className="ml-9 w-40"
                 //  value={promotion}
                 onChange={(e)=>handlePromotion(e.target.value)}>
-                  <option value=" ">Promotion</option>
+                  <option value="">Promotion</option>
                   <>
                   <>{promotion.length > 0 ? promotion.map((item, index) => (
                     // console.log(item)
@@ -123,7 +125,7 @@ export default function Schedule() {
             {/* <StudentsList users={users} setUsers={setUsers} /> */}
             <div className="grid lg:grid-cols-1 gap-5 mb-5">
               {/* <CourseSchedule /> */}
-              <Calender />
+              <Calender  schedule={schedule} setSchedule={setSchedule}/>
             </div>
           </form>
         </>

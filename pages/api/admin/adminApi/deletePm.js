@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect , disconnect } = require("../../../../utilities/db");
 const { deleteUserpm } = require("../../controller/queries");
 
 // const axios = require('axios')
@@ -13,6 +13,7 @@ async function handler(req, res) {
     // console.log(pm_id)
     const data = await deleteUserpm(connection, pm_id);
     // console.log(data)
+    await disconnect(connection);
     return res.status("200").send(data);
   } catch (error) {
     // console.log('the error is: ', error)

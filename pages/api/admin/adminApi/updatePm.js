@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect , disconnect} = require("../../../../utilities/db");
 const { updateStatusPM } = require("../../controller/queries");
 
 // const axios = require('axios')
@@ -12,6 +12,7 @@ async function handler(req, res) {
     // console.log(note)
     const data = await updateStatusPM(connection, pm_id, pm_status, note);
     // console.log('this data')
+    await disconnect(connection);
     // console.log(data)
     return res.status("200").send(data);
   } catch (error) {

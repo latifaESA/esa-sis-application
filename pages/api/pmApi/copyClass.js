@@ -25,10 +25,10 @@ async function handler(req, res) {
       pm_id,
       major_id
     );
-
+    await disconnect(connection);
     if (response > 0) {
       // const response1 = await copySchedule(connection, class_id, response);
-      await disconnect(connection);
+     
 
       return res.status(201).json({
         success: true,

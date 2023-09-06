@@ -1,4 +1,4 @@
-const { connect } = require("../../../utilities/db");
+const { connect , disconnect} = require("../../../utilities/db");
 const { filterStudent } = require("../controller/queries");
 
 // const axios = require('axios')
@@ -18,6 +18,7 @@ async function handler(req, res) {
       promotion,
       status
     );
+    await disconnect(connection)
     // console.log(data.rows)
     return res.status("200").send(data);
   } catch (error) {
