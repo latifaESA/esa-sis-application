@@ -181,6 +181,7 @@ async function handler(req, res) {
             }
            
          )
+       
         
         if (response) {
           countSaved++; // Increment the count of saved records
