@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 // import { Home } from '../../components/GOToHome';
 // import https from 'https';
 import StudentBlue from "../../components/Dashboard/DashboardComps/StudentBlueView/StudentBlue";
+import StudentProfile from "../../components/StudentProfile";
 // import Link from 'next/link';;
 export default function Main() {
   const dispatch = useDispatch();
@@ -44,6 +45,8 @@ export default function Main() {
         <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
           {/* if status is limited display studentBlue */}
           {limited && <StudentBlue />}
+          <StudentProfile />
+          
         </div>
       ) : (
         redirect()

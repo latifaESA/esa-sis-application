@@ -125,7 +125,7 @@ export default function LoginScreen() {
 
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === "1") {
-        router.push(redirect || "/student/schedule");
+        router.push(redirect || "/student/main");
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "active"
