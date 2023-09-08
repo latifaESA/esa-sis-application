@@ -8,6 +8,7 @@
 
 const { insertData } = require("../controller/queries");
 const { insertPromotion } = require("../controller/queries");
+const { addStudentActivityToLogs } = require("../controller/queries");
 const { connect } = require("../../../utilities/db");
 const sis_app_logger = require("../logger");
 const useragent = require("useragent");
@@ -164,7 +165,11 @@ export default async function handler(req, res) {
     const userAgent = req.headers["user-agent"];
     const userAgentinfo = useragent.parse(userAgent);
 
-    let { studentInfo } = req.body;
+    let { studentInfo, adminName } = req.body;
+    console.log(adminName);
+    console.log("===============");
+    console.log(studentInfo[0].UserProfileID);
+    console.log("===============");
     let isSuccess = true;
     if (studentInfo) {
       // // console.log(studentInfo[0]);
@@ -188,6 +193,30 @@ export default async function handler(req, res) {
       );
       // // console.log('resUser: ', resUser.rowCount > 0);
       isSuccess = isSuccess && resUser.rowCount > 0;
+
+      function formatDate(date) {
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear().toString();
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
+        return formattedDate;
+      }
+
+      const currentDate = new Date();
+      const formattedCurrentDate = formatDate(currentDate);
+
+      // insert into logs
+      const insertToLogs = await addStudentActivityToLogs(
+        connection,
+        studentInfo[0].UserProfileID,
+        "status",
+        "active",
+        "online application",
+        adminName,
+        formattedCurrentDate
+      );
 
       // insert the student
       const columns_student = [
