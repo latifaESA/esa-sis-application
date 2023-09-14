@@ -139,12 +139,17 @@ const TeachersList = ({ users, setUsers }) => {
       });
   };
   const handleEnable = async (user) => {
+    
     let genPassword = generatePasswod(8);
     const salt = await bcryptjs.genSalt(8);
     const genPass = await bcryptjs.hash(genPassword, salt);
     let sendData = {
       pm_id: user.pm_id,
       userpassword: genPass,
+      password :genPassword , 
+      pm_first_name :user.pm_firstname,
+      email:user.pm_email,
+      role:'Program Manager'
     };
     axios
       .post(
@@ -598,13 +603,13 @@ const TeachersList = ({ users, setUsers }) => {
       ),
     },
 
-    {
-      field: 'note',
-      headerName: 'Notes',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
+    // {
+    //   field: 'note',
+    //   headerName: 'Notes',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 150,
+    // },
   ];
 
   // export select to excel

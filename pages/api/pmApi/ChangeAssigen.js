@@ -39,7 +39,7 @@ async function handler(req, res) {
     );
     // // console.log(existCourseC)
     // // console.log('existCourse' , existCourse)
-   await disconnect(connection)
+  
     if (existCourseC) {
       return res.status(200).json({
         code: 200,
@@ -55,7 +55,8 @@ async function handler(req, res) {
         teacher_id
       );
       // // console.log('response' , response)
-      await disconnect(connection);
+      await disconnect(connection)
+
       return res.status(201).json({
         code: 201,
         success: true,

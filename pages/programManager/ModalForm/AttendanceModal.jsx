@@ -51,7 +51,7 @@ export default function AttendanceModal({
       };
       // // console.log('payload')
       const data = await axios.post(
-        "/api/pmApi/createAttendanceReport",
+        "/api/pmApi/createSingleAttendanceReport",
         payload
       );
       // // console.log(data.data)

@@ -228,20 +228,29 @@ const AdminList= ({ admin, setAdminList }) => {
   // };
   const handleEnable = async(event)=>{
     try {
+     console.log(event , "events")
       let genPassword = generatePasswod(8);
       const salt = await bcryptjs.genSalt(8);
       const genPass = await bcryptjs.hash(genPassword, salt);
+      
       let sendData = {
-        pm_id: event.adminid,
+        adminid: event.adminid,
         userpassword: genPass,
+        password: genPassword,
+        admin_firstname : event.admin_firstname,
+        email: event.adminemail,
+        role:'Admin'
+
       };
+
+      
      await axios
       .post(
-        '/api/admin/adminApi/enablepm',
+        '/api/admin/adminApi/enableAdmin',
         sendData
       )
-
-      setMessage('User Status Changed Succesfully!');
+     
+      setMessage('User Status Changed Successfully!');
 
         //Update the user's status and major in the table
         setAdminList((prevUsers) =>
@@ -446,13 +455,13 @@ const AdminList= ({ admin, setAdminList }) => {
       ),
     },
 
-    {
-      field: 'note',
-      headerName: 'Notes',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
+    // {
+    //   field: 'note',
+    //   headerName: 'Notes',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 150,
+    // },
   ];
 
   // export select to excel

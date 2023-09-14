@@ -291,7 +291,7 @@ const StudentsList = ({ users, setUsers }) => {
       headerAlign: "center",
       align: "center",
       width: 100,
-      editable: true,
+   
       cellClassName: (params) =>
         params.row.status === "active"
           ? "text-green-600 font-bold"

@@ -9,22 +9,15 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const StudentProfile = () => {
   const { data: session } = useSession();
 
-  const [studentData, setStudentData] = useState({
-    student_firstname: '',
-    student_lastname: '',
-    major_name: '',
-    mobile_number: '',
-    address_city: '',
-    address_street: '',
-    address_building: '',
-    promotion: '',
-    status: '',
-  });
+  const [studentData, setStudentData] = useState([]);
+  const [showAddressError, setShowAddressError] = useState(false);
+  const [addressErrorMessage, setAddressErrorMessage] = useState('');
+
 
   const [isEditingMobileNumber, setIsEditingMobileNumber] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [editedAddress, setEditedAddress] = useState('');
-
+    
   useEffect(() => {
     fetchStudentData();
   }, []);
@@ -70,13 +63,20 @@ const StudentProfile = () => {
 
   const updateDetails = async () => {
     try {
+      // Check if the edited address contains a comma
+      if (!editedAddress.includes(',')) {
+        setAddressErrorMessage('Please enter a comma between city, street, and building in the address.');
+        setShowAddressError(true);
+        return;
+      }
+
       const payload = {
         userid: session.user.userid,
         mobile_number: studentData.mobile_number,
         address: editedAddress,
       };
       const response = await axios.post('/api/user/editProfileStudent', payload);
-      console.log(response.data.success);
+
       if (response.data.success === true) {
         setIsEditingMobileNumber(false);
         setIsEditingAddress(false);
@@ -105,7 +105,7 @@ const StudentProfile = () => {
         <div className="ml-12">
           <div className='flex flex-rows'>
             <div className='mr-6'>
-              <p className="text-blue-600/75 text-base mb-4">
+              <p className="text-blue-600/75 text-base mb-4 ">
                 Mobile Number:
 
               </p>
@@ -165,7 +165,13 @@ const StudentProfile = () => {
                       onChange={(e) => setEditedAddress(e.target.value)}
                       className="text-blue-600/75 text-base mb-4"
                     />
+{showAddressError && (
+                    <div className="text-red-500 text-sm mt-2">
+                      {addressErrorMessage}
+                    </div>
+                  )}
                   </div>
+
                   <div className='mr-6'>
                     <button onClick={() => updateDetails()}>
                       <FiCheck className="text-green-600 text-base" />
@@ -174,11 +180,11 @@ const StudentProfile = () => {
                       <FiX className='text-red-600 text-base' />
                     </button>
                   </div>
-
+                  
                 </div>
               ) : (
                 <div className='flex flex-rows mr-6'>
-                  <div><p className="text-blue-600/75 text-base mb-4">{editedAddress}</p></div>
+                  <div><p className="text-blue-600/75 text-base mb-4 mr-12">{editedAddress}</p></div>
 
                   <div>
                     <button onClick={() => setIsEditingAddress(true)}>
