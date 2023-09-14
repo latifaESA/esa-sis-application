@@ -1,17 +1,63 @@
 const { connect, disconnect } = require("../../../utilities/db");
 const { createAttendance } = require("../controller/queries");
 const { default: attendanceExist } = require("./exist/getAttendance");
+const { default: OccupiedRoom } = require("./exist/roomOccupied");
+const { default: OccupiedTeacher } = require("./exist/teacherOccupied");
+import  moment from 'moment-timezone'
 
 async function handler(req, res) {
+
   try {
     const connection = await connect();
-    const { teacher_id, course_id, major_id, attendance_date } = req.body;
+   
+    const { teacher_id, course_id, major_id, attendance_date  ,fromTime,
+      toTime,
+      room } = req.body;
     if (teacher_id === "" || course_id === "") {
       return res.status(200).json({
         code: 200,
         success: true,
         message: `Fields is required`,
       });
+    }
+ 
+    // const getTeacher = await getCourse(connection, 'tmpclass', 'tmpclass_id', classId)
+
+    // const teacherId = getTeacher.rows[0].teacher_id
+    // Convert fromTime to include AM/PM without time zone
+    const fromTimeParts = fromTime.split(':');
+    const fromHour = parseInt(fromTimeParts[0]);
+    const fromMinute = fromTimeParts[1];
+    const from_time = fromHour >= 12 ? `${fromHour - 12}:${fromMinute} PM` : `${fromHour}:${fromMinute} AM`;
+    
+    // Convert toTime to include AM/PM without time zone
+    const toTimeParts = toTime.split(':');
+    const toHour = parseInt(toTimeParts[0]);
+    const toMinute = toTimeParts[1];
+    const to_time = toHour >= 12 ? `${toHour - 12}:${toMinute} PM` : `${toHour}:${toMinute} AM`;
+    
+    const date_time = moment(attendance_date).format('DD/MM/YYYY');
+    
+
+    const teacherOccupied = await OccupiedTeacher(connection, attendance_date, teacher_id, fromTime, toTime)
+
+    const roomOccupied = await OccupiedRoom(connection, attendance_date,
+        fromTime,
+        toTime,
+        room)
+    if (roomOccupied) {
+        return res.status(400).json({
+            success: false,
+            code: 400,
+            message: `Room Not Available ${date_time} from ${from_time} to ${to_time} `
+        })
+    }
+    if (teacherOccupied) {
+        return res.status(400).json({
+            success: false,
+            code: 400,
+            message: `Teacher Not Available ${date_time} from ${from_time} to ${to_time} `
+        })
     }
     const exist = await attendanceExist(
       connection,
@@ -34,7 +80,7 @@ async function handler(req, res) {
       major_id,
       attendance_date
     );
-    // console.log(response)
+  
     await disconnect(connection);
 
     return res.status(201).json({
@@ -44,6 +90,7 @@ async function handler(req, res) {
       data: response.rows[0].attendance_id,
     });
   } catch (error) {
+  
     return res.status(500).json({
       success: false,
       code: 500,

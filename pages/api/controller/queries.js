@@ -1,5 +1,5 @@
 /*
- * Created By: Ali Mroueh
+ * Created By: 
  * Project: SIS Application
  * File: pages\api\controller\queries.js
  * École Supérieure des Affaires (ESA)
@@ -1049,6 +1049,21 @@ async function enableUserpm(connection, pm_id, userpassword) {
     return err;
   }
 }
+async function enableUserAdmin(connection, adminid, userpassword) {
+  try {
+    let query = `
+      INSERT INTO users(userid ,role , userpassword)
+        VALUES('${adminid}', 0, '${userpassword}');
+        INSERT INTO user_document(userid, profileurl)
+        VALUES('${adminid}', '')
+        `;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
 async function enableUserAs(connection, pm_ass_id, userpassword) {
   try {
     let query = `
@@ -1192,8 +1207,9 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
   // console.log('query' , query)
   try {
     const query = `UPDATE teacher_courses SET teacher_id = '${teacher_id}' WHERE course_id = '${course_id}' AND teacher_id='${condition}' RETURNING teacher_courses_id`;
+    
     const res = await connection.query(query);
-    // console.log('query' , query)
+    console.log('query' , query)
     return res;
   } catch (error) {
     return error;
@@ -2206,8 +2222,6 @@ async function updateStudentStatus(
   try {
     const query = `UPDATE student SET status = '${status}' , graduated_year='${graduated_year}' WHERE
     student_id = '${student_id}' ;
-    DELETE FROM users WHERE userid='${student_id}';
-    DELETE FROM user_document WHERE userid='${student_id}'
     `
 
     const res = await connection.query(query)
@@ -2269,9 +2283,42 @@ async function updateContactAddressProfile(
     return error
   }
 }
+ async function occupiedTeacher(
+  connection,
+  teacherId,
+  attendance_date
+ ){
+  try {
+    const query = `SELECT tmpschedule.* , tmpclass.teacher_id FROM tmpschedule
+    INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
+    WHERE day='${attendance_date}' AND tmpclass.teacher_id = '${teacherId}'`
+    const res = await connection.query(query)
+    return res
+    
+  } catch (error) {
+    return error
+  }
+
+ } 
+ async function occupiedRoom(
+  connection,
+  attendance_date ,
+  room
+
+ ){
+  try {
+    const query = `SELECT * FROM tmpschedule WHERE room = '${room}' AND day='${attendance_date}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+ }
 /* End Postegresql */
 
 module.exports = {
+  occupiedRoom,
+  occupiedTeacher,
   updateContactAddressProfile,
   profileStudent,
   updateStudentStatus,
@@ -2375,5 +2422,6 @@ module.exports = {
   createAdmin,
   filterAdmin,
   getAdminExist,
+  enableUserAdmin,
   getAllMajors,
 };
