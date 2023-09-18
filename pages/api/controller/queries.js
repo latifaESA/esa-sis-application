@@ -2118,7 +2118,6 @@ async function addStudentActivityToLogs(
 }
 //filter schedule
 async function getScheduleByPromo(connection, promotion_name, major_id) {
-
   try {
     let query = `
     SELECT  tmpschedule.* , tmpclass.promotion  , tmpclass.major_id , tmpclass.teacher_id,
@@ -2131,8 +2130,8 @@ FROM tmpschedule
 	INNER JOIN rooms ON tmpschedule.room = rooms.room_id
         WHERE tmpclass.major_id = '${major_id}'
     `;
-    if (promotion_name != undefined && promotion_name != '') {
-      query += ` AND tmpclass.promotion ='${promotion_name}'`
+    if (promotion_name != undefined && promotion_name != "") {
+      query += ` AND tmpclass.promotion ='${promotion_name}'`;
     }
 
     const res = await connection.query(query);
@@ -2146,94 +2145,72 @@ async function createPromotion(
   promotion_name,
   academic_year,
   major_id
-
 ) {
   try {
-    const query = `INSERT INTO promotions (promotion_name , academic_year , major_id)  VALUES ('${promotion_name}' , '${academic_year}' , ${major_id})`
-    const res = await connection.query(query)
-    return res
+    const query = `INSERT INTO promotions (promotion_name , academic_year , major_id)  VALUES ('${promotion_name}' , '${academic_year}' , ${major_id})`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function createMajor(
-  connection,
-  major_id,
-  major_name
-
-) {
+async function createMajor(connection, major_id, major_name) {
   try {
-    const query = `INSERT INTO major (major_id , major_name) VALUES ('${major_id}' , '${major_name}')`
-    const res = await connection.query(query)
-    return res
+    const query = `INSERT INTO major (major_id , major_name) VALUES ('${major_id}' , '${major_name}')`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function create(
-  connection,
-  table,
-  column,
-  value
-
-) {
-
+async function create(connection, table, column, value) {
   try {
-    const query = `INSERT INTO ${table} (${column}) VALUES ('${value}')`
+    const query = `INSERT INTO ${table} (${column}) VALUES ('${value}')`;
 
-    const res = await connection.query(query)
+    const res = await connection.query(query);
 
-    return res
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function existMajor(
-  connection,
-  major_name
-) {
+async function existMajor(connection, major_name) {
   try {
-    const query = `SELECT * FROM major WHERE major_name = '${major_name}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM major WHERE major_name = '${major_name}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function existType(
-  connection,
-  value
-) {
+async function existType(connection, value) {
   try {
-    const query = `SELECT * FROM course_type  WHERE course_type ='${value}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM course_type  WHERE course_type ='${value}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function updateStudentStatus(
   connection,
-  { status,
-    graduated_year,
-    student_id
-  }
+  { status, graduated_year, student_id }
 ) {
   try {
     const query = `UPDATE student SET status = '${status}' , graduated_year='${graduated_year}' WHERE
     student_id = '${student_id}' ;
+
+
     `
 
-    const res = await connection.query(query)
-    return res
+
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function profileStudent(
-  connection,
-  user_id
-) {
+async function profileStudent(connection, user_id) {
   try {
     let query = `SELECT student.* , major.major_name , user_contact.mobile_number , 
       user_personal_address.address_city , user_personal_address.address_street ,
@@ -2244,14 +2221,13 @@ async function profileStudent(
       where student.student_id = '${user_id}'
 
     
-      `
+      `;
 
+    const res = await connection.query(query);
 
-    const res = await connection.query(query)
-
-    return res
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
@@ -2261,26 +2237,35 @@ async function updateContactAddressProfile(
   mobile_number,
   address
 ) {
-  
-  const address_city = address.split(',')[0]
+  const address_city = address.split(",")[0];
 
-  const address_street = address.split(',')[1]
+  const address_street = address.split(",")[1];
 
-  const address_building = address.split(',')[2]
+  const address_building = address.split(",")[2];
   try {
-
-
     const query = `UPDATE user_contact SET  mobile_number = '${mobile_number}' WHERE userid='${userid}';
                 UPDATE user_personal_address SET address_city = '${address_city}' WHERE userid='${userid}';
                 UPDATE user_personal_address SET address_street ='${address_street}' WHERE userid='${userid}';
                 UPDATE user_personal_address SET address_building = '${address_building}' WHERE userid='${userid}'
 
-      `
+      `;
 
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
+  }
+}
+
+async function getStudentFromBlueForLogs(connection, student_id, date_time) {
+  try {
+    let query = `
+    SELECT * FROM student_logs WHERE student_id = '${student_id}' AND done_by = 'Blue' `;
+
+    const response = await connection.query(query);
+    return response;
+  } catch (err) {
+    return err;
   }
 }
  async function occupiedTeacher(
@@ -2419,6 +2404,7 @@ module.exports = {
   getAllMajor,
   createASAccount,
   createPMAccount,
+  getStudentFromBlueForLogs,
   createAdmin,
   filterAdmin,
   getAdminExist,
