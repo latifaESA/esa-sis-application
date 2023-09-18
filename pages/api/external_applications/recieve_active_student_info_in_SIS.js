@@ -252,6 +252,7 @@ export default async function handler(req, res) {
         columns_student,
         values_student
       );
+      console.log("student" , resstudent)
       //here
       let insertIntoPromotionIfNotExist = await insertPromotion(
         connection,
@@ -283,6 +284,7 @@ export default async function handler(req, res) {
         values_major
       );
       // // console.log('resMajor: ', resMajor);
+      console.log("major" , resMajor)
 
       // insert the user_personal_info
       const columns_user_personal_info = [
@@ -327,6 +329,7 @@ export default async function handler(req, res) {
       );
 
       // // console.log('resUserPersonalInfo: ', resUserPersonalInfo.rowCount > 0);
+      console.log("resInfo" , resUserPersonalInfo)
       isSuccess = isSuccess && resUserPersonalInfo.rowCount > 0;
 
       // insert the user_contact
@@ -352,6 +355,7 @@ export default async function handler(req, res) {
       );
 
       // // console.log('res_user_contact: ', res_user_contact.rowCount > 0);
+      console.log('resContact' , res_user_contact)
       isSuccess = isSuccess && res_user_contact.rowCount > 0;
 
       // insert the user_personal_address
@@ -383,6 +387,7 @@ export default async function handler(req, res) {
       );
 
       // // console.log('res_user_personal_address: ', res_user_personal_address.rowCount > 0);
+      console.log("resAddress" , res_user_personal_address)
       isSuccess = isSuccess && res_user_personal_address.rowCount > 0;
 
       // insert the user_emergency_contact

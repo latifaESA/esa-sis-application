@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CustomSelectBox from "../pages/programManager/customSelectBox";
+import { NotificatonMessage } from "./Dashboard/WarningMessage";
 // import { HOURS } from "../components/calenderComponent/conts";
 // import { useSession } from 'next-auth/react';
 // import axios from 'axios';
@@ -13,6 +14,10 @@ export default function AddSchedule({
   handleSaveSchedule,
   theroom,
   isClicked,
+  confirmOccupied,
+  handleOpenNotificatonMessages,
+  handleCloseNotificatonMessages,
+  messages,
   // courseValue,
   // teacherValue,
   // setIsAddSchedule,
@@ -57,9 +62,9 @@ export default function AddSchedule({
 
   const handleSaveAll = async () => {
     try {
-    
+
       await handleSaveSchedule();
-     
+
       // Rest of the code to clear state or perform any other actions if needed.
       setStudent([]);
       setDetails([]);
@@ -72,12 +77,28 @@ export default function AddSchedule({
       console.error("Error occurred while saving: ", error);
     }
   };
-
+  console.log(messages)
   return (
     <>
 
 
-      {isClicked ? <>
+
+      {isClicked && confirmOccupied ? <>
+
+        <>
+         
+          (  <NotificatonMessage
+              handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+              handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+              messages={messages}
+            />
+          ) 
+        
+
+        </>
+      </>
+      : isClicked && !confirmOccupied ?
+      (
         <>
           <div
             className="justify-center items-center flex  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
@@ -102,7 +123,7 @@ export default function AddSchedule({
                 {/*body*/}
                 <div className="relative p-6 pr-12">
                   <div
-                    className="flex flex-col mb-10 mr-0 justify-center" 
+                    className="flex flex-col mb-10 mr-0 justify-center"
                   >
 
                     <div role="status" className="flex flex-col  justify-center absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
@@ -127,8 +148,12 @@ export default function AddSchedule({
             </div>
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+
         </>
-      </> : <>
+      )
+      
+      : 
+      <>
 
         <div
           className="justify-center items-center flex  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
@@ -309,7 +334,9 @@ export default function AddSchedule({
         </div>
         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
 
-      </>}
+      </>
+      
+      }
 
     </>
   );

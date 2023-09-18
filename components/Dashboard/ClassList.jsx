@@ -63,6 +63,8 @@ const ClassList = ({ users }) => {
   const [course_type, setCourseType] = useState("");
   const [weekDays, setWeekDays] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
+  const [confirmOccupied, setConfirmOccupied] = useState(false);
+  const [messages, setMessages] = useState("");
 
   const getAllRooms = async () => {
     console.log(course_type);
@@ -91,7 +93,7 @@ const ClassList = ({ users }) => {
 
   const handleFrom = (e)=>{
     setFromTime(e.target.value)
-    console.log(e.target.value)
+    
   };
   const handleTo = (e)=>{
     setToTime(e.target.value)
@@ -130,6 +132,13 @@ const ClassList = ({ users }) => {
       return error;
     }
   };
+  const handleOpenNotificatonMessages = () => {
+    setConfirmOccupied(true);
+};
+const handleCloseNotificatonMessages = () => {
+    setConfirmOccupied(false);
+    setIsClicked(false)
+};
 
   const getStudent = async (event) => {
     try {
@@ -223,6 +232,7 @@ const ClassList = ({ users }) => {
       // console.log("weekDays inside: ", weekDays);
       // console.log("weekDays inside: ", selectedValues);
       setIsClicked(true);
+      
       let createTheSchedule = async () => {
         const formattedDates = weekDays.map((date) =>
           new Date(date).toISOString()
@@ -231,64 +241,91 @@ const ClassList = ({ users }) => {
         setWeekDays(formattedDates);
 
 
-        // const payload = {
-        //   teacher_id: teacherValue,
-        //   course_id: courseValue,
-        //   major_id: session.user.majorid
-        // }
+        setIsClicked(true);
+        let schedulesCreated = 0; // Initialize a counter for created schedules
+        const totalSchedules = weekDays.length; // Calculate the total number of schedules
 
         const payload = {
           teacher_id: teacherValue,
           course_id: courseValue,
           major_id: session.user.majorid,
+          fromTime: fromTime,
+          toTime: toTime,
+          room: location,
         };
 
         try {
           const createdAttendanceIds = [];
-        
+
           for (let i = 0; i < weekDays.length; i++) {
             const attendance_date = weekDays[i];
             const payload2 = { ...payload, attendance_date };
-            const data3 = await axios.post(
-              "/api/pmApi/createAttendanceReport",
-              payload2
-            );
-            const attendance_id = data3.data.data;
-            createdAttendanceIds.push(attendance_id);
-        
-            for (let j = 0; j < student.length; j++) {
-              const student_id = student[j].student_id;
-              await axios.post("/api/pmApi/createAttendanceStudent", {
-                attendance_id,
-                student_id,
-              });
+      
+            try {
+              const data3 = await axios.post("/api/pmApi/createAttendanceReport", payload2);
+      
+              const attendance_id = data3.data.data;
+              createdAttendanceIds.push(attendance_id);
+      
+              if (data3.data.code === 201) {
+                for (let j = 0; j < student.length; j++) {
+                  const student_id = student[j].student_id;
+                  await axios.post("/api/pmApi/createAttendanceStudent", {
+                    attendance_id,
+                    student_id,
+                  });
+                }
+              }
+            } catch (error) {
+              if (error.response && error.response.data.success === false) {
+                setConfirmOccupied(true);
+                setMessages(error.response.data.message);
+              }
             }
-          }
-        
-          for (let i = 0; i < createdAttendanceIds.length; i++) {
+      
+            // Create the schedule for the current attendance record
             const attendance_id = createdAttendanceIds[i];
-            const scheduleData = {
-              classId: classID,
-              days: [weekDays[i]],
-              fromTime: fromTime,
-              toTime: toTime,
-              room: location,
-              pmID: session.user.userid,
-              attendanceId: attendance_id,
-            };
-            const { data } = await axios.post(
-              "/api/pmApi/createSchedule",
-              scheduleData
-            );
+            console.log(attendance_id)
+          
+              const scheduleData = {
+                classId: classID,
+                days: [attendance_date], // Use the current attendance_date
+                fromTime: fromTime,
+                toTime: toTime,
+                room: location,
+                pmID: session.user.userid,
+                attendanceId: attendance_id,
+              };
         
-            if (data.success) {
-              setIsClicked(false);
-              setIsAddSchedule(false);
-              setSelectedValues([]);
-            }
+              try {
+                if(attendance_id.length !== 0){
+                  const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
+        
+                  if (data.success) {
+                    schedulesCreated++; // Increment the counter for each successfully created schedule
+                    
+                    // Check if all schedules have been created
+                    if (schedulesCreated === totalSchedules) {
+                      // All schedules have been created, so we can set these states
+                      setIsClicked(false);
+                      setIsAddSchedule(false);
+                      setSelectedValues([]);
+                    }
+                  }
+                }else{
+                     console.log("error")
+                }
+           
+              } catch (error) {
+                 return error
+              }
+                
+          
+        
+     
           }
         } catch (error) {
-          console.error(error);
+            return error
         }
         
       };
@@ -501,6 +538,10 @@ const ClassList = ({ users }) => {
       </div> */}
       {isAddSchedule && (
         <AddSchedule
+        handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+        handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+        messages={messages}
+        confirmOccupied={confirmOccupied}
           handleFrom={handleFrom}
           handleTo={handleTo}
           setIsClicked={setIsClicked}

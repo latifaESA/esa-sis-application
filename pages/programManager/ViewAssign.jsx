@@ -32,7 +32,7 @@ export default function ViewAssign() {
                                 </button>
                             </Link>
                         </div>
-                        {(session?.user.role === "2" || session?.user.role === "3") && (session?.user.majorid === "7" || session?.user.majorid === '15') ? 
+                        {(session?.user.role === "2" || session?.user.role === "3") && (session?.user.majorid === "5" || session?.user.majorid === '15') ? 
                         <div className="flex font-bold text-xl">
                             <Link href="/programManager/ElectiveCourse">
                                 <button

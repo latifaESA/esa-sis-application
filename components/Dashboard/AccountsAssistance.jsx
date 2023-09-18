@@ -134,6 +134,10 @@ const TeachersList = ({ assistance, setAssistance }) => {
     let sendData = {
       pm_ass_id: user.pm_ass_id,
       userpassword: genPass,
+      password :  genPassword,
+      name : user.pm_ass_firstname,
+      email:user.pm_ass_email,
+      role:'Program Manager Assistance'
     };
     axios
       .post("/api/admin/adminApi/enableAs", sendData)
@@ -353,7 +357,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       headerName: "Major",
       headerAlign: "center",
       align: "center",
-      width: 90,
+      width: 170,
     },
 
     {
@@ -537,13 +541,13 @@ const TeachersList = ({ assistance, setAssistance }) => {
         </div>
       ),
     },
-    {
-      field: 'note',
-      headerName: 'Notes',
-      headerAlign: 'center',
-      align: 'center',
-      width: 150,
-    },
+    // {
+    //   field: 'note',
+    //   headerName: 'Notes',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   width: 150,
+    // },
   ];
 
   // export select to excel

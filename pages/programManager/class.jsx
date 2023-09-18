@@ -525,7 +525,7 @@ export default function Class() {
                
 
                 <button
-                  className="py-1 px-2 primary-button hover:text-white w-40 bg-green-600  hover:font-bold"
+                  className="py-1 px-2 primary-button hover:text-white w-60 bg-green-600  hover:font-bold"
                   type="button"
                   onClick={handleClass}
                 >
@@ -533,7 +533,7 @@ export default function Class() {
                 </button>
 
                 <button
-                  className="py-1 px-2 primary-button  w-40 bg-green-600 hover:text-white hover:font-bold"
+                  className="py-1 px-2 primary-button  w-60 bg-green-600 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleCopyClass}
                 >

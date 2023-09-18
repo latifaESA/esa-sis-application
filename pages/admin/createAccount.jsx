@@ -70,7 +70,9 @@ export default function Create() {
         pm_email: email.trim(),
         pm_status: status.trim(),
         userpassword: genPass,
+        password: generatedPass,
         major_id: majorValue.trim(),
+        role:'Program Manager'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -90,9 +92,7 @@ export default function Create() {
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
-        setMessages(`Account Program Manager Create Successfully With 
-        Username : ${gen.trim()} 
-        and password: ${generatedPass} `);
+        setMessages(`Account Program Manager Create Successfully`);
         // setMessage(
         //   `user Created Successfully with a password : ${generatedPass}`
         // );
@@ -114,6 +114,8 @@ export default function Create() {
         pm_ass_status: status.trim(),
         userpassword: genPass,
         major_id: majorValue.trim(),
+        password : generatedPass,
+        role:'Program Manager Assistance'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -124,13 +126,9 @@ export default function Create() {
       if (data === true) {
         setConfirmOpenMessage(true);
         setMessages(`Account Program Manager Assistance Already Exist`);
-      } else  if (data[0].rowCount == 0) {
-        setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
-        setMessages(` Account of Assistant Program Manager Create Successfully 
-        With Username : ${gen.trim()} 
-        and password :   ${generatedPass} `);
+        setMessages(` Account of Assistant Program Manager Create Successfully`);
       }
     } else if (role == "0" && fname != "" && email != "") {
       const prefix = "AD";
@@ -142,6 +140,8 @@ export default function Create() {
         userpassword: genPass,
         admin_lastname: lname.trim(),
         admin_status: status.trim(),
+        password : generatedPass,
+        role:'Admin'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -155,13 +155,10 @@ export default function Create() {
       if (data === true) {
         setConfirmOpenMessage(true);
         setMessages(`Account Admin Already Exist`);
-      } else if (data[0].rowCount == 0) {
-        setMessage("ID Already Exist");
-      } else {
+      } 
+      else {
         setConfirmOpenMessage(true);
-        setMessages(`Admin Account Create Successfully 
-        With Username : ${gen.trim()} 
-        and password :   ${generatedPass} `);
+        setMessages(`Admin Account Create Successfully`);
       }
     }
     if (fname == "" && email == "") {
