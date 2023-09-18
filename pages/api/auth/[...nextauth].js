@@ -9,6 +9,8 @@
 import bcryptjs from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { addStudentActivityToLogs } from "../controller/queries";
+import { getStudentFromBlueForLogs } from "../controller/queries";
 // import {
 //   findData,
 //   Userinfo,
@@ -156,6 +158,109 @@ export const authOptions = {
                     }),
                   }
                 );
+                if (data.blocked) {
+                  const WeeklyLogs = await getStudentFromBlueForLogs(
+                    connection,
+                    user.rows[0].userid
+                  );
+                  console.log(WeeklyLogs);
+                  console.log("check=======================");
+                  console.log(WeeklyLogs == false);
+                  console.log("check=======================");
+                  console.log("ana abel l if weekly");
+                  if (WeeklyLogs.rowCount != 0) {
+                    console.log("ana jouet l if weekly");
+                    const lastLoginDate =
+                      WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
+                    console.log("last login date");
+                    console.log(lastLoginDate.date_time);
+
+                    // get the date from db
+                    const dateToday = lastLoginDate.date_time;
+                    const [day, month, year] = dateToday.split("-").map(Number);
+                    const dateObject = new Date(year, month - 1, day);
+
+                    // Calculate a week from now
+                    const oneWeekLater = new Date(dateObject);
+                    oneWeekLater.setDate(dateObject.getDate() + 7);
+
+                    // Format the date one week from now
+                    const formattedOneWeekLater = `${oneWeekLater
+                      .getDate()
+                      .toString()
+                      .padStart(2, "0")}-${(oneWeekLater.getMonth() + 1)
+                      .toString()
+                      .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
+
+                    // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
+                    console.log("One Week Later:", formattedOneWeekLater);
+
+                    function formatDate(date) {
+                      const day = date.getDate().toString().padStart(2, "0");
+                      const month = (date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
+                      const year = date.getFullYear().toString();
+                      const hours = date.getHours().toString().padStart(2, "0");
+                      const minutes = date
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0");
+                      const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
+                      return formattedDate;
+                    }
+                    const currentDate = new Date();
+                    const formattedCurrentDate = formatDate(currentDate);
+
+                    if (
+                      formattedOneWeekLater < formattedCurrentDate.slice(0, 10)
+                    ) {
+                      console.log("ana jouet l if date format");
+                      const insertToLogs = await addStudentActivityToLogs(
+                        connection,
+                        data.userid,
+                        "status",
+                        "limited",
+                        data.description,
+                        "Blue",
+                        formattedCurrentDate
+                      );
+                      console.log(insertToLogs);
+                    }
+                  } else {
+                    function formatDate(date) {
+                      const day = date.getDate().toString().padStart(2, "0");
+                      const month = (date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
+                      const year = date.getFullYear().toString();
+                      const hours = date.getHours().toString().padStart(2, "0");
+                      const minutes = date
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0");
+                      const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
+                      return formattedDate;
+                    }
+                    const currentDate = new Date();
+                    const formattedCurrentDate = formatDate(currentDate);
+                    console.log("ana jouet l if eza mesh mawjoud");
+
+                    console.log(data.userid);
+                    console.log(data.description);
+                    const insertToLogs = await addStudentActivityToLogs(
+                      connection,
+                      data.userid,
+                      "status",
+                      "limited",
+                      data.description,
+                      "Blue",
+                      formattedCurrentDate
+                    );
+                    console.log(insertToLogs);
+                  }
+                }
+                // console.log("=======================");
                 // console.log(data.blocked);
                 // console.log(data);
                 // if the user did not complete the survey then send the links
