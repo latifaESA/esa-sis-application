@@ -39,7 +39,7 @@ import CustomPagination from './Pagination';
 // import { Pagination, Stack } from '@mui/material';
 
 const AdminList= ({ admin, setAdminList }) => {
- console.log(admin)
+
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
@@ -237,7 +237,7 @@ const AdminList= ({ admin, setAdminList }) => {
         adminid: event.adminid,
         userpassword: genPass,
         password: genPassword,
-        admin_firstname : event.admin_firstname,
+        name : event.admin_firstname,
         email: event.adminemail,
         role:'Admin'
 
@@ -344,7 +344,7 @@ const AdminList= ({ admin, setAdminList }) => {
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 150,
     },
 
     {
@@ -361,7 +361,7 @@ const AdminList= ({ admin, setAdminList }) => {
       headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 200,
       type: 'singleSelect',
     },
     {
@@ -369,7 +369,7 @@ const AdminList= ({ admin, setAdminList }) => {
       headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 180,
     },
 
     
@@ -377,7 +377,7 @@ const AdminList= ({ admin, setAdminList }) => {
     {
       field: 'action',
       headerName: 'Action',
-      width: `${session.user.role === '0' ? 300 : 150}`,
+      width: `${session.user.role === '0' ? 400 : 150}`,
       headerAlign: 'center',
       align: 'center',
       sortable: false,

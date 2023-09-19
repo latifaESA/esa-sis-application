@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
 import { FiEdit3, FiCheck, FiX } from "react-icons/fi";
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useSession } from "next-auth/react";
-const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), { ssr: false });
+// import ReactSpeedometer from "react-d3-speedometer"; // Import the speedometer component
 
 const StudentProfile = () => {
   const { data: session } = useSession();
@@ -13,11 +13,10 @@ const StudentProfile = () => {
   const [showAddressError, setShowAddressError] = useState(false);
   const [addressErrorMessage, setAddressErrorMessage] = useState('');
 
-
   const [isEditingMobileNumber, setIsEditingMobileNumber] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [editedAddress, setEditedAddress] = useState('');
-    
+
   useEffect(() => {
     fetchStudentData();
   }, []);
@@ -34,32 +33,8 @@ const StudentProfile = () => {
     }
   }
 
-  const averageGrades = 90;
-  let gradeColor = '#2ecc71';
-  if (averageGrades < 50) {
-    gradeColor = '#e74c3c';
-  } else if (averageGrades < 60) {
-    gradeColor = '#f1c40f';
-  }
+  const averageGrades = 60;
 
-  const chartOptions = {
-    plotOptions: {
-      radialBar: {
-        dataLabels: {
-          total: {
-            show: true,
-            label: 'Average Grades',
-            formatter: function () {
-              return Math.round(averageGrades) + '%';
-            },
-          },
-        },
-        startAngle: -90,
-        endAngle: 90,
-      },
-    },
-    colors: [gradeColor],
-  }
 
   const updateDetails = async () => {
     try {
@@ -95,14 +70,26 @@ const StudentProfile = () => {
 
       <div className="flex flex-cols mt-12">
         <div className="mr-6">
-          <ReactApexChart
-            options={chartOptions}
-            series={[averageGrades]}
-            type="radialBar"
+          {/* Replace the ApexCharts component with the ReactSpeedometer */}
+          <ReactSpeedometer
+            value={averageGrades}
+            minValue={0}
+            maxValue={100}
+            startColor="red"
+            needleTransitionDuration={9000}
+            needleTransition="easeElastic"
+            endColor="green"
+            needleColor="blue"
+            width={350}
             height={300}
+            customSegmentStops={[0,25, 50, 70, 100]}
+            segmentColors={["#CCCCFF", "#89CFF0","#4169E1" , '#000080']}
+            currentValueText="Average Grades: ${value}%"
+            needleHeightRatio={0.8} // Adjust this value to make the needle shorter (e.g., 0.6 for 60% of the default height)
           />
+
         </div>
-        <div className="ml-12">
+        <div className="ml-12 mt-6">
           <div className='flex flex-rows'>
             <div className='mr-6'>
               <p className="text-blue-600/75 text-base mb-4 ">
@@ -165,11 +152,11 @@ const StudentProfile = () => {
                       onChange={(e) => setEditedAddress(e.target.value)}
                       className="text-blue-600/75 text-base mb-4"
                     />
-{showAddressError && (
-                    <div className="text-red-500 text-sm mt-2">
-                      {addressErrorMessage}
-                    </div>
-                  )}
+                    {showAddressError && (
+                      <div className="text-red-500 text-sm mt-2">
+                        {addressErrorMessage}
+                      </div>
+                    )}
                   </div>
 
                   <div className='mr-6'>
@@ -180,7 +167,7 @@ const StudentProfile = () => {
                       <FiX className='text-red-600 text-base' />
                     </button>
                   </div>
-                  
+
                 </div>
               ) : (
                 <div className='flex flex-rows mr-6'>
@@ -208,8 +195,6 @@ const StudentProfile = () => {
             </p>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
