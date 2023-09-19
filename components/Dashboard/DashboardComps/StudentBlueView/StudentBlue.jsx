@@ -4,6 +4,8 @@
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import https from "https";
+
 
 const StudentBlue = () => {
   const [survey, setSurvey] = useState([]);
@@ -16,15 +18,15 @@ const StudentBlue = () => {
     const BlueData = async () => {
       let { data } = await axios.get(
         `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid="${userid}"&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`
-        //   , {
+          , {
 
-        //   // httpsAgent: new https.Agent({
-        //   //     rejectUnauthorized: false,
-        //   //   })
-        //   }
+          httpsAgent: new https.Agent({
+              rejectUnauthorized: false,
+            })
+          }
       );
       // console.log("dataTask",data.Tasks)
-      setSurvey(data.Tasks);
+      setSurvey(data.Tasks)
     };
     BlueData();
   }, []);

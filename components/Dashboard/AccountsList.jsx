@@ -306,7 +306,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 150,
     },
 
     {
@@ -381,7 +381,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerName: 'Major',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 300,
     },
 
     {
@@ -389,7 +389,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
-      width: 120,
+      width: 350,
       type: 'singleSelect',
     },
     {
@@ -397,7 +397,7 @@ const TeachersList = ({ users, setUsers }) => {
       headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
-      width: 90,
+      width: 150,
     },
 
     // {
@@ -527,7 +527,7 @@ const TeachersList = ({ users, setUsers }) => {
     {
       field: 'action',
       headerName: 'Action',
-      width: `${session.user.role === '0' ? 300 : 150}`,
+      width: `${session.user.role === '0' ? 350 : 150}`,
       headerAlign: 'center',
       align: 'center',
       sortable: false,

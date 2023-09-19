@@ -45,7 +45,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
         </ul>
         </p>
         ` +
-      `<p> Here are your credentials:</p>` +
+      `<p> Please click on the below link to sign in to the SIS :</p>` +
       `<div style="text-align: center;"> 
             <a href='${link}' target="_blank" style="padding: 8px 12px; border: 1px solid #ED2939;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #0c0c0c;text-decoration: none;font-weight:bold;display: inline-block;">
             Sign In            

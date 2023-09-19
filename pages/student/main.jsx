@@ -44,8 +44,8 @@ export default function Main() {
       {session?.user.role === "1" ? (
         <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
           {/* if status is limited display studentBlue */}
-          {limited && <StudentBlue />}
-          <StudentProfile />
+          {limited ? <StudentBlue />: <StudentProfile />}
+          
           
         </div>
       ) : (

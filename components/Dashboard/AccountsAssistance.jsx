@@ -207,7 +207,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
         console.log(error);
       });
   };
-  console.log(assistance)
+  // console.log(assistance)
   const handleConfirmDel = (user) => {
     setSelectedUser(user);
     setConfirmOpenDelete(true);
@@ -280,7 +280,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       headerName: "ID",
       headerAlign: "center",
       align: "center",
-      width: 90,
+      width: 150,
     },
 
     {
@@ -357,7 +357,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       headerName: "Major",
       headerAlign: "center",
       align: "center",
-      width: 170,
+      width:300,
     },
 
     {
@@ -365,7 +365,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       headerName: "E-mail",
       headerAlign: "center",
       align: "center",
-      width: 300,
+      width: 350,
       type: "singleSelect",
     },
     {
@@ -373,7 +373,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       headerName: "Status",
       headerAlign: "center",
       align: "center",
-      width: 90,
+      width: 150,
     },
     // {
     //   field: 'status',
