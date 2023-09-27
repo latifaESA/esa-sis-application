@@ -2257,7 +2257,7 @@ async function updateContactAddressProfile(
   }
 }
 
-async function getStudentFromBlueForLogs(connection, student_id, date_time) {
+async function getStudentFromBlueForLogs(connection, student_id) {
   try {
     let query = `
     SELECT * FROM student_logs WHERE student_id = '${student_id}' AND done_by = 'Blue' `;
@@ -2299,9 +2299,49 @@ async function getStudentFromBlueForLogs(connection, student_id, date_time) {
     return error
   }
  }
+ async function updateStatusBlue (
+  connection,
+  student_id
+ ){
+  console.log(student_id)
+  try {
+    const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`
+    console.log(query)
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+ }
+ async function updateStatusPreBlue(
+  connection,
+  student_id
+ ){
+  
+  try {
+    const query = `UPDATE student SET status = 'active'  WHERE student_id = '${student_id}'`
+    console.log(query)
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+ }
+ async function getStudentPromotionMajor (connection , major_id , promotion){
+   try {
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion = '${promotion}'`
+    const res = await connection.query(query)
+    return res
+   } catch (error) {
+    return error
+   }
+ }
 /* End Postegresql */
 
 module.exports = {
+  getStudentPromotionMajor,
+  updateStatusPreBlue,
+  updateStatusBlue,
   occupiedRoom,
   occupiedTeacher,
   updateContactAddressProfile,

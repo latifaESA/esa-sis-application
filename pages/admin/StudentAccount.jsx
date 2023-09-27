@@ -182,6 +182,7 @@ export default function Create() {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="hold">Hold</option>
+                  <option value="limited">Limited</option>
                 </select>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">

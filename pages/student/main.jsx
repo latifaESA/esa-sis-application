@@ -41,10 +41,19 @@ export default function Main() {
       <Head>
         <title>SIS - Main Board</title>
       </Head>
-      {session?.user.role === "1" ? (
+      {session?.user.role === "1" && limited ? (
         <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
           {/* if status is limited display studentBlue */}
-          {limited ? <StudentBlue />: <StudentProfile />}
+           <StudentBlue />
+          
+          
+          
+        </div>
+      ) :session?.user.role === "1" && !limited ? (
+        <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+          {/* if status is limited display studentBlue */}
+          <StudentProfile />
+          
           
           
         </div>
