@@ -225,11 +225,16 @@ const ProgramManagerView = () => {
       </div>
     </div>
   </Link> */}
-        <Link href="/programManager/schedule" disabled>
+        <Link href="/programManager/grades" disabled>
           <div
-            className={`pl-2 py-3 mx-5  text-red-400 hover:bg-red-100 hover:text-red-500 rounded text-center cursor-pointer mb-3 flex items-center transition-colors bg-red-100 text-red-500"
-                
-  `}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              // router.pathname == '/admin/Settings/Settings' ||
+              router.pathname == '/programManager/uploadGrades' ||
+              // router.pathname == '/admin/Settings/DropDownList'
+              router.pathname == '/programManager/downloadGrades'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
           >
             <div className="mr-2">
               <AcademicCapIcon className="h-5 w-5" />

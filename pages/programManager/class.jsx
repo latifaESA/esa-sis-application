@@ -36,6 +36,7 @@ export default function Class() {
   const [errorStart, setErrorStart] = useState('');
   const [errorEnd, setErrorEnd] = useState('');
   const [searchCourse, setSearchCourse] = useState("");
+  const [classes , setClasses] = useState([])
  
 
   const handleCancel = () => {
@@ -190,6 +191,21 @@ export default function Class() {
     }
   };
 
+  const fetchClass = async()=>{
+    try {
+      const payload ={
+        table:'tmpclass',
+        Where :'major_id',
+        id:session.user.majorid
+      }
+      const data = await axios.post('/api/pmApi/getAllCourses' , payload)
+      setClasses(data.data.data)
+    } catch (error) {
+      return error
+    }
+  }
+  console.log("class" , classes)
+
   const router = useRouter();
 
   const redirect = () => {
@@ -197,6 +213,7 @@ export default function Class() {
   };
 
   useEffect(() => {
+    fetchClass()
     handleShowAll();
   }, []);
 
@@ -256,6 +273,7 @@ export default function Class() {
   };
 
   const handleShowAll = async () => {
+    setSearchCourse(" ")
     // console.log('hello')
     getClasses();
   };
@@ -267,6 +285,7 @@ export default function Class() {
         course.course_id.toLowerCase().includes(searchCourse.toLowerCase())
       )
     );
+    
   };
   const getClasses = async () => {
     try {
@@ -426,12 +445,28 @@ export default function Class() {
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
               <label className="w-[350px]">
                 Course:
-                <input
+                {/* <input
                   type="text"
                   placeholder="type course id"
                   className="ml-4"
                   onChange={(e) => setSearchCourse(e.target.value)}
-                />
+                /> */}
+                    <select
+                    className="ml-9 w-40"
+                    value={searchCourse}
+                    onChange={(e) => setSearchCourse(e.target.value)}>
+                    <option value=" ">courses</option>
+                    <>
+                      <>{classes
+                      .length > 0 ? classes.map((item, index) => (
+                        <option key={index} value={item.course_id} >{item.course_id}</option>
+
+                      )) : <option value={" "}>NO Courses</option>}</>
+
+                    </>
+
+
+                  </select>
                 {/* {
               <CustomSelectBox
               options={promotion}
@@ -483,12 +518,13 @@ export default function Class() {
               </div>
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 Course:
-                <input
+                {/* <input
                   type="text"
                   placeholder="type course id"
                   className=" invisible max-[850px]:visible max-[850px]:hidden "
                   onChange={(e) => setSearchCourse(e.target.value)}
-                />
+                /> */}
+          
                 {/* {
               <CustomSelectBox
               options={promotion}

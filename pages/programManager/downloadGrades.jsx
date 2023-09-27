@@ -1,0 +1,265 @@
+import React, { useEffect, useState } from 'react';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { useSession } from "next-auth/react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { FaCloudDownloadAlt } from "react-icons/fa";
+import axios from 'axios';
+import Select from 'react-select';
+
+export default function DownloadGrades({ setClickDownload }) {
+  const { data: session } = useSession();
+  const [Data, setData] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [isSelected, setSelected] = useState(false);
+  const [promotionSelect, setPromotionSelected] = useState(false);
+  const [student, setStudentData] = useState([]);
+  const [promotionName, setPromotion] = useState('')
+  const [promotion, setPromotionList] = useState([])
+  const router = useRouter();
+
+  const header = [
+    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'Grade'],
+  ]
+  const redirect = () => {
+    router.push("/AccessDenied");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const payload = {
+          table: 'courses',
+          Where: 'major_id',
+          id: session.user.majorid
+        }
+
+        const data = await axios.post('/api/pmApi/getAllCourses', payload);
+        setData(data.data.data);
+
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchData();
+
+    const fetchPromotion = async () => {
+      try {
+        const payload = {
+          table: 'promotions',
+          Where: 'major_id',
+          id: session.user.majorid
+        }
+        const data = await axios.post('/api/pmApi/getAllCourses', payload)
+
+        setPromotionList(data.data.data)
+      } catch (error) {
+        return error
+      }
+    };
+    fetchPromotion();
+
+  }, []);
+  useEffect(() => {
+    if (promotionName != '') {
+      fetchStudent()
+    }
+
+  }, [promotionName])
+  const fetchStudent = async () => {
+
+    try {
+      const payload = {
+        major_id: session.user.majorid,
+        promotion: promotionName
+      };
+      const response = await axios.post('/api/pmApi/StudentMajor', payload);
+      const unsortedStudentData = response.data.data;
+      // console.log('student', unsortedStudentData)
+      // Sort the student data alphabetically by StudentFirstName
+      const sortedStudentData = unsortedStudentData.sort((a, b) =>
+        a.student_firstname.localeCompare(b.student_firstname)
+      );
+
+      setStudentData(sortedStudentData);
+    } catch (error) {
+      return error;
+    }
+
+
+  };
+
+  const calculateColumnWidths = (data) => {
+    const columnWidths = data[0].map((col, colIndex) => {
+      const maxContentWidth = data.reduce((max, row) => {
+        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+        const contentWidth = cellContent.length;
+        return Math.max(max, contentWidth);
+      }, col.length);
+
+      return { wch: maxContentWidth };
+    });
+
+    return columnWidths;
+  };
+
+  const handleCourse = (selectedOption) => {
+    const selectedName = selectedOption.value;
+    setCourses([selectedName]);
+    setSelected(true);
+  };
+  const handlePromotion = (selectedOption) => {
+    const selectedName = selectedOption.label;
+    setPromotion([selectedName]);
+    setPromotionSelected(true);
+  };
+
+  const createExcelTemplateCourse = () => {
+    if (!isSelected || courses.length === 0) {
+      // Handle the case when no course is selected
+      return;
+    }
+
+
+
+    // Create the data for the Excel sheet, including student data
+    const data = header.concat(
+      student.map((studentData) => [
+        studentData.student_id,
+        studentData.student_firstname,
+        studentData.student_lastname,
+        courses,
+        '',
+      ])
+    );
+
+    const columnWidths = calculateColumnWidths(data);
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    worksheet['!cols'] = columnWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Grade');
+
+    const excelBuffer = XLSX.write(workbook, {
+      type: 'array',
+      bookType: 'xlsx',
+    });
+    const excelBlob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(excelBlob, 'grade.xlsx');
+  };
+
+
+
+
+
+  return (
+    <>
+      <Head>
+        <title>SIS Program Manager - Download</title>
+      </Head>
+      {session?.user.role === "2" ? (
+        <>
+          <div
+            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          >
+            <div className="relative w-3/4 h-1/2 my-6 mx-auto max-w-3xl">
+              {/*content*/}
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                {/*header*/}
+                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                  <h3 className="text-gray-700 text-3xl font-bold">
+                    Download Template
+                  </h3>
+                  <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => { setClickDownload(false), setStudentData([]) }}
+                  >
+                    <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
+                </div>
+                {/*body*/}
+
+
+                {
+                  promotionSelect ?
+                    <>
+                      <div className='relative flex-auto '>
+                        <form className=" text-slate-500 text-lg leading-relaxed flex flex-rows justify-between">
+                          {isSelected ?
+
+                            <>
+                              <div className="m-8 text-slate-500 text-lg leading-relaxed">
+                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateCourse} />
+                                <p className="pt-5 mb-10 font-bold">Download Course Template</p>
+                              </div>
+
+                            </> :
+                            <>
+
+                              <div className="m-8 text-slate-500 text-lg leading-relaxed">
+                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold hover:<small>please select major first</small>" style={{ width: '7rem', height: '7rem', cursor: 'not-allowed' }} />
+                                <p className="pt-5 mb-10 font-bold">Download Course Template</p>
+                              </div>
+
+                            </>}
+
+
+                          <div className=" m-5 text-slate-500 text-lg leading-relaxed">
+                            <p className="pt-5 mb-10 font-bold">Select Course Name</p>
+                            <Select
+                              isMulti={false}
+                              options={Data.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
+                              placeholder="Select a Course"
+                              onChange={handleCourse}
+                              className='place-items-center w-96'
+                            />
+
+                          </div>
+                        </form>
+                      </div>
+
+                    </>
+
+                    :
+                    <>
+                      <div className='relative p-6 flex-auto '>
+                        <form className="m-8 text-slate-500 text-lg leading-relaxed">
+                          <Select
+                            isMulti={false}
+                            options={promotion.map((promotion) => ({ value: promotion.promotion_name, label: promotion.promotion_name }))}
+                            placeholder="Select a Promotion"
+                            onChange={handlePromotion}
+                            className='place-items-center w-96'
+                          />
+                          <p className="pt-5 font-bold">please Select promotion </p>
+
+                        </form>
+                      </div>
+
+                    </>
+                }
+
+
+                {/*footer*/}
+                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>) : (
+
+        redirect()
+      )}
+    </>
+  )
+}
+
+DownloadGrades.auth = true;
+DownloadGrades.adminOnly = true;
+

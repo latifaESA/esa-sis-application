@@ -7,6 +7,7 @@ import {
   HeadDays,
   DateControls,
   StyledEvent,
+  HighLevelPageStyle
   // SeeMore,
   // PortalWrapper,
   // ScheduleForm,
@@ -793,7 +794,7 @@ console.log(confirmOccupied)
 
   return (
     <>
-
+     <HighLevelPageStyle>
       <Wrapper>
         <DateControls>
           {/* <button
@@ -1093,6 +1094,7 @@ console.log(confirmOccupied)
           />
         )}
       </Wrapper>
+      </HighLevelPageStyle>
     </>
 
   );

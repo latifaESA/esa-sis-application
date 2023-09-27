@@ -15,19 +15,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 // import moment from 'moment';
 import axios from "axios";
-// import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
-// import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+
 import selection_data from "../../utilities/selection_data";
-// import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-// import encrypt from '../../utilities/encrypt_decrypt/encryptText';
-// import major_code from '../../utilities/major_code';
+
 import { LowerButtons } from "./LowerButtons";
-// import AddIcon from '@mui/icons-material/Add';
+
 import exportSelect from "../../utilities/ExcelExport/exportSelect";
-// import generatePasswod from "../../utilities/generatePassword";
-// import bcryptjs from "bcryptjs";
+
 import exportAll from "../../utilities/ExcelExport/exportAll";
-// import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
+
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
@@ -55,8 +51,7 @@ const TeachersList = ({ users, setUsers }) => {
   const [confirmActivation, setconfirmActivation] = useState(false);
   const [resultForActivation, setResultForActivation] = useState(false);
   const [status, setStatus] = useState("");
-  // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
-  // const [cancleIncomplete, setCancleIncomplete] = useState(false);
+  
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
@@ -65,31 +60,8 @@ const TeachersList = ({ users, setUsers }) => {
     setSelectedUser(user);
     setResultForActivation(true);
   };
-  // const handleConfirmDel = (user) => {
-  //   setSelectedUser(user);
-  //   // setConfirmOpenDelete(true);
-  //   setconfirmActivation(true);
-  // };
+ 
 
-  console.log(session?.user.name);
-  //obsolete modal
-  // const handleConfirmObsolote = (user) => {
-  //   setSelectedUser(user);
-  //   setConfirmOpenObsolote(true);
-  // };
-
-  //cancle incomplete
-  // const handleCancleIncomplete = (user) => {
-  //   setSelectedUser(user);
-  //   setCancleIncomplete(true);
-  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((u) =>
-  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
-  //     )
-  //   );
-  // };
 
   const handleConfirmClose = () =>
     // user
@@ -98,15 +70,7 @@ const TeachersList = ({ users, setUsers }) => {
       setConfirmOpenDelete(false);
       setconfirmActivation(false);
       setResultForActivation(false);
-      // setConfirmOpenObsolote(false);
-      // setCancleIncomplete(false);
-      // const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-      // // console.log("prevStatus",prevStatus)
-      // setUsers((prevUsers) =>
-      //   prevUsers.map((u) =>
-      //     u.ID === user.ID ? { ...u, status: prevStatus } : u
-      //   )
-      // );
+ 
     };
 
   function formatDate(date) {
@@ -175,56 +139,7 @@ const TeachersList = ({ users, setUsers }) => {
 
     axios.post("/api/admin/adminApi/addStudentActivityToLogs", sendToLogs);
   };
-  // const handleEnable = async (user) => {
-  //   let genPassword = generatePasswod(8);
-  //   const salt = await bcryptjs.genSalt(8);
-  //   const genPass = await bcryptjs.hash(genPassword, salt);
-  //   let sendData = {
-  //     pm_id: user.pm_id,
-  //     userpassword: genPass,
-  //   };
-  //   axios
-  //     .post(
-  //       "/api/admin/adminApi/enablepm",
-  //       sendData
-  //       // {
-  //       //   data: encrypt(
-  //       //     JSON.stringify({
-  //       //       pm_id: user.pm_id,
-  //       //       pm_status: 'inactive',
-  //       //     }
-  //       //     )
-  //       //   ),
-  //       // }
-  //     )
-  //     .then((response) => {
-  //       // Handle success
-  //       console.log(response.data);
-  //       setMessage("User Status Changed Succesfully!");
 
-  //       //Update the user's status and major in the table
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((u) =>
-  //           u.pm_id === user.pm_id
-  //             ? {
-  //                 ...u,
-  //                 pm_status: user.pm_status == "active" ? "inactive" : "active",
-  //                 note: `the current password is: ${genPassword}`,
-  //               }
-  //             : u
-  //         )
-  //       );
-  //       setTimeout(() => {
-  //         setUsers((prevUsers) =>
-  //           prevUsers.filter((u) => u.pm_status === "inactive")
-  //         );
-  //       }, 10000); // 10000 milliseconds = 10 seconds
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       console.log(error);
-  //     });
-  // };
   const handleDelete = (user) => {
     let sendData = {
       student_id: user.student_id,
@@ -285,82 +200,31 @@ const TeachersList = ({ users, setUsers }) => {
     // handleEnable(selectedUser);
     handleSave(selectedUser);
     setConfirmOpenIncomplete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
+   
   };
   const handleConfirmDelete = () => {
     handleDelete(selectedUser);
     // handleSave(selectedUser);
     setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
+   
   };
   const handleConfirmActivation = (reason) => {
-    console.log("--------------------");
-    console.log(reason);
-    setReasons(reason);
-    console.log("--------------------");
+
+
+   
     setConfirmOpenDelete(true);
     setconfirmActivation(false);
   };
   const handleConfirmReason = (reason) => {
-    console.log("--------------------");
-    console.log(reason);
-    setReasons(reason);
-    console.log("--------------------");
+   
+
+
+   
     setConfirmOpenIncomplete(true);
     setResultForActivation(false);
   };
-  //  const handleChangeMajor =  async(user) => {
-  //   const targetPromotion = major_code.find(
-  //     (major) => major.major === user.major
-  //   )?.promotion;
-  //   await axios
-  //     .put(`/api/admin/listusers/major`, {
-  //       data: encrypt(
-  //         JSON.stringify({
-  //           ID: user.ID,
-  //           major: user.major,
-  //           promotion: targetPromotion,
-  //         })
-  //       ),
-  //     })
-  //     .then(async (response) => {
-  //       // Handle success
-  //       console.log(response.data);
-  //       //console.log(response.data.defaultpassword)
-  //       //console.log(response.data.newID)
-  //       setMessage('User Major Changed Succesfully!');
-  //         await EmailAfterChangMajor({
-  //          lname:response.data.lastname ,
-  //          fname:response.data.firstname,
-  //          newID:response.data.newID,
-  //          email:response.data.email,
-  //          defaultpassword:response.data.defaultpassword,
-  //          oldmajor:response.data.oldmajor,
-  //          newmajor:response.data.newmajor,
-  //        });
 
-  //       setMajorEnable(null);
-  //       //Update the user's major in the table);
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((u) =>
-  //           u.ID === user.ID
-  //             ? {
-  //                 ...u,
-  //                 major: user.major,
-  //                 promotion: targetPromotion,
-  //                 status: 'incomplete',
-  //               }
-  //             : u
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       console.log(error.response.data);
-  //     });
-  // };
+
 
   setTimeout(() => {
     setMessage("");
@@ -387,63 +251,7 @@ const TeachersList = ({ users, setUsers }) => {
         }`,
     },
 
-    // {
-    //   field: 'email',
-    //   headerName: 'Email',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 150,
-    // },
-    // {
-    //   field: 'mobileNumber',
-    //   headerName: 'Mobile Number',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 120,
-    // },
-
-    // {
-    //   field: 'major',
-    //   headerName: 'Major',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 200,
-    //   editable: true,
-    //   type: 'singleSelect',
-    //   valueOptions: majorData,
-    // },
-    // {
-    //   field: 'promotion',
-    //   headerName: 'Promotion',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 90,
-    // },
-    // {
-    //   field: 'status',
-    //   headerName: 'Status',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   editable: true,
-    //   cellClassName: (params) =>
-    //     params.row.status === 'complete'
-    //       ? 'text-green-600 font-bold'
-    //       : params.row.status === 'incomplete'
-    //       ? 'text-red-600 font-bold'
-    //       : '' || params.row.status === 'submitted'
-    //       ? 'text-blue-600 font-bold'
-    //       : '',
-    //   type: 'singleSelect',
-    //   valueOptions: statusData,
-    // },
-    // {
-    //   field: 'Academic Year',
-    //   headerName: 'Academic Year',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    // },
+    
     {
       field: "major_name",
       headerName: "Major",
@@ -452,21 +260,6 @@ const TeachersList = ({ users, setUsers }) => {
       width: 400,
     },
 
-    // {
-    //   field: "pm_email",
-    //   headerName: "E-mail",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   width: 120,
-    //   type: "singleSelect",
-    // },
-    // {
-    //   field: "status",
-    //   headerName: "Status",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   width: 100,
-    // },
     {
       field: "status",
       headerName: "Status",
@@ -481,7 +274,9 @@ const TeachersList = ({ users, setUsers }) => {
           ? "text-red-600 font-bold"
           : "" || params.row.status === "hold"
           ? "text-yellow-900 font-bold"
-          : "",
+          : ""|| params.row.status === "limited"
+          ? "text-blue-700 font-bold" 
+          :"",
       type: "singleSelect",
       valueOptions: statusData,
     },
@@ -493,130 +288,6 @@ const TeachersList = ({ users, setUsers }) => {
       width: 100,
     },
 
-    // {
-    //   field: 'status',
-    //   headerName: 'Status',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   editable: true,
-    //   cellClassName: (params) =>
-    //     params.row.status === 'active'
-    //       ? 'text-green-600 font-bold'
-    //       : params.row.status === 'limited'
-    //       ? 'text-red-600 font-bold'
-    //       : '' || params.row.status === 'Inactive'
-    //       ? 'text-blue-600 font-bold'
-    //       : '',
-    //   type: 'singleSelect',
-    //   valueOptions: statusData,
-    // },
-    // {
-    //   field: 'academic_year',
-    //   headerName: 'Academic Year',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 110,
-    // },
-
-    // {
-    //   field: 'createdAt',
-    //   headerName: 'Initial Date',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   type: 'date',
-    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
-    // },
-    // {
-    //   field: 'updatedAt',
-    //   headerName: 'Submition Date',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 100,
-    //   type: 'date',
-    //   valueFormatter: (params) => moment(params?.value).format('DD/MM/YYYY'),
-    // },
-    // {
-    //   field: 'reportURL',
-    //   headerName: 'Report',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 200,
-    //   renderCell: (params) => {
-    //     return params.row.status === 'incomplete' ? (
-    //       ''
-    //     ) : (
-    //       <Link target='_blank' href={`${params.row.reportURL}`}>
-    //         {params.row.reportURL
-    //           ? `${params.row.fname} ${params.row.lname}'s Report`
-    //           : ''}
-    //       </Link>
-    //     );
-    //   },
-    // },
-
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: `${session.user.role === '0' ? 300 : 150}`,
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   sortable: false,
-    //   renderCell: (params) => (
-    //     <div className='flex gap-2'>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => {
-    //           const prevStatus = users.find(
-    //             (u) => u.ID === params.row.ID
-    //           )?.status;
-    //           if (prevStatus === 'incomplete') {
-    //             handleCancleIncomplete(params.row);
-    //           } else if (params.row.status === 'incomplete') {
-    //             handleConfirmIncomplete(params.row);
-    //           } else if (params.row.status === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else if (prevStatus === 'obsolete') {
-    //             handleConfirmObsolote(params.row);
-    //           } else {
-    //             handleSave(params.row);
-    //           }
-    //         }}
-    //         type='button'
-    //       >
-    //         Save
-    //       </button>
-    //       <Link
-    //         className='text-black'
-    //         target='_blank'
-    //         href={`${params.row.reportURL}`}
-    //       >
-    //         <button
-    //           className='primary-button hover:text-white'
-    //           disabled={params.row.reportURL ? false : true}
-    //           type='button'
-    //         >
-    //           Print
-    //         </button>
-    //       </Link>
-    //       <button
-    //         className='primary-button hover:text-white'
-    //         onClick={() => handleChangeMajor(params.row)}
-    //         disabled={params.id !== majorEnable}
-    //         type='button'
-    //         hidden={
-    //           session.user.role === '2' || session.user.role === '3'
-    //             ? true
-    //             : false
-    //         }
-    //       >
-    //         Change Major
-    //       </button>
-    //     </div>
-    //   ),
-    // },
-
     {
       field: "action",
       headerName: "Change Status",
@@ -624,111 +295,29 @@ const TeachersList = ({ users, setUsers }) => {
       headerAlign: "center",
       align: "center",
       sortable: false,
-      renderCell: (params) => (
-        <div className="flex gap-2">
-          {/* old buttons */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setStatus(params.row.status);
-              handleConfirmIncomplete(params.row);
-            }}
-            className="primary-button hover:text-white"
-          >
-            Save
-          </button>
-          {/* <button
-            disabled={params.row.status == "active" ? true : false}
-            className="primary-button hover:text-white"
-            onClick={() => {
-              // handleSave(params.row)
-              handleConfirmIncomplete(params.row);
-            }}
-            type="button"
-          >
-            <PersonAddAlt1Icon />
-          </button>
-          <button
-            className="primary-button hover:text-white"
-            disabled={params.row.status == "inactive" ? true : false}
-            onClick={() => {
-              // handleSave(params.row)
-              // handleConfirmIncomplete(params.row)
-              handleConfirmDel(params.row);
-              // handleDelete(params.row)
-            }}
-            type="button"
-          >
-            <PersonRemoveIcon />
-          </button>
-          <button
-            className="primary-button hover:text-white"
-            disabled={params.row.status == "hold" ? true : false}
-            onClick={() => {
-              // handleSave(params.row)
-              // handleConfirmIncomplete(params.row)
-              handleConfirmDel(params.row);
-              // handleDelete(params.row)
-            }}
-            type="button"
-          >
-            <PersonOffIcon />
-          </button> */}
-
-          {/* end of old buttons */}
-
-          {/* <Link
-            className='text-black'
-            target='_blank'
-            href={`${params.row.reportURL}`}
-          >
+      renderCell: (params) => {
+        if (params.row.status === "limited") {
+          return null; // Don't render the column when status is limited
+        }
+    
+        return (
+          <div className="flex gap-2">
+            {/* old buttons */}
             <button
-              className='primary-button hover:text-white'
-              disabled={params.row.reportURL ? false : true}
-              type='button'
-            >
-              Print
-            </button>
-          </Link> */}
-          {/* <button
-            className='primary-button hover:text-white'
-            onClick={() => {
-              const prevStatus = users.find(
-                (u) => u.ID === params.row.ID
-              )?.status;
-              if (prevStatus === 'incomplete') {
-                handleCancleIncomplete(params.row);
-              } else if (params.row.status === 'incomplete') {
+              onClick={(e) => {
+                e.preventDefault();
+                setStatus(params.row.status);
                 handleConfirmIncomplete(params.row);
-              } else if (params.row.status === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else if (prevStatus === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else {
-                handleSave(params.row);
-              }
-            }}
-            // disabled={params.id !== majorEnable}
-            type='button'
-            hidden={
-              session.user.role === '2' || session.user.role === '3'
-                ? true
-                : false
-            }
-          >
-            Deactivate
-          </button> */}
-        </div>
-      ),
-    },
-
-    // {
-    //   field: "note",
-    //   headerName: "Notes",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   width: 150,
-    // },
+              }}
+              className="primary-button hover:text-white"
+            >
+              Save
+            </button>
+          </div>
+        );
+      },
+    }
+    
   ];
 
   // export select to excel
