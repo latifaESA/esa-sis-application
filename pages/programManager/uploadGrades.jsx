@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState , useEffect} from "react";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 import * as XLSX from "xlsx";
 import { useSession } from "next-auth/react";
@@ -7,7 +7,7 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({setClickUpload}) {
+export default function UploadGrades({ setClickUpload , showAll}) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -32,7 +32,16 @@ export default function UploadGrades({setClickUpload}) {
         setConfirmOpenMessage(false);
         setIsClick(false);
     };
+    useEffect(() => {
+        showAll();
+        // Auto-refresh the page 
+        const interval = setInterval(() => {
+            showAll();
+        }, 1000);
 
+        // Clear the interval when the component unmounts
+        return () => clearInterval(interval);
+    }, []);
     const validateColumnHeaders = (columnA) => {
         const templateFields = [
             'StudentID',
@@ -61,10 +70,12 @@ export default function UploadGrades({setClickUpload}) {
             'StudentFirstName',
             'StudentLastName',
             'CourseID',
+            'TaskName',
             'Grade'
         ];
 
         for (const field of requiredFields) {
+            console.log(field , 'test')
             if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
                 return false; // Missing or empty required field
             } else {
@@ -102,7 +113,7 @@ export default function UploadGrades({setClickUpload}) {
                 const isValidHeaders = validateColumnHeaders(firstRow);
                 if (!isValidHeaders) {
                     setConfirmOpenMessage(true);
-                    setMessages("Error File! please upload Course Template And Don't change The Header.");
+                    setMessages("Error File! please upload Grade Template And Don't change The Header.");
                     return;
                 }
 
@@ -115,34 +126,14 @@ export default function UploadGrades({setClickUpload}) {
 
                     }
 
-
-
-
-                    // Iterate through data rows (starting from index 1)
-                    for (let i = 1; i < rows.length; i++) {
-                        const rowData = {}; // Create an object to store data from the current row
-
-                        for (let j = 0; j < firstRow.length; j++) {
-                            rowData[firstRow[j]] = rows[i][j]; // Assign values using header keys
-
-                        }
-
-                        // Check if the "Grade" column is empty or missing in the current row
-                        if (!("Grade" in rowData) || rowData["Grade"] === "") {
-                            setConfirmOpenMessage(true);
-                            setMessages("No data was uploaded due to missing required information Grade.");
-                            return;
-                        }
-
-                        if (!validateRow(rowData)) {
-                            setConfirmOpenMessage(true);
-                            setMessages("No data was uploaded due to missing required information.");
-                            return;
-                        }
+                    // Check if the "Grade" column is empty or missing in the current row
+                    if (!("Grade" in rowData) || rowData["Grade"] === "") {
+                        setConfirmOpenMessage(true);
+                        setMessages("No data was uploaded due to missing required information Grade.");
+                        return;
                     }
 
                     if (!validateRow(rowData)) {
-
                         setConfirmOpenMessage(true);
                         setMessages("No data was uploaded due to missing required information.");
                         return;
@@ -195,7 +186,7 @@ export default function UploadGrades({setClickUpload}) {
                     <div
                         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                     >
-                        <div className="relative w-3/4 h-1/2 my-6 mx-auto max-w-3xl">
+                        <div className="relative w-3/4  my-6 mx-auto max-w-3xl">
                             {/*content*/}
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 {/*header*/}
@@ -213,22 +204,22 @@ export default function UploadGrades({setClickUpload}) {
                                     </button>
                                 </div>
                                 {/*body*/}
-                                
-                                    <>
-                                      <div className="place-items-center">
-                                      <form className="my-4 text-slate-500 text-lg leading-relaxed">
+
+                                <>
+                                    <div className="place-items-center">
+                                        <form className="my-4 text-slate-500 text-lg leading-relaxed">
                                             <div className="flex flex-column justify-center  pb-4">
-                                                
-                                                    <div className="relative p-6 flex-auto ">
-                                                        <div className="">
-                                                            <DropZone
-                                                                data={uploadPhotoData}
-                                                                dispatch={uploadPhotoDispatch}
-                                                                type={"file"}
-                                                            />
-                                                        </div>
+
+                                                <div className="relative p-6 flex-auto ">
+                                                    <div className="">
+                                                        <DropZone
+                                                            data={uploadPhotoData}
+                                                            dispatch={uploadPhotoDispatch}
+                                                            type={"file"}
+                                                        />
                                                     </div>
-                                             
+                                                </div>
+
                                             </div>
                                             <div className='p-4 ml-2 flex flex-column justify-center'>
                                                 {isClick ? (
@@ -251,9 +242,9 @@ export default function UploadGrades({setClickUpload}) {
 
                                             </div>
                                         </form>
-                                      </div>
-                                      
-                                    </>
+                                    </div>
+
+                                </>
 
                                 {/*footer*/}
                                 <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">

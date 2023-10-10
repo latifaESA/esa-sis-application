@@ -128,9 +128,9 @@ const ProgramManagerView = () => {
           {/* <Link href='/admin/payments'> */}
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/Create/PMmain'
-             || router.pathname == '/programManager/Create/createAttendance'
-             || router.pathname == '/programManager/attendance'
-              ? 
+              || router.pathname == '/programManager/Create/createAttendance'
+              || router.pathname == '/programManager/attendance'
+              ?
               'bg-blue-100 text-blue-500'
               : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
               }`}
@@ -163,11 +163,27 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
-        {/* course Management system */}
-
-
-
-        {/* Edit Profile */}
+        {/* grade */}
+        <Link href="/programManager/grades" disabled>
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              // router.pathname == '/admin/Settings/Settings' ||
+              router.pathname == '/programManager/grades' 
+                // router.pathname == '/admin/Settings/DropDownList'
+                // router.pathname == '/programManager/downloadGrades'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+              }`}
+          >
+            <div className="mr-2">
+              <AcademicCapIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Grades</p>
+            </div>
+          </div>
+        </Link>
+        {/* Course */}
 
         <Link href="/programManager/courses">
           {/* <Link href='/admin/profile'> */}
@@ -185,7 +201,7 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
-
+        {/* Edit Profile */}
         <Link href="/programManager/profile">
           {/* <Link href='/admin/Settings/Settings'> */}
           <div
@@ -225,25 +241,7 @@ const ProgramManagerView = () => {
       </div>
     </div>
   </Link> */}
-        <Link href="/programManager/grades" disabled>
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              // router.pathname == '/admin/Settings/Settings' ||
-              router.pathname == '/programManager/uploadGrades' ||
-              // router.pathname == '/admin/Settings/DropDownList'
-              router.pathname == '/programManager/downloadGrades'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-              }`}
-          >
-            <div className="mr-2">
-              <AcademicCapIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Grades</p>
-            </div>
-          </div>
-        </Link>
+
         {/* Dashboard Section */}
         <Link href="/programManager/main">
           <div
