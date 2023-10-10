@@ -4,11 +4,12 @@ import path from "path";
 
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
-// const { getMajor, CreateCourse } = require("../../controller/queries");
+const { uploadGrades } = require("../controller/queries");
 
 import xlsx from "xlsx";
 // import { env } from 'process';
 import { authOptions } from "../auth/[...nextauth]";
+import gpaToGrades from "./gpa";
 
 
 
@@ -90,7 +91,7 @@ async function handler(req, res) {
 
     let grade_file = await fs.readdirSync(directory);
 
-  
+
     if (!grade_file) {
       return res.status(400).json({
         success: false,
@@ -139,40 +140,35 @@ async function handler(req, res) {
     }
 
     const connection = await connect();
- 
+
 
     for (const row of data) {
       try {
-        // const major = await getMajor(connection, row.MajorName);
-        // if (!major || major.rows.length === 0) {
-        //   console.error(`Major not found for row: `, row);
-        //   continue; // Skip this row if the major is not found
-        // }
 
-        // const majorid = major.rows[0].major_id;
-       
-        if(row.studentID === undefined || row.StudentFirstName === undefined 
-          || row.StudentLastName === undefined || row.studentID === '' || row.Grade === undefined || row.StudentFirstName === '' 
-          || row.StudentLastName === '' || row.Grade === ''){
-            return res.status(400).json({
-              success:false ,
-              code : 400,
-              message:`No data was uploaded due to missing required information.`
-            })
+        if (row.StudentID === undefined || row.StudentFirstName === undefined || row.CourseID === undefined
+          || row.StudentLastName === undefined || row.StudentID === '' || row.CourseID === '' || row.Grade === undefined || row.StudentFirstName === ''
+          || row.StudentLastName === '' || row.Grade === '' || row.TaskName === '' || row.TaskName === undefined) {
+          return res.status(400).json({
+            success: false,
+            code: 400,
+            message: `No data was uploaded due to missing required information.`
+          })
+        }
+        const data = await gpaToGrades(row.Grade)
+        const res = await uploadGrades(
+          connection,
+          {
+            student_id: row.StudentID,
+            student_firstname: row.StudentFirstName,
+            student_lastname: row.StudentLastName,
+            course_id: row.CourseID,
+            grade: row.Grade,
+            task_name:row.TaskName,
+            gpa: data.gpa,
+            rank: data.rank
           }
-   
-        // const response = await CreateCourse(connection, {
-        //   student_id: row.CourseID,
-        //   course_name: row.CourseName,
-        //   course_credit: row.CourseCredit,
-        //   course_type: row.CourseType,
-        //   major_id: majorid,
-        // });
-        // if (response) {
-        //   countSaved++; // Increment the count of saved records
-        // } else {
-        //   console.error(`Failed to save row: `, row);
-        // }
+        )
+
       } catch (error) {
         console.error(`Error while processing row: `, row, "\nError: ", error);
       }
@@ -184,8 +180,11 @@ async function handler(req, res) {
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `Course Uploaded Successfully!`,
+      message: `Grades Uploaded Successfully!`,
     });
+
+
+
   } catch (error) {
     return res.status(500).json({
       success: false,

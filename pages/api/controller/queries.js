@@ -29,28 +29,6 @@ import bcryptjs from "bcryptjs";
  * It finds Data from the databasevand returns true or false
  * </code>
  */
-// async function findData(connection, name, table, value) {
-//   try {
-//     const [result] = await executeQuery(
-//       connection,
-//       `select max(if(${name}=?,true,false)) AS result from ${table}`,
-//       [value]
-//     );
-
-//     return result;
-//   } catch (err) {
-//     return err;
-//   }
-// }
-// const results = await new Promise((resolve, reject) => {
-//   connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
-//     if (err) {
-//       reject(err);
-//     } else {
-//       resolve(res.rows);
-//     }
-//   });
-// });
 
 async function findDataForResetPassword(connection, table, where, columnName) {
   try {
@@ -211,29 +189,6 @@ async function insertPromotion(connection, table, columns, values) {
   }
 }
 
-// Create Schedule
-// async function createSchedule(connection,class_id,day,from_time,to_time){
-//   try {
-//     const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time)
-//     VALUES (${class_id}, ARRAY[${day}], '${from_time}', '${to_time}')`;
-//     const res = await connection.query(query);
-//     return res;
-//   } catch (error) {
-//     return error;
-//   }
-// }
-
-// async function createSchedule(connection, class_id, day, from_time, to_time,room) {
-//   try {
-//     const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time, room)
-//     VALUES ($1, $2, $3, $4, $5)`;
-//     const values = [class_id, day, from_time, to_time, room];
-//     const res = await connection.query(query, values);
-//     return res;
-//   } catch (error) {
-//     return error;
-//   }
-// }
 async function getClassDetails(connection, tmpclass_id) {
   try {
     const query = ` SELECT * FROM tmpclass WHERE tmpclass_id = '${tmpclass_id}'`;
@@ -436,7 +391,7 @@ async function addSchedule(
 // copy Schedule
 async function copySchedule(connection, classID, newClassID) {
   try {
-    // classID, day, fromTime, toTime, room_id, pm_id
+
     const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
     SELECT $1, to_char(day::date + INTERVAL '1 year', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS day, from_time, to_time, room, pm_id
     FROM tmpschedule
@@ -658,7 +613,7 @@ async function filterCourses(
   }
 }
 async function getAllCourses(connection, course_id, major_id) {
-  // console.log(course_id)
+
 
   try {
     const query = `SELECT * FROM courses WHERE course_id ='${course_id}' AND major_id='${major_id}'`;
@@ -742,9 +697,6 @@ async function getExistCourse(connection, course_id, teacher_idC, major_id) {
     INNER JOIN courses ON  teacher_courses.course_id = courses.course_id
     WHERE teacher_courses.course_id ='${course_id}' AND  teacher_courses.teacher_id='${teacher_idC}' AND major_id='${major_id}'`;
     const res = await connection.query(query);
-    // console.log('res', res)
-
-    // console.log('query',query)
     return res;
   } catch (error) {
     return error;
@@ -1005,35 +957,6 @@ async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
   }
 }
 
-// //filter attendance
-// async function filterAttendance( connection,student_id , teacher_id , major_id , course_id , attendance_date , present){
-//   try {
-//     let sql = 'select * from attendance WHERE 1=1';
-//     if(student_id != ''){
-//         sql  += `AND student_id = '${student_id}'`;
-//     }
-//     if(teacher_id !=''){
-//       sql += `AND teacher_id = '${teacher_id}'`;
-//     }
-//     if(major_id != ''){
-//       sql += `AND major_id = '${major_id}'`;
-//     }
-//     if(course_id != ''){
-//       sql += `AND course_id = '${course_id}'`;
-//     }
-//     if(attendance_date != ''){
-//       sql += `AND attendance_date = '${attendance_date}'`;
-//     }
-//     if(present != ''){
-//       sql += `AND present = ${present}`
-//     }
-//     const res = await connection.query(sql);
-//     return res;
-//   } catch (error) {
-//     return error
-//   }
-// }
-
 async function enableUserpm(connection, pm_id, userpassword) {
   try {
     let query = `
@@ -1105,25 +1028,8 @@ async function teacherCourse(
   course_name,
   major_id
 ) {
-  // console.log(course_id)
   try {
-    //<<<<<<< Hassan
-    //    let query = `SELECT teachers.* , teacher_extra_course.course_id
-    //    from teachers
-    //    INNER JOIN teacher_extra_course ON teachers.teacher_id = teacher_extra_course.teacher_id
-    //   where 1=1`;
-    //   if (teacher_firstname.trim() != "") {
-    //     query += ` AND lower(trim(teacher_firstname)) LIKE lower(trim('%${teacher_firstname}%'))`;
-    //   }
-    //   if (teacher_lastname.trim() != "") {
-    //     query += ` AND lower(trim(teacher_lastname)) LIKE lower(trim('%${teacher_lastname}%'))`;
-    //   }
-    //   if (course_id.trim() != "") {
-    //     query += ` AND lower(trim(course_id)) LIKE lower(trim('%${course_id}%'))`;
-    //   }
-    //   if (courseex_id.trim() != "") {
-    //     query += ` AND lower(trim(teacher_extra_course.course_id)) LIKE lower(trim('%${courseex_id}%'))`;
-    //=======
+
     let query = `SELECT teacher_courses.* , teachers.teacher_firstname,teachers.teacher_lastname , courses.course_name,courses.major_id , courses.major_id
     from teacher_courses 
     INNER JOIN teachers ON teacher_courses.teacher_id = teachers.teacher_id
@@ -1207,9 +1113,9 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
   // console.log('query' , query)
   try {
     const query = `UPDATE teacher_courses SET teacher_id = '${teacher_id}' WHERE course_id = '${course_id}' AND teacher_id='${condition}' RETURNING teacher_courses_id`;
-    
+
     const res = await connection.query(query);
-    console.log('query' , query)
+    console.log('query', query)
     return res;
   } catch (error) {
     return error;
@@ -1221,7 +1127,7 @@ async function assignmentTeacherCourse(connection, course_id, teacher_id) {
   try {
     const query = `INSERT INTO teacher_courses(teacher_id , course_id) VALUES ('${teacher_id}','${course_id}') RETURNING teacher_courses_id `;
     const res = await connection.query(query);
-    // console.log("add",query)
+
     return res;
   } catch (error) {
     return error;
@@ -1951,10 +1857,6 @@ async function ActiveUser(
   {
     userid,
     userpassword,
-    // token,
-    // // isReset,
-    // isVerified,
-    // update_time
   }
 ) {
   try {
@@ -2071,9 +1973,7 @@ async function filterStudentAdmin(
     if (student_lastname != "") {
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
     }
-    // if (majorName.trim() != "") {
-    //   query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
-    // }
+
 
     const result = await connection.query(query);
     return result;
@@ -2268,29 +2168,29 @@ async function getStudentFromBlueForLogs(connection, student_id) {
     return err;
   }
 }
- async function occupiedTeacher(
+async function occupiedTeacher(
   connection,
   teacherId,
   attendance_date
- ){
+) {
   try {
     const query = `SELECT tmpschedule.* , tmpclass.teacher_id FROM tmpschedule
     INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
     WHERE day='${attendance_date}' AND tmpclass.teacher_id = '${teacherId}'`
     const res = await connection.query(query)
     return res
-    
+
   } catch (error) {
     return error
   }
 
- } 
- async function occupiedRoom(
+}
+async function occupiedRoom(
   connection,
-  attendance_date ,
+  attendance_date,
   room
 
- ){
+) {
   try {
     const query = `SELECT * FROM tmpschedule WHERE room = '${room}' AND day='${attendance_date}'`
     const res = await connection.query(query)
@@ -2298,11 +2198,11 @@ async function getStudentFromBlueForLogs(connection, student_id) {
   } catch (error) {
     return error
   }
- }
- async function updateStatusBlue (
+}
+async function updateStatusBlue(
   connection,
   student_id
- ){
+) {
   console.log(student_id)
   try {
     const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`
@@ -2312,33 +2212,134 @@ async function getStudentFromBlueForLogs(connection, student_id) {
   } catch (error) {
     return error
   }
- }
- async function updateStatusPreBlue(
+}
+async function updateStatusPreBlue(
   connection,
   student_id
- ){
-  
+) {
+
   try {
     const query = `UPDATE student SET status = 'active'  WHERE student_id = '${student_id}'`
-    console.log(query)
     const res = await connection.query(query)
     return res
   } catch (error) {
     return error
   }
- }
- async function getStudentPromotionMajor (connection , major_id , promotion){
-   try {
+}
+async function getStudentPromotionMajor(connection, major_id, promotion) {
+  try {
     const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion = '${promotion}'`
     const res = await connection.query(query)
     return res
-   } catch (error) {
+  } catch (error) {
     return error
-   }
- }
+  }
+}
+async function uploadGrades(
+  connnection, {
+    student_id,
+    student_firstname,
+    student_lastname,
+    course_id,
+    grade,
+    task_name,
+    gpa,
+    rank
+  }
+) {
+
+  try {
+    const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank) 
+       VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}')
+    
+    `
+
+    const res = await connnection.query(query)
+
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function filterGrades(
+  connection,
+  student_id,
+  first_name,
+  last_name,
+  promotion,
+  major_id,
+  course_id,
+  grades,
+  task_name,
+  gpa,
+  rank
+) {
+  
+  try {
+    let query = `SELECT student_grades .* ,  student.promotion , student.major_id
+      FROM student_grades
+      INNER JOIN student ON student_grades.student_id = student.student_id
+      WHERE student.major_id = '${major_id}'  
+      `;
+
+    if (student_id != "") {
+      query += ` AND student_id = '${student_id}'`;
+    }
+    if (first_name) {
+      query += ` AND lower(trim(first_name)) LIKE lower(trim('%${first_name}%')) `;
+    }
+    if (last_name) {
+      query += ` AND lower(trim(last_name)) LIKE lower(trim('%${last_name}%'))`;
+    }
+    if (task_name) {
+      query += ` AND lower(trim(task_name)) LIKE lower(trim('%${task_name}%'))`;
+    }
+    if (promotion) {
+      query += ` AND lower(trim(student.promotion)) LIKE lower(trim('%${promotion}%'))`;
+    }
+    if (course_id != "") {
+      query += ` AND lower(trim(courseid)) LIKE lower(trim('%${course_id}%'))`;
+    }
+    if (rank != "") {
+      query += ` AND lower(trim(rank)) LIKE lower(trim('%${rank}%'))`;
+    }
+    if (grades != "") {
+      query += ` AND grade = '${grades}'`;
+    }
+    if (gpa != "") {
+      query += ` AND gpa = '${gpa}'  `;
+    }
+
+    const res = await connection.query(query);
+   
+    return res;
+  } catch (error) {
+    return error
+  }
+}
+async function updateGrades(
+  connection,
+  grade,
+  GPA,
+  Rank,
+  student_id,
+  course_id
+) {
+  try {
+    const query = `UPDATE student_grades SET grade = '${grade}' , gpa='${GPA}' , rank='${Rank}' 
+      WHERE student_id='${student_id}' AND courseid='${course_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
+  updateGrades,
+  uploadGrades,
+  filterGrades,
   getStudentPromotionMajor,
   updateStatusPreBlue,
   updateStatusBlue,

@@ -18,9 +18,10 @@ export default function DownloadGrades({ setClickDownload }) {
   const [promotionName, setPromotion] = useState('')
   const [promotion, setPromotionList] = useState([])
   const router = useRouter();
+  const [taskName, setTaskValue] = useState('')
 
   const header = [
-    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'Grade'],
+    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade'],
   ]
   const redirect = () => {
     router.push("/AccessDenied");
@@ -68,7 +69,6 @@ export default function DownloadGrades({ setClickDownload }) {
 
   }, [promotionName])
   const fetchStudent = async () => {
-
     try {
       const payload = {
         major_id: session.user.majorid,
@@ -76,19 +76,18 @@ export default function DownloadGrades({ setClickDownload }) {
       };
       const response = await axios.post('/api/pmApi/StudentMajor', payload);
       const unsortedStudentData = response.data.data;
-      // console.log('student', unsortedStudentData)
-      // Sort the student data alphabetically by StudentFirstName
-      const sortedStudentData = unsortedStudentData.sort((a, b) =>
-        a.student_firstname.localeCompare(b.student_firstname)
+
+      // Sort the student data by student_id in increasing order
+      const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
+        a.student_id - b.student_id
       );
 
       setStudentData(sortedStudentData);
     } catch (error) {
       return error;
     }
-
-
   };
+
 
   const calculateColumnWidths = (data) => {
     const columnWidths = data[0].map((col, colIndex) => {
@@ -130,6 +129,7 @@ export default function DownloadGrades({ setClickDownload }) {
         studentData.student_firstname,
         studentData.student_lastname,
         courses,
+        taskName,
         '',
       ])
     );
@@ -220,7 +220,18 @@ export default function DownloadGrades({ setClickDownload }) {
                             />
 
                           </div>
+                          <div className=" m-5 text-slate-500 text-lg leading-relaxed">
+                          <p className="pt-5 mb-10 font-bold">Select Task</p>
+                          <div>
+                            <input type='radio' value={'assignment'} onChange={(e) => setTaskValue(e.target.value)} name='task'/>Assignment
+                          </div>
+                          <div>
+                            <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)}  name='task' />Exam
+                          </div>
+
+                        </div>
                         </form>
+
                       </div>
 
                     </>
