@@ -165,7 +165,9 @@ async function handler(req, res) {
             grade: row.Grade,
             task_name:row.TaskName,
             gpa: data.gpa,
-            rank: data.rank
+            rank: data.rank,
+            semester : row.Semester,
+            academic_year: row.Academic_year
           }
         )
 

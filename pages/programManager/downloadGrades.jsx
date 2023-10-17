@@ -19,9 +19,19 @@ export default function DownloadGrades({ setClickDownload }) {
   const [promotion, setPromotionList] = useState([])
   const router = useRouter();
   const [taskName, setTaskValue] = useState('')
+  const [semester, setSemester] = useState('')
+  const [academic_year, setAcademicYear] = useState('')
+
+  const semesterOptions = [
+    { value: 'summer', label: 'Summer' },
+    { value: 'fall', label: 'Fall' },
+    { value: 'spring', label: 'Spring' },
+    { value: 'winter', label: 'Winter' },
+  ];
+
 
   const header = [
-    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade'],
+    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
   ]
   const redirect = () => {
     router.push("/AccessDenied");
@@ -103,11 +113,18 @@ export default function DownloadGrades({ setClickDownload }) {
     return columnWidths;
   };
 
+
   const handleCourse = (selectedOption) => {
     const selectedName = selectedOption.value;
     setCourses([selectedName]);
     setSelected(true);
   };
+  const handleSemester = (selectedOption) => {
+    const selectedName = selectedOption.value; // or selectedOption.label, depending on your data structure
+    setSemester([selectedName]);
+  };
+
+
   const handlePromotion = (selectedOption) => {
     const selectedName = selectedOption.label;
     setPromotion([selectedName]);
@@ -131,6 +148,9 @@ export default function DownloadGrades({ setClickDownload }) {
         courses,
         taskName,
         '',
+        semester,
+        academic_year,
+        ''
       ])
     );
 
@@ -165,7 +185,7 @@ export default function DownloadGrades({ setClickDownload }) {
           <div
             className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
-            <div className="relative w-3/4 h-1/2 my-6 mx-auto max-w-3xl">
+            <div className="relative w-3/4  my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
@@ -189,8 +209,8 @@ export default function DownloadGrades({ setClickDownload }) {
                   promotionSelect ?
                     <>
                       <div className='relative flex-auto '>
-                        <form className=" text-slate-500 text-lg leading-relaxed flex flex-rows justify-between">
-                          {isSelected ?
+                        <form className=" text-slate-500 text-lg leading-relaxed flex flex-col  justify-center">
+                          {/* {isSelected ?
 
                             <>
                               <div className="m-8 text-slate-500 text-lg leading-relaxed">
@@ -206,11 +226,12 @@ export default function DownloadGrades({ setClickDownload }) {
                                 <p className="pt-5 mb-10 font-bold">Download Course Template</p>
                               </div>
 
-                            </>}
+                            </>} */}
 
 
                           <div className=" m-5 text-slate-500 text-lg leading-relaxed">
-                            <p className="pt-5 mb-10 font-bold">Select Course Name</p>
+
+                            <p className="font-bold">Select Course Name</p>
                             <Select
                               isMulti={false}
                               options={Data.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
@@ -220,16 +241,51 @@ export default function DownloadGrades({ setClickDownload }) {
                             />
 
                           </div>
-                          <div className=" m-5 text-slate-500 text-lg leading-relaxed">
-                          <p className="pt-5 mb-10 font-bold">Select Task</p>
-                          <div>
-                            <input type='radio' value={'assignment'} onChange={(e) => setTaskValue(e.target.value)} name='task'/>Assignment
-                          </div>
-                          <div>
-                            <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)}  name='task' />Exam
-                          </div>
+                          <div className="m-5 text-slate-500 text-lg leading-relaxed flex flex-col">
+                            <div className=''>
+                              <p className="font-bold">Select Task</p>
+                            </div>
 
-                        </div>
+                            <div className='flex flex-rows'>
+                              <div className='mr-5'>
+
+                                <input type='radio' value={'assignment'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Assignment
+                              </div>
+                              <div>
+                                <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Exam
+                              </div>
+                            </div>
+                          </div>
+                          {session.user?.majorid === ''     ?
+                            <>
+                              <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col'>
+                                <p className=" font-bold">Select semester </p>
+                                <Select
+                                  isMulti={false}
+                                  options={semesterOptions} // Use your semesterOptions array here
+                                  placeholder="Select a Semester"
+                                  value={semesterOptions.find(option => option.value === semester)} // Set the selected option
+                                  onChange={handleSemester}
+                                  className='place-items-center w-96'
+                                />
+
+                              </div>
+                            </>
+                            : <></>}
+
+                          <div className='m-5 text-slate-500 text-lg leading-relaxed '>
+                            <p className=" font-bold">Academic year </p>
+                            <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
+                          </div>
+                          <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col justify-center'>
+                            <button
+                              type='button'
+                              className="primary-button rounded btnCol text-white hover:text-white hover:font-bold "
+
+                              onClick={createExcelTemplateCourse}>
+                              Download
+                            </button>
+                          </div>
                         </form>
 
                       </div>

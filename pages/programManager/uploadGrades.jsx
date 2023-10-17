@@ -1,4 +1,4 @@
-import React, { useReducer, useState , useEffect} from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
 import * as XLSX from "xlsx";
 import { useSession } from "next-auth/react";
@@ -7,7 +7,7 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload , showAll}) {
+export default function UploadGrades({ setClickUpload, showAll }) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -71,11 +71,13 @@ export default function UploadGrades({ setClickUpload , showAll}) {
             'StudentLastName',
             'CourseID',
             'TaskName',
-            'Grade'
+            'Grade',
+            'Semester',
+            'Academic_year'
         ];
 
         for (const field of requiredFields) {
-            console.log(field , 'test')
+           
             if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
                 return false; // Missing or empty required field
             } else {
