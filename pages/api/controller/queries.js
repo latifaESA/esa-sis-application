@@ -2216,11 +2216,15 @@ async function uploadGrades(
     task_name,
     gpa,
     rank,
+
+    semester,
+    academic_year
+
   }
 ) {
   try {
-    const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank) 
-       VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}')
+    const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank , semester , academic_year) 
+       VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}','${semester}' , '${academic_year}')
     
     `;
 
