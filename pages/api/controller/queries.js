@@ -1,5 +1,5 @@
 /*
- * Created By: 
+ * Created By:
  * Project: SIS Application
  * File: pages\api\controller\queries.js
  * École Supérieure des Affaires (ESA)
@@ -391,7 +391,6 @@ async function addSchedule(
 // copy Schedule
 async function copySchedule(connection, classID, newClassID) {
   try {
-
     const query = `INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id)
     SELECT $1, to_char(day::date + INTERVAL '1 year', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS day, from_time, to_time, room, pm_id
     FROM tmpschedule
@@ -613,8 +612,6 @@ async function filterCourses(
   }
 }
 async function getAllCourses(connection, course_id, major_id) {
-
-
   try {
     const query = `SELECT * FROM courses WHERE course_id ='${course_id}' AND major_id='${major_id}'`;
     const res = connection.query(query);
@@ -1029,7 +1026,6 @@ async function teacherCourse(
   major_id
 ) {
   try {
-
     let query = `SELECT teacher_courses.* , teachers.teacher_firstname,teachers.teacher_lastname , courses.course_name,courses.major_id , courses.major_id
     from teacher_courses 
     INNER JOIN teachers ON teacher_courses.teacher_id = teachers.teacher_id
@@ -1115,7 +1111,7 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
     const query = `UPDATE teacher_courses SET teacher_id = '${teacher_id}' WHERE course_id = '${course_id}' AND teacher_id='${condition}' RETURNING teacher_courses_id`;
 
     const res = await connection.query(query);
-    console.log('query', query)
+    console.log("query", query);
     return res;
   } catch (error) {
     return error;
@@ -1852,13 +1848,7 @@ async function uploadAddress(
     return error;
   }
 }
-async function ActiveUser(
-  connection,
-  {
-    userid,
-    userpassword,
-  }
-) {
+async function ActiveUser(connection, { userid, userpassword }) {
   try {
     const query = `INSERT INTO users(  
       userid,
@@ -1973,7 +1963,6 @@ async function filterStudentAdmin(
     if (student_lastname != "") {
       query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
     }
-
 
     const result = await connection.query(query);
     return result;
@@ -2101,8 +2090,7 @@ async function updateStudentStatus(
     student_id = '${student_id}' ;
 
 
-    `
-
+    `;
 
     const res = await connection.query(query);
     return res;
@@ -2168,75 +2156,58 @@ async function getStudentFromBlueForLogs(connection, student_id) {
     return err;
   }
 }
-async function occupiedTeacher(
-  connection,
-  teacherId,
-  attendance_date
-) {
+async function occupiedTeacher(connection, teacherId, attendance_date) {
   try {
     const query = `SELECT tmpschedule.* , tmpclass.teacher_id FROM tmpschedule
     INNER JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
-    WHERE day='${attendance_date}' AND tmpclass.teacher_id = '${teacherId}'`
-    const res = await connection.query(query)
-    return res
-
+    WHERE day='${attendance_date}' AND tmpclass.teacher_id = '${teacherId}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
-  }
-
-}
-async function occupiedRoom(
-  connection,
-  attendance_date,
-  room
-
-) {
-  try {
-    const query = `SELECT * FROM tmpschedule WHERE room = '${room}' AND day='${attendance_date}'`
-    const res = await connection.query(query)
-    return res
-  } catch (error) {
-    return error
+    return error;
   }
 }
-async function updateStatusBlue(
-  connection,
-  student_id
-) {
-  console.log(student_id)
+async function occupiedRoom(connection, attendance_date, room) {
   try {
-    const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`
-    console.log(query)
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM tmpschedule WHERE room = '${room}' AND day='${attendance_date}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function updateStatusPreBlue(
-  connection,
-  student_id
-) {
-
+async function updateStatusBlue(connection, student_id) {
+  console.log(student_id);
   try {
-    const query = `UPDATE student SET status = 'active'  WHERE student_id = '${student_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`;
+    console.log(query);
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
+  }
+}
+async function updateStatusPreBlue(connection, student_id) {
+  try {
+    const query = `UPDATE student SET status = 'active'  WHERE student_id = '${student_id}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
   }
 }
 async function getStudentPromotionMajor(connection, major_id, promotion) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion = '${promotion}'`
-    const res = await connection.query(query)
-    return res
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND promotion = '${promotion}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function uploadGrades(
-  connnection, {
+  connnection,
+  {
     student_id,
     student_firstname,
     student_lastname,
@@ -2245,22 +2216,23 @@ async function uploadGrades(
     task_name,
     gpa,
     rank,
+
     semester,
     academic_year
+
   }
 ) {
-
   try {
     const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank , semester , academic_year) 
        VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}','${semester}' , '${academic_year}')
     
-    `
+    `;
 
-    const res = await connnection.query(query)
+    const res = await connnection.query(query);
 
-    return res
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function filterGrades(
@@ -2276,7 +2248,6 @@ async function filterGrades(
   gpa,
   rank
 ) {
-  
   try {
     let query = `SELECT student_grades .* ,  student.promotion , student.major_id
       FROM student_grades
@@ -2313,10 +2284,10 @@ async function filterGrades(
     }
 
     const res = await connection.query(query);
-   
+
     return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function updateGrades(
@@ -2329,13 +2300,44 @@ async function updateGrades(
 ) {
   try {
     const query = `UPDATE student_grades SET grade = '${grade}' , gpa='${GPA}' , rank='${Rank}' 
-      WHERE student_id='${student_id}' AND courseid='${course_id}'`
-    const res = await connection.query(query)
-    return res
+      WHERE student_id='${student_id}' AND courseid='${course_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
+async function studentForRequestTranscript(connection, student_id) {
+  try {
+    const query = `SELECT 
+    student.student_id, 
+    student.major_id,
+      major.major_name,
+   	user_contact.email
+    FROM 
+    student
+   INNER JOIN
+    major ON student.major_id = major.major_id 
+	INNER JOIN user_contact ON student.student_id = user_contact.userid
+	WHERE student.student_id='${student_id}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function getPmDetailsForRequests(connection, major_id) {
+  try {
+    const query = `SELECT pm_firstname, pm_lastname, pm_email 
+    FROM program_manager
+      WHERE major_id = '${major_id}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -2453,4 +2455,6 @@ module.exports = {
   getAdminExist,
   enableUserAdmin,
   getAllMajors,
+  studentForRequestTranscript,
+  getPmDetailsForRequests,
 };
