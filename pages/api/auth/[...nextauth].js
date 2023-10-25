@@ -58,6 +58,7 @@ export const authOptions = {
       // if (user?.appisSaved) token.appisSaved = user.appisSaved;
       if (user?.userid) token.userid = user.userid;
       if (user?.ID) token.ID = user.ID;
+      if (user?.majorName) token.majorName = user.majorName;
       if (user?.majorid) token.majorid = user.majorid;
       if (user?.promotion) token.promotion = user.promotion;
 
@@ -73,6 +74,7 @@ export const authOptions = {
       if (token?.ID) session.user.ID = token.ID;
       if (token?.majorid) session.user.majorid = token.majorid;
       if (token?.promotion) session.user.promotion = token.promotion;
+      if (token?.majorName) session.user.majorName = token.majorName;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -509,6 +511,12 @@ export const authOptions = {
                     "pm_id",
                     user.rows[0].userid
                   );
+                  const pm_major = await findData(
+                    connection,
+                    'major',
+                    'major_id',
+                    PM.rows[0].major_id
+                  )
                   // console.log(user.rows[0].userid);
                   // console.log(PM);
                   // if the program_manager exists then send the data to frontend
@@ -575,6 +583,7 @@ export const authOptions = {
                       status: PM.rows[0].pm_status,
                       userid: user.rows[0].userid,
                       majorid: PM.rows[0].major_id,
+                      majorName : pm_major.rows[0].major_name,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {
@@ -589,6 +598,12 @@ export const authOptions = {
                     "pm_ass_id",
                     user.rows[0].userid
                   );
+                  const pm_major = await findData(
+                    connection,
+                    'major',
+                    'major_id',
+                    AS.rows[0].major_id
+                  )
                   // console.log(user.rows[0].userid);
                   // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
@@ -616,6 +631,7 @@ export const authOptions = {
                       userid: user.rows[0].userid,
                       status: AS.rows[0].pm_ass_status,
                       majorid: AS.rows[0].major_id,
+                      majorName:pm_major.rows[0].major_name,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {

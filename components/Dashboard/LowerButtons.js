@@ -16,10 +16,7 @@ export const LowerButtons = ({
   return (
     <>
       <div className="grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4">
-        {/* <button className='primary-button btnCol text-white  hover:text-white' type='button' onClick = {(e)=>setisModal(true)}>
-        Create Attendance
-       </button> */}
-
+{/* 
         {(session.user.role === '2' || session.user.role === '3') && assigned ? <>
          <form>
          <button
@@ -33,8 +30,8 @@ export const LowerButtons = ({
 
 
         </> : <>
-        </>}
-        {(session.user.role === '2' || session.user.role === '3') && elective && (session.user.majorid === '5' || session.user.majorid === '15') ?
+        </>} */}
+        {(session.user?.role === '2' || session.user?.role === '3') && elective && (session.user?.majorName === 'EMBA (Executive Masters in Business Administration)' || session.user?.majorName === 'MBA (Master in Business Administration)') ?
           <>
           <form>
           <button
@@ -50,7 +47,8 @@ export const LowerButtons = ({
 
           </>}
 
-        {!elective && !assigned ? <>         <button
+        {!elective && !assigned ? <>      
+           <button
           className="primary-button btnCol text-white hover:text-white"
           type="button"
           onClick={exportAllButton}
