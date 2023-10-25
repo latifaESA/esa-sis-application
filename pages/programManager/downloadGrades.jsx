@@ -256,7 +256,7 @@ export default function DownloadGrades({ setClickDownload }) {
                               </div>
                             </div>
                           </div>
-                          {session.user?.majorid === ''     ?
+                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)'     ?
                             <>
                               <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col'>
                                 <p className=" font-bold">Select semester </p>
