@@ -2218,8 +2218,7 @@ async function uploadGrades(
     rank,
 
     semester,
-    academic_year
-
+    academic_year,
   }
 ) {
   try {
@@ -2328,13 +2327,94 @@ async function studentForRequestTranscript(connection, student_id) {
 }
 async function getPmDetailsForRequests(connection, major_id) {
   try {
-    const query = `SELECT pm_firstname, pm_lastname, pm_email 
+    const query = `SELECT pm_firstname, pm_lastname, pm_email, pm_id 
     FROM program_manager
       WHERE major_id = '${major_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
     return error;
+  }
+}
+async function addRequestForPm(
+  connection,
+  pm_id,
+  student_id,
+  student_email,
+  major_id,
+  promotion,
+  gpa
+) {
+  try {
+    const query = `INSERT INTO requests (pm_id, student_id, student_email, major_id, promotion, status, gpa, type)
+    VALUES ('${pm_id}', '${student_id}', '${student_email}', '${major_id}', '${promotion}', 'pending', '${gpa}', 'transcript') `;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+// async function getRequestsForPm(connection, pm_id) {
+//   try {
+//     const query = `SELECT * FROM requests WHERE pm_id='${pm_id}' `;
+//     const res = await connection.query(query);
+//     return res;
+//   } catch (error) {
+//     return error;
+//   }
+// }
+async function getRequestsForPm(
+  connection,
+  pm_id,
+  req_id,
+  student_id,
+  student_email,
+  status,
+  type
+) {
+  try {
+    let query = `SELECT req_id , student_id,
+    student_email,
+    promotion,
+    gpa,
+    type,
+    status FROM requests 
+     WHERE pm_id='${pm_id}'`;
+
+    if (req_id != "") {
+      query += ` AND req_id=${req_id}`;
+    }
+    if (student_id.trim() != "") {
+      query += ` AND lower(trim(requests.student_id)) LIKE lower(trim('%${student_id}%'))`;
+    }
+    if (student_email.trim() != "") {
+      query += ` AND lower(trim(requests.student_email)) LIKE lower(trim('%${student_email}%'))`;
+    }
+
+    if (status.trim() != "") {
+      query += ` AND lower(trim(requests.status)) LIKE lower(trim('%${status}%'))`;
+    }
+    if (type != "") {
+      query += ` AND type='${type}'`;
+    }
+    const res = await connection.query(query);
+    // console.log(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function updateRequestStatus(connection, req_id, status) {
+  try {
+    let query = `
+    UPDATE requests
+    SET status = '${status}'
+    WHERE req_id = ${req_id}`;
+
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
   }
 }
 
@@ -2457,4 +2537,7 @@ module.exports = {
   getAllMajors,
   studentForRequestTranscript,
   getPmDetailsForRequests,
+  addRequestForPm,
+  getRequestsForPm,
+  updateRequestStatus,
 };

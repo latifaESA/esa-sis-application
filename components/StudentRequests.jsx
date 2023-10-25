@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 // import EmailForSendingRequest from "../utilities/emailing/emailForSendingRequest";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import axios from "axios";
 // import emailRequestTranscript from "../pages/api/user/emailRequestTranscript";
 import Loader from "./Loader/Loader";
@@ -22,6 +22,8 @@ const StudentRequests = () => {
   const [pm_firstName, setPm_firstName] = useState("");
   const [pm_lastname, setPm_lastname] = useState("");
   const [pm_email, setPm_email] = useState("");
+  const [pm_id, setPm_id] = useState("");
+
   // console.log(session?.user);
   const getStudent = async () => {
     let sendData = {
@@ -53,6 +55,7 @@ const StudentRequests = () => {
       setPm_firstName(res.data.rows[0].pm_firstname);
       setPm_lastname(res.data.rows[0].pm_lastname);
       setPm_email(res.data.rows[0].pm_email);
+      setPm_id(res.data.rows[0].pm_id);
       console.log("asdfwq", res.data.rows[0]);
     } catch (error) {
       console.log(error);
@@ -114,6 +117,16 @@ const StudentRequests = () => {
         };
         console.log(sendData);
         let res = await axios.post("/api/admin/adminApi/sendReqToPM", sendData);
+        let sendToPm = {
+          pm_id,
+          student_id: session?.user.userid,
+          student_email: stEmail,
+          major_id: session?.user.majorid,
+          promotion: session?.user.promotion,
+          gpa: gpa,
+        };
+        let response = await axios.post("/api/pmApi/addRequestForPm", sendToPm);
+        console.log("this response", response);
         setMessage("Request Sent !");
         setMessageClass("text-green-500");
         setReason(""), setSemester(""), setAcademicYear("");
@@ -144,7 +157,7 @@ const StudentRequests = () => {
         <form onSubmit={submitHandler}>
           <div>
             {" "}
-            {session?.user.majorid == 11 && (
+            {session?.user.majorid == 10 && (
               <label>
                 Semester:
                 <input

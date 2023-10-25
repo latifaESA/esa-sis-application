@@ -1,4 +1,4 @@
-const { connect, disconnect } = require("../../../utilities/db");
+const { connect } = require("../../../utilities/db");
 const { studentForRequestTranscript } = require("../controller/queries");
 
 async function handler(req, res) {
