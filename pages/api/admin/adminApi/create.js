@@ -30,7 +30,7 @@ async function handler(req, res) {
         message:`Course Type ${value} Already Exist!`
        })
      }
-  await create(
+  const result = await create(
       connection,
        table,
         column,
@@ -41,7 +41,8 @@ async function handler(req, res) {
     return res.status(201).json({
         success:true,
         code:201,
-        message:` ${table} Created Successfully !`
+        message:` ${table} Created Successfully !`,
+        data: result
     })
   } catch (error) {
     return res.status(500).json({

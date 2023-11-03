@@ -22,7 +22,7 @@ import { connect, disconnect } from "../../../utilities/db";
 
 import sis_app_logger from "../logger";
 import useragent from "useragent";
-import { findData , updateStatusBlue  , updateStatusPreBlue} from "../controller/queries";
+import { findData, updateStatusBlue, updateStatusPreBlue } from "../controller/queries";
 import { Userinfo } from "../controller/accountquery";
 import axios from "axios";
 import https from "https";
@@ -55,6 +55,7 @@ export const authOptions = {
       if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;
       if (user?.status) token.status = user.status;
+      if (user?.accessToken) token.accessToken = user.accessToken;
       // if (user?.appisSaved) token.appisSaved = user.appisSaved;
       if (user?.userid) token.userid = user.userid;
       if (user?.ID) token.ID = user.ID;
@@ -67,6 +68,7 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (token?.name) session.user.name = token.name;
+      if (token?.accessToken) session.accessToken = token.accessToken;
       if (token?.email) session.user.email = token.email;
       if (token?.role) session.user.role = token.role;
       if (token?.status) session.user.status = token.status;
@@ -118,6 +120,7 @@ export const authOptions = {
             "userid",
             credentials.userid
           );
+         
           // const users = await findData(
           //   connection,
           //   'user_document',
@@ -162,21 +165,21 @@ export const authOptions = {
                   }
                 );
                 if (data.blocked) {
-                 const status= await updateStatusBlue(
+                  const status = await updateStatusBlue(
                     connection,
                     user.rows[0].userid
                   )
-                  console.log("status blue" , status)
+                  console.log("status blue", status)
                   const WeeklyLogs = await getStudentFromBlueForLogs(
                     connection,
                     user.rows[0].userid
                   );
-    
+
                   if (WeeklyLogs.rowCount != 0) {
-                   
+
                     const lastLoginDate =
                       WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
-                 
+
                     console.log(lastLoginDate.date_time);
 
                     // get the date from db
@@ -193,11 +196,11 @@ export const authOptions = {
                       .getDate()
                       .toString()
                       .padStart(2, "0")}-${(oneWeekLater.getMonth() + 1)
-                      .toString()
-                      .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
+                        .toString()
+                        .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
 
                     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
-                 
+
 
                     function formatDate(date) {
                       const day = date.getDate().toString().padStart(2, "0");
@@ -229,7 +232,7 @@ export const authOptions = {
                         "Blue",
                         formattedCurrentDate
                       );
-                     
+
                     }
                   } else {
                     function formatDate(date) {
@@ -248,7 +251,7 @@ export const authOptions = {
                     }
                     const currentDate = new Date();
                     const formattedCurrentDate = formatDate(currentDate);
-                 
+
                     const insertToLogs = await addStudentActivityToLogs(
                       connection,
                       data.userid,
@@ -279,15 +282,12 @@ export const authOptions = {
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${
-                            req.body.userid
-                          }=${userAgentinfo.os.family}=${
-                            userAgentinfo.os.major
-                          }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                            userAgentinfo.device.family
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                          }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
-  
+
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
@@ -295,6 +295,7 @@ export const authOptions = {
                           status: `${data.blocked ? "limited" : "active"}`,
                           userid: `${user.rows[0].userid}`,
                           image: userinfo.rows[0].profileurl,
+                          accessToken :`${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
                         };
@@ -304,7 +305,7 @@ export const authOptions = {
                       }
                     }
                   }
-                }else{
+                } else {
                   if (user.rows[0].role === 1) {
 
                     // get the student data
@@ -314,13 +315,19 @@ export const authOptions = {
                       "student_id",
                       user.rows[0].userid
                     );
-                   
-                    if (ST.rows[0].status === 'limited'){
-                    await updateStatusPreBlue(
-                        connection ,
+                    const ST_major = await findData(
+                      connection,
+                      'major',
+                      'major_id',
+                      ST.rows[0].major_id
+                    )
+
+                    if (ST.rows[0].status === 'limited') {
+                      await updateStatusPreBlue(
+                        connection,
                         user.rows[0].userid
-                        )
-                    
+                      )
+
                     }
                     // console.log('this is ST ');
                     // console.log(ST);
@@ -332,30 +339,30 @@ export const authOptions = {
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${
-                            req.body.userid
-                          }=${userAgentinfo.os.family}=${
-                            userAgentinfo.os.major
-                          }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                            userAgentinfo.device.family
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                          }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
-  
+
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           role: user.rows[0].role.toString(),
                           status: `${data.blocked ? "limited" : "active"}`,
                           userid: `${user.rows[0].userid}`,
+                          accessToken :`${user.rows[0].access_token}`,
                           image: userinfo.rows[0].profileurl,
                           majorid: ST.rows[0].major_id,
+                          majorName: ST_major.rows[0].major_name,
                           promotion: ST.rows[0].promotion,
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
                         message = "Student does not exists";
                       }
-                    }}
+                    }
+                  }
                 }
                 // console.log("=======================");
                 // console.log(data.blocked);
@@ -437,12 +444,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.userid
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -485,24 +489,24 @@ export const authOptions = {
                     // if the admin is not exists then send this message to frontend
                     message = "Admin does not exists";
                   }
-                } 
-                    // if the program_manager exists then send the data to frontend
-                    // if(PM.rows){
+                }
+                // if the program_manager exists then send the data to frontend
+                // if(PM.rows){
 
-                    //                    }
-                    //                    return {
-                    //                    name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                    //                      // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                    //                     role: user.rows[0].role.toString(),
-                    //                    status: `${data.blocked ? 'limited' : 'active'}`,
-                    //                    userid: `${user.rows[0].userid}`,
-                    //                    image: userinfo.rows[0].profileurl,
-                    //                  };
-                    //               } else {
-                    //                // if the student is not exists then send this message to frontend
-                    //               message = 'Student does not exists';
-                    //            }
-                  
+                //                    }
+                //                    return {
+                //                    name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //                      // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //                     role: user.rows[0].role.toString(),
+                //                    status: `${data.blocked ? 'limited' : 'active'}`,
+                //                    userid: `${user.rows[0].userid}`,
+                //                    image: userinfo.rows[0].profileurl,
+                //                  };
+                //               } else {
+                //                // if the student is not exists then send this message to frontend
+                //               message = 'Student does not exists';
+                //            }
+
                 else if (user.rows[0].role === 2) {
                   // get the program_manager data
                   const PM = await findData(
@@ -527,12 +531,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.userid
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -583,7 +584,7 @@ export const authOptions = {
                       status: PM.rows[0].pm_status,
                       userid: user.rows[0].userid,
                       majorid: PM.rows[0].major_id,
-                      majorName : pm_major.rows[0].major_name,
+                      majorName: pm_major.rows[0].major_name,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {
@@ -614,12 +615,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.email
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.email
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -631,7 +629,7 @@ export const authOptions = {
                       userid: user.rows[0].userid,
                       status: AS.rows[0].pm_ass_status,
                       majorid: AS.rows[0].major_id,
-                      majorName:pm_major.rows[0].major_name,
+                      majorName: pm_major.rows[0].major_name,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {
@@ -703,12 +701,9 @@ export const authOptions = {
               // if the password is incorrect then send this message
               message = "Invalid Password";
               sis_app_logger.error(
-                `${new Date()}=From nextauth signin=---=${
-                  req.body.userid
-                }=${message}=${userAgentinfo.os.family}=${
-                  userAgentinfo.os.major
-                }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                  userAgentinfo.device.family
+                `${new Date()}=From nextauth signin=---=${req.body.userid
+                }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                 }`
               );
             }
@@ -861,10 +856,8 @@ export const authOptions = {
           console.log("connection to DB unsucces nextauth signin");
           message = connection.message;
           sis_app_logger.error(
-            `${new Date()}=From nextauth signin,connection unsuccess=---=${
-              req.body.email
-            }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
-              userAgentinfo.family
+            `${new Date()}=From nextauth signin,connection unsuccess=---=${req.body.email
+            }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${userAgentinfo.family
             }=${userAgentinfo.source}=${userAgentinfo.device.family}`
           );
         }
