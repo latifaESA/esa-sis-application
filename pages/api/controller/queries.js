@@ -738,7 +738,7 @@ async function updatePresent(connection, present, student_id, attendance_id) {
 
 async function getAllStudent(connection, major_id, promotion) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}' AND status = 'active'`;
+    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}' AND status != 'Alumni'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2036,7 +2036,7 @@ async function createPromotion(
   major_id
 ) {
   try {
-    const query = `INSERT INTO promotions (promotion_name , academic_year , major_id)  VALUES ('${promotion_name}' , '${academic_year}' , ${major_id})`;
+    const query = `INSERT INTO promotions (promotion_name , academic_year , major_id)  VALUES ('${promotion_name}' , '${academic_year}' , ${major_id}) RETURNING promotion_id ,promotion_name , major_id ,academic_year `;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2045,7 +2045,7 @@ async function createPromotion(
 }
 async function createMajor(connection, major_id, major_name) {
   try {
-    const query = `INSERT INTO major (major_id , major_name) VALUES ('${major_id}' , '${major_name}')`;
+    const query = `INSERT INTO major (major_id , major_name) VALUES ('${major_id}' , '${major_name}')  RETURNING major_id , major_name`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2054,7 +2054,7 @@ async function createMajor(connection, major_id, major_name) {
 }
 async function create(connection, table, column, value) {
   try {
-    const query = `INSERT INTO ${table} (${column}) VALUES ('${value}')`;
+    const query = `INSERT INTO ${table} (${column}) VALUES ('${value}') RETURNING course_type_id , course_type`;
 
     const res = await connection.query(query);
 
@@ -2177,7 +2177,7 @@ async function occupiedRoom(connection, attendance_date, room) {
   }
 }
 async function updateStatusBlue(connection, student_id) {
-  console.log(student_id);
+ 
   try {
     const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`;
     console.log(query);
@@ -2418,9 +2418,46 @@ async function updateRequestStatus(connection, req_id, status) {
   }
 }
 
+async function Promotion (connection){
+  try {
+    const query = `SELECT promotions.* , major.major_name 
+    FROM promotions INNER JOIN  major ON 
+	promotions.major_id = major.major_id`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function updateUsers(connection , accessToken , user_id){
+  try {
+    const query = `UPDATE users SET access_token = '${accessToken}' WHERE userid='${user_id}'`
+    const res = await connection.query(query)
+    return res 
+  } catch (error) {
+    return error
+  }
+}
+
+async function roleStudent (connection , majorId)
+{
+  try {
+    const query = `SELECT *
+    FROM major
+    WHERE major_id !='${majorId}' AND major_name LIKE 'Exe%';`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+
 /* End Postegresql */
 
 module.exports = {
+  roleStudent,
   updateGrades,
   uploadGrades,
   filterGrades,
@@ -2447,6 +2484,8 @@ module.exports = {
   uploadInfo,
   uploadStudent,
   getMajor,
+  Promotion,
+  updateUsers,
   CreateCourse,
   addStudentActivityToLogs,
   createTeacher,

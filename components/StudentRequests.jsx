@@ -35,7 +35,7 @@ const StudentRequests = () => {
         sendData
       );
       // setGpa(res.data.rows[0].gpa);
-      console.log(res);
+      
       setMajor(res.data.rows[0].major_name);
       // console.log(typeof res.data.rows[0].gpa);
       setStEmail(res.data.rows[0].email);
@@ -84,7 +84,7 @@ const StudentRequests = () => {
     //   student_email: stEmail,
     //   gpa,
     // });
-    if (session?.user.majorid == 10 && semester === "") {
+    if (session?.user.majorName === 'BBA (Bachelor in Business Administration)' && semester === "") {
       setMessage("All Fields Must be Filled !");
       setMessageClass("text-red-500");
       setIsLoading(false);
@@ -150,94 +150,78 @@ const StudentRequests = () => {
       radioRef2.current.blur();
     }
   };
-  return (
-    <div>
-      <div className="flex  justify-center mt-32 ">
-        <p className={`absolute mt-[-100px] ${messageClass}`}>{message}</p>
-        <form onSubmit={submitHandler}>
-          <div>
-            {" "}
-            {session?.user.majorid == 10 && (
-              <label>
-                Semester:
-                <input
-                  type="text"
-                  placeholder="ex: Fall"
-                  value={semester}
-                  onChange={(e) => setSemester(e.target.value)}
-                  className="ml-2 mt-3 mb-10 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-                />
-              </label>
-            )}
-            <div className="flex">
-              <div className="flex items-center mb-4">
-                <input
-                  type="radio"
-                  value="Included"
-                  name="gpa-radio"
-                  className="w-4 h-4 focus:ring-0  "
-                  ref={radioRef}
-                  style={{
-                    outline: "none",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                  onClick={handleRadioClick}
-                  onChange={(e) => setGpa(e.target.value)}
-                />
-                <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                  Include GPA
-                </label>
-              </div>
-              <div className="flex items-center mb-4">
-                <input
-                  type="radio"
-                  value="Execluded"
-                  ref={radioRef2}
-                  onClick={handleRadioClick}
-                  name="gpa-radio"
-                  onChange={(e) => setGpa(e.target.value)}
-                  className="w-4 h-4  "
-                />
-                <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                  Execlude GPA
-                </label>
-              </div>
-            </div>
-            {/* <label className="ml-5">
-              Academic Year:
-              <input
-                type="number"
-                placeholder="ex: 2023"
-                value={academicYear}
-                className="ml-2 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-                onChange={(e) => setAcademicYear(e.target.value)}
-              />
-            </label> */}
-            <div className="mt-10">
-              <label className="block">Reason</label>
-              <textarea
-                className="mt-5 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                rows="6"
-                name="ID"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                // required={true}
-                placeholder="Enter the Reason"
-              />
-            </div>
-            <div className="flex mt-5 flex-row min-[850px]:flex-row gap-4">
-              <button
-                className="primary-button text-center flex rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                type="submit"
-                disabled={isLoading}
-              >
-                <p className="mr-2">{isLoading ? "Sending..." : "Send"}</p>
-                {isLoading && <Loader />}
-              </button>
-            </div>
-          </div>
-        </form>
+return (
+    <div className="flex flex-col items-center justify-center">
+       <div className="text-center">
+        <p className={` ${messageClass}`}>{message}</p>
       </div>
+      <form onSubmit={submitHandler} className="mt-12">
+        {session?.user.majorName === 'BBA (Bachelor in Business Administration)' && (
+          <div className="mb-4">
+            <label>Semester:</label>
+            <input
+              type="text"
+              placeholder="ex: Fall"
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+        )}
+        <div className="mb-4 flex flex-col md:flex-row">
+
+          <div className="flex items-center">
+            <input
+              type="radio"
+              value="Included"
+              name="gpa-radio"
+              className="w-4 h-4 mr-2"
+              ref={radioRef}
+              onClick={handleRadioClick}
+              onChange={(e) => setGpa(e.target.value)}
+            />
+            <label className="text-sm font-medium">
+              Include GPA
+            </label>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="radio"
+              value="Excluded"
+              ref={radioRef2}
+              onClick={handleRadioClick}
+              name="gpa-radio"
+              onChange={(e) => setGpa(e.target.value)}
+              className="w-4 h-4 mr-2"
+            />
+            <label className="text-sm font-medium">
+              Exclude GPA
+            </label>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="mb-4">
+            <textarea
+              className="w-full p-2 border rounded"
+              rows="6"
+              name="ID"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter the Reason"
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:gap-4">
+            <button
+              className="w-full sm:w-1/2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "Sending..." : "Send"}
+            </button>
+            {isLoading && <Loader />}
+          </div>
+        </div>
+      </form>
     </div>
   );
 };

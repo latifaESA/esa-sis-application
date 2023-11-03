@@ -11,10 +11,10 @@
 
 //         const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET);
 
-//         const { accessToken, event } = req.body; // Assuming you send these in the request body
+//         const { access_Token, event } = req.body; // Assuming you send these in the request body
 
 //         oauth2Client.setCredentials({
-//             access_token: accessToken,
+//             access_token: access_Token,
 //         });
 
 //         const calendar = google.calendar('v3');

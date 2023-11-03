@@ -28,7 +28,20 @@ const StudentView = () => {
   if (session?.user.status == "limited") {
     isLimited = true;
   }
+   // Function to extract the first word before a hyphen "-"
+   const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
 
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+
+  const isExeMajor = firstMajorWord === "Exe";
   const router = useRouter();
   return (
     <>
@@ -36,11 +49,10 @@ const StudentView = () => {
         {/* Main Section */}
         <Link href="/student/main">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/main"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/main"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
           >
             <div className="mr-2">
               <ComputerDesktopIcon className="h-5 w-5" />
@@ -55,11 +67,10 @@ const StudentView = () => {
 
         <Link href="/student/financial">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/financial"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/classes"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
             disabled={true}
           >
             <div className="mr-2">
@@ -75,11 +86,10 @@ const StudentView = () => {
 
         <Link href="/student/schedule">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center  cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/schedule"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center  cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/schedule"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
           >
             <div className="mr-2">
               <CalendarDaysIcon className="h-5 w-5" />
@@ -93,11 +103,10 @@ const StudentView = () => {
         {/* Attendance Section */}
         <Link href="/student/attendance">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/attendance"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/attendance"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
           >
             <div className="mr-2">
               <CreditCardIcon className="h-5 w-5" />
@@ -109,11 +118,10 @@ const StudentView = () => {
         </Link>
         <Link href="/student/request">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/request"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/request"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
           >
             <div className="mr-2">
               <PaperAirplaneIcon className="h-5 w-5" />
@@ -123,6 +131,26 @@ const StudentView = () => {
             </div>
           </div>
         </Link>
+
+        {isExeMajor && (
+          <Link href="/student/InRole">
+            <div
+              className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                router.pathname == "/student/InRole"
+                  ? "bg-blue-100 text-blue-500"
+                  : "text-gray-400 hover-bg-blue-100 hover-text-blue-500"
+              }`}
+            >
+              <div className="mr-2">
+                <PaperAirplaneIcon className="h-5 w-5" />
+              </div>
+              <div>
+                <p>Role</p>
+              </div>
+            </div>
+          </Link>
+        )}
+
 
         {/* Payment Section */}
 
@@ -165,11 +193,10 @@ const StudentView = () => {
 
         <Link href="/student/profile">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/profile"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/profile"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
           >
             <div className="mr-2">
               <PencilIcon className="h-5 w-5" />

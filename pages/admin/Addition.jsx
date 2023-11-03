@@ -13,24 +13,24 @@ export default function Addition() {
     };
     return (
         <>
-            {session?.user.role === "0" ? (
-                <>
-                    <Head>
-                        <title>SIS Admin - Accounts</title>
-                    </Head>
-                    <h2 className="text-gray-700 text-3xl pt-5  font-bold">Addition</h2>
-                    <div className="mt-20  place-items-center">
-                     <AdditionList />
-                       
-                    </div>
-                </>
-            ) : (
-                redirect()
-            )}
-
+          {session?.user.role === "0" ? (
+            <>
+              <Head>
+                <title>SIS Admin - Accounts</title>
+              </Head>
+              <h2 className="text-gray-700 text-3xl pt-5 font-bold">Addition</h2>
+              <div className="mt-12">
+                <div className="">
+                  <AdditionList />
+                </div>
+              </div>
+            </>
+          ) : (
+            redirect()
+          )}
         </>
-
-    )
+      );
+      
 }
 Addition.auth = true;
 Addition.adminOnly = true;
