@@ -62,13 +62,13 @@ const StudentProfile = () => {
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg">
+    <div className="bg-white flex justify-center items-center py-12">
       <div className="text-center">
         <h2 className="text-2xl font-semibold">{studentData.student_firstname} {studentData.student_lastname}</h2>
         <p className="text-gray-700 text-lg font-bold">{studentData.major_name}</p>
       </div>
 
-      <div className="flex flex-cols mt-12">
+      <div className="flex flex-col lg:flex-row mt-12 overflow-auto">
         <div className="mr-6">
           {/* Replace the ApexCharts component with the ReactSpeedometer */}
           <ReactSpeedometer
