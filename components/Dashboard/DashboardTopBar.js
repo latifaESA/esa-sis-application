@@ -66,7 +66,6 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   const userState = useSelector(
     (state) => state.persistedReducer.user_state.userState
   );
-
   const warnings = [
     {
       id: 0,
