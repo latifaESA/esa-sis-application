@@ -29,17 +29,19 @@ async function handler(req, res) {
         message:`Promotion ${promotion_name} Already Exist!`
        })
      }
-    await createPromotion(
+   const result = await createPromotion(
       connection,
       promotion_name,
         academic_year,
         major_id
     );
+
     await disconnect(connection)
     return res.status(201).json({
         success:true,
         code:201,
-        message:"Promotion Create Successfully !"
+        message:"Promotion Create Successfully !",
+        data : result
     })
   } catch (error) {
     return res.status(500).json({

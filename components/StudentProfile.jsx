@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useSession } from "next-auth/react";
 const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), { ssr: false });
-// import ReactSpeedometer from "react-d3-speedometer"; // Import the speedometer component
 
 const StudentProfile = () => {
   const { data: session } = useSession();
@@ -35,10 +34,8 @@ const StudentProfile = () => {
 
   const averageGrades = 60;
 
-
   const updateDetails = async () => {
     try {
-      // Check if the edited address contains a comma
       if (!editedAddress.includes(',')) {
         setAddressErrorMessage('Please enter a comma between city, street, and building in the address.');
         setShowAddressError(true);
@@ -62,15 +59,20 @@ const StudentProfile = () => {
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold">{studentData.student_firstname} {studentData.student_lastname}</h2>
-        <p className="text-gray-700 text-lg font-bold">{studentData.major_name}</p>
+    <div className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg">
+      <div className="md:w-1/2 lg:w-2/3 md:pl-4 mb-6">
+        <div className="text-center md:text-center ml-12">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">
+            {studentData.student_firstname} {studentData.student_lastname}
+          </h2>
+          <p className="text-gray-700 text-sm md:text-base lg:text-lg font-bold">
+            {studentData.major_name}
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-cols mt-12">
-        <div className="mr-6">
-          {/* Replace the ApexCharts component with the ReactSpeedometer */}
+      <div className="flex flex-col justify-end md:flex-row ">
+        <div className="md:w-1/2 lg:w-1/3 md:pr-4 ml-6">
           <ReactSpeedometer
             value={averageGrades}
             minValue={0}
@@ -80,121 +82,86 @@ const StudentProfile = () => {
             needleTransition="easeElastic"
             endColor="green"
             needleColor="blue"
-            width={350}
-            height={300}
-            customSegmentStops={[0,25, 50, 70, 100]}
-            segmentColors={["#CCCCFF", "#89CFF0","#4169E1" , '#000080']}
-            currentValueText="Average Grades: ${value}%"
-            needleHeightRatio={0.8} // Adjust this value to make the needle shorter (e.g., 0.6 for 60% of the default height)
+            width={300}
+            height={200}
+            customSegmentStops={[0, 25, 50, 70, 100]}
+            segmentColors={["#CCCCFF", "#89CFF0", "#4169E1", '#000080']}
+            currentValueText={`Avg. Grades: ${averageGrades}%`}
+            needleHeightRatio={0.6}
           />
-
         </div>
-        <div className="ml-12 mt-6">
-          <div className='flex flex-rows'>
-            <div className='mr-6'>
-              <p className="text-blue-600/75 text-base mb-4 ">
-                Mobile Number:
-
-              </p>
-            </div>
-
-            <div>
-              {isEditingMobileNumber ? (
-                <div className='flex flex-rows'>
-                  <div>
-                    <input
-                      type="text"
-                      value={studentData.mobile_number}
-                      className="text-blue-600/75 text-base mb-4"
-                      onChange={(e) => setStudentData({ ...studentData, mobile_number: e.target.value })}
-                    />
-                  </div>
-                  <div className='mr-6'>
-                    <button onClick={() => updateDetails()}>
-                      <FiCheck className="text-green-600 text-base" />
-                    </button>
-                    <button onClick={() => setIsEditingMobileNumber(false)}>
-                      <FiX className='text-red-600 text-base' />
-                    </button>
-                  </div>
-
-                </div>
-              ) : (
-                <div className='flex flex-rows mr-6'>
-                  <div> <p className="text-blue-600/75 text-base mb-4">{studentData.mobile_number}</p></div>
-                  <div>
-                    <button onClick={() => setIsEditingMobileNumber(true)}>
-                      <FiEdit3 className="text-blue-600/75 text-base hover:text-blue-400 hover:font-bold mb-4" />
-                    </button>
-                  </div>
-
-
-
-                </div>
-              )}
-            </div>
+        <div className="md:w-1/2 lg:w-2/3 md:pl-4 ml-12">
+          <div className="mb-4 flex items-center">
+            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Mobile Number:</p>
+            {isEditingMobileNumber ? (
+              <div className="flex">
+                <input
+                  type="text"
+                  value={studentData.mobile_number}
+                  className="text-blue-600/75 text-sm md:text-base lg:text-lg"
+                  onChange={(e) => setStudentData({ ...studentData, mobile_number: e.target.value })}
+                />
+                <button onClick={() => updateDetails()}>
+                  <FiCheck className="text-green-600 text-sm md:text-base lg:text-lg" />
+                </button>
+                <button onClick={() => setIsEditingMobileNumber(false)}>
+                  <FiX className="text-red-600 text-sm md:text-base lg:text-lg" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex">
+                <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{studentData.mobile_number}</p>
+                <button onClick={() => setIsEditingMobileNumber(true)}>
+                  <FiEdit3 className="text-blue-600/75 text-sm md:text-base lg:text-lg hover:text-blue-400 hover:font-bold" />
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className='flex flex-rows'>
-            <div className='mr-4'>
-              <p className="text-blue-600/75 text-base mb-4">
-                Address:
-
-              </p>
-            </div>
-            <div>
-              {isEditingAddress ? (
-                <div className='flex flex-rows'>
-                  <div>
-                    <input
-                      type="text"
-                      value={editedAddress}
-                      onChange={(e) => setEditedAddress(e.target.value)}
-                      className="text-blue-600/75 text-base mb-4"
-                    />
-                    {showAddressError && (
-                      <div className="text-red-500 text-sm mt-2">
-                        {addressErrorMessage}
-                      </div>
-                    )}
+          <div className="mb-4 flex items-center">
+            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Address:</p>
+            {isEditingAddress ? (
+              <div className="flex">
+                <input
+                  type="text"
+                  value={editedAddress}
+                  onChange={(e) => setEditedAddress(e.target.value)}
+                  className="text-blue-600/75 text-sm md:text-base lg:text-lg"
+                />
+                {showAddressError && (
+                  <div className="text-red-500 text-xs md:text-sm lg:text-base mt-2">
+                    {addressErrorMessage}
                   </div>
-
-                  <div className='mr-6'>
-                    <button onClick={() => updateDetails()}>
-                      <FiCheck className="text-green-600 text-base" />
-                    </button>
-                    <button onClick={() => setIsEditingAddress(false)}>
-                      <FiX className='text-red-600 text-base' />
-                    </button>
-                  </div>
-
-                </div>
-              ) : (
-                <div className='flex flex-rows mr-6'>
-                  <div><p className="text-blue-600/75 text-base mb-4 mr-12">{editedAddress}</p></div>
-
-                  <div>
-                    <button onClick={() => setIsEditingAddress(true)}>
-                      <FiEdit3 className="text-blue-600/75 text-base hover:text-blue-400 hover:font-bold mb-4" />
-                    </button>
-                  </div>
-
-                </div>
-              )}
-            </div>
+                )}
+                <button onClick={() => updateDetails()}>
+                  <FiCheck className="text-green-600 text-sm md:text-base lg:text-lg" />
+                </button>
+                <button onClick={() => setIsEditingAddress(false)}>
+                  <FiX className="text-red-600 text-sm md:text-base lg:text-lg" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex">
+                <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{editedAddress}</p>
+                <button onClick={() => setIsEditingAddress(true)}>
+                  <FiEdit3 className="text-blue-600/75 text-sm md:text-base lg:text-lg hover:text-blue-400 hover:font-bold" />
+                </button>
+              </div>
+            )}
           </div>
-          <div className='flex flex-rows'>
-            <div className='mr-4'><p className="text-blue-600/75 text-base mb-4">Promotion:</p></div>
-            <div><p className="text-blue-600/75 text-base mb-4">{studentData.promotion}</p></div>
-          </div>
-          <div className='flex flex-rows'>
 
-            <div className='mr-6'><p className="text-blue-600/75 text-base mb-4">Status:</p></div>
-            <div><p className={` text-base ${studentData.status === 'active' ? 'text-green-400' : 'text-red-400'}`}>
+          <div className="mb-4 flex items-center">
+            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Promotion:</p>
+            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{studentData.promotion}</p>
+          </div>
+
+          <div className="mb-4 flex items-center">
+            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Status:</p>
+            <p className={`text-sm md:text-base lg:text-lg ${studentData.status === 'active' ? 'text-green-400' : 'text-red-400'}`}>
               {studentData.status}
             </p>
-            </div>
           </div>
+
         </div>
       </div>
     </div>

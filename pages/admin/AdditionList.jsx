@@ -6,43 +6,41 @@ import axios from "axios";
 // import bcryptjs from "bcryptjs";
 import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
-
+import MajorList from "../../components/Dashboard/MajorList";
+import PromotionList from "../../components/Dashboard/PromotionList";
+import CourseTypeList from "../../components/Dashboard/CourseTypeList";
 
 
 export default function AdditionList() {
+
     const [formErrors, setFormErrors] = useState({});
     const [errors, setErrors] = useState({});
     const { data: session } = useSession();
-    // const [users, setUsers] = useState([]);
-    // const [assistance, setAssistance] = useState([]);
-    // const [message, setMessage] = useState("");
-
     const router = useRouter();
-
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
-    // const [confirmCancleMessage, setConfirmCancleMessage] = useState(false);
     const [promotion, setPromotion] = useState("");
-
     const [major, setMajor] = useState();
     const [majorValue, setMajorValue] = useState("");
     const [additionOption, setAdditionOption] = useState('0')
     const [majorName, setMajorName] = useState('')
     const [courseType, setCourseType] = useState('')
+    const [majorList, setMajorList] = useState([])
+    const [promotionList, setPromotionList] = useState([])
+    const [courseList, setCourseList] = useState([])
     const [counter, setCounter] = useState(() => {
-        // Initialize the counter from localStorage or use 1 if it doesn't exist
         const storedCounter = localStorage.getItem("counter");
         return storedCounter ? parseInt(storedCounter) : 1;
-      });
+    });
 
-      const generateMajorID = () => {
+    const generateMajorID = () => {
         return counter; // Return the current value of counter as the ID
-      };
-    
-      useEffect(() => {
+    };
+
+    useEffect(() => {
         // Save the counter value to localStorage whenever it changes
         localStorage.setItem("counter", counter.toString());
-      }, [counter]);
+    }, [counter]);
     const redirect = () => {
         router.push("/AccessDenied");
     };
@@ -81,9 +79,24 @@ export default function AdditionList() {
                 "/api/admin/adminApi/createPromotion",
                 payload
             );
+            const majorName = await axios.post(
+                '/api/pmApi/getAllCourses', {
+                table: 'major',
+                Where: 'major_id',
+                id: data.data.data.rows[0].major_id
+            }
+            )
+           
+            const majors_name = majorName.data.data[0].major_name
             if (data.data.success === true) {
                 setPromotion('')
-
+                setPromotionList((prevPromotionList) => [
+                    ...prevPromotionList,
+                    ...data.data.data.rows.map((item) => ({
+                        ...item,
+                        major_name: majors_name
+                    }))
+                ]);
                 setMajorValue('')
                 // console.log(data.data.message);
                 setConfirmOpenMessage(true);
@@ -115,11 +128,12 @@ export default function AdditionList() {
 
             }
             const data = await axios.post('/api/admin/adminApi/createMajor', payload)
-            console.log(data)
+              console.log(data.data.data)
             if (data.data.success === true) {
                 setCounter((prevCounter) => prevCounter + 1); // Increment the counter
                 setMajorName(' ')
                 setConfirmOpenMessage(true);
+                setMajorList((prevMajorList) => [...prevMajorList, ...data.data.data.rows]);
                 setMessages(data.data.message);
             }
         }
@@ -143,18 +157,59 @@ export default function AdditionList() {
             const data = await axios.post('/api/admin/adminApi/create', payload)
             if (data.data.success === true) {
                 setCourseType(' ')
+                setCourseList((prevCourseList) => [...prevCourseList, ...data.data.data.rows]);
                 setConfirmOpenMessage(true);
                 setMessages(data.data.message);
             }
         }
     }
-  console.log(counter)
+
     const handleOpenNotificatonMessages = () => {
         setConfirmOpenMessage(true);
     };
     const handleCloseNotificatonMessages = () => {
         setConfirmOpenMessage(false);
     };
+    const fetchMajor = async () => {
+        try {
+            const response = await axios.post('/api/pmApi/getAll', { table: 'major' })
+            setMajorList(response.data.rows)
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const fetchPromotions = async () => {
+        try {
+            const response = await axios.post('/api/admin/adminApi/promotionList')
+            setPromotionList(response.data.data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const fetchCourseList = async () => {
+        try {
+            const response = await axios.post('/api/pmApi/getAll', { table: 'course_type' })
+            setCourseList(response.data.rows)
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        if (additionOption === '1') {
+            // Fetch promotions here
+            fetchPromotions();
+        } else if (additionOption === '2') {
+            fetchMajor()
+        } else if (additionOption === '3') {
+            fetchCourseList()
+        }
+    }, [additionOption]);
+
 
     return (
         <>
@@ -165,184 +220,158 @@ export default function AdditionList() {
                     messages={messages}
                 />
             )}
-            <div className="flex flex-cols mb-20">
-                <label>
+            <div className="flex flex-col md:flex-row mb-4 md:mb-20">
+                <label className="w-full md:w-auto">
                     Addition List:
                     <select
                         onChange={(e) => setAdditionOption(e.target.value)}
                         value={additionOption}
-                        className="ml-10 mt-3 w-96 max-[850px]:ml-10 max-[850px]:mt-0"
+                        className="ml-0 md:ml-4 mt-3 md:mt-0 w-full md:w-96"
                     >
-                        <option value="0">
-                            Choose a Addition
-                        </option>
-                        <option value="1"> Promotion</option>
+                        <option value="0">Choose an Addition</option>
+                        <option value="1">Promotion</option>
                         <option value="2">Major</option>
                         <option value="3">Course Type</option>
-
-
-
                     </select>
-
                 </label>
             </div>
 
             {session?.user.role === "0" ? (
-                <>
+                <div className="flex flex-col">
                     {additionOption === "1" ? (
-                        <>
+                        <div>
+                            <PromotionList promotionList={promotionList} setPromotionList={setPromotionList} />
 
-                            <form className=" mb-3 pb-4 justify-between border-blue-300 border-b-2">
-                                <div className="mb-12">
-                                            
-                                <label className="">
-                                                Promotion:
-                                                <input
-                                                className="ml-10 mt-3 w-1/2 max-[850px]:ml-10 max-[850px]:mt-0"
-                                                type="text"
-                                                name="ID"
-                                                required
-                                                placeholder="promotion"
-                                                value={promotion}
-                                                onChange={(e) => setPromotion(e.target.value)}
-                                            ></input>
-                                            {formErrors.promotion && (
-                                                <div className="text-center text-red-500 font-bold">
-                                                    {formErrors.promotion}
-                                                </div>
-                                            )}
-                                            </label>
+                            <form className="mb-3 md:mb-4 pb-4 md:pb-0 border-blue-300 border-b-2 mt-4">
+                                <div className="mb-3">
+                                    <label className="mr-2">
+                                        Promotion:
+                                        <input
+                                            className="w-full md:w-1/2 mt-3 md:mt-0"
+                                            type="text"
+                                            name="ID"
+                                            required
+                                            placeholder="Promotion"
+                                            value={promotion}
+                                            onChange={(e) => setPromotion(e.target.value)}
+                                        />
+                                        {formErrors.promotion && (
+                                            <div className="text-center text-red-500 font-bold">{formErrors.promotion}</div>
+                                        )}
+                                    </label>
                                 </div>
-                            
-                                                                       
-                                      
-                                        
-                                <label className="">
-                                                Major:
-                                                <select
-                                                onChange={(e) => setMajorValue(e.target.value)}
-                                                value={majorValue}
-                                                className="ml-20 mt-3 w-1/2 max-[850px]:ml-10 max-[850px]:mt-0"
-                                            >
-                                                <option key={"uu2isdvf"} value="">
-                                                    Choose a Major
-                                                </option>
-                                                {major &&
-                                                    major.map((major) => (
-                                                        <>
-                                                            <option key={major.major_name} value={major.major_id}>
-                                                                {major.major_name}
-                                                            </option>
-                                                        </>
-                                                    ))}
-                                            </select>
-                                            {formErrors.majorValue && (
-                                                <div className="text-center text-red-500 font-bold p-2">
-                                                    {formErrors.majorValue}
-                                                </div>
-                                            )}
-                                            </label>
-                                <div className="flex mt-4 justify-end">
-                                        <button
-                                            className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                                            type="button"
-                                            onClick={handleAdd}
+                                <div className="mb-2">
+                                    <label className="mr-2">
+                                        Major:
+                                        <select
+                                            onChange={(e) => setMajorValue(e.target.value)}
+                                            value={majorValue}
+                                            className="w-full md:w-1/2 mt-3 md:mt-0"
                                         >
-                                            Add
-                                        </button>
-                                    </div>
+                                            <option key={"uu2isdvf"} value="">
+                                                Choose a Major
+                                            </option>
+                                            {major &&
+                                                major.map((major) => (
+                                                    <option key={major.major_name} value={major.major_id}>
+                                                        {major.major_name}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                        {formErrors.majorValue && (
+                                            <div className="text-center text-red-500 font-bold p-2">{formErrors.majorValue}</div>
+                                        )}
+                                    </label>
+                                </div>
+
+                                <div className="flex mt-4 justify-end mb-4">
+                                    <button
+                                        className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                                        type="button"
+                                        onClick={handleAdd}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
                             </form>
-
-
-
-
-                        </>
-
+                        </div>
                     ) : additionOption === "2" ? (
-                        <>
-                            <form className=" mb-3 pb-4 border-blue-300 border-b-2">
-                                <div className="flex flex-rows  justify-between">
+                        <div>
+                            <MajorList majorList={majorList} setMajorList={setMajorList} />
 
-                                    <label className="w-[350px]">
+                            <form className="mb-3 md:mb-4 pb-4 md:pb-0 border-blue-300 border-b-2 mt-4">
+                                <div className="mb-3">
+                                    <label >
                                         Major Name:
                                         <input
-                                            className="ml-1 w-60"
+                                            className="w-full ml-0 md:ml-1 mt-3 md:mt-0"
                                             type="text"
                                             name="ID"
                                             required
                                             placeholder="Major Name"
                                             value={majorName}
                                             onChange={(e) => setMajorName(e.target.value)}
-                                        ></input>
+                                        />
                                         {errors.majorName && (
-                                            <div className="text-center text-red-500 font-bold">
-                                                {errors.majorName}
-                                            </div>
+                                            <div className="text-center text-red-500 font-bold">{errors.majorName}</div>
                                         )}
                                     </label>
 
-
-                                    <div className="">
-                                        <button
-                                            className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                                            type="button"
-                                            onClick={handleAddOption}
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
+                                </div>
+                                <div className="flex mt-4 justify-end mb-4">
+                                    <button
+                                        className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                                        type="button"
+                                        onClick={handleAddOption}
+                                    >
+                                        Add
+                                    </button>
                                 </div>
                             </form>
-                        </>
+                        </div>
                     ) : additionOption === '3' ? (
-                        // Render AccountsList for role 2 users
-                        <>
-                            <form>
-                                <div className="flex flex-rows mb-3 pb-4 border-blue-300 border-b-2 justify-between">
-
-                                    <label className="w-[350px]">
+                        <div>
+                            <CourseTypeList courseList={courseList} setCourseList={setCourseList} />
+                            <form className="mb-3 md:mb-4 pb-4 md:pb-0 border-blue-300 border-b-2 mt-4">
+                                <div className="mb-3">
+                                    <label className="">
                                         Course Type:
                                         <input
-                                            className="ml-1 w-60"
+                                            className="w-full ml-0 md:ml-1 mt-3 md:mt-0"
                                             type="text"
                                             name="ID"
                                             required
                                             placeholder="Course Type"
                                             value={courseType}
                                             onChange={(e) => setCourseType(e.target.value)}
-                                        ></input>
+                                        />
                                         {errors.courseType && (
-                                            <div className="text-center text-red-500 font-bold">
-                                                {errors.courseType}
-                                            </div>
+                                            <div className="text-center text-red-500 font-bold">{errors.courseType}</div>
                                         )}
                                     </label>
+                                </div>
 
-
-                                    <div className="">
-                                        <button
-                                            className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                                            type="button"
-                                            onClick={handleAddOption}
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
+                                <div className="flex mt-4 justify-end mb-4">
+                                    <button
+                                        className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                                        type="button"
+                                        onClick={handleAddOption}
+                                    >
+                                        Add
+                                    </button>
                                 </div>
                             </form>
-
-                        </>
+                        </div>
                     ) : (
                         <></>
                     )}
-
-                </>
-
+                </div>
             ) : (
                 redirect()
             )}
         </>
     );
+
 }
 AdditionList.auth = true;
 AdditionList.adminOnly = true;

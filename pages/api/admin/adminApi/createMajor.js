@@ -32,14 +32,15 @@ const result= await createMajor(
       major_id,
       major_name
     );
-    console.log(result)
+   
    
    
     await disconnect(connection)
     return res.status(201).json({
         success:true,
         code:201,
-        message:` Major Created Successfully !`
+        message:` Major Created Successfully !`,
+        data: result
     })
   } catch (error) {
     return res.status(500).json({

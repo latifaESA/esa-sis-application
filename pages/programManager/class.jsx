@@ -31,13 +31,14 @@ export default function Class() {
   const [allTeacher, setAllTeacher] = useState([]);
   const [error, setError] = useState('');
   const [errorCourse, setErrorCourse] = useState('');
+  const [teacherList,setTeacherList] = useState([])
   const [errorTeacher, setErrorTeacher] = useState('');
   const [errorPromotion, setErrorPromotion] = useState('');
   const [errorStart, setErrorStart] = useState('');
   const [errorEnd, setErrorEnd] = useState('');
   const [searchCourse, setSearchCourse] = useState("");
-  const [classes , setClasses] = useState([])
- 
+  const [classes, setClasses] = useState([])
+
 
   const handleCancel = () => {
     setOpen(false);
@@ -62,66 +63,66 @@ export default function Class() {
 
   const handleSave = async () => {
     // console.log('save')
-      try {
-        if(courseValue.length === 0){
-          setErrorCourse('Select At least one Course')
-        }
-        if(teacherValue.length === 0){
-          setErrorTeacher('Select At least one Teacher')
-        }
-        if(promotionValueClass.length === 0){
-          setErrorPromotion('Select At least one Promotion ')
-        }
-        if(dateFrom === ''){
-          setErrorStart('Please Fill The Start Date')
-        }
-        if(dateTo === ''){
-          setErrorEnd('Please Fill The End Date')
-        }
-        const payload = {
-          major_id: session.user.majorid,
-          teachers_fullname: teacherValue,
-          teacher_id: teacherValue,
-          course_id: courseValue, // Retrieve the value property of the selected course === courseID
-          course_name: courseValue, // Retrieve the label property of the selected course === courseName
-        };
-        await axios.post("/api/pmApi/asigendTeacher", payload);
-
-        let classValue = {
-          course_id: courseValue,
-          teacher_id: teacherValue,
-          promotion: promotionValueClass.replace(/\s/g, ""),
-          startdate: dateFrom,
-          enddate: dateTo,
-          pm_id: session.user.userid,
-          major_id: majorValue,
-        };
-     
-        // console.log("payload", payload)
-       
-          let { data } = await axios.post("/api/pmApi/createClass", classValue);
-          // console.log(data)
-          if (data.success) {
-            setOpen(false);
-            // setPromotionValue('');
-            setCourseValue("");
-            setMajorValue("");
-            setTeacherValue("");
-            setDateFrom("");
-            setDateTo("");
-            getClasses();
-          } else {
-            alert("Error creating class");
-          }
-        
-      
-        // setOpen(false)
-      } catch (err) {
-        console.log(err)
+    try {
+      if (courseValue.length === 0) {
+        setErrorCourse('Select At least one Course')
       }
-    };
-    
-  
+      if (teacherValue.length === 0) {
+        setErrorTeacher('Select At least one Teacher')
+      }
+      if (promotionValueClass.length === 0) {
+        setErrorPromotion('Select At least one Promotion ')
+      }
+      if (dateFrom === '') {
+        setErrorStart('Please Fill The Start Date')
+      }
+      if (dateTo === '') {
+        setErrorEnd('Please Fill The End Date')
+      }
+      const payload = {
+        major_id: session.user.majorid,
+        teachers_fullname: teacherValue,
+        teacher_id: teacherValue,
+        course_id: courseValue, // Retrieve the value property of the selected course === courseID
+        course_name: courseValue, // Retrieve the label property of the selected course === courseName
+      };
+      await axios.post("/api/pmApi/asigendTeacher", payload);
+
+      let classValue = {
+        course_id: courseValue,
+        teacher_id: teacherValue,
+        promotion: promotionValueClass.replace(/\s/g, ""),
+        startdate: dateFrom,
+        enddate: dateTo,
+        pm_id: session.user.userid,
+        major_id: majorValue,
+      };
+
+      // console.log("payload", payload)
+
+      let { data } = await axios.post("/api/pmApi/createClass", classValue);
+      // console.log(data)
+      if (data.success) {
+        setOpen(false);
+        // setPromotionValue('');
+        setCourseValue("");
+        setMajorValue("");
+        setTeacherValue("");
+        setDateFrom("");
+        setDateTo("");
+        getClasses();
+      } else {
+        alert("Error creating class");
+      }
+
+
+      // setOpen(false)
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
+
 
 
   const handleSaveCopy = () => {
@@ -158,10 +159,10 @@ export default function Class() {
     courseValue.length === 0
       ? setError("Please choose course")
       : teacherValue.length === 0
-      ? setError("Please choose teacher")
-      : promotionValueClass.length === 0
-      ? setError("Please choose promotion")
-      : (setError(""), createClass());
+        ? setError("Please choose teacher")
+        : promotionValueClass.length === 0
+          ? setError("Please choose promotion")
+          : (setError(""), createClass());
   };
 
   const handleDateFromChange = (event) => {
@@ -191,20 +192,20 @@ export default function Class() {
     }
   };
 
-  const fetchClass = async()=>{
+  const fetchClass = async () => {
     try {
-      const payload ={
-        table:'tmpclass',
-        Where :'major_id',
-        id:session.user.majorid
+      const payload = {
+        table: 'tmpclass',
+        Where: 'major_id',
+        id: session.user.majorid
       }
-      const data = await axios.post('/api/pmApi/getAllCourses' , payload)
+      const data = await axios.post('/api/pmApi/getAllCourses', payload)
       setClasses(data.data.data)
     } catch (error) {
       return error
     }
   }
-  console.log("class" , classes)
+  console.log("class", classes)
 
   const router = useRouter();
 
@@ -233,16 +234,18 @@ export default function Class() {
     // Do something with the selected value
     // console.log("Selected Value:",selectedValue.length > 0 ? allCourse.filter(course => course.course_name === selectedValue)[0].course_id : '');
     // setCourseValue(selectedValue)
-    setCourseValue(
-      selectedValue.length > 0
-        ? allCourse.filter((course) => course.course_name === selectedValue)[0]
+    if (selectedValue.trim() !== "") {
+      setCourseValue(
+        selectedValue.length > 0
+          ? allCourse.filter((course) => course.course_name === selectedValue)[0]
             .course_id
-        : ""
-    );
+          : ""
+      );
+    }
     setMajorValue(
       selectedValue.length > 0
         ? allCourse.filter((course) => course.course_name === selectedValue)[0]
-            .major_id
+          .major_id
         : ""
     );
   };
@@ -263,12 +266,15 @@ export default function Class() {
   //     )
   // }
   const handleTeacher = (selectedValue) => {
+    
     // Do something with the selected value
     // // console.log("Selected Value:", allTeacher.filter(teacher => `${teacher.teacher_firstname} ${teacher.teacher_lastname}` === selectedValue)[0].course_id);
     // console.log('select teacher: ',selectedValue.length > 0 ?selectedValue.split(' ')[0] : '')
-    setTeacherValue(
-      selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
-    );
+    if (selectedValue.trim() !== "") {
+      setTeacherValue(
+        selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
+      );
+    }
     // setCourseValue(allCourse.filter(course => course.course_name === selectedValue)[0].course_id)
   };
 
@@ -285,7 +291,7 @@ export default function Class() {
         course.course_id.toLowerCase().includes(searchCourse.toLowerCase())
       )
     );
-    
+
   };
   const getClasses = async () => {
     try {
@@ -373,7 +379,6 @@ export default function Class() {
             `${teacher.teacher_id} ${teacher.teacher_firstname} ${teacher.teacher_lastname}`
           );
         });
-
         setTeachers(datesArray);
       } catch (err) {
         // console.log(err)
@@ -381,6 +386,8 @@ export default function Class() {
     };
     getTeacher();
   }, []);
+
+
 
   const handleClass = () => {
     setOpen(true);
@@ -412,8 +419,9 @@ export default function Class() {
               errorCourse={errorCourse}
               errorTeacher={errorTeacher}
               handleDateToChange={handleDateToChange}
-               errorPromotion ={errorPromotion}
+              errorPromotion={errorPromotion}
               courses={courses}
+              teacherList={teacherList}
               errorStart={errorStart}
               errorEnd={errorEnd}
               courseValue={courseValue}
@@ -451,22 +459,22 @@ export default function Class() {
                   className="ml-4"
                   onChange={(e) => setSearchCourse(e.target.value)}
                 /> */}
-                    <select
-                    className="ml-9 w-40"
-                    value={searchCourse}
-                    onChange={(e) => setSearchCourse(e.target.value)}>
-                    <option value=" ">courses</option>
-                    <>
-                      <>{classes
+                <select
+                  className="ml-9 w-40"
+                  value={searchCourse}
+                  onChange={(e) => setSearchCourse(e.target.value)}>
+                  <option value=" ">courses</option>
+                  <>
+                    <>{classes
                       .length > 0 ? classes.map((item, index) => (
                         <option key={index} value={item.course_id} >{item.course_id}</option>
 
                       )) : <option value={" "}>NO Courses</option>}</>
 
-                    </>
+                  </>
 
 
-                  </select>
+                </select>
                 {/* {
               <CustomSelectBox
               options={promotion}
@@ -495,8 +503,8 @@ export default function Class() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -524,7 +532,7 @@ export default function Class() {
                   className=" invisible max-[850px]:visible max-[850px]:hidden "
                   onChange={(e) => setSearchCourse(e.target.value)}
                 /> */}
-          
+
                 {/* {
               <CustomSelectBox
               options={promotion}
@@ -553,12 +561,12 @@ export default function Class() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               <div className="flex flex-col  min-[850px]:flex-row gap-4">
-               
+
 
                 <button
                   className="py-1 px-2 primary-button hover:text-white w-60 bg-green-600  hover:font-bold"
@@ -574,7 +582,7 @@ export default function Class() {
                   onClick={handleCopyClass}
                 >
                   Copy Schedule
-                  
+
                 </button>
               </div>
             </div>

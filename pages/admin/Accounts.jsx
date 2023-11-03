@@ -20,59 +20,42 @@ export default function Accounts() {
 
       {session?.user.role === "0" ? (
         <>
-          <h2 className="text-gray-700 text-3xl pt-5  font-bold">Accounts</h2>
-          <div className="flex gap-4 max-[850px]:flex-col max-[850px]:mt-32 max-[850px]:ml-0  h-[30vh] place-items-center">
-            <Link href="/admin/CreateTeacherAccount">
-              <div className=" ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Create Teacher Account
-                </button>
-              </div>
+          <h2 className="text-gray-700 text-3xl p-6 font-bold">Accounts</h2>
+          <div className="flex flex-wrap justify-center mt-5">
+            <Link href="/admin/CreateTeacherAccount" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Create Teacher Account
+              </button>
             </Link>
-            <Link href="/admin/createAccount">
-              <div className="  ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Create a new Account
-                </button>
-              </div>
+            <Link href="/admin/createAccount" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Create a new Account
+              </button>
             </Link>
-
-            <Link href="/admin/create">
-              <div className=" ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  View and Edit Accounts
-                </button>
-              </div>
+            <Link href="/admin/create" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                View and Edit Accounts
+              </button>
             </Link>
-          </div>
-          <div className="flex gap-4 max-[850px]:flex-col max-[850px]:ml-0  place-items-center ">
-            <Link href="/admin/UploadTeacher">
-              <div className=" ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Upload Teacher
-                </button>
-              </div>
+            <Link href="/admin/UploadTeacher" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Upload Teacher
+              </button>
             </Link>
-            <Link href="/admin/UploadStudent">
-              <div className="  ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Upload Students
-                </button>
-              </div>
+            <Link href="/admin/UploadStudent" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Upload Students
+              </button>
             </Link>
-            <Link href="/admin/StudentAccount">
-              <div className="  ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  Students Account
-                </button>
-              </div>
+            <Link href="/admin/StudentAccount" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Students Account
+              </button>
             </Link>
-            <Link href="/admin/UploadSTAlumni">
-              <div className="  ">
-                <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
-                  upload Alumni Students
-                </button>
-              </div>
+            <Link href="/admin/UploadSTAlumni" className="m-2">
+              <button className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold">
+                Upload Alumni Students
+              </button>
             </Link>
           </div>
         </>
@@ -81,6 +64,7 @@ export default function Accounts() {
       )}
     </>
   );
+
 }
 Accounts.auth = true;
 Accounts.adminOnly = true;

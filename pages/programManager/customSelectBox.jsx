@@ -22,14 +22,6 @@ const CustomSelectBox = ({
         }
       });
   }
-  // useEffect(() => {
-  //   {enable === true &&
-  //   document.addEventListener("mousedown", (e) => {
-  //     if(!menuRef.current?.contains(e.target)){
-  //       setOpen(false)
-  //     }
-  //   })}
-  // }, [])
 
   const handleSelect = (option) => {
     setSelected(option);
@@ -37,7 +29,7 @@ const CustomSelectBox = ({
     setInputValue("");
     onSelect(option); // Pass the selected value back to the parent component
   };
-  // "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
+
   return (
     <div className={styled}>
       <div
@@ -81,7 +73,7 @@ const CustomSelectBox = ({
               "bg-sky-600 text-white"
             }
             ${
-              option?.toLowerCase().startsWith(inputValue) ? "block" : "hidden"
+              option?.toLowerCase().includes(inputValue) ? "block" : "hidden"
             }`}
             onClick={() => handleSelect(option)}
           >
