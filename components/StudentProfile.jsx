@@ -72,8 +72,8 @@ const StudentProfile = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-end md:flex-row ">
-        <div className="md:w-1/2 lg:w-1/3 md:pr-4 ml-6">
+      <div className="flex flex-col justify-end lg:flex-row ">
+        <div className="md:w-1/2 lg:w-1/3 md:pr-4 max-sm:overflow-auto">
           <ReactSpeedometer
             value={averageGrades}
             minValue={0}
