@@ -59,6 +59,7 @@ const StudentProfile = () => {
   }
 
   return (
+
     <div className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg">
       <div className="md:w-1/2 lg:w-2/3 md:pl-4 mb-6">
         <div className="text-center md:text-center ml-12">
