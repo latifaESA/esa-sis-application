@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   // try {
   return (
-    <>
+    <div className="primary-bg h-full">
       <Head>
         <link rel="icon" href="/esa.ico" />
       </Head>
@@ -76,7 +76,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           </Provider>
         )}
       </SessionProvider>
-    </>
+    </div>
   );
   // } catch (error) {
   //   // sendErrorToSlack(error);

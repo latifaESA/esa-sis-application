@@ -54,7 +54,7 @@ export default function Main() {
         <>
         {/* <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
           if status is limited display studentBlue */}
-     <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Main board</p>
+     <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Main board</p>
 
           <StudentProfile />
         {/* </div> */}

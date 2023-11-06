@@ -162,7 +162,7 @@ export default function ProfileScreen() {
         <title>Dashboard - Profile</title>
       </Head>
       <form className="mx-auto md:w-1/2" onSubmit={handleSubmit(submitHandler)}>
-        <h1 className="mb-4 text-center uppercase font-bold text-2xl">
+        <h1 className="mb-4 text-center uppercase font-bold text-2xl text-primary">
           Update Your Profile
         </h1>
         {errors && (
@@ -172,7 +172,7 @@ export default function ProfileScreen() {
         )}
 
         {/* UPLOAD PHOTO Section */}
-        <h1 className="my-6 text-l shadow-sm font-bold">
+        <h1 className="my-6 text-l shadow-sm font-bold text-primary">
           Upload Profile Photo
           {/* <span className="text-red-500 mx-1 font-bold">*</span> */}
         </h1>
@@ -197,7 +197,7 @@ export default function ProfileScreen() {
         )}
 
         <div className="mb-4">
-          <label className="font-bold" htmlFor="fname">
+          <label className="font-bold text-primary" htmlFor="fname">
             First Name
           </label>
           <input
@@ -215,7 +215,7 @@ export default function ProfileScreen() {
           )}
         </div>
         <div className="mb-4">
-          <label className="font-bold" htmlFor="lname">
+          <label className="font-bold text-primary" htmlFor="lname">
             Last Name
           </label>
           <input
@@ -234,7 +234,7 @@ export default function ProfileScreen() {
         </div>
 
         <div className="mb-4 relative">
-          <label className="font-bold" htmlFor="password">
+          <label className="font-bold text-primary" htmlFor="password">
             Password
           </label>
           <input
@@ -267,7 +267,7 @@ export default function ProfileScreen() {
         </div>
 
         <div className="mb-4 relative">
-          <label className="font-bold" htmlFor="confirmPassword">
+          <label className="font-bold text-primary" htmlFor="confirmPassword">
             Confirm Password
           </label>
           <input

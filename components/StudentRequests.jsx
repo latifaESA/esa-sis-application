@@ -180,7 +180,7 @@ return (
               onClick={handleRadioClick}
               onChange={(e) => setGpa(e.target.value)}
             />
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-primary">
               Include GPA
             </label>
           </div>
@@ -194,7 +194,7 @@ return (
               onChange={(e) => setGpa(e.target.value)}
               className="w-4 h-4 mr-2"
             />
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-primary">
               Exclude GPA
             </label>
           </div>
