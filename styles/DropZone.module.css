@@ -30,7 +30,7 @@
 
 .files + label {
   margin-top: 0.5rem;
-  background-color: #0d6efd;
+  background-color: #002857;
   border-radius: 2rem;
   color: #fff;
   cursor: pointer;
@@ -42,7 +42,7 @@
 
 .files + label:focus,
 .files + label:hover {
-  background-color: #0a58ca;
+  background-color: #12437b;
   color: #fff;
 }
 

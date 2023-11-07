@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import styles from './CourseSchedule.module.css';
 
 // import { GoogleLogin } from 'react-google-login';
 
@@ -46,7 +47,9 @@ const CourseSchedule = () => {
             title: title.join(','),
             start: startDateTime,
             end: endDateTime,
-            background: 'blue',
+            // background: 'red',
+            // color: 'green'
+            className: styles.custom-event,
           };
         });
 

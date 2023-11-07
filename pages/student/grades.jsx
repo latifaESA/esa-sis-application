@@ -19,7 +19,7 @@ export default function Grades() {
         <title>SIS - Grades</title>
       </Head>
       <>
-      {session?.user.role === '1' ? ( <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Grades</p>) : redirect()}
+      {session?.user.role === '1' ? ( <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Grades</p>) : redirect()}
       </>
     </>
   );

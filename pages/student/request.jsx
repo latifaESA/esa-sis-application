@@ -31,7 +31,10 @@ export default function Main() {
       
         {session?.user.role === "1" ? (
           <div className="max-w-screen-md p-4">
-            <h1 className="text-3xl font-semibold text-center mb-4">Request Transcript</h1>
+            {/* <h1 className="text-3xl font-semibold text-center mb-4">Request Transcript</h1> */}
+            <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary">
+            Request Transcript
+          </p>
             <div>
             <StudentRequests />
             </div>

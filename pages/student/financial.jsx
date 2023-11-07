@@ -34,7 +34,7 @@ export default function Financial() {
 
      {session?.user.role === '1' ? ( 
       <>
-     <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Financial</p>
+     <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Financial</p>
      <TabsComponent items={items} />
       </>
      ) : redirect()}
@@ -47,8 +47,8 @@ const items = [
   {
     title: 'History',
     content: (
-      <div className='border-2 border-blue-400 rounded-lg p-4'>
-        <h1 className='text-3xl text-blue-600'>Title Test 1</h1>
+      <div className='border-2 border-primary rounded-lg p-4'>
+        <h1 className='text-3xl text-primary'>Title Test 1</h1>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
           aperiam asperiores doloribus velit dolore magnam ex consectetur fugit
@@ -62,9 +62,9 @@ const items = [
   {
     title: 'Future Payment',
     content: (
-      <div className='border-2 border-blue-400 rounded-lg p-4'>
+      <div className='border-2 border-primary rounded-lg p-4'>
         <table className='w-full text-center'>
-          <thead className="border-b border-blue-gray-100 p-4 bg-blue-50">
+          <thead className="border-b border-blue-gray-100 p-4 bg-blue-50 text-primary">
             <tr>
               <th>Date</th>
               <th>Payment</th>

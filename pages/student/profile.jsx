@@ -17,7 +17,7 @@ export default function Profile() {
         <title>SIS - Profile Page</title>
       </Head>
 
-      { session?.user.role === '1' ? ( <><p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>
+      { session?.user.role === '1' ? ( <><p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>
         Edit Profile
       </p>
 
