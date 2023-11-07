@@ -279,7 +279,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                         <li class="px-4 py-1 hover:bg-gray-100 border-b">
                         <a
                             href="#"
-                            className="flex text-blue-500 hover:text-blue-500  hover:bg-blue-100 text-gray-700 rounded p-2 text-sm group transition-colors items-center"
+                            className="flex hover:font-bold text-primary text-gray-700 rounded p-2 text-sm group transition-colors items-center"
                             onClick={logoutClickHandler}
                           >
                             Logout
@@ -349,7 +349,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                         <div className='hidden sm:block'>
                         <a
                             href="#"
-                            className="flex text-blue-500 hover:text-blue-500  hover:bg-blue-100 text-gray-700 rounded p-2 text-sm group transition-colors items-center"
+                            className="flex hover:font-bold text-primary text-gray-700 rounded p-2 text-sm group transition-colors items-center"
                             onClick={logoutClickHandler}
                           >
                             Logout
