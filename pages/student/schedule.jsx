@@ -18,13 +18,18 @@ export default function Schedule() {
       </Head>
 
       {session?.user.role === '1' ? (
-        <>
-          <p className='text-gray-700 lg:text-3xl md:text-2xl sm:text-xl pt-5 mb-10 font-bold text-primary'>Schedule</p>
+        // <>
+        <div className="max-w-screen-md p-4">
 
-          <div className='grid lg:grid-cols-1 sm:grid-cols-1 gap-5 mb-5'>
+          {/* <p className='text-gray-700 lg:text-3xl md:text-2xl sm:text-xl pt-5 mb-10 font-bold text-primary'> */}
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary">
+            Schedule</p>
+
+          {/* <div className='grid lg:grid-cols-1 sm:grid-cols-1 gap-5 mb-5'> */}
+          <div>
             <CourseSchedule />
           </div>
-        </>
+        </div>
       ) : redirect()}
     </>
   );
