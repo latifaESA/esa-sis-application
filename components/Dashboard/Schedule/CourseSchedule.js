@@ -210,7 +210,9 @@ const CourseSchedule = () => {
 
   return (
 
-    <div className='container bg-white p-3 p-md-5 rounded-lg'>
+    // <div className='container bg-white p-3 p-md-5 rounded-lg'>
+    <div className="flex flex-col items-center justify-center overflow-auto">
+
 
 
       {/* <GoogleLogin
@@ -231,8 +233,8 @@ const CourseSchedule = () => {
       />  */}
 
       {/* FullCalendar section */}
-      <div className="row">
-        <div className="embed-responsive embed-responsive-16by9">
+      {/* <div className="row"> */}
+        <div className="embed-responsive embed-responsive-16by9 w-full">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, dayListViewPlugin, listPlugin]}
             initialView="dayGridMonth"
@@ -253,7 +255,7 @@ const CourseSchedule = () => {
             }}
           />
         </div>
-      </div>
+      {/* </div> */}
     </div>
 
   );
