@@ -1,11 +1,12 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import generatePasswod from "../../utilities/generatePassword";
 import axios from "axios";
 // import bcryptjs from "bcryptjs";
 import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
+import TeachersList from "../../components/Dashboard/TeachersList";
 
 function generateID(prefix) {
   prefix.length;
@@ -29,6 +30,7 @@ export default function CreateTeacher() {
   const [teacher_firstname, setTeacherFirstname] = useState("");
   const [teacher_lastname, setTeacherLastname] = useState("");
   const [teacher_mail, setTeacherMail] = useState("");
+  const [teachers, setTeachers] = useState([])
 
   const redirect = () => {
     router.push("/AccessDenied");
@@ -65,6 +67,11 @@ export default function CreateTeacher() {
         "/api/admin/adminApi/createTeacher",
         payload
       );
+      setTeachers((prevTeachers) => [
+        ...data.data.data.rows,
+        ...prevTeachers
+      ]);
+
       setTeacherFirstname('')
       setTeacherLastname("")
       setTeacherMail("")
@@ -83,25 +90,41 @@ export default function CreateTeacher() {
     setConfirmOpenMessage(false);
   };
 
+  useEffect(() => {
+    fetchTeacher()
+  }, [])
+
+  const fetchTeacher = async () => {
+    try {
+      const response = await axios.post('/api/pmApi/getAll', { table: 'teachers' })
+
+      setTeachers(response.data.rows)
+    } catch (error) {
+      return error
+    }
+  }
+
   return (
     <>
-      {confirmOpenMessage && (
-        <NotificatonMessage
-          handleOpenNotificatonMessages={handleOpenNotificatonMessages}
-          handleCloseNotificatonMessages={handleCloseNotificatonMessages}
-          messages={messages}
-        />
-      )}
+
       <Head>
         <title>SIS Admin - Accounts</title>
       </Head>
 
       {session?.user.role === "0" ? (
         <>
+
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Create Accounts
           </p>
           <form>
+            {confirmOpenMessage && (
+              <NotificatonMessage
+                handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+                handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+                messages={messages}
+              />
+            )}
             <div className="grid grid-cols-1 gap-4  min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2 justify-center">
               <label className="w-[350px]">
                 First Name:
@@ -214,6 +237,7 @@ export default function CreateTeacher() {
               </div>
             </div>
           </form>
+          <TeachersList users={teachers} setUsers={setTeachers} />
         </>
       ) : (
         redirect()

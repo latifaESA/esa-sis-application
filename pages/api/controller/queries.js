@@ -1355,7 +1355,8 @@ async function createPMAccount(
   pm_email,
   pm_status,
   userpassword,
-  major_id
+  major_id,
+
 ) {
   try {
     let query = `
@@ -1368,8 +1369,8 @@ async function createPMAccount(
     insert into users(userid, role, userpassword)
     values ('${pm_id}', '2', '${userpassword}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid)
-      VALUES('${pm_id}') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl)
+      VALUES('${pm_id}' , ' ') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${pm_id}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -1390,7 +1391,8 @@ async function createASAccount(
   pm_ass_email,
   pm_ass_status,
   userpassword,
-  major_id
+  major_id,
+
 ) {
   try {
     let query = `
@@ -1403,8 +1405,8 @@ async function createASAccount(
     insert into users(userid, role, userpassword)
     values ('${pm_ass_id}', '3', '${userpassword}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid)
-      VALUES('${pm_ass_id}') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl)
+      VALUES('${pm_ass_id}','') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${pm_ass_id}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -1424,7 +1426,8 @@ async function createAdmin(
   admin_firstname,
   userpassword,
   admin_lastname,
-  admin_status
+  admin_status,
+
 ) {
   try {
     let query = `
@@ -1437,8 +1440,8 @@ async function createAdmin(
     insert into users(userid, role, userpassword)
     values ('${adminid}', '0', '${userpassword}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid)
-      VALUES('${adminid}') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl)
+      VALUES('${adminid}' , ' ') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${adminid}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -1537,7 +1540,7 @@ async function createTeacher(
   try {
     const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
       ${teacher_id},
-      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') `;
+      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') RETURNING teacher_id , teacher_firstname , teacher_lastname , teacher_mail`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -1866,9 +1869,9 @@ async function ActiveUser(connection, { userid, userpassword }) {
     return error;
   }
 }
-async function userDocument(connection, { userid, profileurl }) {
+async function userDocument(connection, { userid }) {
   try {
-    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}') on conflict (userid) do nothing`;
+    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , ' ') on conflict (userid) do nothing`;
 
     const res = await connection.query(query);
     return res;
@@ -2177,7 +2180,7 @@ async function occupiedRoom(connection, attendance_date, room) {
   }
 }
 async function updateStatusBlue(connection, student_id) {
- 
+
   try {
     const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`;
     console.log(query);
@@ -2418,7 +2421,7 @@ async function updateRequestStatus(connection, req_id, status) {
   }
 }
 
-async function Promotion (connection){
+async function Promotion(connection) {
   try {
     const query = `SELECT promotions.* , major.major_name 
     FROM promotions INNER JOIN  major ON 
@@ -2430,22 +2433,30 @@ async function Promotion (connection){
   }
 }
 
-async function updateUsers(connection , accessToken , user_id){
+async function updateUsers(connection, accessToken, user_id) {
   try {
     const query = `UPDATE users SET access_token = '${accessToken}' WHERE userid='${user_id}'`
     const res = await connection.query(query)
-    return res 
+    return res
   } catch (error) {
     return error
   }
 }
 
-async function roleStudent (connection , majorId)
-{
+async function roleStudent(connection, majorId) {
   try {
-    const query = `SELECT *
-    FROM major
-    WHERE major_id !='${majorId}' AND major_name LIKE 'Exe%';`
+    const query = `
+    SELECT major_id,status, 
+       CASE 
+           WHEN major_name LIKE 'EXED%' 
+           THEN substring(major_name FROM 6)
+           ELSE major_name 
+       END AS modified_major_name
+FROM major
+WHERE  major_name LIKE 'EXED%'  AND major_id != '${majorId}';
+
+    
+    `
     const res = await connection.query(query)
     return res
   } catch (error) {

@@ -1,6 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --main-background-color: #002857; 
+  --main-hover-color: #12437b; 
+  --main-active-color: #2b6ab3; 
+  --main-text-color: white;
+}
 html,
 body {
   padding: 0;
@@ -266,4 +273,94 @@ textarea {
   margin-left: 30px !important;
  }
  
+}
+
+/* Change the background color of the previous button (left arrow) */
+.fc .fc-button-primary {
+  background-color: var( --main-background-color);
+}
+.fc-today-button{
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-today-button:hover{
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-timeGridWeek-button {
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-timeGridWeek-button:hover {
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
+.fc-timeGridDay-button {
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-timeGridDay-button:hover {
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-button-active {
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+}
+.fc-button-active:hover{
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+}
+.fc-today-button:active{
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc .fc-button-primary:hover{
+  background-color: var(--main-hover-color);
+  color: var(--main-text-color) !important;
+}
+.fc .fc-button-primary:active{
+  background-color: var(--main-active-color);
+}
+.fc .fc-today-button .fc-button .fc-button-primary{
+  background-color: var(--main-background-color);
+}
+.fc .fc-today-button .fc-button .fc-button-primary:hover{
+  background-color: var(--main-hover-color);
+}
+
+.fc-listWeek-button .fc-button .fc-button-primary{
+    background-color: var(--main-background-color);
+}
+.fc-dayGridMonth-button {
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+.fc-dayGridMonth-button:hover {
+  background-color: var(--main-hover-color) !important;
+  color: var(--main-text-color) !important;
+}
+.fc-dayGridMonth-button:active {
+  background-color: var(--main-background-color) !important;
+  color: var(--main-text-color) !important;
+}
+
+.fc .fc-button-primary:focus {
+  box-shadow: none;
+}
+.fc .fc-button:focus {
+  box-shadow: none;
+  outline: 0px;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus, .fc .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: none;
 }

@@ -116,7 +116,54 @@ async function handler(req, res) {
     }
     const { fields } = await readFile(req, true, directory);
 
-
+    for (const fieldKey in fields) {
+      let countSaved = 0; // Add a variable to track the number of records saved
+      const connection = await connect();
+    
+      // Access the field value using the key from the fields object
+      const field = fields[fieldKey];
+    
+      // Check if the necessary fields exist in the field object
+    
+      const major = await getMajor(connection, field.MajorName);
+      
+      const majorid = major.rows[0].major_id;
+      const exist = await StudentExist(connection, field.Email, majorid);
+   
+      if (exist) {
+        return res.status(200).json({
+          success: true,
+          code: 200,
+          message: `Student Already Exist! ${
+            countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`
+          }`,
+        });
+      }
+    
+      const promotion_name = field.Promotion.replace(/\s+/g, '').toUpperCase();
+      const promotion_exist = await PromotionExist(connection, promotion_name);
+    
+      if (!promotion_exist) {
+        return res.status(400).json({
+          code: 400,
+          success: false,
+          message: `Promotion ${promotion_name} not Found`,
+        });
+      }
+    
+      const major_exist = await PromotionMajorExist(connection, promotion_name, majorid);
+    
+      if (!major_exist) {
+        return res.status(400).json({
+          success: false,
+          code: 400,
+          message: `Promotion ${promotion_name} not in major ${field.MajorName}`,
+        });
+      }
+    
+      
+    }
+    
     let student_file = await fs.readdirSync(directory);
 
     // Access the file path from the 'files' object
@@ -168,18 +215,20 @@ async function handler(req, res) {
         message: "Excel file is empty. No data to upload.",
       });
     }
- 
+
 
     const connection = await connect();
 
     let countSaved = 0; // Add a variable to track the number of records saved
 
-   
+
 
     let idx = 0;
 
+
+
     for (const row of data) {
-       
+
       try {
 
         const major = await getMajor(connection, row.MajorName);
@@ -188,9 +237,9 @@ async function handler(req, res) {
           continue; // Skip this row if the major is not found
         }
 
-      
+
         const majorid = major.rows[0].major_id;
-        
+
 
         let field = fields[idx];
 
@@ -203,69 +252,42 @@ async function handler(req, res) {
         // 'field.AcademicYear\n',field.AcademicYear,
         // 'field.DateOfBirth\n' , field.DateOfBirth
         // )
-        if(field.Email === undefined || field.Promotion === undefined|| field.MobileNumber === undefined || field.Gender === undefined
-          || field.StudentFirstName === undefined || field.AcademicYear === undefined || field.DateOfBirth === undefined ||field.StudentLastName === undefined || field.Email === '' || field.MobileNumber === '' 
-          || field.StudentFirstName === '' || field.Promotion === '' ||  field.AcademicYear === '' || field.Gender === '' || field.StudentLastName ==='' || field.DateOfBirth==='' ){
-            return res.status(400).json({
-              success:false ,
-              code : 400,
-              message:`No data was uploaded due to missing required information.`
-            })
-          } 
-           const promotion_name = field.Promotion.replace(/\s+/g, '').toUpperCase()
-           const promotion_exist = await PromotionExist(connection , promotion_name)
-         
-           if(!promotion_exist){
-             return res.status(400).json({
-               code:400,
-               success:false,
-               message:`Promotion ${promotion_name} not Found`
-             })
-           }
-            const major_exist = await PromotionMajorExist(connection , promotion_name , majorid)
-           
-            if (!major_exist){
-              return res.status(400).json({
-                success:false,
-                code:400,
-                message :`promotion ${promotion_name} Not in major ${row.MajorName}`
-              })
-            }
-      
-           const exist = await StudentExist(connection,field.Email , majorid)
-           
-          if(exist){
-           
-            return res.status(200).json({
-              success:true,
-              code:200,
-              message:`student Already  Exist!${countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`}`
-            })
+        if (field.Email === undefined || field.Promotion === undefined || field.MobileNumber === undefined || field.Gender === undefined
+          || field.StudentFirstName === undefined || field.AcademicYear === undefined || field.DateOfBirth === undefined || field.StudentLastName === undefined || field.Email === '' || field.MobileNumber === ''
+          || field.StudentFirstName === '' || field.Promotion === '' || field.AcademicYear === '' || field.Gender === '' || field.StudentLastName === '' || field.DateOfBirth === '') {
+          return res.status(400).json({
+            success: false,
+            code: 400,
+            message: `No data was uploaded due to missing required information.`
+          })
           }
-          const settings = await DataSettings(connection , 'settings')
-         
-          const esa_logo = settings[0].esa_logo
-          
-        const StudentArray = Object.values({field});
-  
+
+        const settings = await DataSettings(connection, 'settings')
+
+        const esa_logo = settings[0].esa_logo
+    
+       
+
+        const StudentArray = Object.values({ field });
+
         const uploadPromises = StudentArray.map(async (student) => {
           const userpasswordref = await hash(student.userpassword);
 
-      
-          
-         await ActiveUser(connection, {
+
+
+          await ActiveUser(connection, {
             userid: student.student_id,
             userpassword: userpasswordref,
             token: "",
             isVerified: "",
             update_time: "",
           });
-          
-        await userDocument(connection, {
+
+          await userDocument(connection, {
             userid: student.student_id,
-            profileurl: "",
+            profileurl: '',
           });
-          
+
           await uploadAddress(connection, {
             userid: student.student_id,
             address_country: student.Country,
@@ -324,7 +346,7 @@ async function handler(req, res) {
             }
           )
 
-        const response= await uploadStudent(connection, {
+          const response = await uploadStudent(connection, {
             student_id: student.student_id,
             status: "active",
             promotion: student.Promotion.replace(/\s+/g, '').toUpperCase(),
@@ -341,14 +363,14 @@ async function handler(req, res) {
             student.student_id,
             esa_logo
           );
-        
-           return response
-      
+
+          return response
+
         })
 
-      
+
         const responses = await Promise.all(uploadPromises);
-      
+
         if (responses) {
           countSaved++; // Increment the count of saved records
         } else {

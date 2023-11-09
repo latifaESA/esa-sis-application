@@ -41,7 +41,7 @@ const StudentView = () => {
 
   const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
 
-  const isExeMajor = firstMajorWord === "Exe";
+  const isExeMajor = firstMajorWord === "EXED";
   const router = useRouter();
   return (
     <>
@@ -145,7 +145,7 @@ const StudentView = () => {
                 <PaperAirplaneIcon className="h-5 w-5" />
               </div>
               <div>
-                <p>Role</p>
+                <p>enrollment</p>
               </div>
             </div>
           </Link>

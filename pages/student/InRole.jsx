@@ -6,7 +6,8 @@ import { appIsWaiting } from "../../redux/slices/appSlice";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import Role from "../../components/Role";
+
+import RoleList from "../../components/Dashboard/RoleList";
 
 export default function Main() {
   const dispatch = useDispatch();
@@ -31,9 +32,9 @@ export default function Main() {
       
         {session?.user.role === "1" ? (
           <div className="max-w-screen-md p-4">
-            <h1 className="text-3xl font-semibold mb-4">Certificates</h1>
+            <h1 className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Certificates</h1>
             <div>
-              <Role />
+              <RoleList />
             </div>
           
           </div>
