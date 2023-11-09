@@ -29,7 +29,7 @@ async function handler(req, res) {
         message:'Teacher Already Exist!'
        })
      }
-    await createTeacher(
+   const response= await createTeacher(
       connection,
       teacher_id,
       teacher_firstname ,
@@ -40,7 +40,8 @@ async function handler(req, res) {
     return res.status(201).json({
         success:true,
         code:201,
-        message:"Teacher Created Successfully !"
+        message:"Teacher Created Successfully !",
+        data: response
     })
   } catch (error) {
     return res.status(500).json({
