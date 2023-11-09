@@ -40,7 +40,7 @@ a {
 }
 
 .primary-button {
-  @apply rounded text-primary bg-white py-2 px-4 shadow outline-none hover:text-secondary hover:font-bold active:text-third disabled:bg-gray-400 ;
+  @apply rounded bg-primary text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 ;
 }
 
 .primary-bg{
@@ -208,31 +208,7 @@ textarea {
 /* .btnCol{ 
   background-color: #3D709A;
 } */
-/* calendarStyles.css */
-/* Customize the 'today' button */
-.fc-today-button {
-  background-color: red; /* Change to your desired background color */
-  color: white; /* Change to your desired text color */
-}
 
-/* Customize the 'prev' and 'next' buttons */
-.fc-prev-button,
-.fc-next-button {
-  background-color: blue; /* Change to your desired background color */
-  color: white; /* Change to your desired text color */
-}
-
-/* Customize the 'title' text */
-.fc-title {
-  font-size: 24px; /* Change to your desired font size */
-  color: green; /* Change to your desired text color */
-}
-
-/* Customize the buttons within the 'listWeek' dropdown */
-.fc-listWeek-button {
-  background-color: orange; /* Change to your desired background color */
-  color: white; /* Change to your desired text color */
-}
 
 
 @media only screen and (max-width: 500px){
