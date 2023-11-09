@@ -42,21 +42,23 @@ export default function Main() {
         <title>SIS - Main Board</title>
       </Head>
       {session?.user.role === "1" && limited ? (
-        <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-          {/* if status is limited display studentBlue */}
+        // <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+          // {/* if status is limited display studentBlue */}
+          <>
            <StudentBlue />
+          </>
           
           
-          
-        </div>
+        // </div>
       ) :session?.user.role === "1" && !limited ? (
-        <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-          {/* if status is limited display studentBlue */}
+        <>
+        {/* <div className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+          if status is limited display studentBlue */}
+     <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Main board</p>
+
           <StudentProfile />
-          
-          
-          
-        </div>
+        {/* </div> */}
+        </>
       ) : (
         redirect()
       )}

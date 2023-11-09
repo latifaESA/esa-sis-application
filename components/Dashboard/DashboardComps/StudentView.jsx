@@ -67,7 +67,7 @@ const StudentView = () => {
 
         <Link href="/student/financial">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/classes"
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/financial"
               ? "bg-blue-100 text-blue-500"
               : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
               }`}

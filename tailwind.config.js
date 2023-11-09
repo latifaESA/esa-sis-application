@@ -18,7 +18,15 @@ module.exports = {
       loginbg: "url('/images/ESA2.jpg')",
       // loginbg: "url('/images/lgin.jpg')",
     },
-    extend: {},
+    extend: {
+      display: ['group-focus'],
+      colors: {
+        primary: '#002857',
+        secondary: '#12437b',
+        third: '#2b6ab3'
+        // Add more colors as needed
+      },
+    },
   },
   plugins: [],
 };

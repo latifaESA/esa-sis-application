@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import styles from './CourseSchedule.module.css';
 
 import { GoogleLogin, GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 
@@ -71,8 +72,14 @@ const CourseSchedule = () => {
             title: title.join(','),
             start: startDateTime,
             end: endDateTime,
-            background: '#002857',
-          };
+// <<<<<<< batoul
+//             background: '#002857',
+// =======
+//             // background: 'red',
+//             // color: 'green'
+//             className: styles.custom-event,
+// >>>>>>> main
+//           };
         });
 
         const formattedEventsGoogle = data.data.data.map((event) => {
@@ -164,7 +171,9 @@ const CourseSchedule = () => {
 
   return (
 
-    <div className='container bg-white p-3 p-md-5 rounded-lg'>
+    // <div className='container bg-white p-3 p-md-5 rounded-lg'>
+    <div className="flex flex-col items-center justify-center overflow-auto">
+
 
       <div className='flex mb-3'>
         <GoogleLogin
@@ -189,8 +198,8 @@ const CourseSchedule = () => {
 
 
       {/* FullCalendar section */}
-      <div className="row">
-        <div className="embed-responsive embed-responsive-16by9">
+      {/* <div className="row"> */}
+        <div className="embed-responsive embed-responsive-16by9 w-full">
           <FullCalendar
             plugins={plugins}
             initialView={initialView}
@@ -209,7 +218,7 @@ const CourseSchedule = () => {
           />
 
         </div>
-      </div>
+      {/* </div> */}
     </div>
 
   );
