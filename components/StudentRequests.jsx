@@ -35,7 +35,7 @@ const StudentRequests = () => {
         sendData
       );
       // setGpa(res.data.rows[0].gpa);
-      
+
       setMajor(res.data.rows[0].major_name);
       // console.log(typeof res.data.rows[0].gpa);
       setStEmail(res.data.rows[0].email);
@@ -59,6 +59,7 @@ const StudentRequests = () => {
       console.log("asdfwq", res.data.rows[0]);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -70,7 +71,6 @@ const StudentRequests = () => {
   const radioRef = useRef(null);
   const radioRef2 = useRef(null);
 
-  console.log(session?.user.promotion);
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -84,7 +84,10 @@ const StudentRequests = () => {
     //   student_email: stEmail,
     //   gpa,
     // });
-    if (session?.user.majorName === 'BBA (Bachelor in Business Administration)' && semester === "") {
+    if (
+      session?.user.majorName === "BBA (Bachelor in Business Administration)" &&
+      semester === ""
+    ) {
       setMessage("All Fields Must be Filled !");
       setMessageClass("text-red-500");
       setIsLoading(false);
@@ -117,6 +120,7 @@ const StudentRequests = () => {
         };
         console.log(sendData);
         let res = await axios.post("/api/admin/adminApi/sendReqToPM", sendData);
+        console.log(res);
         let sendToPm = {
           pm_id,
           student_id: session?.user.userid,
@@ -150,13 +154,14 @@ const StudentRequests = () => {
       radioRef2.current.blur();
     }
   };
-return (
+  return (
     <div className="flex flex-col items-center justify-center">
-       <div className="text-center">
+      <div className="text-center">
         <p className={` ${messageClass}`}>{message}</p>
       </div>
       <form onSubmit={submitHandler} className="mt-12">
-        {session?.user.majorName === 'BBA (Bachelor in Business Administration)' && (
+        {session?.user.majorName ===
+          "BBA (Bachelor in Business Administration)" && (
           <div className="mb-4">
             <label>Semester:</label>
             <input
@@ -169,7 +174,6 @@ return (
           </div>
         )}
         <div className="mb-4 flex flex-col md:flex-row">
-
           <div className="flex items-center">
             <input
               type="radio"
@@ -180,9 +184,7 @@ return (
               onClick={handleRadioClick}
               onChange={(e) => setGpa(e.target.value)}
             />
-            <label className="text-sm font-medium">
-              Include GPA
-            </label>
+            <label className="text-sm font-medium">Include GPA</label>
           </div>
           <div className="flex items-center">
             <input
@@ -194,9 +196,7 @@ return (
               onChange={(e) => setGpa(e.target.value)}
               className="w-4 h-4 mr-2"
             />
-            <label className="text-sm font-medium">
-              Exclude GPA
-            </label>
+            <label className="text-sm font-medium">Exclude GPA</label>
           </div>
         </div>
         <div className="flex flex-col">
