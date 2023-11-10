@@ -17,10 +17,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Cookies from "js-cookie";
 import Head from "next/head";
+import sendMailClass from "../utilities/emailing/emailBeforeClass";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
+  const checkIfEight = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    if (hours === 8 && minutes === 0) {
+      sendMailClass();
+    }
+  };
+
+  setInterval(checkIfEight, 40000);
 
   if (Component.getLayout) {
     return (

@@ -12,7 +12,22 @@ async function handler(req, res) {
   try {
     const connection = await connect();
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
-
+    console.log("ana wslt aal sendReq");
+    // console.log(
+    //   // semester,
+    //   academicYear,
+    //   reason,
+    //   student_id,
+    //   major,
+    //   student_name,
+    //   student_email,
+    //   gpa,
+    //   pm_firstName,
+    //   pm_lastname,
+    //   promotion,
+    //   pm_email
+    // );
+    console.log("ana clg");
     const {
       semester,
       academicYear,
@@ -27,6 +42,7 @@ async function handler(req, res) {
       promotion,
       pm_email,
     } = req.body;
+    console.log("ana const");
     if (
       reason === "" ||
       student_id === "" ||
@@ -65,6 +81,7 @@ async function handler(req, res) {
     // const settings = await DataSettings(connection, "settings");
     // const esa_logo = settings[0].esa_logo;
     // await SendEmailAdmin(admin_firstname, adminemail, password ,adminid, esa_logo)
+    console.log("ana wslt lal sendMailTo");
     const resp = await SendEmailTo(
       semester,
       academicYear,
@@ -79,7 +96,6 @@ async function handler(req, res) {
       pm_email,
       promotion
     );
-    console.log(resp);
     disconnect(connection);
     return res.status("200").send("ok");
   } catch (error) {
