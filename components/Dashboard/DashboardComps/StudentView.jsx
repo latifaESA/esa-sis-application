@@ -41,7 +41,7 @@ const StudentView = () => {
 
   const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
 
-  const isExeMajor = firstMajorWord === "Exe";
+  const isExeMajor = firstMajorWord === "EXED";
   const router = useRouter();
   return (
     <>
@@ -68,11 +68,11 @@ const StudentView = () => {
 
         <Link href="/student/financial">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/classes"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/financial"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
+
             disabled={true}
           >
             <div className="mr-2">
@@ -150,7 +150,7 @@ const StudentView = () => {
                 <PaperAirplaneIcon className="h-5 w-5" />
               </div>
               <div>
-                <p>Role</p>
+                <p>enrollment</p>
               </div>
             </div>
           </Link>

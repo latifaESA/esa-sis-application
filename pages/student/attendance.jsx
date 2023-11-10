@@ -107,12 +107,12 @@ export default function Attendance() {
       </Head>
       {session?.user.role === "1" ? (
         <>
-          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
+          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary">
             Attendance
           </p>
           <form>
-            <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-              <label>
+            <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-primary border-b-2">
+              <label className="text-primary">
                 Date:
                 <input
                   className="ml-12  w-40 max-[850px]:ml-10"
@@ -127,7 +127,7 @@ export default function Attendance() {
                 ></input>
               </label>
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+              <label className="invisible max-[850px]:visible max-[850px]:hidden text-primary">
                 First Name:
                 <input
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
@@ -141,7 +141,7 @@ export default function Attendance() {
                 ></input>
               </label>
 
-              <label>
+              <label className="text-primary">
                 Course:
                 <input
                   className="ml-7  w-40 max-[850px]:ml-7"
@@ -157,7 +157,7 @@ export default function Attendance() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label>
+              <label className="text-primary">
                 First Name:
                 <input
                   className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
@@ -183,7 +183,7 @@ export default function Attendance() {
                 ></input>
               </label>
 
-              <label>
+              <label className="text-primary">
                 Last Name:
                 <input
                   className="ml-1 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
@@ -227,14 +227,14 @@ export default function Attendance() {
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
-                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  className="primary-button rounded w-60 btnCol text-white"
                   type="button"
                   onClick={handleAttendance}
                 >
                   Search
                 </button>
                 <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                  className="primary-button btnCol text-white rounded w-60"
                   type="button"
                   onClick={handleShowAll}
                 >

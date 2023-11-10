@@ -93,13 +93,13 @@ const StudentProfile = () => {
         </div>
         <div className="md:w-1/2 lg:w-2/3 md:pl-4 ml-12">
           <div className="mb-4 flex items-center">
-            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Mobile Number:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">Mobile Number:</p>
             {isEditingMobileNumber ? (
               <div className="flex">
                 <input
                   type="text"
                   value={studentData.mobile_number}
-                  className="text-blue-600/75 text-sm md:text-base lg:text-lg"
+                  className="text-primary text-sm md:text-base lg:text-lg"
                   onChange={(e) => setStudentData({ ...studentData, mobile_number: e.target.value })}
                 />
                 <button onClick={() => updateDetails()}>
@@ -111,23 +111,23 @@ const StudentProfile = () => {
               </div>
             ) : (
               <div className="flex">
-                <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{studentData.mobile_number}</p>
+                <p className="text-primary text-sm md:text-base lg:text-lg">{studentData.mobile_number}</p>
                 <button onClick={() => setIsEditingMobileNumber(true)}>
-                  <FiEdit3 className="text-blue-600/75 text-sm md:text-base lg:text-lg hover:text-blue-400 hover:font-bold" />
+                  <FiEdit3 className="text-primary text-sm md:text-base lg:text-lg hover:text-third hover:font-bold" />
                 </button>
               </div>
             )}
           </div>
 
           <div className="mb-4 flex items-center">
-            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Address:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">Address:</p>
             {isEditingAddress ? (
               <div className="flex">
                 <input
                   type="text"
                   value={editedAddress}
                   onChange={(e) => setEditedAddress(e.target.value)}
-                  className="text-blue-600/75 text-sm md:text-base lg:text-lg"
+                  className="text-primary text-sm md:text-base lg:text-lg"
                 />
                 {showAddressError && (
                   <div className="text-red-500 text-xs md:text-sm lg:text-base mt-2">
@@ -143,21 +143,21 @@ const StudentProfile = () => {
               </div>
             ) : (
               <div className="flex">
-                <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{editedAddress}</p>
+                <p className="text-primary text-sm md:text-base lg:text-lg">{editedAddress}</p>
                 <button onClick={() => setIsEditingAddress(true)}>
-                  <FiEdit3 className="text-blue-600/75 text-sm md:text-base lg:text-lg hover:text-blue-400 hover:font-bold" />
+                  <FiEdit3 className="text-primary text-sm md:text-base lg:text-lg hover:text-third hover:font-bold" />
                 </button>
               </div>
             )}
           </div>
 
           <div className="mb-4 flex items-center">
-            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Promotion:</p>
-            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">{studentData.promotion}</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">Promotion:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">{studentData.promotion}</p>
           </div>
 
           <div className="mb-4 flex items-center">
-            <p className="text-blue-600/75 text-sm md:text-base lg:text-lg">Status:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">Status:</p>
             <p className={`text-sm md:text-base lg:text-lg ${studentData.status === 'active' ? 'text-green-400' : 'text-red-400'}`}>
               {studentData.status}
             </p>

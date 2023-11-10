@@ -20,7 +20,7 @@ export default function AdditionList() {
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
     const [promotion, setPromotion] = useState("");
-    const [major, setMajor] = useState();
+    const [major, setMajor] = useState([]);
     const [majorValue, setMajorValue] = useState("");
     const [additionOption, setAdditionOption] = useState('0')
     const [majorName, setMajorName] = useState('')
@@ -28,28 +28,32 @@ export default function AdditionList() {
     const [majorList, setMajorList] = useState([])
     const [promotionList, setPromotionList] = useState([])
     const [courseList, setCourseList] = useState([])
-    const [counter, setCounter] = useState(() => {
-        const storedCounter = localStorage.getItem("counter");
-        return storedCounter ? parseInt(storedCounter) : 1;
-    });
+    const [counter, setCounter] = useState(1)
 
-    const generateMajorID = () => {
-        return counter; // Return the current value of counter as the ID
-    };
 
-    useEffect(() => {
-        // Save the counter value to localStorage whenever it changes
-        localStorage.setItem("counter", counter.toString());
-    }, [counter]);
     const redirect = () => {
         router.push("/AccessDenied");
     };
 
     const getAllMajors = async () => {
-        let majorData = await axios.get("/api/admin/adminApi/getMajor");
-
-        setMajor(majorData.data);
+        try {
+            let majorData = await axios.get("/api/admin/adminApi/getMajor");
+            majorData.data.sort((a, b) => parseInt(b.major_id) - parseInt(a.major_id)); // Sort majors in descending order
+            setMajor(majorData.data);
+            // Get the largest major_id from the sorted array
+            const largestMajorId = majorData.data[0].major_id;
+            // Store the largest major_id in local storage
+            setCounter(parseInt(largestMajorId) + 1);
+            localStorage.setItem('largestMajorId', largestMajorId);
+        } catch (error) {
+            return error;
+        }
     };
+    
+    
+
+
+
     useEffect(() => {
         getAllMajors();
     }, [major]);
@@ -79,16 +83,19 @@ export default function AdditionList() {
                 "/api/admin/adminApi/createPromotion",
                 payload
             );
-            const majorName = await axios.post(
-                '/api/pmApi/getAllCourses', {
-                table: 'major',
-                Where: 'major_id',
-                id: data.data.data.rows[0].major_id
-            }
-            )
+
+
+            if (data.data.success === true && data.data.code === 201) {
+                const majorName = await axios.post(
+                    '/api/pmApi/getAllCourses', {
+                    table: 'major',
+                    Where: 'major_id',
+                    id: data.data.data.rows[0].major_id
+                }
+                )
            
-            const majors_name = majorName.data.data[0].major_name
-            if (data.data.success === true) {
+    
+                const majors_name = majorName.data.data[0].major_name
                 setPromotion('')
                 setPromotionList((prevPromotionList) => [
                     ...prevPromotionList,
@@ -101,6 +108,13 @@ export default function AdditionList() {
                 // console.log(data.data.message);
                 setConfirmOpenMessage(true);
                 setMessages(data.data.message);
+            }else if(data.data.success === true && data.data.code === 200){
+                setPromotion('')
+                setMajorValue('')
+                // console.log(data.data.message);
+                setConfirmOpenMessage(true);
+                setMessages(data.data.message);
+
             }
 
         } catch (error) {
@@ -123,18 +137,22 @@ export default function AdditionList() {
                 return;
             }
             const payload = {
-                major_id: generateMajorID(),
+                major_id: counter,
                 major_name: majorName.trim(" ")
 
             }
             const data = await axios.post('/api/admin/adminApi/createMajor', payload)
-              console.log(data.data.data)
-            if (data.data.success === true) {
-                setCounter((prevCounter) => prevCounter + 1); // Increment the counter
+            console.log(data.data.data)
+            if (data.data.success === true && data.data.code === 201) {
                 setMajorName(' ')
                 setConfirmOpenMessage(true);
                 setMajorList((prevMajorList) => [...prevMajorList, ...data.data.data.rows]);
                 setMessages(data.data.message);
+            } else if (data.data.success === true && data.data.code === 200) {
+                setMajorName(' ')
+                setConfirmOpenMessage(true);
+                setMessages(data.data.message);
+
             }
         }
         else if (additionOption === '3') {
@@ -155,11 +173,16 @@ export default function AdditionList() {
             }
 
             const data = await axios.post('/api/admin/adminApi/create', payload)
-            if (data.data.success === true) {
+            if (data.data.success === true && data.data.code === 201) {
                 setCourseType(' ')
                 setCourseList((prevCourseList) => [...prevCourseList, ...data.data.data.rows]);
                 setConfirmOpenMessage(true);
                 setMessages(data.data.message);
+            }else if(data.data.success === true && data.data.code === 200){
+                setCourseType(' ')
+                setConfirmOpenMessage(true);
+                setMessages(data.data.message);
+
             }
         }
     }

@@ -212,6 +212,7 @@ export default function UploadCourses() {
                                 FatherName: record[12],
                                 StudentLastName: record[1],
                                 Promotion: record[5],
+                                MajorName:record[6],
                                 AcademicYear: record[4],
                                 maidename: record[14],
                                 MotherName: record[13],

@@ -184,7 +184,11 @@ const StudentRequests = () => {
               onClick={handleRadioClick}
               onChange={(e) => setGpa(e.target.value)}
             />
-            <label className="text-sm font-medium">Include GPA</label>
+
+            <label className="text-sm font-medium text-primary">
+              Include GPA
+            </label>
+
           </div>
           <div className="flex items-center">
             <input
@@ -196,7 +200,11 @@ const StudentRequests = () => {
               onChange={(e) => setGpa(e.target.value)}
               className="w-4 h-4 mr-2"
             />
-            <label className="text-sm font-medium">Exclude GPA</label>
+
+            <label className="text-sm font-medium text-primary">
+              Exclude GPA
+            </label>
+
           </div>
         </div>
         <div className="flex flex-col">
@@ -210,9 +218,9 @@ const StudentRequests = () => {
               placeholder="Enter the Reason"
             />
           </div>
-          <div className="flex flex-col sm:flex-row sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:gap-4 justify-end">
             <button
-              className="w-full sm:w-1/2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+              className="w-full sm:w-1/2 p-2 rounded primary-button"
               type="submit"
               disabled={isLoading}
             >
