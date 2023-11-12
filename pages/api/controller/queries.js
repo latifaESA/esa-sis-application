@@ -313,6 +313,27 @@ async function getAll(connection, table) {
   }
 }
 
+// get the emails based on major id
+const getEmailsByMajorId = async (connection, majorId) => {
+  try {
+    const result = await connection.query(`
+      SELECT uc.email
+      FROM user_contact uc
+      JOIN student s ON uc.userid = s.student_id
+      WHERE s.major_id = $1
+    `, [majorId]);
+
+    // Extract the 'email' property from each object in the result array
+    const emails = result.rows.map(row => row.email);
+
+    return emails;
+    
+  } catch (error) {
+    return error;
+  }
+};
+
+
 // get all data from specific column
 async function getAllById(connection, table, colName, val) {
   try {
@@ -2590,4 +2611,5 @@ module.exports = {
   addRequestForPm,
   getRequestsForPm,
   updateRequestStatus,
+  getEmailsByMajorId
 };
