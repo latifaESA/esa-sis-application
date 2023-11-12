@@ -1,26 +1,26 @@
-import { useSession } from "next-auth/react";
-import Head from "next/head";
-import RequestList from "../../components/Dashboard/RequestList";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useSession } from 'next-auth/react';
+import Head from 'next/head';
+import RequestList from '../../components/Dashboard/RequestList';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import axios from "axios";
+import axios from 'axios';
 // import { x64 } from 'crypto-js';
 
-import CustomSelectBox from "./customSelectBox";
+import CustomSelectBox from './customSelectBox';
 // import Link from 'next/link';
 
 export default function requests() {
   const [users, setUsers] = useState([]);
-  const [reqId, setReqId] = useState("");
-  const [stId, setStid] = useState("");
-  const [stMail, setMail] = useState("");
-  const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
+  const [reqId, setReqId] = useState('');
+  const [stId, setStid] = useState('');
+  const [stMail, setMail] = useState('');
+  const [status, setStatus] = useState('');
+  const [type, setType] = useState('');
   const router = useRouter();
   const { data: session } = useSession();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
   const handleSearch = async () => {
     try {
@@ -32,8 +32,8 @@ export default function requests() {
         status: status.trim(),
         type: type.trim(),
       };
-      let data = await axios.post("/api/pmApi/getRequests", sendData);
-      console.log("asdasd", data);
+      let data = await axios.post('/api/pmApi/getRequests', sendData);
+      console.log('asdasd', data);
       setUsers(data.data.rows);
     } catch (err) {
       console.log(err);
@@ -43,19 +43,19 @@ export default function requests() {
     try {
       let sendData = {
         pm_id: session?.user.userid,
-        req_id: "",
-        student_id: "",
-        student_email: "",
-        status: "",
-        type: "",
+        req_id: '',
+        student_id: '',
+        student_email: '',
+        status: '',
+        type: '',
       };
-      setReqId("");
-      setStid("");
-      setMail("");
-      setStatus("");
-      setType("");
-      let res = await axios.post("/api/pmApi/getRequests", sendData);
-      console.log("res", res);
+      setReqId('');
+      setStid('');
+      setMail('');
+      setStatus('');
+      setType('');
+      let res = await axios.post('/api/pmApi/getRequests', sendData);
+      console.log('res', res);
       setUsers(res.data.rows);
     } catch (err) {
       console.log(err);
@@ -70,7 +70,7 @@ export default function requests() {
       <Head>
         <title>SIS Admin - Requests</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3" ? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Requests
@@ -126,7 +126,7 @@ export default function requests() {
                   placeholder="Select Major"
                   //   onSelect={handleMajor}
                   styled={
-                    "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
+                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10'
                   }
                 />
               </label>
