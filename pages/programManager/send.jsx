@@ -73,7 +73,7 @@ export default function send() {
               <form>
                 <div>
                   <div className="flex m-10 flex-col md:flex-row">
-                    <label className="w-[350px]">Select Major:</label>
+                    <label className="w-[350px] mb-2">Select Major:</label>
                     <CustomSelectBox
                       options={majors}
                       placeholder="Select Major Name"
