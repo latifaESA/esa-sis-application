@@ -1,5 +1,5 @@
 const { connect, disconnect } = require('../../../../utilities/db');
-const { getAllMajor } = require('../../controller/queries');
+const { getTheMajors } = require('../../controller/queries');
 
 // const axios = require('axios')
 // import https from 'https';
@@ -9,7 +9,7 @@ async function handler(req, res) {
     const connection = await connect();
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
     // const {pm_id, pm_firstname, pm_lastname, pm_email, pm_status} = req.body;
-    const data = await getAllMajor(connection);
+    const data = await getTheMajors(connection);
     // console.log(data.rows)
     await disconnect(connection);
     return res.status('200').send(data.rows);
