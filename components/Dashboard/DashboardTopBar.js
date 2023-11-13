@@ -24,13 +24,14 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   // eslint-disable-next-line no-unused-vars
   const { data: session } = useSession();
   const dispatch = useDispatch();
-  const [notCount, setNotCount] = useState(0)
+  const [notCount, setNotCount] = useState(null)
   // const router = useRouter();
 
   useEffect(() => {
     const getCount = async () => {
       try {
         let userID = session.user.userid
+        console.log('the user id : ',userID)
         let countNum  = await axios.get(`/api/user/getNotificationCount/${userID}`);
         setNotCount(countNum.data)
       } catch (error) {
