@@ -1,4 +1,4 @@
-import { Fragment, React, useState } from 'react';
+import { Fragment, React, useEffect, useState } from 'react';
 import {
   Bars3CenterLeftIcon,
   // PencilIcon,
@@ -13,8 +13,6 @@ import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
 // import { useRouter } from 'next/router';
-// import { useEffect } from 'react';
-// import { useState } from 'react';
 import { isLogout } from '../../redux/slices/userSlice';
 import selection_data from '../../utilities/selection_data';
 import axios from 'axios';
@@ -26,7 +24,21 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   // eslint-disable-next-line no-unused-vars
   const { data: session } = useSession();
   const dispatch = useDispatch();
+  const [notCount, setNotCount] = useState(0)
   // const router = useRouter();
+
+  useEffect(() => {
+    const getCount = async () => {
+      try {
+        let userID = session.user.userid
+        let countNum  = await axios.get(`/api/user/getNotificationCount/${userID}`);
+        setNotCount(countNum.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getCount()
+  },[])
 
   const logoutClickHandler = async () => {
     dispatch(isLogout(true));
@@ -147,7 +159,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
             <div className='flex items-center'>
                 <Popover className="relative hidden sm:block">
                   <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
-                    <Badge badgeContent={unSolvedWarnings.length} color="warning">
+                    <Badge badgeContent={notCount} color="warning">
                       <BellIcon className="h-6 w-6" />
                     </Badge>
                   </Popover.Button>

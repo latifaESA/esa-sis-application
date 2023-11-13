@@ -317,23 +317,72 @@ async function getAll(connection, table) {
 const getEmailsByMajorId = async (connection, majorId) => {
   try {
     const result = await connection.query(`
-      SELECT uc.email
+      SELECT uc.email ,uc.userid
       FROM user_contact uc
       JOIN student s ON uc.userid = s.student_id
       WHERE s.major_id = $1
     `, [majorId]);
 
-    // Extract the 'email' property from each object in the result array
-    const emails = result.rows.map(row => row.email);
-
-    return emails;
+    return result.rows;
     
   } catch (error) {
     return error;
   }
 };
 
+// insert notification
+const insertNotifications = async (connection, receiverIds, senderId, content, subject) => {
+  try {
+    // Insert notifications for each receiver ID
+    const result = await connection.query(`
+      INSERT INTO notifications (receiver_id, sender_id, content, subject, date, viewed)
+      SELECT
+        receiver_id,
+        $2 as sender_id,
+        $3 as content,
+        $4 as subject,
+        current_timestamp as date,
+        false as viewed
+      FROM UNNEST($1::character varying[]) AS receiver_id;
+    `, [receiverIds, senderId, content, subject]);
 
+    return result;
+
+  } catch (error) {
+    return error;
+  }
+};
+
+// get the count of unviewed notification
+
+const countNotification = async (connection, receiver_id) => {
+  try {
+    const result = await connection.query(`
+    SELECT COUNT(*)
+    FROM notifications
+    WHERE viewed = false AND receiver_id = $1;
+    `,[receiver_id])
+    return result.rows[0].count;
+  } catch (error) {
+    return error
+  }
+}
+
+// get the emails with the sender info
+
+const getEmailsSender = async (connection, receiver_id) => {
+  try {
+    const result = connection.query(`
+    SELECT nt.*, pm.pm_firstname, pm.pm_lastname
+    FROM program_manager pm
+    JOIN notifications nt ON pm.pm_id = nt.sender_id
+    WHERE nt.receiver_id = $1;
+    `,[receiver_id])
+    return result;
+  } catch (error) {
+    return error
+  }
+  }
 // get all data from specific column
 async function getAllById(connection, table, colName, val) {
   try {
@@ -2619,5 +2668,8 @@ module.exports = {
   getRequestsForPm,
   updateRequestStatus,
   getTheMajors,
-  getEmailsByMajorId
+  getEmailsByMajorId,
+  insertNotifications,
+  countNotification,
+  getEmailsSender
 };
