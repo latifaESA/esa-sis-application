@@ -1,0 +1,18 @@
+const { connect } = require("../../../utilities/db");
+const { countNotification } = require("../controller/queries");
+
+async function handler(req, res) {
+  try {
+    const connection = await connect();
+    const { userID } = req.params;
+    console.log('user id is : ',userID)
+    const data = await countNotification(connection, '20231229');
+    return res.status("200").json(data);
+  } catch (error) {
+    // console.log('the error is: ', error)
+    return res.status("401").send(error);
+    // return error;
+  }
+}
+// module.exports = handler;
+export default handler;
