@@ -33,7 +33,10 @@ export default function AdminTopBar({ showNav, setShowNav }) {
         let userID = session.user.userid
         console.log('the user id : ',userID)
         let countNum  = await axios.get(`/api/user/getNotificationCount/${userID}`);
+        countNum.data > 0 ?
         setNotCount(countNum.data)
+        : 
+        setNotCount(null)
       } catch (error) {
         console.log(error)
       }
@@ -234,13 +237,11 @@ export default function AdminTopBar({ showNav, setShowNav }) {
               isOpen &&
             // hidden group-focus:block
                         <div class="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded">
-
                         <ul class="text-center border rounded">
-
                         <li class="px-4 py-1 hover:bg-gray-100 border-b">
                         <Popover className="relative">
                   <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
-                    <Badge badgeContent={unSolvedWarnings.length} color="warning">
+                    <Badge badgeContent={notCount} color="warning">
                       <BellIcon className="h-6 w-6" />
                     </Badge>
                   </Popover.Button>
