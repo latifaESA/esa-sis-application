@@ -3,11 +3,12 @@ import Head from "next/head";
 // import Link from 'next/link';
 import { useRouter } from "next/router";
 import NotifPage from "../../components/notifPage";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function notification() {
   const { data: session } = useSession();
   const router = useRouter();
-
   const redirect = () => {
     router.push("/AccessDenied");
   };
