@@ -25,17 +25,23 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   // eslint-disable-next-line no-unused-vars
   const { data: session } = useSession();
   const dispatch = useDispatch();
-  const [notCount, setNotCount] = useState(0);
+
+  const [notCount, setNotCount] = useState(null)
+
   // const router = useRouter();
 
   useEffect(() => {
     const getCount = async () => {
       try {
-        let userID = session.user.userid;
-        let countNum = await axios.get(
-          `/api/user/getNotificationCount/${userID}`
-        );
-        setNotCount(countNum.data);
+
+        let userID = session.user.userid
+        console.log('the user id : ',userID)
+        let countNum  = await axios.get(`/api/user/getNotificationCount/${userID}`);
+        countNum.data > 0 ?
+        setNotCount(countNum.data)
+        : 
+        setNotCount(null)
+
       } catch (error) {
         console.log(error);
       }
@@ -200,16 +206,79 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                               <div className="rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center">
                                 <CheckIcon className="h-4 w-4 text-white" />
                               </div>
-                              <div className="ml-4">
-                                <p
-                                  onClick={handleOpenNotificatonMessages}
-                                  className="font-medium text-gray-700 cursor-pointer"
-                                >
-                                  {warning.action}
-                                </p>
-                                <p className="text-sm text-gray-500 truncate">
-                                  {warning.date}
-                                </p>
+                            )
+                        )}
+                      </div>
+                    </Popover.Panel>
+                  </Transition>
+                </Popover>
+                           {/* group */}
+                  <button class="relative flex justify-center items-center bg-white border focus:outline-none shadow text-gray-600 rounded focus:ring ring-gray-200 w-6 mr-4 sm:hidden"
+            onClick={handletoggleOpen}
+            >
+
+            {/* <p class="px-4">Dropdown</p> */}
+
+            <span class="p-2 hover:bg-gray-100">
+
+            {/* <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 91-7 7-7-7"></ path></svg> */}
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+
+            </span>
+
+            {
+              isOpen &&
+            // hidden group-focus:block
+                        <div class="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded">
+                        <ul class="text-center border rounded">
+                        <li class="px-4 py-1 hover:bg-gray-100 border-b">
+                        <Popover className="relative">
+                  <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
+                    <Badge badgeContent={notCount} color="warning">
+                      <BellIcon className="h-6 w-6" />
+                    </Badge>
+                  </Popover.Button>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform scale-95"
+                    enterTo="transform scale-100"
+                    leave="transition ease-in duration=75"
+                    leaveFrom="transform scale-100"
+                    leaveTo="transform scale-95"
+                  >
+                    <Popover.Panel className="absolute -right-16 sm:right-4 z-50 mt-2 bg-white shadow-sm rounded max-w-xs sm:max-w-sm w-screen">
+                      <div className="relative p-3">
+                        <div className="flex justify-between items-center w-full">
+                          <p className="text-gray-700 font-medium">Notifications</p>
+                        </div>
+                        {warningNotification.map(
+                          (warning) =>
+                            warning.isSolved === 0 && (
+                              <div
+                                key={warning.id}
+                                className="mt-4 grid gap-4 grid-cols-1 overflow-hidden"
+                              >
+                                <div className="flex">
+                                  <div className="rounded-full shrink-0 bg-red-500 h-8 w-8 flex items-center justify-center">
+                                    <CheckIcon className="h-4 w-4 text-white" />
+                                  </div>
+                                  <div className="ml-4">
+                                    <p
+                                      onClick={handleOpenNotificatonMessages}
+                                      className="font-medium text-gray-700 cursor-pointer"
+                                    >
+                                      {warning.action}
+                                    </p>
+                                    <p className="text-sm text-gray-500 truncate">
+                                      {warning.date}
+                                    </p>
+                                  </div>
+                                </div>
+
                               </div>
                             </div>
                           </div>
