@@ -2513,9 +2513,11 @@ async function Promotion(connection) {
 
 async function updateUsers(connection, accessToken, user_id) {
   try {
-    const query = `UPDATE users SET access_token = '${accessToken}' WHERE userid='${user_id}'`;
-    const res = await connection.query(query);
-    return res;
+
+
+    const query = `UPDATE users SET access_token = '${accessToken}' WHERE userid='${user_id}'`
+    const res = await connection.query(query)
+    return res
   } catch (error) {
     return error;
   }
@@ -2523,6 +2525,7 @@ async function updateUsers(connection, accessToken, user_id) {
 
 async function roleStudent(connection, majorId) {
   try {
+
     const query = `
     SELECT major_id,status, 
        CASE 
@@ -2534,11 +2537,52 @@ FROM major
 WHERE  major_name LIKE 'EXED%'  AND major_id != '${majorId}';
 
     
-    `;
+
+    `
+    const res = await connection.query(query)
+    return res
+
+  } catch (error) {
+    return error;
+  }
+}
+async function getSendMailInfo(connection, course_id) {
+  try {
+    const query = `SELECT tmpclass.tmpclass_id , tmpclass.course_id , tmpclass.promotion , tmpclass.startdate , courses.course_name, student.student_id, user_contact.email, 
+    teachers.teacher_firstname, teachers.teacher_lastname
+    FROM tmpclass 
+      JOIN courses ON tmpclass.course_id = courses.course_id
+      JOIN student ON tmpclass.promotion = student.promotion
+      JOIN user_contact ON student.student_id = user_contact.userid
+      JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id
+      
+    WHERE tmpclass.course_id = '${course_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
     return error;
+  }
+}
+async function getClassForSendMail(connection) {
+  try {
+    const query = `SELECT course_id, promotion, startdate FROM tmpclass`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function getRoomAndTimeForSendMail(connection, class_id) {
+  try {
+    const query = `SELECT from_time, to_time, room_name, room_building from tmpschedule 
+    JOIN rooms ON tmpschedule.room = rooms.room_id
+      WHERE class_id = ${class_id}
+      LIMIT 1`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+
   }
 }
 
@@ -2671,5 +2715,9 @@ module.exports = {
   getEmailsByMajorId,
   insertNotifications,
   countNotification,
-  getEmailsSender
+  getEmailsSender,
+  getSendMailInfo,
+  getClassForSendMail,
+  getRoomAndTimeForSendMail,
+
 };

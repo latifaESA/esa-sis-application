@@ -15,7 +15,6 @@ export default function Main() {
   }, []);
   const { data: session } = useSession();
 
-
   const router = useRouter();
 
   const redirect = () => {
@@ -24,10 +23,10 @@ export default function Main() {
 
   return (
     <>
-
       <Head>
-        <title>SIS - Request</title>
+        <title>SIS - Request Transcript</title>
       </Head>
+
       
         {session?.user.role === "1" ? (
           <div className="max-w-screen-md p-4">
@@ -36,14 +35,13 @@ export default function Main() {
             Request Transcript
           </p>
             <div>
+
             <StudentRequests />
-            </div>
-          
           </div>
-        ) : (
-          redirect()
-        )}
-   
+        </div>
+      ) : (
+        redirect()
+      )}
     </>
   );
 }
