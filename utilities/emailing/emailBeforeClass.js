@@ -20,12 +20,13 @@ const sendMailClass = async () => {
   }
 
   let stEmails = [];
+  let stId = [];
   let startdate;
   let courseName;
   let teacherName;
   let class_id;
-  let from_time = "00:00:00+02:00";
-  let to_time = "00:00:00+02:00";
+  let from_time = "";
+  let to_time = "";
   let room_name = "";
   let building = "";
   for (let k = 0; k < allClasses.length; k++) {
@@ -37,10 +38,12 @@ const sendMailClass = async () => {
       "http://localhost:3001/api/user/emailInfo",
       sendData
     );
+    console.log("searchForClassInfo", searchForClassInfo);
 
     for (let f = 0; f < searchForClassInfo.data.rows.length; f++) {
       // console.log(searchForClassInfo.rows[f].email);
       stEmails.push(searchForClassInfo.data.rows[f].email);
+      stId.push(searchForClassInfo.data.rows[f].student_id);
       startdate = searchForClassInfo.data.rows[0].startdate;
       courseName = searchForClassInfo.data.rows[0].course_name;
       teacherName = `${searchForClassInfo.data.rows[0].teacher_firstname} ${searchForClassInfo.data.rows[0].teacher_lastname}`;
@@ -82,28 +85,62 @@ const sendMailClass = async () => {
     const formattedDateBeforeSeven = `${sevenDaysAgo.getFullYear()}-${String(
       sevenDaysAgo.getMonth() + 1
     ).padStart(2, "0")}-${String(sevenDaysAgo.getDate()).padStart(2, "0")}`;
-    // if (todayFormattedDate == formattedDateBeforeSeven) {
-    let sendData1 = {
-      email: stEmails,
-      className: allClasses[k],
-      startdate: dateFormatter(startdate),
-      courseName: courseName,
-      teacherName: teacherName,
-      from_time: from_time,
-      to_time: to_time,
-      room_name: room_name,
-      building: building,
-    };
-    console.log(sendData1);
-
-    const sendMailToSt = await axios.post(
-      "http://localhost:3001/api/admin/adminApi/sendMailToSt",
-      sendData1
-    );
-
-    console.log(sendMailToSt);
-
-    // }
+    if (todayFormattedDate == formattedDateBeforeSeven) {
+      let sendData1 = {
+        email: stEmails,
+        className: allClasses[k],
+        startdate: dateFormatter(startdate),
+        courseName: courseName,
+        teacherName: teacherName,
+        from_time: timeFormatter(from_time),
+        to_time: timeFormatter(to_time),
+        room_name: room_name,
+        building: building,
+      };
+      const emailBody =
+        "<!DOCTYPE html>" +
+        "<html><head><title>Class Reminder</title>" +
+        "</head><body><div>" +
+        `</br>` +
+        `<p>Dear <span style="font-weight: bold">Student</span>,</p>` +
+        `<p>We hope this email finds you well.</p>` +
+        `<p>We would like to remind you about your upcoming class next week:</p>` +
+        `<ul>
+      <li>Class: ${allClasses[k]} : ${courseName} - ${teacherName}</li>
+      <li>Start Date: ${dateFormatter(startdate)} at  ${timeFormatter(
+          from_time
+        )} till  ${timeFormatter(
+          to_time
+        )} - Building: ${building} - Room: ${room_name}  </li>
+      </ul>` +
+        `<p>If you have any questions or require any further information, please do
+      not hesitate to contact your program manager.</p>` +
+        `<p>  We look forward to your active participation and engagement in the
+      upcoming class.</p>` +
+        `<p>Best regards,</p>` +
+        `<p>ESA Business School</p>` +
+        `</br>` +
+        "</div></body></html>";
+      let data = {
+        receiverIds: stId,
+        content: emailBody,
+        subject: "Class Reminder",
+        senderId: null,
+      };
+      const sendToNotification = await axios.post(
+        "http://localhost:3001/api/pmApi/addNotification",
+        data
+      );
+      console.log("sendToNotification", sendToNotification);
+      console.log(sendData1);
+      console.log("before email");
+      const sendMailToSt = await axios.post(
+        "http://localhost:3001/api/admin/adminApi/sendMailToSt",
+        sendData1
+      );
+      console.log("after mail");
+      console.log(sendMailToSt);
+    }
 
     stEmails = [];
     startdate = 0;
