@@ -20,13 +20,18 @@ import axios from "axios";
 import encrypt from "../../utilities/encrypt_decrypt/encryptText";
 import { NotificatonMessages } from "./WarningMessage";
 import Link from "next/link";
+import {appNotification} from '../../redux/slices/appSlice'
 // import NavigationRef from '../../utilities/NavbarRef/navigationRef';
 
 export default function AdminTopBar({ showNav, setShowNav }) {
   // eslint-disable-next-line no-unused-vars
   const { data: session } = useSession();
   const dispatch = useDispatch();
-  const [notCount, setNotCount] = useState(null);
+  const appState = useSelector(
+    (state) => state.persistedReducer.app_state.appState
+  );
+
+  // const [notCount, setNotCount] = useState(appState.notificationBill);
   // const router = useRouter();
 
   useEffect(() => {
@@ -37,9 +42,11 @@ export default function AdminTopBar({ showNav, setShowNav }) {
           `/api/user/getNotificationCount/${userID}`
         );
         countNum.data > 0 ?
-        setNotCount(countNum.data)
+        // setNotCount(countNum.data)
+        dispatch(appNotification(countNum.data))
         : 
-        setNotCount(null)
+        // setNotCount(null)
+        dispatch(appNotification(null));
       } catch (error) {
         console.log(error);
       }
@@ -168,7 +175,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
           <div className="flex items-center">
             <Popover className="relative hidden sm:block">
               <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
-                <Badge badgeContent={notCount} color="warning">
+                <Badge badgeContent={appState.notificationBill} color="warning">
                   <Link href="/student/notification">
                     <BellIcon className="h-6 w-6 text-black" />
                   </Link>
@@ -257,7 +264,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                       <Popover className="relative">
                         <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
                           <Badge
-                            badgeContent={notCount}
+                            badgeContent={appState.notificationBill}
                             color="warning"
                           >
                             <BellIcon className="h-6 w-6" />

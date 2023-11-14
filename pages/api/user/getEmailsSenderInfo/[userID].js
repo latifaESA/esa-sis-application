@@ -1,4 +1,4 @@
-const { connect } = require("../../../../utilities/db");
+const { connect,disconnect } = require("../../../../utilities/db");
 const { getEmailsSender } = require("../../controller/queries");
 
 async function handler(req, res) {
@@ -7,6 +7,7 @@ async function handler(req, res) {
     // const { userID } = req.params;
     const { userID } = req.query;
     const data = await getEmailsSender(connection, userID);
+    await disconnect(connection);
     return res.status("200").json(data.rows);
   } catch (error) {
     // console.log('the error is: ', error)

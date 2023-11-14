@@ -14,6 +14,7 @@ export const appSlice = createSlice({
       isWaiting: false,
       error: null,
       appVar: {},
+      notificationBill: null
     },
   },
 
@@ -36,10 +37,19 @@ export const appSlice = createSlice({
         },
       };
     },
+    appNotification: (state, action) => {
+      return {
+        ...state,
+        appState: {
+          ...state.appState,
+          notificationBill: action.payload,
+        },
+      };
+    }
   },
 });
 
-export const { appIsWaiting, appSetting } = appSlice.actions;
+export const { appIsWaiting, appSetting, appNotification } = appSlice.actions;
 // export const selectapp = (state) => state.appState;
 // // console.log('selectapp==', selectapp);
 export default appSlice.reducer;

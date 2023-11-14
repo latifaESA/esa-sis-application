@@ -383,6 +383,21 @@ const getEmailsSender = async (connection, receiver_id) => {
     return error
   }
   }
+
+// update the notifications based on receiver_id 
+
+const changeViewed = async(connection, receiver_id) => {
+  try {
+    const result = connection.query(`
+    UPDATE notifications
+    SET viewed = true
+    WHERE receiver_id = $1 AND viewed = false;`
+    ,[receiver_id])
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
 // get all data from specific column
 async function getAllById(connection, table, colName, val) {
   try {
@@ -2719,5 +2734,5 @@ module.exports = {
   getSendMailInfo,
   getClassForSendMail,
   getRoomAndTimeForSendMail,
-
+  changeViewed
 };
