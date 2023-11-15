@@ -376,7 +376,8 @@ const getEmailsSender = async (connection, receiver_id) => {
     SELECT nt.*, pm.pm_firstname, pm.pm_lastname
     FROM program_manager pm
     JOIN notifications nt ON pm.pm_id = nt.sender_id
-    WHERE nt.receiver_id = $1;
+    WHERE nt.receiver_id = $1
+    ORDER BY nt.date DESC;
     `,[receiver_id])
     return result;
   } catch (error) {

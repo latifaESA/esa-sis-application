@@ -31,10 +31,12 @@ export default function Main() {
   };
 
   useEffect(() => {
-    if (session?.user.status == "limited") {
+    if (session?.user.status == "limited1") {
       setlimited(true);
     }
   }, []);
+
+  console.log(session)
 
   return (
     <>
