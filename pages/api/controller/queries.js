@@ -373,11 +373,20 @@ const countNotification = async (connection, receiver_id) => {
 const getEmailsSender = async (connection, receiver_id) => {
   try {
     const result = connection.query(`
-    SELECT nt.*, pm.pm_firstname, pm.pm_lastname
-    FROM program_manager pm
-    JOIN notifications nt ON pm.pm_id = nt.sender_id
-    WHERE nt.receiver_id = $1
-    ORDER BY nt.date DESC;
+    SELECT
+    nt.*,
+    CASE
+      WHEN nt.sender_id IS NOT NULL THEN pm.pm_firstname
+      ELSE null
+    END AS pm_firstname,
+    CASE
+      WHEN nt.sender_id IS NOT NULL THEN pm.pm_lastname
+      ELSE null
+    END AS pm_lastname
+  FROM notifications nt
+  LEFT JOIN program_manager pm ON nt.sender_id = pm.pm_id
+  WHERE nt.receiver_id = $1
+  ORDER BY nt.date DESC;  
     `,[receiver_id])
     return result;
   } catch (error) {

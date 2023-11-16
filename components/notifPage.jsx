@@ -27,6 +27,7 @@ const NotifPage = () => {
           }
         }
         const result = await axios.post(`/api/user/getEmailsSenderInfo/${userID}`)
+        console.log("the notifications are : ",result.data)
         setNotifications(result.data)
         changeView()
       } catch (error) {
