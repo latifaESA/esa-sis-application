@@ -12,13 +12,12 @@ export default function send() {
   const [majors, setMajors] = useState([]);
   const [allmajors, setAllMajors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [promotion, setPromotion] = useState([]);
-  const [schedule, setSchedule] = useState([]);
-  const [message, setMessage] = useState("");
-  const [messageClass, setMessageClass] = useState("");
-  const [emailContent, setEmailContent] = useState("");
+  const [message, setMessage] = useState('');
+  const [messageClass, setMessageClass] = useState('');
+  const [subjectContent, setSubjectContent] = useState('');
+  const [emailContent, setEmailContent] = useState('');
   const [selectedMajorID, setSelectedMajorID] = useState(null);
-  const [afterSub, setAfterSub] = useState(false)
+  const [afterSub, setAfterSub] = useState(false);
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -63,12 +62,17 @@ export default function send() {
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    if (selectedMajorID === null || selectedMajorID === '' || emailContent.trim() === '') {
-      setMessage("All Fields Must be Filled !");
-      setMessageClass("text-red-500");
+    if (
+      selectedMajorID === null ||
+      selectedMajorID === '' ||
+      subjectContent.trim() === '' ||
+      emailContent.trim() === ''
+    ) {
+      setMessage('All Fields Must be Filled !');
+      setMessageClass('text-red-500');
       setIsLoading(false);
       setTimeout(() => {
-        setMessage("");
+        setMessage('');
       }, 3000);
     } else {
       try {
@@ -76,34 +80,36 @@ export default function send() {
         let sendData = {
           user_id,
           selectedMajorID,
-          emailContent
+          subjectContent,
+          emailContent,
         };
-        let res = await axios.post("/api/pmApi/getEmailsOnMajorID", sendData);
-        setMessage("Request Sent !");
-        setMessageClass("text-green-500");
-        setEmailContent(""), 
-        setSelectedMajorID(null), 
-        setAfterSub(true),
-        setTimeout(() => {
-          setMessage("");
-          setAfterSub(false);
-        }, 5000);
+        let res = await axios.post('/api/pmApi/getEmailsOnMajorID', sendData);
+        setMessage('Request Sent !');
+        setMessageClass('text-green-500');
+        setSubjectContent(''),
+          setEmailContent(''),
+          setSelectedMajorID(null),
+          setAfterSub(true),
+          setTimeout(() => {
+            setMessage('');
+            setAfterSub(false);
+          }, 5000);
         if (res) {
           setIsLoading(false);
         }
       } catch (error) {
-        console.log('the res is : ', error.response)
-        if(error.response.data === 'No Student found'){
+        console.log('the res is : ', error.response);
+        if (error.response.data === 'No Student found') {
           setMessage(error.response.data);
-          setMessageClass("text-red-500");
-        }else{
-          setMessage("Error while sending the email");
-          setMessageClass("text-red-500");
+          setMessageClass('text-red-500');
+        } else {
+          setMessage('Error while sending the email');
+          setMessageClass('text-red-500');
         }
 
         setIsLoading(false);
         setTimeout(() => {
-          setMessage("");
+          setMessage('');
         }, 5000);
         console.log(error);
       }
@@ -121,9 +127,9 @@ export default function send() {
 
           <div>
             <div className="flex flex-col items-start justify-center">
-            <div className="text-center">
-              <p className={` ${messageClass}`}>{message}</p>
-            </div>
+              <div className="text-center">
+                <p className={` ${messageClass}`}>{message}</p>
+              </div>
               <form onSubmit={submitHandler}>
                 <div>
                   <div className="flex m-10 flex-col md:flex-row">
@@ -135,7 +141,15 @@ export default function send() {
                       styled={
                         'font-medium h-auto items-start border-[1px] border-zinc-300 self-start w-60 inline-block'
                       }
-                      refresh = {afterSub}
+                      refresh={afterSub}
+                    />
+                  </div>
+                  <div className="m-4">
+                    <input
+                      type="text"
+                      value={subjectContent}
+                      onChange={(e) => setSubjectContent(e.target.value)}
+                      placeholder="Subject"
                     />
                   </div>
                   <div className="m-4">
