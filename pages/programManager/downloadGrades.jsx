@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FaCloudDownloadAlt } from "react-icons/fa";
+// import { FaCloudDownloadAlt } from "react-icons/fa";
 import axios from 'axios';
 import Select from 'react-select';
 
@@ -29,10 +29,33 @@ export default function DownloadGrades({ setClickDownload }) {
     { value: 'winter', label: 'Winter' },
   ];
 
+  const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
 
-  const header = [
-    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
-  ]
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+
+  const isExeMajor = firstMajorWord === "EXED";
+  let header = []
+  if (isExeMajor) {
+    header = [
+      ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Comments'],
+    ]
+
+
+  } else {
+    header = [
+      ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
+    ]
+
+  }
+
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -256,7 +279,7 @@ export default function DownloadGrades({ setClickDownload }) {
                               </div>
                             </div>
                           </div>
-                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)'     ?
+                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)' ?
                             <>
                               <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col'>
                                 <p className=" font-bold">Select semester </p>
@@ -272,11 +295,15 @@ export default function DownloadGrades({ setClickDownload }) {
                               </div>
                             </>
                             : <></>}
+                          {!isExeMajor ? <>
 
-                          <div className='m-5 text-slate-500 text-lg leading-relaxed '>
-                            <p className=" font-bold">Academic year </p>
-                            <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
-                          </div>
+                            <div className='m-5 text-slate-500 text-lg leading-relaxed '>
+                              <p className=" font-bold">Academic year </p>
+                              <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
+                            </div>
+                          </> : <></>}
+
+
                           <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col justify-center'>
                             <button
                               type='button'

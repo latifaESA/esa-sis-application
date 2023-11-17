@@ -220,7 +220,7 @@ const GradeList = ({ users, setUser }) => {
   ];
 
 
-  console.log(editedGrade, "grade")
+  
   return (
     <>
       {confirmOpenDelete && (

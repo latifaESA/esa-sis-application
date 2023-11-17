@@ -2312,19 +2312,61 @@ async function uploadGrades(
     task_name,
     gpa,
     rank,
-
     semester,
     academic_year,
+    comments
   }
 ) {
   try {
-    const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank , semester , academic_year) 
-       VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}','${semester}' , '${academic_year}')
-    
+    const query = `INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank , semester , academic_year , comments) 
+       VALUES ('${student_id}' , '${student_firstname}' , '${student_lastname}' , '${course_id}' , '${grade}' , '${task_name}' ,'${gpa}' , '${rank}','${semester}' , '${academic_year}' , '${comments}')
     `;
-
+    console.log('query',query)
     const res = await connnection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
 
+async function uploadEXEDGrade(
+  connection,
+  {
+    student_id,
+    student_firstname,
+    student_lastname,
+    course_id,
+    grade,
+    task_name,
+    gpa,
+    rank,
+    semester,
+    academic_year,
+    comments
+  }
+) {
+  try {
+
+
+    const query = {
+      text: `  
+      INSERT INTO student_grades (student_id , first_name , last_name , courseid , grade, task_name ,gpa , rank , semester , academic_year , comments)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11) `,
+      values: [ 
+        student_id,
+        student_firstname,
+        student_lastname,
+        course_id,
+        grade,
+        task_name,
+        gpa,
+        rank,
+        semester,
+        academic_year,
+        comments
+      ],
+    };
+    const res = await connection.query(query)
     return res;
   } catch (error) {
     return error;
@@ -2538,7 +2580,11 @@ async function updateUsers(connection, accessToken, user_id) {
   }
 }
 
-async function roleStudent(connection, majorId) {
+async function roleStudent
+(
+  connection, 
+  majorId
+  ) {
   try {
 
     const query = `
@@ -2549,7 +2595,7 @@ async function roleStudent(connection, majorId) {
            ELSE major_name 
        END AS modified_major_name
 FROM major
-WHERE  major_name LIKE 'EXED%'  AND major_id != '${majorId}';
+WHERE  major_name LIKE 'EXED%'  AND major_id != '${majorId}' AND status = 'active';
 
     
 
@@ -2598,12 +2644,88 @@ async function getRoomAndTimeForSendMail(connection, class_id) {
   } catch (error) {
     return error;
 
+// <<<<<<< batoul
+// async function createCertificate 
+// (
+//   connection ,
+//   majorId ,
+//   name 
+//   ){
+
+//   try {
+//     const query = `INSERT INTO major (major_id , major_name) VALUES ('${majorId}' , 'EXED-${name}') RETURNING major_id , major_name , status`
+//     const res = await connection.query(query)
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+      
+// }
+
+// async function updateStatusActive (
+//   connection, 
+//   status,
+//   majorId
+
+// ){
+//   try {
+//     const query =`UPDATE major SET status = '${status}' WHERE major_id='${majorId}'`
+    
+//     const res = await connection.query(query)
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+// async function Certificate
+// (
+//   connection
+//   ) {
+//   try {
+//     const query = `
+//     SELECT major_id,status, 
+//        CASE 
+//            WHEN major_name LIKE 'EXED%' 
+//            THEN substring(major_name FROM 6)
+//            ELSE major_name 
+//        END AS modified_major_name
+// FROM major
+// WHERE  major_name LIKE 'EXED%'
+//     `
+//     const res = await connection.query(query)
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+// async function getGradeStudent(connection , studentId){
+//   try {
+//     const query = `
+//     SELECT student_grades.*, courses.course_name 
+//     FROM student_grades 
+//     INNER JOIN courses ON student_grades.courseid = courses.course_id
+//     WHERE student_id = '${studentId}'
+//     `
+   
+//     const res = await connection.query(query)
+
+//     return res
+//   } catch (error) {
+//     return error
+// =======
+// >>>>>>> main
   }
 }
 
 /* End Postegresql */
 
 module.exports = {
+  getGradeStudent,
+ Certificate,
+  updateStatusActive,
+  createCertificate,
   roleStudent,
   updateGrades,
   uploadGrades,
@@ -2726,13 +2848,17 @@ module.exports = {
   addRequestForPm,
   getRequestsForPm,
   updateRequestStatus,
-  getTheMajors,
-  getEmailsByMajorId,
-  insertNotifications,
-  countNotification,
-  getEmailsSender,
-  getSendMailInfo,
-  getClassForSendMail,
-  getRoomAndTimeForSendMail,
-  changeViewed
+// <<<<<<< batoul
+//   uploadEXEDGrade
+// =======
+//   getTheMajors,
+//   getEmailsByMajorId,
+//   insertNotifications,
+//   countNotification,
+//   getEmailsSender,
+//   getSendMailInfo,
+//   getClassForSendMail,
+//   getRoomAndTimeForSendMail,
+//   changeViewed
+// >>>>>>> main
 };

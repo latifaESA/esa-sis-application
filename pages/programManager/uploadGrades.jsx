@@ -42,51 +42,102 @@ export default function UploadGrades({ setClickUpload, showAll }) {
         // Clear the interval when the component unmounts
         return () => clearInterval(interval);
     }, []);
-    const validateColumnHeaders = (columnA) => {
-        const templateFields = [
-            'StudentID',
-            'StudentFirstName',
-            'StudentLastName',
-            'CourseID',
-            'Grade'
-        ]; // Replace with your actual template fields
-
-        // Check if all template fields exist in columnA
-        const missingFields = templateFields.filter(
-            (field) => !columnA.includes(field)
-        );
-
-        if (missingFields.length === 0) {
-            // All template fields are present
-            return true;
-        } else {
-            // Some template fields are missing
-            return false;
+    const getFirstWordBeforeHyphen = (text) => {
+        if (text) {
+          const words = text.split("-");
+          if (words.length > 0) {
+            return words[0];
+          }
         }
+        return "";
+      };
+    
+      const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+    
+      const isExeMajor = firstMajorWord === "EXED";
+
+    const validateColumnHeaders = (columnA) => {
+        if(!isExeMajor){
+            const templateFields = [
+                'StudentID',
+                'StudentFirstName',
+                'StudentLastName',
+                'CourseID',
+                'Grade'
+            ]; // Replace with your actual template fields
+    
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+    
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        }else{
+            const templateFields = [
+                'StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Comments',
+            ]; // Replace with your actual template fields
+    
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+    
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        }
+
     };
     const validateRow = (rowData) => {
-        const requiredFields = [
-            'StudentID',
-            'StudentFirstName',
-            'StudentLastName',
-            'CourseID',
-            'TaskName',
-            'Grade',
-            'Semester',
-            'Academic_year'
-        ];
-
-        for (const field of requiredFields) {
-           
-            if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
-                return false; // Missing or empty required field
-            } else {
-                return true; // All required fields are present and not empty
+        if(!isExeMajor){
+            const requiredFields = [
+                'StudentID',
+                'StudentFirstName',
+                'StudentLastName',
+                'CourseID',
+                'TaskName',
+                'Grade',
+                'Semester',
+                'Academic_year'
+            ];
+    
+            for (const field of requiredFields) {
+               
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
+            }
+        }else{
+            const requiredFields = [
+                'StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Comments',
+            ];
+    
+            for (const field of requiredFields) {
+               
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
             }
         }
 
 
+
     };
+
 
 
     const handleAdd = async () => {
@@ -149,7 +200,8 @@ export default function UploadGrades({ setClickUpload, showAll }) {
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrade",
-                        formData
+                        formData , 
+                       
                     );
 
                     if (data.success === true) {
@@ -171,6 +223,90 @@ export default function UploadGrades({ setClickUpload, showAll }) {
             setMessages("Something went wrong. Please try again later.");
         }
     };
+    
+   const handleAddEXED = async()=>{
+    try {
+        setIsClick(true);
+        const file = uploadPhotoData.fileList[0];
+        const reader = new FileReader();
+
+        reader.onload = async function (event) {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+
+            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (rows.length < 2) {
+                console.log(rows)
+                setConfirmOpenMessage(true);
+                setMessages("Error: File is empty!");
+                return;
+            }
+
+            const firstRow = rows[0];
+            const isValidHeaders = validateColumnHeaders(firstRow);
+            if (!isValidHeaders) {
+                setConfirmOpenMessage(true);
+                setMessages("Error File! please upload Grade Template And Don't change The Header.");
+                return;
+            }
+
+            // Iterate through data rows (starting from index 1)
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = {}; // Create an object to store data from the current row
+
+                for (let j = 0; j < firstRow.length; j++) {
+                    rowData[firstRow[j]] = rows[i][j]; // Assign values using header keys
+
+                }
+
+                // Check if the "Grade" column is empty or missing in the current row
+                if (!("Grade" in rowData) || rowData["Grade"] === "") {
+                    setConfirmOpenMessage(true);
+                    setMessages("No data was uploaded due to missing required information Grade.");
+                    return;
+                }
+
+                if (!validateRow(rowData)) {
+                    setConfirmOpenMessage(true);
+                    setMessages("No data was uploaded due to missing required information.");
+                    return;
+                }
+            }
+
+            // All validation checks passed, proceed with API call
+            const formData = new FormData();
+            formData.append("files", file);
+
+            try {
+                const { data } = await axios.post(
+                    "/api/pmApi/uploadEXEDGrade",
+                    formData , 
+                    
+                );
+
+                if (data.success === true) {
+                    setConfirmOpenMessage(true);
+                    setMessages(data.message);
+                }
+            } catch (error) {
+                if (error.response && error.response.data.success === false) {
+                    setConfirmOpenMessage(true);
+                    setIsClick(false);
+                    setMessages(error.response.data.message);
+                }
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    } catch (error) {
+        setConfirmOpenMessage(true);
+        setMessages("Something went wrong. Please try again later.");
+    }
+    }
 
 
     return (
@@ -236,7 +372,7 @@ export default function UploadGrades({ setClickUpload, showAll }) {
                                                     <button
                                                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                                         type="button"
-                                                        onClick={handleAdd}
+                                                        onClick={isExeMajor ?handleAddEXED :handleAdd}
                                                     >
                                                         Scan
                                                     </button>
