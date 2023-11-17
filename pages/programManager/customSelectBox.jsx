@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const CustomSelectBox = ({
   options,
@@ -7,6 +7,7 @@ const CustomSelectBox = ({
   styled,
   enable = true,
   oldvalue = "",
+  refresh = false
 }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(oldvalue);
@@ -29,7 +30,10 @@ const CustomSelectBox = ({
     setInputValue("");
     onSelect(option); // Pass the selected value back to the parent component
   };
-
+ useEffect(() => {
+  refresh && setSelected("")
+ },[refresh])
+ 
   return (
     <div className={styled}>
       <div

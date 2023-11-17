@@ -51,4 +51,5 @@ const result= await createMajor(
   }
 }
 
-module.exports = handler;
+// module.exports = handler;
+export default handler;

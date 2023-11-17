@@ -1,13 +1,14 @@
-const { connect } = require("../../../utilities/db");
-const { getPmDetailsForRequests } = require("../controller/queries");
+const { connect, disconnect } = require("../../../utilities/db");
+const { getClassForSendMail } = require("../controller/queries");
 
 async function handler(req, res) {
   try {
     const connection = await connect();
-    const { major_id } = req.body;
-    const data = await getPmDetailsForRequests(connection, major_id);
+
+    const data = await getClassForSendMail(connection);
     // console.log(data);
 
+    await disconnect(connection);
     return res.status("200").json(data);
   } catch (error) {
     // console.log('the error is: ', error)
@@ -15,5 +16,4 @@ async function handler(req, res) {
     // return error;
   }
 }
-// module.exports = handler;
-export default handler;
+module.exports = handler;

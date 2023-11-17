@@ -79,7 +79,7 @@ const CourseSchedule = () => {
 //             // color: 'green'
 //             className: styles.custom-event,
 // >>>>>>> main
-//           };
+          };
         });
 
         const formattedEventsGoogle = data.data.data.map((event) => {
