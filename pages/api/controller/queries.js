@@ -2643,79 +2643,77 @@ async function getRoomAndTimeForSendMail(connection, class_id) {
     return res;
   } catch (error) {
     return error;
+  }
+}
+async function createCertificate 
+(
+  connection ,
+  majorId ,
+  name 
+  ){
 
-// <<<<<<< batoul
-// async function createCertificate 
-// (
-//   connection ,
-//   majorId ,
-//   name 
-//   ){
-
-//   try {
-//     const query = `INSERT INTO major (major_id , major_name) VALUES ('${majorId}' , 'EXED-${name}') RETURNING major_id , major_name , status`
-//     const res = await connection.query(query)
-//     return res
-//   } catch (error) {
-//     return error
-//   }
+  try {
+    const query = `INSERT INTO major (major_id , major_name) VALUES ('${majorId}' , 'EXED-${name}') RETURNING major_id , major_name , status`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
       
-// }
+}
 
-// async function updateStatusActive (
-//   connection, 
-//   status,
-//   majorId
+async function updateStatusActive (
+  connection, 
+  status,
+  majorId
 
-// ){
-//   try {
-//     const query =`UPDATE major SET status = '${status}' WHERE major_id='${majorId}'`
+){
+  try {
+    const query =`UPDATE major SET status = '${status}' WHERE major_id='${majorId}'`
     
-//     const res = await connection.query(query)
-//     return res
-//   } catch (error) {
-//     return error
-//   }
-// }
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
-// async function Certificate
-// (
-//   connection
-//   ) {
-//   try {
-//     const query = `
-//     SELECT major_id,status, 
-//        CASE 
-//            WHEN major_name LIKE 'EXED%' 
-//            THEN substring(major_name FROM 6)
-//            ELSE major_name 
-//        END AS modified_major_name
-// FROM major
-// WHERE  major_name LIKE 'EXED%'
-//     `
-//     const res = await connection.query(query)
-//     return res
-//   } catch (error) {
-//     return error
-//   }
-// }
+async function Certificate
+(
+  connection
+  ) {
+  try {
+    const query = `
+    SELECT major_id,status, 
+       CASE 
+           WHEN major_name LIKE 'EXED%' 
+           THEN substring(major_name FROM 6)
+           ELSE major_name 
+       END AS modified_major_name
+FROM major
+WHERE  major_name LIKE 'EXED%'
+    `
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
-// async function getGradeStudent(connection , studentId){
-//   try {
-//     const query = `
-//     SELECT student_grades.*, courses.course_name 
-//     FROM student_grades 
-//     INNER JOIN courses ON student_grades.courseid = courses.course_id
-//     WHERE student_id = '${studentId}'
-//     `
+async function getGradeStudent(connection , studentId){
+  try {
+    const query = `
+    SELECT student_grades.*, courses.course_name 
+    FROM student_grades 
+    INNER JOIN courses ON student_grades.courseid = courses.course_id
+    WHERE student_id = '${studentId}'
+    `
    
-//     const res = await connection.query(query)
+    const res = await connection.query(query)
 
-//     return res
-//   } catch (error) {
-//     return error
-// =======
-// >>>>>>> main
+    return res
+  } catch (error) {
+    return error
   }
 }
 
@@ -2848,17 +2846,15 @@ module.exports = {
   addRequestForPm,
   getRequestsForPm,
   updateRequestStatus,
-// <<<<<<< batoul
-//   uploadEXEDGrade
-// =======
-//   getTheMajors,
-//   getEmailsByMajorId,
-//   insertNotifications,
-//   countNotification,
-//   getEmailsSender,
-//   getSendMailInfo,
-//   getClassForSendMail,
-//   getRoomAndTimeForSendMail,
-//   changeViewed
-// >>>>>>> main
+  uploadEXEDGrade,
+
+  getTheMajors,
+  getEmailsByMajorId,
+  insertNotifications,
+  countNotification,
+  getEmailsSender,
+  getSendMailInfo,
+  getClassForSendMail,
+  getRoomAndTimeForSendMail,
+  changeViewed
 };

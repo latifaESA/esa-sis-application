@@ -191,25 +191,6 @@ const StudentView = () => {
                 </div>
               </div>
             </Link> */}
-
-        {/* Edit Profile */}
-
-//         <Link href="/student/profile">
-//           <div
-//             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-//               router.pathname == "/student/profile"
-//                 ? "bg-blue-100 text-blue-500"
-//                 : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-//             }`}
-//           >
-//             <div className="mr-2">
-//               <PencilIcon className="h-5 w-5" />
-//             </div>
-//             <div>
-//               <p> Edit Profile</p>
-//             </div>
-//           </div>
-//         </Link>
         {/* Schedule Section */}
         {!isLimited && (
           <Link href="/student/grades">
