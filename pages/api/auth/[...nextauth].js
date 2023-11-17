@@ -164,148 +164,157 @@ export const authOptions = {
                     }),
                   }
                 );
-                if (data.blocked) {
-                  const status = await updateStatusBlue(
-                    connection,
-                    user.rows[0].userid
-                  )
-                  console.log("status blue", status)
-                  const WeeklyLogs = await getStudentFromBlueForLogs(
-                    connection,
-                    user.rows[0].userid
-                  );
+                 console.log('data', data)
+                // if (data.blocked) {
+                
+                //   const status = await updateStatusBlue(
+                //     connection,
+                //     user.rows[0].userid
+                //   )
+                //   console.log("status blue", status)
+                //   const WeeklyLogs = await getStudentFromBlueForLogs(
+                //     connection,
+                //     user.rows[0].userid
+                //   );
 
-                  if (WeeklyLogs.rowCount != 0) {
+                //   if (WeeklyLogs.rowCount != 0) {
 
-                    const lastLoginDate =
-                      WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
+                //     const lastLoginDate =
+                //       WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
 
-                    console.log(lastLoginDate.date_time);
+                //     console.log(lastLoginDate.date_time);
 
-                    // get the date from db
-                    const dateToday = lastLoginDate.date_time;
-                    const [day, month, year] = dateToday.split("-").map(Number);
-                    const dateObject = new Date(year, month - 1, day);
+                //     // get the date from db
+                //     const dateToday = lastLoginDate.date_time;
+                //     const [day, month, year] = dateToday.split("-").map(Number);
+                //     const dateObject = new Date(year, month - 1, day);
 
-                    // Calculate a week from now
-                    const oneWeekLater = new Date(dateObject);
-                    oneWeekLater.setDate(dateObject.getDate() + 7);
+                //     // Calculate a week from now
+                //     const oneWeekLater = new Date(dateObject);
+                //     oneWeekLater.setDate(dateObject.getDate() + 7);
 
-                    // Format the date one week from now
-                    const formattedOneWeekLater = `${oneWeekLater
-                      .getDate()
-                      .toString()
-                      .padStart(2, "0")}-${(oneWeekLater.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
+                //     // Format the date one week from now
+                //     const formattedOneWeekLater = `${oneWeekLater
+                //       .getDate()
+                //       .toString()
+                //       .padStart(2, "0")}-${(oneWeekLater.getMonth() + 1)
+                //         .toString()
+                //         .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
 
-                    // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
+                //     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
 
 
-                    function formatDate(date) {
-                      const day = date.getDate().toString().padStart(2, "0");
-                      const month = (date.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0");
-                      const year = date.getFullYear().toString();
-                      const hours = date.getHours().toString().padStart(2, "0");
-                      const minutes = date
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0");
-                      const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
-                      return formattedDate;
-                    }
-                    const currentDate = new Date();
-                    const formattedCurrentDate = formatDate(currentDate);
+                //     function formatDate(date) {
+                //       const day = date.getDate().toString().padStart(2, "0");
+                //       const month = (date.getMonth() + 1)
+                //         .toString()
+                //         .padStart(2, "0");
+                //       const year = date.getFullYear().toString();
+                //       const hours = date.getHours().toString().padStart(2, "0");
+                //       const minutes = date
+                //         .getMinutes()
+                //         .toString()
+                //         .padStart(2, "0");
+                //       const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
+                //       return formattedDate;
+                //     }
+                //     const currentDate = new Date();
+                //     const formattedCurrentDate = formatDate(currentDate);
 
-                    if (
-                      formattedOneWeekLater < formattedCurrentDate.slice(0, 10)
-                    ) {
-                      console.log("ana jouet l if date format");
-                      const insertToLogs = await addStudentActivityToLogs(
-                        connection,
-                        data.userid,
-                        "status",
-                        "limited",
-                        data.description,
-                        "Blue",
-                        formattedCurrentDate
-                      );
+                //     if (
+                //       formattedOneWeekLater < formattedCurrentDate.slice(0, 10)
+                //     ) {
+                //       console.log("ana jouet l if date format");
+                //       const insertToLogs = await addStudentActivityToLogs(
+                //         connection,
+                //         data.userid,
+                //         "status",
+                //         "limited",
+                //         data.description,
+                //         "Blue",
+                //         formattedCurrentDate
+                //       );
 
-                    }
-                  } else {
-                    function formatDate(date) {
-                      const day = date.getDate().toString().padStart(2, "0");
-                      const month = (date.getMonth() + 1)
-                        .toString()
-                        .padStart(2, "0");
-                      const year = date.getFullYear().toString();
-                      const hours = date.getHours().toString().padStart(2, "0");
-                      const minutes = date
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0");
-                      const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
-                      return formattedDate;
-                    }
-                    const currentDate = new Date();
-                    const formattedCurrentDate = formatDate(currentDate);
+                //     }
+                //   } else {
+                //     function formatDate(date) {
+                //       const day = date.getDate().toString().padStart(2, "0");
+                //       const month = (date.getMonth() + 1)
+                //         .toString()
+                //         .padStart(2, "0");
+                //       const year = date.getFullYear().toString();
+                //       const hours = date.getHours().toString().padStart(2, "0");
+                //       const minutes = date
+                //         .getMinutes()
+                //         .toString()
+                //         .padStart(2, "0");
+                //       const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
+                //       return formattedDate;
+                //     }
+                //     const currentDate = new Date();
+                //     const formattedCurrentDate = formatDate(currentDate);
 
-                    const insertToLogs = await addStudentActivityToLogs(
-                      connection,
-                      data.userid,
-                      "status",
-                      "limited",
-                      data.description,
-                      "Blue",
-                      formattedCurrentDate
-                    );
-                    console.log(insertToLogs);
-                  }
-                  if (user.rows[0].role === 1) {
+                //     const insertToLogs = await addStudentActivityToLogs(
+                //       connection,
+                //       data.userid,
+                //       "status",
+                //       "limited",
+                //       data.description,
+                //       "Blue",
+                //       formattedCurrentDate
+                //     );
+                //     console.log(insertToLogs);
+                //   }
+                //   if (user.rows[0].role === 1) {
 
-                    // get the student data
-                    const ST = await findData(
-                      connection,
-                      "student",
-                      "student_id",
-                      user.rows[0].userid
-                    );
-                    // console.log('this is ST ');
-                    // console.log(ST);
-                    // if the program_manager exists then send the data to frontend
-                    if (ST.rows) {
-                      await disconnect(connection);
-                      // Write to logger
-                      if (req) {
-                        // Log user information
-                        // userinfo.role ==='1'?
-                        sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
-                          }=${userAgentinfo.os.family}=${userAgentinfo.os.major
-                          }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
-                          }`
-                        );
+                //     // get the student data
+                //     const ST = await findData(
+                //       connection,
+                //       "student",
+                //       "student_id",
+                //       user.rows[0].userid
+                //     );
+                //     const ST_major = await findData(
+                //       connection,
+                //       'major',
+                //       'major_id',
+                //       ST.rows[0].major_id
+                //     )
+                //     // console.log('this is ST ');
+                //     // console.log(ST);
+                //     // if the program_manager exists then send the data to frontend
+                //     if (ST.rows) {
+                //       await disconnect(connection);
+                //       // Write to logger
+                //       if (req) {
+                //         // Log user information
+                //         // userinfo.role ==='1'?
+                //         sis_app_logger.info(
+                //           `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                //           }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                //           }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
+                //           }`
+                //         );
 
-                        return {
-                          name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                          // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                          role: user.rows[0].role.toString(),
-                          status: `${data.blocked ? "limited" : "active"}`,
-                          userid: `${user.rows[0].userid}`,
-                          image: userinfo.rows[0].profileurl,
-                          accessToken :`${user.rows[0].access_token}`,
-                          majorid: ST.rows[0].major_id,
-                          promotion: ST.rows[0].promotion,
-                        };
-                      } else {
-                        // if the student is not exists then send this message to frontend
-                        message = "Student does not exists";
-                      }
-                    }
-                  }
-                } else {
+                //         return {
+                //           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                //           role: user.rows[0].role.toString(),
+                //           status: `${data.blocked ? "limited" : "active"}`,
+                //           userid: `${user.rows[0].userid}`,
+                //           image: userinfo.rows[0].profileurl,
+                //           accessToken :`${user.rows[0].access_token}`,
+                //           majorid: ST.rows[0].major_id,
+                //           majorName: ST_major.rows[0].major_name,
+                //           promotion: ST.rows[0].promotion,
+                //         };
+                //       } else {
+                //         // if the student is not exists then send this message to frontend
+                //         message = "Student does not exists";
+                //       }
+                //     }
+                //   }
+                // } else {
                   if (user.rows[0].role === 1) {
 
                     // get the student data
@@ -363,7 +372,7 @@ export const authOptions = {
                       }
                     }
                   }
-                }
+                // }
                 // console.log("=======================");
                 // console.log(data.blocked);
                 // console.log(data);
