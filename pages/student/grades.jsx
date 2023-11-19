@@ -5,31 +5,95 @@ import { useRouter } from 'next/router';
 import StudentGrades from '../../components/Dashboard/StudentGrades';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import StudentGradesRTF from '../../components/Dashboard/studentGradesRTF';
+import StudentGradesGMP from '../../components/Dashboard/StudentGradesGMP';
 
 
 export default function Grades() {
 
 
   const { data: session } = useSession();
-  const [studentGrades , setStudentGrades]=useState([])
+  const [studentGrades, setStudentGrades] = useState([])
   const router = useRouter()
   const redirect = () => {
     router.push('/AccessDenied')
   }
-  useEffect(()=>{
-    getGrade()
-  },[])
-  const getGrade = async()=>{
+  // Function to extract the first word before a hyphen "-"
+  const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
+  // Function to extract the first word before a hyphen "-"
+  const getFirstWordAfterHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[1];
+      }
+    }
+    return "";
+  };
+
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+  const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+  const isExeMajor = firstMajorWord === "EXED";
+
+  const getGrade = async () => {
     try {
       const data = await axios.post('/api/user/StudentGrades', {
-        studentId : session.user?.userid
+        table:'student_grade',
+        studentId: session.user?.userid
       })
-   
+
       setStudentGrades(data.data.data.rows)
     } catch (error) {
       return error
     }
   }
+
+  const getGradesRTF = async () => {
+    try {
+      const data = await axios.post('/api/user/StudentGrades', {
+        table:'grades_rtf',
+        studentId: session.user?.userid
+      })
+
+      setStudentGrades(data.data.data.rows)
+    } catch (error) {
+      return error
+    }
+  }
+  const getGradesGMP = async () => {
+    try {
+
+      const data = await axios.post('/api/user/StudentGrades', {
+        table:'grades_gmp',
+        studentId: session.user?.userid
+
+      })
+
+      setStudentGrades(data.data.data.rows)
+    } catch (error) {
+      return error
+    }
+  }
+  useEffect(() => {
+    if(!isExeMajor){
+      getGrade();
+    }else if(isExeMajor && secondMajorWord === 'GMP'){
+      getGradesGMP();
+    }else if(isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'){
+
+      getGradesRTF();
+      console.log('rtfffffffffffff')
+    }
+   
+  }, [])
 
   return (
     <>
@@ -40,7 +104,15 @@ export default function Grades() {
         {session?.user.role === '1' ? (
           <>
             <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Grades</p>
+            {!isExeMajor ?
             <StudentGrades studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
+             : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'? 
+             <StudentGradesRTF studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
+             :isExeMajor && secondMajorWord === 'GMP'?
+              <StudentGradesGMP  studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
+             :<></>
+          }
+
           </>
 
         ) : redirect()}

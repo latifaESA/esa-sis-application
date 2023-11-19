@@ -26,7 +26,7 @@ const StudentView = () => {
 
   let isLimited;
   if (session?.user.status == "limited") {
-    isLimited = false;
+    isLimited = true;
   }
   // Function to extract the first word before a hyphen "-"
   const getFirstWordBeforeHyphen = (text) => {
