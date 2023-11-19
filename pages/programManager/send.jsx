@@ -18,47 +18,40 @@ export default function send() {
   const [emailContent, setEmailContent] = useState('');
   const [selectedMajorID, setSelectedMajorID] = useState(null);
   const [afterSub, setAfterSub] = useState(false);
+  const [loadingMajor, setLoadingMajor] = useState(true);
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
   useEffect(() => {
-    const handleSelect = async () => {
+    const handleMajorPM = async () => {
       try {
         let major_id = session.user.majorid;
-        const { data } = await axios.post('/api/admin/adminApi/getTheMajors', {
-          major_id,
+        const { data } = await axios.post('/api/pmApi/getMajorPM', {
+          majorID: major_id,
         });
+        setSelectedMajorID(data[0].major_id)
+        setLoadingMajor(false)
+        console.log(selectedMajorID)
+        return;
 
-        setAllMajors(data);
-
-        // setMessage(data.data.message)
-        let datesArray = [];
-
-        data.forEach(
-          (major) =>
-            major.major_name.startsWith('EXED') &&
-            major.status === 'active' &&
-            datesArray.push(major.major_name)
-        );
-        setMajors(datesArray);
       } catch (error) {
         return error;
       }
     };
-    handleSelect();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+    handleMajorPM();
+  }, [session]); // Empty dependency array means this effect runs once when the component mounts
 
-  const handleSelect = (selectedValue) => {
-    if (selectedValue.trim() !== '') {
-      let selectedMajor = allmajors.filter(
-        (major) => major.major_name === selectedValue
-      );
-      setSelectedMajorID(selectedMajor[0].major_id);
-    } else {
-      setSelectedMajorID(null);
-    }
-  };
+  // const handleSelect = (selectedValue) => {
+  //   if (selectedValue.trim() !== '') {
+  //     let selectedMajor = allmajors.filter(
+  //       (major) => major.major_name === selectedValue
+  //     );
+  //     setSelectedMajorID(selectedMajor[0].major_id);
+  //   } else {
+  //     setSelectedMajorID(null);
+  //   }
+  // };
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -88,7 +81,6 @@ export default function send() {
         setMessageClass('text-green-500');
         setSubjectContent(''),
           setEmailContent(''),
-          setSelectedMajorID(null),
           setAfterSub(true),
           setTimeout(() => {
             setMessage('');
@@ -97,8 +89,8 @@ export default function send() {
         if (res) {
           setIsLoading(false);
         }
+        return;
       } catch (error) {
-        console.log('the res is : ', error.response);
         if (error.response.data === 'No Student found') {
           setMessage(error.response.data);
           setMessageClass('text-red-500');
@@ -111,7 +103,7 @@ export default function send() {
         setTimeout(() => {
           setMessage('');
         }, 5000);
-        console.log(error);
+        return;
       }
     }
   };
@@ -121,17 +113,24 @@ export default function send() {
         <title>SIS Admin - Send</title>
       </Head>
 
-      {session?.user.role === '2' || session?.user.role === '3' ? (
+
+      {loadingMajor ?
+      <div>
+        Loading ...
+      </div>
+      :
+      (session?.user.role === '2' || session?.user.role === '3') &&  selectedMajorID !== null ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
 
           <div>
-            <div className="flex flex-col items-start justify-center">
+            <div className="flex flex-col items-start justify-center w-2/4">
               <div className="text-center">
                 <p className={` ${messageClass}`}>{message}</p>
               </div>
-              <form onSubmit={submitHandler}>
+              <form onSubmit={submitHandler} className='w-full'>
                 <div>
+                {/*
                   <div className="flex m-10 flex-col md:flex-row">
                     <label className="w-[350px] mb-2">Select Major:</label>
                     <CustomSelectBox
@@ -144,6 +143,8 @@ export default function send() {
                       refresh={afterSub}
                     />
                   </div>
+                   */}
+
                   <div className="m-4">
                     <input
                       type="text"

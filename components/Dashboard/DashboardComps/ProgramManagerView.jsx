@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   PencilIcon,
@@ -18,9 +18,28 @@ import {
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 const ProgramManagerView = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+  const [existExed, setExistExed] = useState([]);
+  useEffect(() => {
+    const handleMajorPM = async () => {
+      try {
+        let major_id = session.user.majorid;
+        const { data } = await axios.post('/api/pmApi/getMajorPM', {
+          majorID: major_id,
+        });
+        setExistExed(data)
+        return;
+      } catch (error) {
+        return error;
+      }
+    };
+    handleMajorPM();
+  }, []);
 
   return (
     <>
@@ -243,6 +262,7 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
+        {existExed.length > 0 &&
         <Link href="/programManager/send">
           {/* <Link href='/admin/Settings/Settings'> */}
           <div
@@ -263,6 +283,7 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
+        }
         {/* Dear Hassan the PM don't have a settings section only the Admin */}
         {/* <Link href='/programManager/Settings/Settings'>
     <div

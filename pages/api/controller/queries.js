@@ -313,6 +313,19 @@ async function getAll(connection, table) {
   }
 }
 
+// get the major of the program manager
+async function getMajorPM(connection, majorID){
+  try {
+    const result = await connection.query(`SELECT *
+    FROM major
+    WHERE major_id = '${majorID}'
+    AND major_name LIKE 'EXED%'`);
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
+
 // get the emails based on major id
 const getEmailsByMajorId = async (connection, majorId) => {
   try {
@@ -2744,5 +2757,6 @@ module.exports = {
   getSendMailInfo,
   getClassForSendMail,
   getRoomAndTimeForSendMail,
-  changeViewed
+  changeViewed,
+  getMajorPM
 };

@@ -14,7 +14,6 @@ async function handler(req, res) {
     const connection = await connect();
 
     const { user_id, selectedMajorID, subjectContent, emailContent } = req.body;
-    let sub = 'urgent request';
     const data = await getEmailsByMajorId(connection, selectedMajorID);
     if (data.length > 0) {
       const emails = data.map((row) => row.email);
@@ -25,9 +24,8 @@ async function handler(req, res) {
         connection,
         userID,
         user_id,
-        subjectContent,
         emailContent,
-        sub
+        subjectContent
       );
       await disconnect(connection);
       return res.status('200').send(data);
