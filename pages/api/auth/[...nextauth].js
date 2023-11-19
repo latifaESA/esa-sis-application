@@ -6,11 +6,11 @@
  * Copyright (c) 2023 ESA
  */
 /* Importing the required modules. */
-import bcryptjs from "bcryptjs";
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { addStudentActivityToLogs } from "../controller/queries";
-import { getStudentFromBlueForLogs } from "../controller/queries";
+import bcryptjs from 'bcryptjs';
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { addStudentActivityToLogs } from '../controller/queries';
+import { getStudentFromBlueForLogs } from '../controller/queries';
 
 // import {
 //   findData,
@@ -19,19 +19,19 @@ import { getStudentFromBlueForLogs } from "../controller/queries";
 //   current_applicant_promotion,
 //   findmajor_id,
 // } from '../controller/queries';
-import { connect, disconnect } from "../../../utilities/db";
+import { connect, disconnect } from '../../../utilities/db';
 
-import sis_app_logger from "../logger";
-import useragent from "useragent";
+import sis_app_logger from '../logger';
+import useragent from 'useragent';
 import {
   findData,
   updateStatusBlue,
   updateStatusPreBlue,
-} from "../controller/queries";
-import { Userinfo } from "../controller/accountquery";
-import axios from "axios";
-import https from "https";
-import { start } from "repl";
+} from '../controller/queries';
+import { Userinfo } from '../controller/accountquery';
+import axios from 'axios';
+import https from 'https';
+// import { start } from "repl";
 
 // import client from '../../../utilities/db1'
 
@@ -48,7 +48,7 @@ import { start } from "repl";
 export const authOptions = {
   /* A session strategy that is used to store the session data in the browser. */
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 6 * 1 * 60 * 60, //Hour
     // after xx min, the session expire:if the user has not interacted with the application for the duration of the session expiration time,the user don't made a request to the server, close the browser without logout,the auto-save function writes to the database without any user interaction, it may not be enough to keep the session active. In most cases, the session expiration time is based on user activity or interaction with the application, rather than automated background processes.
@@ -97,12 +97,12 @@ export const authOptions = {
       //   password: { label: "Password", type: "password" }
       // },
       async authorize(credentials, req) {
-        let message = "";
-        const userAgent = req.headers["user-agent"];
+        let message = '';
+        const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
         if (connection.success) {
-          console.log("connection to DB succes nextauth signin");
+          console.log('connection to DB succes nextauth signin');
 
           // sendMail();
           // console.log("before entering mail phase");
@@ -126,8 +126,8 @@ export const authOptions = {
           // get the user info
           const user = await findData(
             connection,
-            "users",
-            "userid",
+            'users',
+            'userid',
             credentials.userid
           );
 
@@ -180,7 +180,7 @@ export const authOptions = {
                     connection,
                     user.rows[0].userid
                   );
-                  console.log("status blue", status);
+                  console.log('status blue', status);
                   const WeeklyLogs = await getStudentFromBlueForLogs(
                     connection,
                     user.rows[0].userid
@@ -194,7 +194,7 @@ export const authOptions = {
 
                     // get the date from db
                     const dateToday = lastLoginDate.date_time;
-                    const [day, month, year] = dateToday.split("-").map(Number);
+                    const [day, month, year] = dateToday.split('-').map(Number);
                     const dateObject = new Date(year, month - 1, day);
 
                     // Calculate a week from now
@@ -205,23 +205,24 @@ export const authOptions = {
                     const formattedOneWeekLater = `${oneWeekLater
                       .getDate()
                       .toString()
-                      .padStart(2, "0")}-${(oneWeekLater.getMonth() + 1)
+                      .padStart(2, '0')}-${(oneWeekLater.getMonth() + 1)
                       .toString()
-                      .padStart(2, "0")}-${oneWeekLater.getFullYear()}`;
+                      .padStart(2, '0')}-${oneWeekLater.getFullYear()}`;
 
                     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
 
+                    // eslint-disable-next-line no-inner-declarations
                     function formatDate(date) {
-                      const day = date.getDate().toString().padStart(2, "0");
+                      const day = date.getDate().toString().padStart(2, '0');
                       const month = (date.getMonth() + 1)
                         .toString()
-                        .padStart(2, "0");
+                        .padStart(2, '0');
                       const year = date.getFullYear().toString();
-                      const hours = date.getHours().toString().padStart(2, "0");
+                      const hours = date.getHours().toString().padStart(2, '0');
                       const minutes = date
                         .getMinutes()
                         .toString()
-                        .padStart(2, "0");
+                        .padStart(2, '0');
                       const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
                       return formattedDate;
                     }
@@ -231,29 +232,31 @@ export const authOptions = {
                     if (
                       formattedOneWeekLater < formattedCurrentDate.slice(0, 10)
                     ) {
-                      console.log("ana jouet l if date format");
+                      console.log('ana jouet l if date format');
+                      // eslint-disable-next-line no-unused-vars
                       const insertToLogs = await addStudentActivityToLogs(
                         connection,
                         data.userid,
-                        "status",
-                        "limited",
+                        'status',
+                        'limited',
                         data.description,
-                        "Blue",
+                        'Blue',
                         formattedCurrentDate
                       );
                     }
                   } else {
+                    // eslint-disable-next-line no-inner-declarations
                     function formatDate(date) {
-                      const day = date.getDate().toString().padStart(2, "0");
+                      const day = date.getDate().toString().padStart(2, '0');
                       const month = (date.getMonth() + 1)
                         .toString()
-                        .padStart(2, "0");
+                        .padStart(2, '0');
                       const year = date.getFullYear().toString();
-                      const hours = date.getHours().toString().padStart(2, "0");
+                      const hours = date.getHours().toString().padStart(2, '0');
                       const minutes = date
                         .getMinutes()
                         .toString()
-                        .padStart(2, "0");
+                        .padStart(2, '0');
                       const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
                       return formattedDate;
                     }
@@ -263,10 +266,10 @@ export const authOptions = {
                     const insertToLogs = await addStudentActivityToLogs(
                       connection,
                       data.userid,
-                      "status",
-                      "limited",
+                      'status',
+                      'limited',
                       data.description,
-                      "Blue",
+                      'Blue',
                       formattedCurrentDate
                     );
                     console.log(insertToLogs);
@@ -275,8 +278,8 @@ export const authOptions = {
                     // get the student data
                     const ST = await findData(
                       connection,
-                      "student",
-                      "student_id",
+                      'student',
+                      'student_id',
                       user.rows[0].userid
                     );
                     // console.log('this is ST ');
@@ -302,7 +305,7 @@ export const authOptions = {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           role: user.rows[0].role.toString(),
-                          status: `${data.blocked ? "limited" : "active"}`,
+                          status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
                           image: userinfo.rows[0].profileurl,
                           accessToken: `${user.rows[0].access_token}`,
@@ -311,7 +314,7 @@ export const authOptions = {
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
-                        message = "Student does not exists";
+                        message = 'Student does not exists';
                       }
                     }
                   }
@@ -320,18 +323,18 @@ export const authOptions = {
                     // get the student data
                     const ST = await findData(
                       connection,
-                      "student",
-                      "student_id",
+                      'student',
+                      'student_id',
                       user.rows[0].userid
                     );
                     const ST_major = await findData(
                       connection,
-                      "major",
-                      "major_id",
+                      'major',
+                      'major_id',
                       ST.rows[0].major_id
                     );
 
-                    if (ST.rows[0].status === "limited") {
+                    if (ST.rows[0].status === 'limited') {
                       await updateStatusPreBlue(
                         connection,
                         user.rows[0].userid
@@ -360,7 +363,7 @@ export const authOptions = {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           role: user.rows[0].role.toString(),
-                          status: `${data.blocked ? "limited" : "active"}`,
+                          status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
                           accessToken: `${user.rows[0].access_token}`,
                           image: userinfo.rows[0].profileurl,
@@ -370,7 +373,7 @@ export const authOptions = {
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
-                        message = "Student does not exists";
+                        message = 'Student does not exists';
                       }
                     }
                   }
@@ -444,8 +447,8 @@ export const authOptions = {
                   // get the admin data
                   const admin = await findData(
                     connection,
-                    "admin",
-                    "adminid",
+                    'admin',
+                    'adminid',
                     user.rows[0].userid
                   );
                   // if the admin exists then send the data to frontend
@@ -467,7 +470,7 @@ export const authOptions = {
                     }
                     // console.log('user.rows[0].role==', user.rows[0].role);
                     // console.log(user.rows[0]);
-                    console.log("userinfo.rows[0]==", userinfo.rows[0]);
+                    console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
                       //<<<<<<< batoul
@@ -502,7 +505,7 @@ export const authOptions = {
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
-                    message = "Admin does not exists";
+                    message = 'Admin does not exists';
                   }
                 }
                 // if the program_manager exists then send the data to frontend
@@ -525,14 +528,14 @@ export const authOptions = {
                   // get the program_manager data
                   const PM = await findData(
                     connection,
-                    "program_manager",
-                    "pm_id",
+                    'program_manager',
+                    'pm_id',
                     user.rows[0].userid
                   );
                   const pm_major = await findData(
                     connection,
-                    "major",
-                    "major_id",
+                    'major',
+                    'major_id',
                     PM.rows[0].major_id
                   );
                   // console.log(user.rows[0].userid);
@@ -606,20 +609,20 @@ export const authOptions = {
                     };
                   } else {
                     // if the program manager is not exists then send this message to frontend
-                    message = "Program manager does not exists";
+                    message = 'Program manager does not exists';
                   }
                 } else if (user.rows[0].role === 3) {
                   // get the program_manager_assistance data
                   const AS = await findData(
                     connection,
-                    "program_manager_assistance",
-                    "pm_ass_id",
+                    'program_manager_assistance',
+                    'pm_ass_id',
                     user.rows[0].userid
                   );
                   const pm_major = await findData(
                     connection,
-                    "major",
-                    "major_id",
+                    'major',
+                    'major_id',
                     AS.rows[0].major_id
                   );
                   // console.log(user.rows[0].userid);
@@ -654,7 +657,7 @@ export const authOptions = {
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
-                    message = "Program manager assistance does not exists";
+                    message = 'Program manager assistance does not exists';
                   }
                   //=======
                   //                      name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
@@ -719,7 +722,7 @@ export const authOptions = {
               // message = 'hello'
             } else {
               // if the password is incorrect then send this message
-              message = "Invalid Password";
+              message = 'Invalid Password';
               sis_app_logger.error(
                 `${new Date()}=From nextauth signin=---=${
                   req.body.userid
@@ -731,7 +734,7 @@ export const authOptions = {
               );
             }
           } else {
-            message = "user does not exist";
+            message = 'user does not exist';
           }
 
           // connection.end();
@@ -876,7 +879,7 @@ export const authOptions = {
           // }
         } //(!connection.success)
         else {
-          console.log("connection to DB unsucces nextauth signin");
+          console.log('connection to DB unsucces nextauth signin');
           message = connection.message;
           sis_app_logger.error(
             `${new Date()}=From nextauth signin,connection unsuccess=---=${

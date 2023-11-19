@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FiEdit3, FiCheck, FiX } from "react-icons/fi";
+import { FiEdit3, FiCheck, FiX } from 'react-icons/fi';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
-import { useSession } from "next-auth/react";
-const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), { ssr: false });
+import { useSession } from 'next-auth/react';
+const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), {
+  ssr: false,
+});
 
 const StudentProfile = () => {
   const { data: session } = useSession();
@@ -18,26 +20,33 @@ const StudentProfile = () => {
 
   useEffect(() => {
     fetchStudentData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchStudentData = async () => {
     try {
       const user_id = session.user.userid;
-      const response = await axios.post('/api/user/studentProfile', { user_id });
+      const response = await axios.post('/api/user/studentProfile', {
+        user_id,
+      });
       const data = response.data.data[0];
       setStudentData(data);
-      setEditedAddress(`${data.address_city}, ${data.address_street}, ${data.address_building}`);
+      setEditedAddress(
+        `${data.address_city}, ${data.address_street}, ${data.address_building}`
+      );
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const averageGrades = 60;
 
   const updateDetails = async () => {
     try {
       if (!editedAddress.includes(',')) {
-        setAddressErrorMessage('Please enter a comma between city, street, and building in the address.');
+        setAddressErrorMessage(
+          'Please enter a comma between city, street, and building in the address.'
+        );
         setShowAddressError(true);
         return;
       }
@@ -47,7 +56,10 @@ const StudentProfile = () => {
         mobile_number: studentData.mobile_number,
         address: editedAddress,
       };
-      const response = await axios.post('/api/user/editProfileStudent', payload);
+      const response = await axios.post(
+        '/api/user/editProfileStudent',
+        payload
+      );
 
       if (response.data.success === true) {
         setIsEditingMobileNumber(false);
@@ -56,10 +68,9 @@ const StudentProfile = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
-
     <div className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg">
       <div className="md:w-1/2 lg:w-2/3 md:pl-4 mb-6">
         <div className="text-center md:text-center ml-12">
@@ -86,21 +97,28 @@ const StudentProfile = () => {
             width={300}
             height={200}
             customSegmentStops={[0, 25, 50, 70, 100]}
-            segmentColors={["#CCCCFF", "#89CFF0", "#4169E1", '#000080']}
+            segmentColors={['#CCCCFF', '#89CFF0', '#4169E1', '#000080']}
             currentValueText={`Avg. Grades: ${averageGrades}%`}
             needleHeightRatio={0.6}
           />
         </div>
         <div className="md:w-1/2 lg:w-2/3 md:pl-4 ml-12">
           <div className="mb-4 flex items-center">
-            <p className="text-primary text-sm md:text-base lg:text-lg">Mobile Number:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">
+              Mobile Number:
+            </p>
             {isEditingMobileNumber ? (
               <div className="flex">
                 <input
                   type="text"
                   value={studentData.mobile_number}
                   className="text-primary text-sm md:text-base lg:text-lg"
-                  onChange={(e) => setStudentData({ ...studentData, mobile_number: e.target.value })}
+                  onChange={(e) =>
+                    setStudentData({
+                      ...studentData,
+                      mobile_number: e.target.value,
+                    })
+                  }
                 />
                 <button onClick={() => updateDetails()}>
                   <FiCheck className="text-green-600 text-sm md:text-base lg:text-lg" />
@@ -111,7 +129,9 @@ const StudentProfile = () => {
               </div>
             ) : (
               <div className="flex">
-                <p className="text-primary text-sm md:text-base lg:text-lg">{studentData.mobile_number}</p>
+                <p className="text-primary text-sm md:text-base lg:text-lg">
+                  {studentData.mobile_number}
+                </p>
                 <button onClick={() => setIsEditingMobileNumber(true)}>
                   <FiEdit3 className="text-primary text-sm md:text-base lg:text-lg hover:text-third hover:font-bold" />
                 </button>
@@ -120,7 +140,9 @@ const StudentProfile = () => {
           </div>
 
           <div className="mb-4 flex items-center">
-            <p className="text-primary text-sm md:text-base lg:text-lg">Address:</p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">
+              Address:
+            </p>
             {isEditingAddress ? (
               <div className="flex">
                 <input
@@ -143,7 +165,9 @@ const StudentProfile = () => {
               </div>
             ) : (
               <div className="flex">
-                <p className="text-primary text-sm md:text-base lg:text-lg">{editedAddress}</p>
+                <p className="text-primary text-sm md:text-base lg:text-lg">
+                  {editedAddress}
+                </p>
                 <button onClick={() => setIsEditingAddress(true)}>
                   <FiEdit3 className="text-primary text-sm md:text-base lg:text-lg hover:text-third hover:font-bold" />
                 </button>
@@ -152,17 +176,28 @@ const StudentProfile = () => {
           </div>
 
           <div className="mb-4 flex items-center">
-            <p className="text-primary text-sm md:text-base lg:text-lg">Promotion:</p>
-            <p className="text-primary text-sm md:text-base lg:text-lg">{studentData.promotion}</p>
-          </div>
-
-          <div className="mb-4 flex items-center">
-            <p className="text-primary text-sm md:text-base lg:text-lg">Status:</p>
-            <p className={`text-sm md:text-base lg:text-lg ${studentData.status === 'active' ? 'text-green-400' : 'text-red-400'}`}>
-              {studentData.status}
+            <p className="text-primary text-sm md:text-base lg:text-lg">
+              Promotion:
+            </p>
+            <p className="text-primary text-sm md:text-base lg:text-lg">
+              {studentData.promotion}
             </p>
           </div>
 
+          <div className="mb-4 flex items-center">
+            <p className="text-primary text-sm md:text-base lg:text-lg">
+              Status:
+            </p>
+            <p
+              className={`text-sm md:text-base lg:text-lg ${
+                studentData.status === 'active'
+                  ? 'text-green-400'
+                  : 'text-red-400'
+              }`}
+            >
+              {studentData.status}
+            </p>
+          </div>
         </div>
       </div>
     </div>

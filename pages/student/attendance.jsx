@@ -1,12 +1,12 @@
-import Head from "next/head";
+import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
-import AttendanceStudentList from "../../components/Dashboard/AtendanceStudentList";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import AttendanceStudentList from '../../components/Dashboard/AtendanceStudentList';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
-import axios from "axios";
+import axios from 'axios';
 //attendance
 export default function Attendance() {
   const { data: session } = useSession();
@@ -14,14 +14,14 @@ export default function Attendance() {
 
   const router = useRouter();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
-  const [present, setPresent] = useState("");
+  const [present, setPresent] = useState('');
 
-  const [attendance_date, setattendanceDate] = useState("");
-  const [teacher_lastname, setTeacherLastName] = useState("");
-  const [teacher_firstname, setTeacherFirstName] = useState("");
+  const [attendance_date, setattendanceDate] = useState('');
+  const [teacher_lastname, setTeacherLastName] = useState('');
+  const [teacher_firstname, setTeacherFirstName] = useState('');
   const [course_name, setCourseName] = useState();
 
   useEffect(() => {
@@ -30,14 +30,14 @@ export default function Attendance() {
         const payload = {
           major_id: session.user.majorid,
           student_id: session.user.userid,
-          teacher_firstname: "",
-          teacher_lastname: "",
-          course_name: "",
-          attendance_date: "",
-          present: "",
+          teacher_firstname: '',
+          teacher_lastname: '',
+          course_name: '',
+          attendance_date: '',
+          present: '',
         };
         const result = await axios.post(
-          "/api/user/filterAttendanceStudent",
+          '/api/user/filterAttendanceStudent',
           payload
         );
         // console.log("data", result.data.data)
@@ -48,6 +48,7 @@ export default function Attendance() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // console.log(session.user.majorid)
 
@@ -56,22 +57,22 @@ export default function Attendance() {
       const payload = {
         major_id: session.user.majorid,
         student_id: session.user.userid,
-        teacher_firstname: "",
-        teacher_lastname: "",
-        course_name: "",
-        attendance_date: "",
-        present: "",
+        teacher_firstname: '',
+        teacher_lastname: '',
+        course_name: '',
+        attendance_date: '',
+        present: '',
       };
       const result = await axios.post(
-        "/api/user/filterAttendanceStudent",
+        '/api/user/filterAttendanceStudent',
         payload
       );
       setUsers(result.data.data);
-      setattendanceDate("");
-      setTeacherFirstName("");
-      setTeacherLastName("");
-      setPresent("");
-      setCourseName("");
+      setattendanceDate('');
+      setTeacherFirstName('');
+      setTeacherLastName('');
+      setPresent('');
+      setCourseName('');
 
       // setTest(true)
     } catch (error) {
@@ -91,7 +92,7 @@ export default function Attendance() {
         present: present,
       };
       const result = await axios.post(
-        "/api/user/filterAttendanceStudent",
+        '/api/user/filterAttendanceStudent',
         payload
       );
       setUsers(result.data.data);
@@ -105,9 +106,9 @@ export default function Attendance() {
       <Head>
         <title>SIS Admin - Attendance</title>
       </Head>
-      {session?.user.role === "1" ? (
+      {session?.user.role === '1' ? (
         <>
-          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary">
+          <p className="text-3xl pt-5 mb-10 font-bold text-primary">
             Attendance
           </p>
           <form>
@@ -119,7 +120,7 @@ export default function Attendance() {
                   type="date"
                   name="date"
                   placeholder=""
-                  id={"date"}
+                  id={'date'}
                   value={attendance_date}
                   onChange={(e) => {
                     setattendanceDate(e.target.value);
@@ -148,7 +149,7 @@ export default function Attendance() {
                   type="text"
                   name="Lname"
                   placeholder="Course Name"
-                  id={"text"}
+                  id={'text'}
                   value={course_name}
                   onChange={(e) => {
                     setCourseName(e.target.value);
@@ -164,7 +165,7 @@ export default function Attendance() {
                   type="text"
                   name="firstname"
                   placeholder="First Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_firstname}
                   onChange={(e) => {
                     setTeacherFirstName(e.target.value);
@@ -190,7 +191,7 @@ export default function Attendance() {
                   type="text"
                   name="lastname"
                   placeholder="Last Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_lastname}
                   onChange={(e) => {
                     setTeacherLastName(e.target.value);

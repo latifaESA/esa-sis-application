@@ -1,26 +1,25 @@
-
-import { Fragment, React, useEffect, useState } from "react";
+import { Fragment, React, useEffect, useState } from 'react';
 import {
   Bars3CenterLeftIcon,
   // PencilIcon,
-  ChevronDownIcon,
-  ArrowLeftOnRectangleIcon,
-} from "@heroicons/react/24/solid";
-import { BellIcon, CheckIcon } from "@heroicons/react/24/outline";
-import { Menu, Transition, Popover } from "@headlessui/react";
-import Badge from "@mui/material/Badge";
-import Image from "next/image";
+  // ChevronDownIcon,
+  // ArrowLeftOnRectangleIcon,
+} from '@heroicons/react/24/solid';
+import { BellIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { Menu, Transition, Popover } from '@headlessui/react';
+import Badge from '@mui/material/Badge';
+import Image from 'next/image';
 // import Link from 'next/link';
-import { signOut, useSession } from "next-auth/react";
-import { useDispatch, useSelector } from "react-redux";
+import { signOut, useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
 // import { useRouter } from 'next/router';
-import { isLogout } from "../../redux/slices/userSlice";
-import selection_data from "../../utilities/selection_data";
-import axios from "axios";
-import encrypt from "../../utilities/encrypt_decrypt/encryptText";
-import { NotificatonMessages } from "./WarningMessage";
-import Link from "next/link";
-import {appNotification} from '../../redux/slices/appSlice'
+import { isLogout } from '../../redux/slices/userSlice';
+import selection_data from '../../utilities/selection_data';
+import axios from 'axios';
+import encrypt from '../../utilities/encrypt_decrypt/encryptText';
+import { NotificatonMessages } from './WarningMessage';
+import Link from 'next/link';
+import { appNotification } from '../../redux/slices/appSlice';
 // import NavigationRef from '../../utilities/NavbarRef/navigationRef';
 
 export default function AdminTopBar({ showNav, setShowNav }) {
@@ -41,17 +40,17 @@ export default function AdminTopBar({ showNav, setShowNav }) {
         let countNum = await axios.get(
           `/api/user/getNotificationCount/${userID}`
         );
-        countNum.data > 0 ?
-        // setNotCount(countNum.data)
-        dispatch(appNotification(countNum.data))
-        : 
-        // setNotCount(null)
-        dispatch(appNotification(null));
+        countNum.data > 0
+          ? // setNotCount(countNum.data)
+            dispatch(appNotification(countNum.data))
+          : // setNotCount(null)
+            dispatch(appNotification(null));
       } catch (error) {
         console.log(error);
       }
     };
     getCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logoutClickHandler = async () => {
@@ -68,10 +67,10 @@ export default function AdminTopBar({ showNav, setShowNav }) {
       JSON.stringify({
         email: emailWas,
         role,
-        info: "signout navbar",
+        info: 'signout navbar',
       })
     );
-    await axios.put("/api/logger/sendInfoToLogger", {
+    await axios.put('/api/logger/sendInfoToLogger', {
       data: encryptedEmail,
     });
     // if (router.locale === 'fr') {
@@ -96,21 +95,21 @@ export default function AdminTopBar({ showNav, setShowNav }) {
     {
       id: 0,
       role: 1,
-      action: "Sending Verificaton Email",
+      action: 'Sending Verificaton Email',
       message:
-        "Email Could not be sent, a user is trying to register and verify his email but got error while verifiying!",
+        'Email Could not be sent, a user is trying to register and verify his email but got error while verifiying!',
       isSolved: 1,
-      date: "01/03/2023",
+      date: '01/03/2023',
     },
 
     {
       id: 1,
       role: 1,
-      action: "Submitting",
+      action: 'Submitting',
       message:
-        "network failed a user is trying to submit his application and got this error",
+        'network failed a user is trying to submit his application and got this error',
       isSolved: 1,
-      date: "01/03/2023",
+      date: '01/03/2023',
     },
   ];
 
@@ -145,6 +144,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
     setOpenNotificatonMessages(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const unSolvedWarnings = warnings.filter((warning) => warning.isSolved === 0);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -157,7 +157,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
     <>
       <div
         className={`fixed w-full h-16 flex justify-between items-center transition-all z-10 bg-white shadow-sm duration-[400ms] ${
-          showNav ? "pl-56" : ""
+          showNav ? 'pl-56' : ''
         }`}
       >
         <div className="pl-2 md:pl-5">
@@ -322,7 +322,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                     <li class="px-4 py-1 hover:bg-gray-100 border-b">
                       <a
                         href="#"
-                        className="flex hover:font-bold text-primary text-gray-700 rounded p-2 text-sm group transition-colors items-center"
+                        className="flex hover:font-bold text-primary rounded p-2 text-sm group transition-colors items-center"
                         onClick={logoutClickHandler}
                       >
                         Logout
@@ -344,10 +344,10 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                       height={70}
                       src={
                         userState.user.profileUrl &&
-                        userState.user.profileUrl !== " "
+                        userState.user.profileUrl !== ' '
                           ? userState.user.profileUrl
                           : // : selection_data.user_Avatar
-                            "/images/default.jpg"
+                            '/images/default.jpg'
                       }
                     ></Image>
                   </picture>
@@ -387,7 +387,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
             <div className="hidden sm:block">
               <a
                 href="#"
-                className="flex hover:font-bold text-primary text-gray-700 rounded p-2 text-sm group transition-colors items-center"
+                className="flex hover:font-bold text-primary  rounded p-2 text-sm group transition-colors items-center"
                 onClick={logoutClickHandler}
               >
                 Logout

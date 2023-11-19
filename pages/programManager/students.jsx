@@ -1,13 +1,13 @@
-import { useSession } from "next-auth/react";
-import Head from "next/head";
-import StudentsList from "../../components/Dashboard/StudentsList";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useSession } from 'next-auth/react';
+import Head from 'next/head';
+import StudentsList from '../../components/Dashboard/StudentsList';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import axios from "axios";
+import axios from 'axios';
 // import { x64 } from 'crypto-js';
 
-import CustomSelectBox from "./customSelectBox";
+import CustomSelectBox from './customSelectBox';
 // import Link from 'next/link';
 
 export default function Students() {
@@ -20,15 +20,15 @@ export default function Students() {
   const [promotion, setPromotion] = useState([]);
   const [test, setTest] = useState(false);
 
-  const [idValue, setIdValue] = useState("");
-  const [firstnameValue, setFirstnameValue] = useState("");
-  const [lastnameValue, setLastnameValue] = useState("");
-  const [majorValue, setMajorValue] = useState("");
-  const [statusValue, setStatusValue] = useState("");
-  const [promotionValue, setPromotionValue] = useState("");
+  const [idValue, setIdValue] = useState('');
+  const [firstnameValue, setFirstnameValue] = useState('');
+  const [lastnameValue, setLastnameValue] = useState('');
+  const [majorValue, setMajorValue] = useState('');
+  const [statusValue, setStatusValue] = useState('');
+  const [promotionValue, setPromotionValue] = useState('');
 
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
   useEffect(() => {
@@ -52,8 +52,8 @@ export default function Students() {
     // getMajor()
 
     const getStatus = async () => {
-      let table = "status";
-      let { data } = await axios.post("/api/pmApi/getAll", { table });
+      let table = 'status';
+      let { data } = await axios.post('/api/pmApi/getAll', { table });
 
       // setUsers(data)
       // setDates(data.rows)
@@ -70,15 +70,15 @@ export default function Students() {
     getStatus();
 
     const getPromotion = async () => {
-      let table = "promotions";
-      let Where = "major_id";
+      let table = 'promotions';
+      let Where = 'major_id';
       let id = session.user.majorid;
-      let { data } = await axios.post("/api/pmApi/getAllCourses", {
+      let { data } = await axios.post('/api/pmApi/getAllCourses', {
         table,
         Where,
         id,
       });
-      console.log("data", data.data.data);
+      console.log('data', data.data.data);
 
       // setUsers(data)
 
@@ -94,78 +94,80 @@ export default function Students() {
       setPromotion(datesArray);
     };
     getPromotion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     renderValues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderValues = async () => {
     let sendData = {
-      id: "",
-      firstname: "",
-      lastname: "",
+      id: '',
+      firstname: '',
+      lastname: '',
       major: session.user.majorid,
-      promotion: "",
-      status: "",
+      promotion: '',
+      status: '',
     };
     console.log(sendData);
     console.log(sendData);
     // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
+    let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
     console.log(sendData);
     setUsers(data.rows);
   };
 
   const handleShowAll = async () => {
     let sendData = {
-      id: "",
-      firstname: "",
-      lastname: "",
+      id: '',
+      firstname: '',
+      lastname: '',
       major: session.user.majorid,
-      promotion: "",
-      status: "",
+      promotion: '',
+      status: '',
     };
     console.log(sendData);
     console.log(sendData);
     // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
+    let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
     console.log(sendData);
     setUsers(data.rows);
-    setMajorValue("");
+    setMajorValue('');
     setTest(true);
-    setIdValue("");
+    setIdValue('');
     setallMajor([]);
-    setFirstnameValue("");
-    setLastnameValue("");
-    setStatusValue("");
-    setPromotionValue("");
+    setFirstnameValue('');
+    setLastnameValue('');
+    setStatusValue('');
+    setPromotionValue('');
   };
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    console.log('Selected Value:', selectedValue);
     if (test) {
-      selectedValue == "";
+      selectedValue == '';
     }
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       let majorID = allMajor.filter(
         (major) => major.major_name === selectedValue
       );
       console.log(majorID[0].major_id);
       setMajorValue(majorID[0].major_id);
     } else {
-      setMajorValue("");
+      setMajorValue('');
     }
   };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    console.log('Selected Value:', selectedValue);
     setStatusValue(selectedValue);
   };
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value
-    console.log("Selected Value:", selectedValue);
+    console.log('Selected Value:', selectedValue);
     setPromotionValue(selectedValue);
   };
 
@@ -190,7 +192,7 @@ export default function Students() {
     console.log(sendData);
     console.log(JSON.stringify(sendData));
     // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/pmApi/filterSearch", sendData);
+    let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
 
     console.log(data.rows);
     setUsers(data.rows);
@@ -202,7 +204,7 @@ export default function Students() {
       <Head>
         <title>SIS Admin - Students</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3"? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Students
@@ -258,7 +260,7 @@ export default function Students() {
                   placeholder="Select Major"
                   onSelect={handleMajor}
                   styled={
-                    "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
+                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10'
                   }
                 />
               </label>
@@ -295,7 +297,7 @@ export default function Students() {
                     placeholder="Select Promotion"
                     onSelect={handlePromotion}
                     styled={
-                      "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"
+                      'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]'
                     }
                   />
                 }
@@ -309,7 +311,7 @@ export default function Students() {
                     placeholder="Select Status"
                     onSelect={handleStatus}
                     styled={
-                      "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10"
+                      'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10'
                     }
                   />
                 }

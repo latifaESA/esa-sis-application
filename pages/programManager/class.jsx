@@ -1,11 +1,11 @@
-import { useSession } from "next-auth/react";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
-import AddClass from "../../components/addClass";
-import ClassList from "../../components/Dashboard/ClassList";
-import CopyClass from "../../components/copyClass";
+import { useSession } from 'next-auth/react';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import AddClass from '../../components/addClass';
+import ClassList from '../../components/Dashboard/ClassList';
+import CopyClass from '../../components/copyClass';
 // import Link from 'next/link';
 
 export default function Class() {
@@ -13,45 +13,45 @@ export default function Class() {
   const [users, setUsers] = useState([]);
   // const [promotionValue, setPromotionValue] = useState('');
   const [promotion, setPromotion] = useState([]);
-  const [courseValue, setCourseValue] = useState("");
-  const [majorValue, setMajorValue] = useState("");
+  const [courseValue, setCourseValue] = useState('');
+  const [majorValue, setMajorValue] = useState('');
   const [courses, setCourses] = useState([]);
   const [allCourse, setAllCourse] = useState([]);
   const [coursesCopy, setCoursesCopy] = useState([]);
 
-  const [promotionValueClass, setPromotionValueClass] = useState("");
+  const [promotionValueClass, setPromotionValueClass] = useState('');
   // const [promotionClass, setPromotionClass] = useState([]);
   const [open, setOpen] = useState(false);
   const [openCopy, setOpenCopy] = useState(false);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
-  const [teacherValue, setTeacherValue] = useState("");
+  const [teacherValue, setTeacherValue] = useState('');
   const [teachers, setTeachers] = useState([]);
   const [allTeacher, setAllTeacher] = useState([]);
   const [error, setError] = useState('');
   const [errorCourse, setErrorCourse] = useState('');
-  const [teacherList,setTeacherList] = useState([])
+  // eslint-disable-next-line no-unused-vars
+  const [teacherList, setTeacherList] = useState([]);
   const [errorTeacher, setErrorTeacher] = useState('');
   const [errorPromotion, setErrorPromotion] = useState('');
   const [errorStart, setErrorStart] = useState('');
   const [errorEnd, setErrorEnd] = useState('');
-  const [searchCourse, setSearchCourse] = useState("");
-  const [classes, setClasses] = useState([])
-
+  const [searchCourse, setSearchCourse] = useState('');
+  const [classes, setClasses] = useState([]);
 
   const handleCancel = () => {
     setOpen(false);
-    setErrorEnd("")
-    setErrorStart("")
+    setErrorEnd('');
+    setErrorStart('');
     setErrorCourse('');
-    setErrorPromotion('')
-    setErrorTeacher('')
+    setErrorPromotion('');
+    setErrorTeacher('');
     // setPromotionValue('');
-    setCourseValue("");
-    setTeacherValue("");
-    setDateFrom("");
-    setDateTo("");
+    setCourseValue('');
+    setTeacherValue('');
+    setDateFrom('');
+    setDateTo('');
   };
 
   // const handleCancelCopy = () => {
@@ -65,19 +65,19 @@ export default function Class() {
     // console.log('save')
     try {
       if (courseValue.length === 0) {
-        setErrorCourse('Select At least one Course')
+        setErrorCourse('Select At least one Course');
       }
       if (teacherValue.length === 0) {
-        setErrorTeacher('Select At least one Teacher')
+        setErrorTeacher('Select At least one Teacher');
       }
       if (promotionValueClass.length === 0) {
-        setErrorPromotion('Select At least one Promotion ')
+        setErrorPromotion('Select At least one Promotion ');
       }
       if (dateFrom === '') {
-        setErrorStart('Please Fill The Start Date')
+        setErrorStart('Please Fill The Start Date');
       }
       if (dateTo === '') {
-        setErrorEnd('Please Fill The End Date')
+        setErrorEnd('Please Fill The End Date');
       }
       const payload = {
         major_id: session.user.majorid,
@@ -86,12 +86,12 @@ export default function Class() {
         course_id: courseValue, // Retrieve the value property of the selected course === courseID
         course_name: courseValue, // Retrieve the label property of the selected course === courseName
       };
-      await axios.post("/api/pmApi/asigendTeacher", payload);
+      await axios.post('/api/pmApi/asigendTeacher', payload);
 
       let classValue = {
         course_id: courseValue,
         teacher_id: teacherValue,
-        promotion: promotionValueClass.replace(/\s/g, ""),
+        promotion: promotionValueClass.replace(/\s/g, ''),
         startdate: dateFrom,
         enddate: dateTo,
         pm_id: session.user.userid,
@@ -100,30 +100,26 @@ export default function Class() {
 
       // console.log("payload", payload)
 
-      let { data } = await axios.post("/api/pmApi/createClass", classValue);
+      let { data } = await axios.post('/api/pmApi/createClass', classValue);
       // console.log(data)
       if (data.success) {
         setOpen(false);
         // setPromotionValue('');
-        setCourseValue("");
-        setMajorValue("");
-        setTeacherValue("");
-        setDateFrom("");
-        setDateTo("");
+        setCourseValue('');
+        setMajorValue('');
+        setTeacherValue('');
+        setDateFrom('');
+        setDateTo('');
         getClasses();
       } else {
-        alert("Error creating class");
+        alert('Error creating class');
       }
-
 
       // setOpen(false)
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
-
-
-
 
   const handleSaveCopy = () => {
     let createClass = async () => {
@@ -137,19 +133,19 @@ export default function Class() {
           pm_id: session.user.userid,
           major_id: majorValue,
         };
-        let { data } = await axios.post("/api/pmApi/createClass", classValue);
+        let { data } = await axios.post('/api/pmApi/createClass', classValue);
         // console.log(data)
         if (data.success) {
           setOpen(false);
           // setPromotionValue('');
-          setCourseValue("");
-          setMajorValue("");
-          setTeacherValue("");
-          setDateFrom("");
-          setDateTo("");
+          setCourseValue('');
+          setMajorValue('');
+          setTeacherValue('');
+          setDateFrom('');
+          setDateTo('');
           getClasses();
         } else {
-          alert("Error creating class");
+          alert('Error creating class');
         }
         // setOpen(false)
       } catch (err) {
@@ -157,12 +153,12 @@ export default function Class() {
       }
     };
     courseValue.length === 0
-      ? setError("Please choose course")
+      ? setError('Please choose course')
       : teacherValue.length === 0
-        ? setError("Please choose teacher")
-        : promotionValueClass.length === 0
-          ? setError("Please choose promotion")
-          : (setError(""), createClass());
+      ? setError('Please choose teacher')
+      : promotionValueClass.length === 0
+      ? setError('Please choose promotion')
+      : (setError(''), createClass());
   };
 
   const handleDateFromChange = (event) => {
@@ -170,9 +166,9 @@ export default function Class() {
 
     // console.log(selectedDate);
     if (dateTo.length > 0 && selectedDate > dateTo) {
-      alert("The date from is greater than date to");
+      alert('The date from is greater than date to');
     } else if (dateTo.length > 0 && selectedDate === dateTo) {
-      alert("The date from and to are equal");
+      alert('The date from and to are equal');
     } else {
       // console.log(new Date(selectedDate))
       setDateFrom(selectedDate);
@@ -184,9 +180,9 @@ export default function Class() {
 
     // console.log(selectedDate);
     if (dateFrom.length > 0 && selectedDate < dateFrom) {
-      alert("The date to is less than date to");
+      alert('The date to is less than date to');
     } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
-      alert("The date from and to are equal");
+      alert('The date from and to are equal');
     } else {
       setDateTo(selectedDate);
     }
@@ -197,25 +193,26 @@ export default function Class() {
       const payload = {
         table: 'tmpclass',
         Where: 'major_id',
-        id: session.user.majorid
-      }
-      const data = await axios.post('/api/pmApi/getAllCourses', payload)
-      setClasses(data.data.data)
+        id: session.user.majorid,
+      };
+      const data = await axios.post('/api/pmApi/getAllCourses', payload);
+      setClasses(data.data.data);
     } catch (error) {
-      return error
+      return error;
     }
-  }
-  console.log("class", classes)
+  };
+  console.log('class', classes);
 
   const router = useRouter();
 
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
   useEffect(() => {
-    fetchClass()
+    fetchClass();
     handleShowAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // const handlePromotion = (selectedValue) => {
@@ -234,19 +231,20 @@ export default function Class() {
     // Do something with the selected value
     // console.log("Selected Value:",selectedValue.length > 0 ? allCourse.filter(course => course.course_name === selectedValue)[0].course_id : '');
     // setCourseValue(selectedValue)
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       setCourseValue(
         selectedValue.length > 0
-          ? allCourse.filter((course) => course.course_name === selectedValue)[0]
-            .course_id
-          : ""
+          ? allCourse.filter(
+              (course) => course.course_name === selectedValue
+            )[0].course_id
+          : ''
       );
     }
     setMajorValue(
       selectedValue.length > 0
         ? allCourse.filter((course) => course.course_name === selectedValue)[0]
-          .major_id
-        : ""
+            .major_id
+        : ''
     );
   };
 
@@ -266,20 +264,19 @@ export default function Class() {
   //     )
   // }
   const handleTeacher = (selectedValue) => {
-    
     // Do something with the selected value
     // // console.log("Selected Value:", allTeacher.filter(teacher => `${teacher.teacher_firstname} ${teacher.teacher_lastname}` === selectedValue)[0].course_id);
     // console.log('select teacher: ',selectedValue.length > 0 ?selectedValue.split(' ')[0] : '')
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       setTeacherValue(
-        selectedValue.length > 0 ? selectedValue.split(" ")[0] : ""
+        selectedValue.length > 0 ? selectedValue.split(' ')[0] : ''
       );
     }
     // setCourseValue(allCourse.filter(course => course.course_name === selectedValue)[0].course_id)
   };
 
   const handleShowAll = async () => {
-    setSearchCourse(" ")
+    setSearchCourse(' ');
     // console.log('hello')
     getClasses();
   };
@@ -291,12 +288,11 @@ export default function Class() {
         course.course_id.toLowerCase().includes(searchCourse.toLowerCase())
       )
     );
-
   };
   const getClasses = async () => {
     try {
       let val = session.user.majorid;
-      let { data } = await axios.post("/api/pmApi/getuserteacher", {
+      let { data } = await axios.post('/api/pmApi/getuserteacher', {
         pmID: val,
       });
 
@@ -318,10 +314,10 @@ export default function Class() {
     getClasses();
     const getPromotion = async () => {
       try {
-        let table = "promotions";
-        let Where = "major_id";
+        let table = 'promotions';
+        let Where = 'major_id';
         let id = session.user.majorid;
-        let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        let { data } = await axios.post('/api/pmApi/getAllCourses', {
           table,
           Where,
           id,
@@ -342,10 +338,10 @@ export default function Class() {
 
     const getCourse = async () => {
       try {
-        let table = "courses";
-        let Where = "major_id";
+        let table = 'courses';
+        let Where = 'major_id';
         let id = session.user.majorid;
-        let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        let { data } = await axios.post('/api/pmApi/getAllCourses', {
           table,
           Where,
           id,
@@ -369,8 +365,8 @@ export default function Class() {
 
     const getTeacher = async () => {
       try {
-        let table = "teachers";
-        let { data } = await axios.post("/api/pmApi/getAll", { table });
+        let table = 'teachers';
+        let { data } = await axios.post('/api/pmApi/getAll', { table });
 
         setAllTeacher(data.rows);
         const datesArray = [];
@@ -385,9 +381,8 @@ export default function Class() {
       }
     };
     getTeacher();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-
 
   const handleClass = () => {
     setOpen(true);
@@ -403,7 +398,7 @@ export default function Class() {
       <Head>
         <title>SIS Admin - Teachers</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3" ? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Classes
@@ -462,18 +457,22 @@ export default function Class() {
                 <select
                   className="ml-9 w-40"
                   value={searchCourse}
-                  onChange={(e) => setSearchCourse(e.target.value)}>
+                  onChange={(e) => setSearchCourse(e.target.value)}
+                >
                   <option value=" ">courses</option>
                   <>
-                    <>{classes
-                      .length > 0 ? classes.map((item, index) => (
-                        <option key={index} value={item.course_id} >{item.course_id}</option>
-
-                      )) : <option value={" "}>NO Courses</option>}</>
-
+                    <>
+                      {classes.length > 0 ? (
+                        classes.map((item, index) => (
+                          <option key={index} value={item.course_id}>
+                            {item.course_id}
+                          </option>
+                        ))
+                      ) : (
+                        <option value={' '}>NO Courses</option>
+                      )}
+                    </>
                   </>
-
-
                 </select>
                 {/* {
               <CustomSelectBox
@@ -503,8 +502,8 @@ export default function Class() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                // value={formData.to}
-                // onChange={handleChange}
+                  // value={formData.to}
+                  // onChange={handleChange}
                 ></input>
               </label>
 
@@ -532,7 +531,6 @@ export default function Class() {
                   className=" invisible max-[850px]:visible max-[850px]:hidden "
                   onChange={(e) => setSearchCourse(e.target.value)}
                 /> */}
-
                 {/* {
               <CustomSelectBox
               options={promotion}
@@ -561,13 +559,11 @@ export default function Class() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                // value={formData.to}
-                // onChange={handleChange}
+                  // value={formData.to}
+                  // onChange={handleChange}
                 ></input>
               </label>
               <div className="flex flex-col  min-[850px]:flex-row gap-4">
-
-
                 <button
                   className="py-1 px-2 primary-button hover:text-white w-60 bg-green-600  hover:font-bold"
                   type="button"
@@ -582,7 +578,6 @@ export default function Class() {
                   onClick={handleCopyClass}
                 >
                   Copy Schedule
-
                 </button>
               </div>
             </div>

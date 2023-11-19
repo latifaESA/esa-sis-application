@@ -1,12 +1,12 @@
-import Head from "next/head";
+import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
-import axios from "axios";
-import ElectiveCourseList from "../../components/Dashboard/ElectiveCourseList";
+import axios from 'axios';
+import ElectiveCourseList from '../../components/Dashboard/ElectiveCourseList';
 
 export default function ElectiveCourse() {
   const { data: session } = useSession();
@@ -14,13 +14,13 @@ export default function ElectiveCourse() {
 
   const router = useRouter();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
-  const [course_id, setCourseid] = useState("");
-  const [student_firstname, setStudent_firstname] = useState("");
-  const [student_lastname, setStudent_lastname] = useState("");
-  const [course_name, setCourse_name] = useState("");
+  const [course_id, setCourseid] = useState('');
+  const [student_firstname, setStudent_firstname] = useState('');
+  const [student_lastname, setStudent_lastname] = useState('');
+  const [course_name, setCourse_name] = useState('');
   // const [test, setTest] = useState()
   // console.log(session)
 
@@ -35,7 +35,7 @@ export default function ElectiveCourse() {
           course_name,
         };
         const result = await axios.post(
-          "/api/pmApi/filterElectiveStudent",
+          '/api/pmApi/filterElectiveStudent',
           payload
         );
 
@@ -45,25 +45,26 @@ export default function ElectiveCourse() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleShowAll = async () => {
     try {
       const payload = {
         major_id: session.user.majorid,
-        course_id: "",
-        student_firstname: "",
-        student_lastname: "",
-        course_name: "",
+        course_id: '',
+        student_firstname: '',
+        student_lastname: '',
+        course_name: '',
       };
       const result = await axios.post(
-        "/api/pmApi/filterElectiveStudent",
+        '/api/pmApi/filterElectiveStudent',
         payload
       );
-      setCourseid("");
-      setStudent_firstname("");
-      setStudent_lastname("");
-      setCourse_name("");
+      setCourseid('');
+      setStudent_firstname('');
+      setStudent_lastname('');
+      setCourse_name('');
       setUsers(result.data.data);
       // setTest(true)
     } catch (error) {
@@ -81,7 +82,7 @@ export default function ElectiveCourse() {
         course_name: course_name,
       };
       const result = await axios.post(
-        "/api/pmApi/filterElectiveStudent",
+        '/api/pmApi/filterElectiveStudent',
         payload
       );
       setUsers(result.data.data);
@@ -115,8 +116,9 @@ export default function ElectiveCourse() {
       <Head>
         <title>SIS Admin - Assign Elective</title>
       </Head>
-      {((session?.user.role === "2" || session?.user.role === "3") && session?.user.majorid === "5") ||
-      session?.user.majorid === "15" ? (
+      {((session?.user.role === '2' || session?.user.role === '3') &&
+        session?.user.majorid === '5') ||
+      session?.user.majorid === '15' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Elective
@@ -130,7 +132,7 @@ export default function ElectiveCourse() {
                   type="text"
                   name="firstname"
                   placeholder="First Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={student_firstname}
                   onChange={(e) => {
                     setStudent_firstname(e.target.value);
@@ -159,7 +161,7 @@ export default function ElectiveCourse() {
                   type="text"
                   name="firstname"
                   placeholder="Last Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={student_lastname}
                   onChange={(e) => {
                     setStudent_lastname(e.target.value);
@@ -175,7 +177,7 @@ export default function ElectiveCourse() {
                   type="text"
                   name="firstname"
                   placeholder="First Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={student_firstname}
                   onChange={(e) => {
                     setStudent_firstname(e.target.value);
@@ -201,7 +203,7 @@ export default function ElectiveCourse() {
                   type="text"
                   name="lastname"
                   placeholder="Last Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={student_lastname}
                   onChange={(e) => {
                     setStudent_lastname(e.target.value);

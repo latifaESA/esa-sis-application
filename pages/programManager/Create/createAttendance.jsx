@@ -1,19 +1,19 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import CustomSelectBox from "../customSelectBox";
-import { useSession } from "next-auth/react";
-import axios from "axios";
-import AttendanceModal from "../ModalForm/AttendanceModal";
-import { useRouter } from "next/router";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import CustomSelectBox from '../customSelectBox';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import AttendanceModal from '../ModalForm/AttendanceModal';
+import { useRouter } from 'next/router';
 export default function CreateAttendance() {
-  const [promotionValue, setPromotionValue] = useState("");
+  const [promotionValue, setPromotionValue] = useState('');
   const [formErrors, setFormErrors] = useState({});
   // const [test, setTest] = useState()
-  const [coursesValue, setCoursesValue] = useState("");
-  const [teacherValue, setTeachersValue] = useState("");
-  const [promotionName, setPromotionName] = useState("");
-  const [courseName, setCourseName] = useState("");
-  const [teachersName, setTeachersName] = useState("");
+  const [coursesValue, setCoursesValue] = useState('');
+  const [teacherValue, setTeachersValue] = useState('');
+  const [promotionName, setPromotionName] = useState('');
+  const [courseName, setCourseName] = useState('');
+  const [teachersName, setTeachersName] = useState('');
   // const [teachersLastName, setTeachersLastName] = useState('')
   // const componentRef = useRef();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,16 +33,16 @@ export default function CreateAttendance() {
   // // console.log("selectedddd", selectedDate)
   const router = useRouter();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
   useEffect(() => {
     const getAllPromotion = async () => {
       try {
-        let table = "promotions";
-        let Where = "major_id";
+        let table = 'promotions';
+        let Where = 'major_id';
         let id = session.user.majorid;
-        let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        let { data } = await axios.post('/api/pmApi/getAllCourses', {
           table,
           Where,
           id,
@@ -68,10 +68,10 @@ export default function CreateAttendance() {
 
     const getCourses = async () => {
       try {
-        let table = "courses";
-        let Where = "major_id";
+        let table = 'courses';
+        let Where = 'major_id';
         let id = session.user.majorid;
-        let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        let { data } = await axios.post('/api/pmApi/getAllCourses', {
           table,
           Where,
           id,
@@ -97,7 +97,7 @@ export default function CreateAttendance() {
         let major_id = session.user.majorid;
         // let course_id = coursesValue ;
         const { data } = await axios.post(
-          "/api/pmApi/getTeachersByMajorCourse",
+          '/api/pmApi/getTeachersByMajorCourse',
           { major_id }
         );
         setAllTeachers(data.data);
@@ -114,6 +114,7 @@ export default function CreateAttendance() {
       }
     };
     handleTeacher();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [null]);
   // // console.log('promotion', promotionValue)
 
@@ -121,7 +122,7 @@ export default function CreateAttendance() {
     // Do something with the selected value
     // // console.log("Selected Value:", selectedValue);
 
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       let promotionID = allpromotion.filter(
         (promotion) => promotion.promotion_name === selectedValue
       );
@@ -129,7 +130,7 @@ export default function CreateAttendance() {
       setPromotionValue(promotionID[0].promotion_id);
       setPromotionName(promotionID[0].promotion_name);
     } else {
-      setPromotionValue("");
+      setPromotionValue('');
     }
   };
 
@@ -139,7 +140,7 @@ export default function CreateAttendance() {
     // if (test) {
     //     selectedValue == ''
     // }
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       let coursesID = allcourses.filter(
         (courses) => courses.course_name === selectedValue
       );
@@ -149,7 +150,7 @@ export default function CreateAttendance() {
       setCourseName(coursesID[0].course_name);
       setCourseType(coursesID[0].course_type);
     } else {
-      setCoursesValue("");
+      setCoursesValue('');
     }
     // if (test == true) {
     //     selectedValue === ' '
@@ -162,7 +163,7 @@ export default function CreateAttendance() {
     // if (test) {
     //     selectedValue == ''
     // }
-    if (selectedValue.trim() !== "") {
+    if (selectedValue.trim() !== '') {
       let teachersFullname = allteachers.filter(
         (teachers) => teachers.teacher_fullname === selectedValue
       );
@@ -171,7 +172,7 @@ export default function CreateAttendance() {
       setTeachersValue(teachersFullname[0].teacher_id);
       setTeachersName(teachersFullname[0].teacher_fullname);
     } else {
-      setTeachersValue("");
+      setTeachersValue('');
     }
     // if (test == true) {
     //     selectedValue === ' '
@@ -183,25 +184,25 @@ export default function CreateAttendance() {
       const errors = {};
       // const currentDate = new Date()
       if (teacherValue.length === 0) {
-        errors.teachers = "At least one Teacher must be selected.";
+        errors.teachers = 'At least one Teacher must be selected.';
       }
       if (coursesValue.length === 0) {
-        errors.courses = "At least one course must be selected.";
+        errors.courses = 'At least one course must be selected.';
       }
       if (promotionValue.length === 0) {
-        errors.promotion = "At least one promotion must be selected.";
+        errors.promotion = 'At least one promotion must be selected.';
       }
 
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
         return;
       } else {
-        if (course_type !== "Elective") {
+        if (course_type !== 'Elective') {
           setIsModal(true);
           let major_id = session.user.majorid;
-          let promotion = promotionName.replace(/\s/g, "");
+          let promotion = promotionName.replace(/\s/g, '');
           // let promotion = promotionName
-          const { data } = await axios.post("/api/pmApi/getAllStudent", {
+          const { data } = await axios.post('/api/pmApi/getAllStudent', {
             major_id,
             promotion,
           });
@@ -211,14 +212,14 @@ export default function CreateAttendance() {
         } else {
           try {
             const payload = {
-              promotion: promotionName.replace(/\s/g, ""),
+              promotion: promotionName.replace(/\s/g, ''),
               major_id: session.user.majorid,
               course_id: coursesValue,
             };
             // console.log('payload', payload)
 
             const data = await axios.post(
-              "/api/pmApi/getStudentAssign",
+              '/api/pmApi/getStudentAssign',
               payload
             );
             setIsModal(true);
@@ -227,10 +228,10 @@ export default function CreateAttendance() {
             // console.log('wssll')
             setIsModal(true);
             let major_id = session.user.majorid;
-            let promotion = promotionName.replace(/\s/g, "");
+            let promotion = promotionName.replace(/\s/g, '');
             // let promotion = promotionName
             // console.log('promotion', promotion)
-            const { data } = await axios.post("/api/pmApi/getAllStudent", {
+            const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
               promotion,
             });
@@ -249,7 +250,7 @@ export default function CreateAttendance() {
 
   return (
     <>
-      {session?.user.role === "2" || session?.user.role === "3"? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Create Attendance
@@ -265,7 +266,7 @@ export default function CreateAttendance() {
                       placeholder="Select Promotion"
                       onSelect={handlePromotion}
                       styled={
-                        "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8"
+                        'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-8'
                       }
                     />
                     {formErrors.promotion && (
@@ -281,7 +282,7 @@ export default function CreateAttendance() {
                       placeholder="Select Courses"
                       onSelect={handleCourses}
                       styled={
-                        "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"
+                        'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5'
                       }
                     />
                     {formErrors.courses && (
@@ -301,7 +302,7 @@ export default function CreateAttendance() {
                         placeholder="Select Teacher"
                         onSelect={handleTeachers}
                         styled={
-                          "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5"
+                          'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-5'
                         }
                       />
                     }

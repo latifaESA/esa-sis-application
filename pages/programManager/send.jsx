@@ -7,21 +7,33 @@ import Loader from '../../components/Loader/Loader';
 import CustomSelectBox from './customSelectBox';
 
 export default function send() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session } = useSession();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [majors, setMajors] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [allmajors, setAllMajors] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoading, setIsLoading] = useState(false);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [message, setMessage] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [messageClass, setMessageClass] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [subjectContent, setSubjectContent] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [emailContent, setEmailContent] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [afterSub, setAfterSub] = useState(false);
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     const handleSelect = async () => {
       try {
@@ -47,6 +59,7 @@ export default function send() {
       }
     };
     handleSelect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
   const handleSelect = (selectedValue) => {
