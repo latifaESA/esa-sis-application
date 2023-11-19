@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { BsX } from "react-icons/bs";
-import { useSession } from "next-auth/react";
-import axios from "axios";
-import Select from "react-select";
+import React, { useEffect, useState } from 'react';
+import { BsX } from 'react-icons/bs';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import Select from 'react-select';
 // import selection_data from '../../../utilities/selection_data';
 // import { getSession } from 'next-auth/react';
 
@@ -15,9 +15,9 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [courses, setCourses] = useState([]);
   const [allteachers, setAllTeachers] = useState([]);
   // const [teachers, setTeachers] = useState([]);
-  const [message, setMessage] = useState("");
-  const [teachersName, setTeachersName] = useState("");
-  const [teachersNameC, setTeachersNameC] = useState("");
+  const [message, setMessage] = useState('');
+  const [teachersName, setTeachersName] = useState('');
+  const [teachersNameC, setTeachersNameC] = useState('');
   // const [test, setTest] = useState()
   const [formErrors, setFormErrors] = useState({});
   const [isReplace, setIsReplace] = useState(false);
@@ -25,8 +25,8 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   const [multiAssign, setMultiAssign] = useState(false);
   const [teacherCourses, setTeacherCourses] = useState([]);
   // const [teacherCourse, setTeacherCourse] = useState([])
-  const [teacherFrom, setTeacherFrom] = useState("");
-  const [teacherFromValue, setTeacherFromValue] = useState("");
+  const [teacherFrom, setTeacherFrom] = useState('');
+  const [teacherFromValue, setTeacherFromValue] = useState('');
   const [isSelected, setSelected] = useState(false);
 
   // setTimeout(() => {
@@ -36,10 +36,10 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
   useEffect(() => {
     const getCourses = async () => {
       try {
-        let table = "courses";
-        let Where = "major_id";
+        let table = 'courses';
+        let Where = 'major_id';
         let id = session.user.majorid;
-        let { data } = await axios.post("/api/pmApi/getAllCourses", {
+        let { data } = await axios.post('/api/pmApi/getAllCourses', {
           table,
           Where,
           id,
@@ -61,7 +61,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       try {
         // let major_id = session.user.majorid;
         const { data } = await axios.post(
-          "/api/pmApi/getTeachersByMajorCourse"
+          '/api/pmApi/getTeachersByMajorCourse'
         );
         setAllTeachers(data.data);
         setMessage(data.data.message);
@@ -74,13 +74,14 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     };
 
     handleTeacher();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
   useEffect(() => {
     const getTeacherCourses = async () => {
       try {
         const course_id = coursesValue;
         if (course_id) {
-          let { data } = await axios.post("/api/pmApi/courseTeacher", {
+          let { data } = await axios.post('/api/pmApi/courseTeacher', {
             course_id,
           });
           // console.log("course", data.data);
@@ -128,13 +129,13 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     try {
       const errors = {};
       if (teachersName.length === 0) {
-        errors.teachersName = "At least one teacher must be selected";
+        errors.teachersName = 'At least one teacher must be selected';
       }
       if (coursesValue.length === 0) {
-        errors.courses = "At least one course must be selected.";
+        errors.courses = 'At least one course must be selected.';
       }
       if (teachersName.length > 1 && coursesValue.length > 1) {
-        errors.courses = "Can not select multiple course to multiple teachers";
+        errors.courses = 'Can not select multiple course to multiple teachers';
       }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
@@ -153,7 +154,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
 
           // // console.log("payload", payload)
           const { data } = await axios.post(
-            "/api/pmApi/asigendTeacher",
+            '/api/pmApi/asigendTeacher',
             payload
           );
           // // console.log('data', data.message)
@@ -164,11 +165,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             course_id: coursesValue[i], // Retrieve the value property of the selected course
             course_name: courses[i], // Retrieve the label property of the selected course
             major_id: session.user.majorid,
-            teacher_firstname: teachersName[j].split(" ")[0],
-            teacher_lastname: teachersName[j].split(" ")[1],
+            teacher_firstname: teachersName[j].split(' ')[0],
+            teacher_lastname: teachersName[j].split(' ')[1],
           };
           // // console.log('newRow' ,  newRows )
-          setMessage("Assign Successfully!");
+          setMessage('Assign Successfully!');
 
           setUsers((prevUsers) => [...prevUsers, newRows]);
           // // console.log('message',message)
@@ -183,18 +184,18 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     try {
       const errors = {};
       if (teachersName.length === 0) {
-        errors.teachersName = "At least one teacher must be selected";
+        errors.teachersName = 'At least one teacher must be selected';
       }
       if (coursesValue.length === 0) {
-        errors.courses = "At least one course must be selected.";
+        errors.courses = 'At least one course must be selected.';
       }
       if (coursesValue.length > teachersName.length) {
         errors.courses =
-          "The number of courses selected must be equal to teachers";
+          'The number of courses selected must be equal to teachers';
       }
       if (teachersName.length > coursesValue.length) {
         errors.teachersName =
-          "The number of teachers selected must be equal to courses";
+          'The number of teachers selected must be equal to courses';
       }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
@@ -211,7 +212,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         };
 
         // // console.log("payload", payload)
-        const { data } = await axios.post("/api/pmApi/asigendTeacher", payload);
+        const { data } = await axios.post('/api/pmApi/asigendTeacher', payload);
         // // console.log('data', data.message)
 
         const newRows = {
@@ -220,8 +221,8 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
           course_id: coursesValue[i], // Retrieve the value property of the selected course
           course_name: courses[i], // Retrieve the label property of the selected course
           major_id: session.user.majorid,
-          teacher_firstname: teachersName[i].split(" ")[0],
-          teacher_lastname: teachersName[i].split(" ")[1],
+          teacher_firstname: teachersName[i].split(' ')[0],
+          teacher_lastname: teachersName[i].split(' ')[1],
         };
         // // console.log('newRow' ,  newRows )
 
@@ -287,28 +288,28 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
     try {
       const errors = {};
       if (teacherFrom.length === 0) {
-        errors.teacherFrom = "At least one teacher must be selected";
+        errors.teacherFrom = 'At least one teacher must be selected';
       }
       if (teacherFrom.length > 1) {
-        errors.teacherFrom = "only one teacher can select";
+        errors.teacherFrom = 'only one teacher can select';
       }
       if (teacherFrom.length > teachersNameC.length) {
-        errors.teacherFrom = "only one teacher can select";
+        errors.teacherFrom = 'only one teacher can select';
       }
       if (teachersNameC.length > teacherFrom.length) {
-        errors.teachersNameC = "only one teacher can select";
+        errors.teachersNameC = 'only one teacher can select';
       }
       if (teachersNameC.length === 0) {
-        errors.teachersNameC = "At least one teacher must be selected";
+        errors.teachersNameC = 'At least one teacher must be selected';
       }
       if (teachersNameC.length > 1) {
-        errors.teachersNameC = "only one teacher can select";
+        errors.teachersNameC = 'only one teacher can select';
       }
       if (coursesValue.length === 0) {
-        errors.courses = "At least one course must be selected.";
+        errors.courses = 'At least one course must be selected.';
       }
       if (coursesValue.length > 1) {
-        errors.courses = "only one course can be selected";
+        errors.courses = 'only one course can be selected';
       }
       if (Object.keys(errors).length > 0) {
         setFormErrors(errors);
@@ -321,7 +322,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
       const course_id = coursesValue[0];
       const teacher_id = teacherFromValue[0];
 
-      const { data } = await axios.put("/api/pmApi/ChangeAssigen", {
+      const { data } = await axios.put('/api/pmApi/ChangeAssigen', {
         major_id,
         teacher_name,
         teacher_nameC,
@@ -337,8 +338,8 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
         teacher_id: teacher_idC,
         course_id,
         major_id,
-        teacher_firstname: teacher_nameC.split(" ")[0],
-        teacher_lastname: teacher_nameC.split(" ")[1],
+        teacher_firstname: teacher_nameC.split(' ')[0],
+        teacher_lastname: teacher_nameC.split(' ')[1],
         course_name: allcourses.find((course) => course.course_id === course_id)
           ?.course_name,
       };
@@ -376,11 +377,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             </div> */}
             {!isReplace && !newAssign & !multiAssign ? (
               <div className="flex items-start justify-between p-5  rounded-t">
-                <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                <h3 className="text-3xl font-semibold text-gray-700 pt-5 mb-10">
                   Assigned Teacher To Course
                 </h3>
                 <button
-                  className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                  className="text-3xl font-semibold text-gray-700 pt-5 mb-10"
                   onClick={() => {
                     setOpenModal(false);
                   }}
@@ -395,11 +396,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             )}
             {isReplace ? (
               <div className="flex items-start justify-between p-5 rounded-t">
-                <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                <h3 className="text-3xl font-semibold text-gray-700 pt-5 mb-10">
                   Replace Course Assign
                 </h3>
                 <button
-                  className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                  className="text-3xl font-semibold text-gray-700 pt-5 mb-10"
                   onClick={() => {
                     setIsReplace(false), setFormErrors({}), setSelected(false);
                   }}
@@ -414,11 +415,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             )}
             {newAssign ? (
               <div className="flex items-start justify-between p-5 rounded-t">
-                <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                <h3 className="text-3xl font-semibold text-gray-700 pt-5 mb-10">
                   Assign Teacher To Courses
                 </h3>
                 <button
-                  className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                  className="text-3xl font-semibold text-gray-700 pt-5 mb-10"
                   onClick={() => {
                     setNewAssign(false), setFormErrors({}), setSelected(false);
                   }}
@@ -433,11 +434,11 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
             )}
             {multiAssign ? (
               <div className="flex items-start justify-between p-4 pb-0">
-                <h3 className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10">
+                <h3 className="text-3xl font-semibold text-gray-700 pt-5 mb-10">
                   Assign Teachers To Courses
                 </h3>
                 <button
-                  className="text-3xl font-semibold text-gray-700 text-3xl pt-5 mb-10"
+                  className="text-3xl font-semibold text-gray-700 pt-5 mb-10"
                   onClick={() => {
                     setMultiAssign(false),
                       setFormErrors({}),
@@ -684,7 +685,7 @@ export default function AssigendModal({ setOpenModal, setUsers, users }) {
                             }))}
                             placeholder="Select Teacher"
                             onChange={handleTeacherCourse}
-                            style={{ display: "none" }}
+                            style={{ display: 'none' }}
                           />
                           {formErrors.teacherFrom && (
                             <div className="text-center text-red-500 font-bold p-2">
