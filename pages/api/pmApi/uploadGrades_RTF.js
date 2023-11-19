@@ -4,12 +4,13 @@ import path from "path";
 
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
-const { uploadEXEDGrade } = require("../controller/queries");
+const { uploadGradesRTF } = require("../controller/queries");
 
 import xlsx from "xlsx";
 // import { env } from 'process';
 import { authOptions } from "../auth/[...nextauth]";
-import gpaToGrades from "./gpa";
+import SendEmail from "./emailGrade";
+
 
 
 
@@ -20,6 +21,7 @@ export const config = {
 };
 
 async function handler(req, res) {
+
   try {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
@@ -87,7 +89,9 @@ async function handler(req, res) {
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
-    await readFile(req, true, directory);
+
+    const { fields } = await readFile(req, true, directory);
+ 
 
     let grade_file = await fs.readdirSync(directory);
 
@@ -140,41 +144,52 @@ async function handler(req, res) {
     }
 
     const connection = await connect();
-
+    const processedRows = []
 
     for (const row of data) {
       try {
 
-        if (row.StudentID === undefined || row.StudentFirstName === undefined || row.CourseID === undefined
-          || row.StudentLastName === undefined || row.StudentID === '' || row.CourseID === '' || row.Grade === undefined || row.StudentFirstName === ''
-          || row.StudentLastName === '' || row.Grade === '' || row.TaskName === '' || row.TaskName === undefined) {
-          return res.status(400).json({
-            success: false,
-            code: 400,
-            message: `No data was uploaded due to missing required information.`
-          })
-        }
-        const data = await gpaToGrades(row.Grade)
-        const res = await uploadEXEDGrade(
+        // if (row.StudentID === undefined || row.StudentFirstName === undefined || row.CertificateName === undefined
+        //   || row.StudentFamilyName === undefined || row.StudentID === '' || row.CertificateName === '' || row.Grade === undefined || row.StudentFirstName === ''
+        //   || row.StudentFamilyName === '' || row.Grade === '') {
+        //   return res.status(400).json({
+        //     success: false,
+        //     code: 400,
+        //     message: `No data was uploaded due to missing required information.`
+        //   })
+        // }
+
+      await uploadGradesRTF(
           connection,
           {
-            student_id: row.StudentID,
-            student_firstname: row.StudentFirstName,
-            student_lastname: row.StudentLastName,
-            course_id: row.CourseID,
-            grade: row.Grade,
+            student_id:row.StudentID,
+            student_firstname:row.FirstName,
+            student_lastname: row.FamilyName,
+            academic_year:row.Year,
+            course_id:row.CertificateName,
             task_name:row.TaskName,
-            gpa: data.gpa,
-            rank: data.rank,
-            semester : '',
-            academic_year: 1,
-            comments: row.Comments
+            grade_over_20:row.GradeOver20,
+            grade_over_30:row.GradeOver30
           }
         )
-      
+       
+        processedRows.push(row);
 
       } catch (error) {
         console.error(`Error while processing row: `, row, "\nError: ", error);
+      }
+    }
+    // Send email using the last processed row outside the loop
+    if (processedRows.length > 0) {
+      const lastProcessedRow = processedRows[processedRows.length - 2];
+      const recipientEmails = fields.emails.split(',');
+      // Send email to each recipient in recipientEmails
+      for (const email of recipientEmails) {
+        // Assuming the SendEmail function requires the recipient's email and other parameters
+        await SendEmail(
+          lastProcessedRow.CertificateName,
+          email.trim() // Remove leading/trailing whitespaces
+        );
       }
     }
 

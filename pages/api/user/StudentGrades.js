@@ -6,12 +6,14 @@ async function handler(req, res) {
     try {
         const connection = await connect();
         const {
+            table, 
             studentId
         } = req.body;
         // // console.log(major_id)
        
       const response =   await getGradeStudent(
             connection,
+            table, 
             studentId
         );
 

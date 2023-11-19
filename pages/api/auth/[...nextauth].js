@@ -272,6 +272,12 @@ export const authOptions = {
                       "student_id",
                       user.rows[0].userid
                     );
+                    const ST_major = await findData(
+                      connection,
+                      "major",
+                      "major_id",
+                      ST_major.rows[0].major_id
+                    );
                     // console.log('this is ST ');
                     // console.log(ST);
                     // if the program_manager exists then send the data to frontend
@@ -298,6 +304,7 @@ export const authOptions = {
                           accessToken :`${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
+                          majorName:ST_major.rows[0].major_name
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
