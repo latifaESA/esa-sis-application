@@ -1,4 +1,5 @@
 
+
 import emailing_data from '../../../utilities/emailing/emailing_data';
 import createTransporter from '../../../utilities/emailing/smtp';
 import dotenv from "dotenv";
@@ -8,7 +9,11 @@ import dotenv from "dotenv";
 dotenv.config("../env");
 const transporter = createTransporter();
 
-const SendEmail = async (CertificateName,email) => {
+const SendEmail = async (           
+ certificateName,
+  recipientEmail,
+  recipientFirstName,
+  recipientLastName) => {
   try {
    
     
@@ -19,19 +24,21 @@ const SendEmail = async (CertificateName,email) => {
 
     const emailBody =
       '<!DOCTYPE html>' +
-      '<html><head><title>Appointment</title>' +
+      '<html><head><title>Grades</title>' +
       '</head><body><div>' +
       `<div style="text-align: center;">
          </div>` +
       `</br>` +
-      `<p>Dear <span style="font-weight: bold">Student</span>,</p>` +
-      `<p>Hope this email finds you well.</p> ` +
-      `<p>Your grade of certificate ${CertificateName} available now in SIS </p>` +
+      `<p>Dear <span style="font-weight: bold">${recipientFirstName} ${recipientLastName}</span>,</p>` +
+      `<p>We trust this email finds you well.</p> ` +
+      `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${certificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
       // `<p> Please login using the below credentials:</p>` +
       // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
       // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
 
-      `<p>if you have any question please content with you'r program manager</p>` +
+      `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
+      `<p>
+      Should you have any inquiries or require further clarification regarding the updated grade, do not hesitate to contact your program manager.</p>` +
       `<p>Best regards,</p> ` +
       `<p>ESA Business School</p> ` +
 
@@ -39,7 +46,7 @@ const SendEmail = async (CertificateName,email) => {
 
     const mailOptions = {
       from: fromEmail,
-      to: email,
+      to: recipientEmail,
     //   cc: '',
     //   bcc: bccEmail,
       subject: subject,

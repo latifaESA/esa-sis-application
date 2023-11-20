@@ -7,7 +7,11 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll }) {
+
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF }) {
+
+// export default function UploadGrades({ setClickUpload, showAll }) {
+// >>>>>>> main
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -32,17 +36,168 @@ export default function UploadGrades({ setClickUpload, showAll }) {
         setConfirmOpenMessage(false);
         setIsClick(false);
     };
+
+
+    const getFirstWordBeforeHyphen = (text) => {
+        if (text) {
+            const words = text.split("-");
+            if (words.length > 0) {
+                return words[0];
+            }
+        }
+        return "";
+    };
+    const getFirstWordAfterHyphen = (text) => {
+        if (text) {
+            const words = text.split("-");
+            if (words.length > 0) {
+                return words[1];
+            }
+        }
+        return "";
+    };
+    const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+    const SecondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+    const isExeMajor = firstMajorWord === "EXED";
+
     useEffect(() => {
-        showAll();
+        fetchStudent()
+    }, [student])
+
+    useEffect(() => {
+        if (!isExeMajor) {
+            showAll();
+        } else if (isExeMajor && SecondMajorWord === 'GMP') {
+            showAllGMP();
+        } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
+            showAllRTF()
+        }
+
         // Auto-refresh the page 
         const interval = setInterval(() => {
-            showAll();
-        }, 1000);
+            if (!isExeMajor) {
+                showAll();
+            } else if (isExeMajor && SecondMajorWord === 'GMP') {
+                showAllGMP();
+            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
+                showAllRTF()
+            }
+        }, 2000);
+
+        // Clear the interval when the component unmounts
+        return () => clearInterval(interval);
+    }, []);
+
+//     useEffect(() => {
+//         showAll();
+//         // Auto-refresh the page 
+//         const interval = setInterval(() => {
+//             showAll();
+//         }, 1000);
+// >>>>>>> main
 
         // Clear the interval when the component unmounts
         return () => clearInterval(interval);
     }, []);
     const validateColumnHeaders = (columnA) => {
+
+        if (!isExeMajor) {
+            const templateFields = [
+                'StudentID',
+                'StudentFirstName',
+                'StudentLastName',
+                'CourseID',
+                'Grade'
+            ]; // Replace with your actual template fields
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        }
+    };
+    const validateRow = (rowData) => {
+        if (!isExeMajor) {
+            const requiredFields = [
+                'StudentID',
+                'StudentFirstName',
+                'StudentLastName',
+                'CourseID',
+                'TaskName',
+                'Grade',
+                'Semester',
+                'Academic_year'
+            ];
+
+            for (const field of requiredFields) {
+
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
+            }
+        } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
+            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+
+            for (const field of requiredFields) {
+
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
+            }
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+
+            for (const field of requiredFields) {
+
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
+
         const templateFields = [
             'StudentID',
             'StudentFirstName',
@@ -82,6 +237,7 @@ export default function UploadGrades({ setClickUpload, showAll }) {
                 return false; // Missing or empty required field
             } else {
                 return true; // All required fields are present and not empty
+
             }
         }
 
@@ -89,6 +245,37 @@ export default function UploadGrades({ setClickUpload, showAll }) {
     };
 
 
+    const fetchStudent = async () => {
+        try {
+            const payload = {
+                major_id: session.user.majorid
+            };
+            const response = await axios.post('/api/pmApi/studentEmail', payload);
+            console.log('data',response.data.data)
+            const unsortedStudentData = response.data.data;
+
+            // Sort the student data by student_id in increasing order
+            const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
+                a.student_id - b.student_id
+            );
+            // Extract the required information (first name, last name, and email)
+            const studentInfo = sortedStudentData.map(student => ({
+                studentID :student.student_id,
+                firstName: student.student_firstname,
+                lastName: student.student_lastname,
+                email: student.email,
+                pm_id : session.user?.userid
+            }));
+        
+            // Set the student data in your state or wherever you need it
+            setStudentData(studentInfo);
+        } catch (error) {
+            return error;
+        }
+    };
+// =======
+
+// >>>>>>> main
     const handleAdd = async () => {
         try {
             setIsClick(true);
@@ -149,7 +336,9 @@ export default function UploadGrades({ setClickUpload, showAll }) {
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrade",
-                        formData
+
+                        formData,
+
                     );
 
                     if (data.success === true) {
@@ -171,6 +360,154 @@ export default function UploadGrades({ setClickUpload, showAll }) {
             setMessages("Something went wrong. Please try again later.");
         }
     };
+
+    const handleAddGMP = async () => {
+        try {
+            setIsClick(true);
+    
+            // Fetch student emails separately
+            const studentInfo = student;
+            // console.log('student', studentInfo)
+    
+            if (!studentInfo || studentInfo.length === 0) {
+                setConfirmOpenMessage(true);
+                setMessages("Error: Unable to fetch student information.");
+                return;
+            }
+    
+            const file = uploadPhotoData.fileList[0];
+            const reader = new FileReader();
+    
+            reader.onload = async function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+    
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+    
+                const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+                if (rows.length < 2) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error: File is empty!");
+                    return;
+                }
+    
+                const firstRow = rows[0];
+                const isValidHeaders = validateColumnHeaders(firstRow);
+                if (!isValidHeaders) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error File! Please upload the Grade Template and don't change the header.");
+                    return;
+                }
+    
+                const formData = new FormData();
+                formData.append("files", file);
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
+    
+                try {
+                    const { data } = await axios.post(
+                        "/api/pmApi/uploadGMPGrades",
+                        formData,
+// =======
+//                         formData
+// >>>>>>> main
+                    );
+    
+                    if (data.success === true) {
+                        setConfirmOpenMessage(true);
+                        setMessages(data.message);
+                    }
+                } catch (error) {
+                    if (error.response && error.response.data.success === false) {
+                        setConfirmOpenMessage(true);
+                        setIsClick(false);
+                        setMessages(error.response.data.message);
+                    }
+                }
+            };
+
+    
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            setConfirmOpenMessage(true);
+            setMessages("Something went wrong. Please try again later.");
+        }
+    };
+    
+    const handleAddRTF = async () => {
+        try {
+            setIsClick(true);
+    
+            // Fetch student emails separately
+            const studentInfo = student;
+            // console.log('student', studentInfo)
+    
+            if (!studentInfo || studentInfo.length === 0) {
+                setConfirmOpenMessage(true);
+                setMessages("Error: Unable to fetch student information.");
+                return;
+            }
+    
+            const file = uploadPhotoData.fileList[0];
+            const reader = new FileReader();
+    
+            reader.onload = async function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+    
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+    
+                const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+                if (rows.length < 2) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error: File is empty!");
+                    return;
+                }
+    
+                const firstRow = rows[0];
+                const isValidHeaders = validateColumnHeaders(firstRow);
+                if (!isValidHeaders) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error File! Please upload the Grade Template and don't change the header.");
+                    return;
+                }
+    
+                const formData = new FormData();
+                formData.append("files", file);
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
+    
+                try {
+                    const { data } = await axios.post(
+                        "/api/pmApi/uploadGrades_RTF",
+                        formData,
+                    );
+    
+                    if (data.success === true) {
+                        setConfirmOpenMessage(true);
+                        setMessages(data.message);
+                    }
+                } catch (error) {
+                    if (error.response && error.response.data.success === false) {
+                        setConfirmOpenMessage(true);
+                        setIsClick(false);
+                        setMessages(error.response.data.message);
+                    }
+                }
+            };
+  
+
+// >>>>>>> main
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            setConfirmOpenMessage(true);
+            setMessages("Something went wrong. Please try again later.");
+        }
+    };
+
+
 
 
     return (
@@ -236,7 +573,17 @@ export default function UploadGrades({ setClickUpload, showAll }) {
                                                     <button
                                                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                                         type="button"
-                                                        onClick={handleAdd}
+
+                                                        onClick={
+                                                            isExeMajor && SecondMajorWord === 'GMP' ?
+                                                                handleAddGMP :
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ?
+                                                                    handleAddRTF
+                                                                    : handleAdd
+                                                        }
+// =======
+//                                                         onClick={handleAdd}
+// >>>>>>> main
                                                     >
                                                         Scan
                                                     </button>
