@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FaCloudDownloadAlt } from "react-icons/fa";
+// import { FaCloudDownloadAlt } from "react-icons/fa";
 import axios from 'axios';
 import Select from 'react-select';
 
@@ -29,10 +29,49 @@ export default function DownloadGrades({ setClickDownload }) {
     { value: 'winter', label: 'Winter' },
   ];
 
+  const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
+  const getFirstWordAfterHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[1];
+      }
+    }
+    return "";
+  };
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+  const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+ 
+  const isExeMajor = firstMajorWord === "EXED";
+  let header = []
+  if (isExeMajor) {
+    if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
+      header = [
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
+      ]
+    }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+      header = [
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20'],
+      ]
+    }
 
-  const header = [
-    ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
-  ]
+
+
+  } else {
+    header = [
+      ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
+    ]
+
+  }
+
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -140,19 +179,57 @@ export default function DownloadGrades({ setClickDownload }) {
 
 
     // Create the data for the Excel sheet, including student data
-    const data = header.concat(
-      student.map((studentData) => [
-        studentData.student_id,
-        studentData.student_firstname,
-        studentData.student_lastname,
-        courses,
-        taskName,
-        '',
-        semester,
-        academic_year,
-        ''
-      ])
-    );
+    let data = []
+    if (isExeMajor) {
+      if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
+         data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            academic_year,
+            '',
+            ''
+          ])
+        );
+      
+      }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+        data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            academic_year,
+            '',
+            '',
+            
+          ])
+        ); 
+      }
+  
+  
+  
+    } else {
+       data = header.concat(
+        student.map((studentData) => [
+          studentData.student_id,
+          studentData.student_firstname,
+          studentData.student_lastname,
+          courses,
+          taskName,
+          '',
+          semester,
+          academic_year,
+          ''
+        ])
+      );
+  
+    
+    }
 
     const columnWidths = calculateColumnWidths(data);
     const worksheet = XLSX.utils.aoa_to_sheet(data);
@@ -254,9 +331,12 @@ export default function DownloadGrades({ setClickDownload }) {
                               <div>
                                 <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Exam
                               </div>
+                              <div>
+                                <input type='radio' value={'project'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Project
+                              </div>
                             </div>
                           </div>
-                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)'     ?
+                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)' ?
                             <>
                               <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col'>
                                 <p className=" font-bold">Select semester </p>
@@ -272,11 +352,13 @@ export default function DownloadGrades({ setClickDownload }) {
                               </div>
                             </>
                             : <></>}
-
                           <div className='m-5 text-slate-500 text-lg leading-relaxed '>
                             <p className=" font-bold">Academic year </p>
                             <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
                           </div>
+
+
+
                           <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col justify-center'>
                             <button
                               type='button'
