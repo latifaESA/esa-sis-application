@@ -6,17 +6,17 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 
-import { DataGrid } from "@mui/x-data-grid";
-import Box from "@mui/material/Box";
-import { LowerButtons } from "./LowerButtons";
-import { useSession } from "next-auth/react";
-import CustomPagination from "./Pagination";
+import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box';
+import { LowerButtons } from './LowerButtons';
+import { useSession } from 'next-auth/react';
+import CustomPagination from './Pagination';
 // import { WarningMessageObsolote } from './WarningMessage';
-import ElectiveModal from "../../pages/programManager/ModalForm/ElectiveModal";
-import axios from "axios";
+import ElectiveModal from '../../pages/programManager/ModalForm/ElectiveModal';
+import axios from 'axios';
 
 const ElectiveCourseList = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
@@ -49,7 +49,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
           major_id: session.user.majorid,
         };
         // console.log("majorid",payload)
-        const data = await axios.post("/api/pmApi/getElectiveCourse", payload);
+        const data = await axios.post('/api/pmApi/getElectiveCourse', payload);
 
         setCourses(data.data.data);
       } catch (error) {
@@ -64,7 +64,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
           academic_year: new Date().getFullYear(),
         };
         const data = await axios.post(
-          "/api/pmApi/getStudentByAcademicYear",
+          '/api/pmApi/getStudentByAcademicYear',
           payload
         );
         setStudents(data.data.data);
@@ -74,6 +74,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
     };
 
     fetchStudent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // const handleConfirmClose = (user) => {
@@ -100,40 +101,40 @@ const ElectiveCourseList = ({ users, setUsers }) => {
   );
   const columns = [
     {
-      field: "student_firstname",
-      headerName: "First Name",
-      headerAlign: "center",
-      align: "center",
+      field: 'student_firstname',
+      headerName: 'First Name',
+      headerAlign: 'center',
+      align: 'center',
       width: 150,
     },
     {
-      field: "student_lastname",
-      headerName: "Last Name",
-      headerAlign: "center",
-      align: "center",
+      field: 'student_lastname',
+      headerName: 'Last Name',
+      headerAlign: 'center',
+      align: 'center',
       width: 150,
     },
     {
-      field: "promotion",
-      headerName: "promotion Name",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-    },
-
-    {
-      field: "course_name",
-      headerName: "course Name",
-      headerAlign: "center",
-      align: "center",
+      field: 'promotion',
+      headerName: 'promotion Name',
+      headerAlign: 'center',
+      align: 'center',
       width: 150,
     },
 
     {
-      field: "course_id",
-      headerName: "Course ID",
-      headerAlign: "center",
-      align: "center",
+      field: 'course_name',
+      headerName: 'course Name',
+      headerAlign: 'center',
+      align: 'center',
+      width: 150,
+    },
+
+    {
+      field: 'course_id',
+      headerName: 'Course ID',
+      headerAlign: 'center',
+      align: 'center',
       width: 150,
     },
 
@@ -179,11 +180,11 @@ const ElectiveCourseList = ({ users, setUsers }) => {
           setUsers={setUsers}
         />
       )}
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.assign_student_id}
           rows={sortedstudent}
-          getRowHeight={() => "auto"}
+          getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

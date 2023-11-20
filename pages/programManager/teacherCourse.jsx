@@ -1,14 +1,14 @@
-import Head from "next/head";
+import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
 
-import TeachersCourseList from "../../components/Dashboard/TeachersCourseList";
+import TeachersCourseList from '../../components/Dashboard/TeachersCourseList';
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
-import axios from "axios";
+import axios from 'axios';
 
 // import CustomSelectBox from "./customSelectBox";
 export default function TeacherCourse() {
@@ -17,13 +17,13 @@ export default function TeacherCourse() {
 
   const router = useRouter();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
-  const [teacher_id, setTeacherId] = useState("");
-  const [teacher_firstname, setTeacherFirstName] = useState("");
-  const [teacher_lastname, setTeacherLastName] = useState("");
-  const [course_id, setCourseid] = useState("");
-  const [course_name, setCourseName] = useState("");
+  const [teacher_id, setTeacherId] = useState('');
+  const [teacher_firstname, setTeacherFirstName] = useState('');
+  const [teacher_lastname, setTeacherLastName] = useState('');
+  const [course_id, setCourseid] = useState('');
+  const [course_name, setCourseName] = useState('');
 
   // console.log(session)
 
@@ -31,15 +31,15 @@ export default function TeacherCourse() {
     const fetchData = async () => {
       try {
         const payload = {
-          teacherId: "",
-          courseId: "",
-          teacher_firstname: "",
-          teacher_lastname: "",
-          course_name: "",
+          teacherId: '',
+          courseId: '',
+          teacher_firstname: '',
+          teacher_lastname: '',
+          course_name: '',
           major_id: session.user.majorid,
         };
         const result = await axios.post(
-          "/api/pmApi/filterTeacherCourse",
+          '/api/pmApi/filterTeacherCourse',
           payload
         );
         // // console.log(result.data.data)
@@ -49,28 +49,29 @@ export default function TeacherCourse() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleShowAll = async () => {
     try {
       const payload = {
-        teacherId: "",
-        courseId: "",
-        teacher_firstname: "",
-        teacher_lastname: "",
-        course_name: "",
+        teacherId: '',
+        courseId: '',
+        teacher_firstname: '',
+        teacher_lastname: '',
+        course_name: '',
         major_id: session.user.majorid,
       };
       const result = await axios.post(
-        "/api/pmApi/filterTeacherCourse",
+        '/api/pmApi/filterTeacherCourse',
         payload
       );
       setUsers(result.data.data);
-      setTeacherId("");
-      setCourseName("");
-      setCourseid("");
-      setTeacherFirstName("");
-      setTeacherLastName("");
+      setTeacherId('');
+      setCourseName('');
+      setCourseid('');
+      setTeacherFirstName('');
+      setTeacherLastName('');
     } catch (error) {
       return error;
     }
@@ -87,7 +88,7 @@ export default function TeacherCourse() {
         major_id: session.user.majorid,
       };
       const result = await axios.post(
-        "/api/pmApi/filterTeacherCourse",
+        '/api/pmApi/filterTeacherCourse',
         payload
       );
       setUsers(result.data.data);
@@ -121,7 +122,7 @@ export default function TeacherCourse() {
       <Head>
         <title>SIS Admin - assigned</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3"? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Assign</p>
           <form>
@@ -198,7 +199,7 @@ export default function TeacherCourse() {
                   type="text"
                   name="teacher_id"
                   placeholder="Teacher FirstName"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_firstname}
                   onChange={(e) => {
                     setTeacherFirstName(e.target.value);
@@ -213,7 +214,7 @@ export default function TeacherCourse() {
                   type="text"
                   name="teacher_id"
                   placeholder="Teacher LastName"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_lastname}
                   onChange={(e) => {
                     setTeacherLastName(e.target.value);
@@ -227,7 +228,7 @@ export default function TeacherCourse() {
                   type="text"
                   name="courseId"
                   placeholder="Course ID"
-                  id={"courseId"}
+                  id={'courseId'}
                   value={course_id}
                   onChange={(e) => {
                     setCourseid(e.target.value);
@@ -255,7 +256,7 @@ export default function TeacherCourse() {
                   type="text"
                   name="teacher_id"
                   placeholder="Teacher FirstName"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_firstname}
                   onChange={(e) => {
                     setTeacherFirstName(e.target.value);
@@ -270,7 +271,7 @@ export default function TeacherCourse() {
                   type="text"
                   name="teacher_id"
                   placeholder="Teacher LastName"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_lastname}
                   onChange={(e) => {
                     setTeacherLastName(e.target.value);

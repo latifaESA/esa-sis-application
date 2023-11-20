@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ export default function Role() {
 
   useEffect(() => {
     fetchCertificate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const constructCertificateURL = (majorName) => {
@@ -29,7 +31,7 @@ export default function Role() {
     // Construct the URL based on the cleaned majorName
     return `https://www.esa.edu.lb/french/executive-education/certificates/${cleanedMajorName}`;
   };
-  const constructCertificateName= (majorName) => {
+  const constructCertificateName = (majorName) => {
     // Remove 'Exe-' from majorName
     const cleanedMajorName = majorName.replace('Exe-', '');
 

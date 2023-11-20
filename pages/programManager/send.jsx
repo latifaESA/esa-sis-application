@@ -7,68 +7,77 @@ import Loader from '../../components/Loader/Loader';
 import CustomSelectBox from './customSelectBox';
 
 export default function send() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session } = useSession();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [majors, setMajors] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [allmajors, setAllMajors] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoading, setIsLoading] = useState(false);
-  const [promotion, setPromotion] = useState([]);
-  const [schedule, setSchedule] = useState([]);
-  const [message, setMessage] = useState("");
-  const [messageClass, setMessageClass] = useState("");
-  const [emailContent, setEmailContent] = useState("");
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [message, setMessage] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [messageClass, setMessageClass] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [subjectContent, setSubjectContent] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [emailContent, setEmailContent] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
-  const [afterSub, setAfterSub] = useState(false)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [afterSub, setAfterSub] = useState(false);
+  const [loadingMajor, setLoadingMajor] = useState(true);
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    const handleSelect = async () => {
+    const handleMajorPM = async () => {
       try {
         let major_id = session.user.majorid;
-        const { data } = await axios.post('/api/admin/adminApi/getTheMajors', {
-          major_id,
+        const { data } = await axios.post('/api/pmApi/getMajorPM', {
+          majorID: major_id,
         });
+        setSelectedMajorID(data[0].major_id)
+        setLoadingMajor(false)
+        console.log(selectedMajorID)
+        return;
 
-        setAllMajors(data);
-
-        // setMessage(data.data.message)
-        let datesArray = [];
-
-        data.forEach(
-          (major) =>
-            major.major_name.startsWith('EXED') &&
-            major.status === 'active' &&
-            datesArray.push(major.major_name)
-        );
-        setMajors(datesArray);
       } catch (error) {
         return error;
       }
     };
-    handleSelect();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+    handleMajorPM();
+  }, [session]); // Empty dependency array means this effect runs once when the component mounts
 
-  const handleSelect = (selectedValue) => {
-    if (selectedValue.trim() !== '') {
-      let selectedMajor = allmajors.filter(
-        (major) => major.major_name === selectedValue
-      );
-      setSelectedMajorID(selectedMajor[0].major_id);
-    } else {
-      setSelectedMajorID(null);
-    }
-  };
+  // const handleSelect = (selectedValue) => {
+  //   if (selectedValue.trim() !== '') {
+  //     let selectedMajor = allmajors.filter(
+  //       (major) => major.major_name === selectedValue
+  //     );
+  //     setSelectedMajorID(selectedMajor[0].major_id);
+  //   } else {
+  //     setSelectedMajorID(null);
+  //   }
+  // };
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    if (selectedMajorID === null || selectedMajorID === '' || emailContent.trim() === '') {
-      setMessage("All Fields Must be Filled !");
-      setMessageClass("text-red-500");
+    if (
+      selectedMajorID === null ||
+      selectedMajorID === '' ||
+      subjectContent.trim() === '' ||
+      emailContent.trim() === ''
+    ) {
+      setMessage('All Fields Must be Filled !');
+      setMessageClass('text-red-500');
       setIsLoading(false);
       setTimeout(() => {
-        setMessage("");
+        setMessage('');
       }, 3000);
     } else {
       try {
@@ -76,36 +85,37 @@ export default function send() {
         let sendData = {
           user_id,
           selectedMajorID,
-          emailContent
+          subjectContent,
+          emailContent,
         };
-        let res = await axios.post("/api/pmApi/getEmailsOnMajorID", sendData);
-        setMessage("Request Sent !");
-        setMessageClass("text-green-500");
-        setEmailContent(""), 
-        setSelectedMajorID(null), 
-        setAfterSub(true),
-        setTimeout(() => {
-          setMessage("");
-          setAfterSub(false);
-        }, 5000);
+        let res = await axios.post('/api/pmApi/getEmailsOnMajorID', sendData);
+        setMessage('Request Sent !');
+        setMessageClass('text-green-500');
+        setSubjectContent(''),
+          setEmailContent(''),
+          setAfterSub(true),
+          setTimeout(() => {
+            setMessage('');
+            setAfterSub(false);
+          }, 5000);
         if (res) {
           setIsLoading(false);
         }
+        return;
       } catch (error) {
-        console.log('the res is : ', error.response)
-        if(error.response.data === 'No Student found'){
+        if (error.response.data === 'No Student found') {
           setMessage(error.response.data);
-          setMessageClass("text-red-500");
-        }else{
-          setMessage("Error while sending the email");
-          setMessageClass("text-red-500");
+          setMessageClass('text-red-500');
+        } else {
+          setMessage('Error while sending the email');
+          setMessageClass('text-red-500');
         }
 
         setIsLoading(false);
         setTimeout(() => {
-          setMessage("");
+          setMessage('');
         }, 5000);
-        console.log(error);
+        return;
       }
     }
   };
@@ -115,17 +125,24 @@ export default function send() {
         <title>SIS Admin - Send</title>
       </Head>
 
-      {session?.user.role === '2' || session?.user.role === '3' ? (
+
+      {loadingMajor ?
+      <div>
+        Loading ...
+      </div>
+      :
+      (session?.user.role === '2' || session?.user.role === '3') &&  selectedMajorID !== null ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
 
           <div>
-            <div className="flex flex-col items-start justify-center">
-            <div className="text-center">
-              <p className={` ${messageClass}`}>{message}</p>
-            </div>
-              <form onSubmit={submitHandler}>
+            <div className="flex flex-col items-start justify-center w-2/4">
+              <div className="text-center">
+                <p className={` ${messageClass}`}>{message}</p>
+              </div>
+              <form onSubmit={submitHandler} className='w-full'>
                 <div>
+                {/*
                   <div className="flex m-10 flex-col md:flex-row">
                     <label className="w-[350px] mb-2">Select Major:</label>
                     <CustomSelectBox
@@ -135,7 +152,17 @@ export default function send() {
                       styled={
                         'font-medium h-auto items-start border-[1px] border-zinc-300 self-start w-60 inline-block'
                       }
-                      refresh = {afterSub}
+                      refresh={afterSub}
+                    />
+                  </div>
+                   */}
+
+                  <div className="m-4">
+                    <input
+                      type="text"
+                      value={subjectContent}
+                      onChange={(e) => setSubjectContent(e.target.value)}
+                      placeholder="Subject"
                     />
                   </div>
                   <div className="m-4">

@@ -10,13 +10,13 @@ export const LowerButtons = ({
   elective,
   setElective,
   assigned,
-  setOpenModal
+  // setOpenModal
   // setisModal,
 }) => {
   return (
     <>
       <div className="grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4">
-{/* 
+        {/* 
         {(session.user.role === '2' || session.user.role === '3') && assigned ? <>
          <form>
          <button
@@ -31,31 +31,41 @@ export const LowerButtons = ({
 
         </> : <>
         </>} */}
-        {(session.user?.role === '2' || session.user?.role === '3') && elective && (session.user?.majorName === 'EMBA (Executive Masters in Business Administration)' || session.user?.majorName === 'MBA (Master in Business Administration)') ?
+        {(session.user?.role === '2' || session.user?.role === '3') &&
+        elective &&
+        (session.user?.majorName ===
+          'EMBA (Executive Masters in Business Administration)' ||
+          session.user?.majorName ===
+            'MBA (Master in Business Administration)') ? (
           <>
-          <form>
-          <button
-              className="primary-button btnCol text-white  hover:text-white"
+            <form>
+              <button
+                className="primary-button btnCol text-white  hover:text-white"
+                type="button"
+                onClick={() => setElective(true)}
+              >
+                Elective
+              </button>
+            </form>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {!elective && !assigned ? (
+          <>
+            <button
+              className="primary-button btnCol text-white hover:text-white"
               type="button"
-              onClick={() => setElective(true)}
+              onClick={exportAllButton}
+              // hidden={session.user.role === '2'?true:false}
             >
-              Elective
+              Export All
             </button>
-          </form>
-
-          </> : <>
-
-          </>}
-
-        {!elective && !assigned ? <>      
-           <button
-          className="primary-button btnCol text-white hover:text-white"
-          type="button"
-          onClick={exportAllButton}
-        // hidden={session.user.role === '2'?true:false}
-        >
-          Export All
-        </button></> : <></>}
+          </>
+        ) : (
+          <></>
+        )}
 
         {/* <button
           className='primary-button hover:text-white'
@@ -75,6 +85,5 @@ export const LowerButtons = ({
         </button> */}
       </div>
     </>
-
   );
 };

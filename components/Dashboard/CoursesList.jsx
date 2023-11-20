@@ -7,14 +7,14 @@
  */
 // import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 // import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import { TextField, MenuItem } from "@mui/material";
+import { TextField, MenuItem } from '@mui/material';
 
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import Box from "@mui/material/Box";
-import axios from "axios";
-import selection_data from "../../utilities/selection_data";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box';
+import axios from 'axios';
+import selection_data from '../../utilities/selection_data';
 // import { LowerButtons } from './LowerButtons';
 // import exportSelect from '../../utilities/ExcelExport/exportSelect';
 // import generatePasswod from '../../utilities/generatePassword';
@@ -24,10 +24,10 @@ import {
   // WarningMessageIncomplete,
   // WarningMessageObsolote,
   WarningMessageUpdateCourse,
-} from "./WarningMessage";
+} from './WarningMessage';
 // import decrypt from '../../utilities/encrypt_decrypt/decryptText';
-import { useSession } from "next-auth/react";
-import CustomPagination from "./Pagination";
+import { useSession } from 'next-auth/react';
+import CustomPagination from './Pagination';
 
 // import { Pagination, Stack } from '@mui/material';
 
@@ -36,7 +36,7 @@ const CoursesList = ({
   // , setUsers
 }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   // const [selectedRows, setSelectedRows] = useState([]);
   const { data: session } = useSession();
   // const [major, setMajor] = useState([]);
@@ -69,12 +69,12 @@ const CoursesList = ({
       major_name: user.major_name,
     };
     axios
-      .post("/api/admin/adminApi/updateCourse", sendData)
+      .post('/api/admin/adminApi/updateCourse', sendData)
       .then(() =>
         // response
         {
           // Handle success
-          setMessage("Course Major Changed Succesfully!");
+          setMessage('Course Major Changed Succesfully!');
 
           //Update the user's status and major in the table
           // setUsers((prevUsers) =>
@@ -170,11 +170,12 @@ const CoursesList = ({
     setTheMajor();
 
     handleShowAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleShowAll = async () => {
-    let table = "major";
-    let { data } = await axios.post("/api/pmApi/getAll", { table });
+    let table = 'major';
+    let { data } = await axios.post('/api/pmApi/getAll', { table });
     // setMajor(data.rows)
 
     const datesArray = [];
@@ -182,38 +183,38 @@ const CoursesList = ({
       datesArray.push(major.major_name);
     });
 
-    setAllMajor(["", ...datesArray]);
+    setAllMajor(['', ...datesArray]);
   };
   console.log(majorNameChanges);
   setTimeout(() => {
-    setMessage("");
+    setMessage('');
   }, selection_data.message_disapear_timing);
 
   const columns = [
     {
-      field: "course_id",
-      headerName: "Course_ID",
-      headerAlign: "center",
-      align: "center",
+      field: 'course_id',
+      headerName: 'Course_ID',
+      headerAlign: 'center',
+      align: 'center',
       width: 90,
     },
 
     {
-      field: "course_name",
-      headerName: "Course_Name",
-      headerAlign: "center",
-      align: "center",
+      field: 'course_name',
+      headerName: 'Course_Name',
+      headerAlign: 'center',
+      align: 'center',
       width: 150,
       //   renderCell: (params) =>
       //     `${params.row.pm_firstname || ''} ${params.row.pm_lastname || ''}`,
     },
     {
-      field: "course_credit",
-      headerName: "Course_Credit",
-      headerAlign: "center",
-      align: "center",
+      field: 'course_credit',
+      headerName: 'Course_Credit',
+      headerAlign: 'center',
+      align: 'center',
       width: 300,
-      type: "singleSelect",
+      type: 'singleSelect',
     },
     // {
     //   field: 'major_id',
@@ -284,10 +285,10 @@ const CoursesList = ({
     //   valueOptions: allMajor,
     // },
     {
-      field: "major_name",
-      headerName: "Major",
-      headerAlign: "center",
-      align: "center",
+      field: 'major_name',
+      headerName: 'Major',
+      headerAlign: 'center',
+      align: 'center',
       width: 300,
       editable: true,
       renderCell: (params) => (
@@ -312,11 +313,11 @@ const CoursesList = ({
     },
 
     {
-      field: "action",
-      headerName: "Action",
-      width: `${session.user.role === "0" ? 300 : 150}`,
-      headerAlign: "center",
-      align: "center",
+      field: 'action',
+      headerName: 'Action',
+      width: `${session.user.role === '0' ? 300 : 150}`,
+      headerAlign: 'center',
+      align: 'center',
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
@@ -346,11 +347,11 @@ const CoursesList = ({
         />
       )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           getRowId={(r) => r.course_id}
           rows={users}
-          getRowHeight={() => "auto"}
+          getRowHeight={() => 'auto'}
           columns={columns}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
