@@ -6,6 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 /* Importing the required modules. */
+
 import bcryptjs from 'bcryptjs';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -21,6 +22,7 @@ import { getStudentFromBlueForLogs } from '../controller/queries';
 // } from '../controller/queries';
 import { connect, disconnect } from '../../../utilities/db';
 
+
 import sis_app_logger from '../logger';
 import useragent from 'useragent';
 import {
@@ -32,6 +34,7 @@ import { Userinfo } from '../controller/accountquery';
 import axios from 'axios';
 import https from 'https';
 // import { start } from "repl";
+
 
 // import client from '../../../utilities/db1'
 
@@ -104,10 +107,6 @@ export const authOptions = {
         if (connection.success) {
           console.log('connection to DB succes nextauth signin');
 
-          // sendMail();
-          // console.log("before entering mail phase");
-          // await SendMailBeforeClass("", "PS");
-          // await SendMailBeforeClass("hass.ch.solutions@gmail.com", "asd");
           // try {
           //   const results = await new Promise((resolve, reject) => {
           //     connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
@@ -130,7 +129,7 @@ export const authOptions = {
             'userid',
             credentials.userid
           );
-
+         
           // const users = await findData(
           //   connection,
           //   'user_document',
@@ -144,7 +143,6 @@ export const authOptions = {
           //   'profileurl',
           //   credentials.userid,
           // );
-
           const userinfo = await Userinfo(connection, credentials.userid); //email from req body
           // console.log(userinfo.rows[0].profileurl)
           // console.log("---------------------------------")
@@ -181,12 +179,14 @@ export const authOptions = {
                     user.rows[0].userid
                   );
                   console.log('status blue', status);
+
                   const WeeklyLogs = await getStudentFromBlueForLogs(
                     connection,
                     user.rows[0].userid
                   );
 
                   if (WeeklyLogs.rowCount != 0) {
+
                     const lastLoginDate =
                       WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
 
@@ -212,6 +212,7 @@ export const authOptions = {
                     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
 
                     // eslint-disable-next-line no-inner-declarations
+
                     function formatDate(date) {
                       const day = date.getDate().toString().padStart(2, '0');
                       const month = (date.getMonth() + 1)
@@ -243,6 +244,7 @@ export const authOptions = {
                         'Blue',
                         formattedCurrentDate
                       );
+
                     }
                   } else {
                     // eslint-disable-next-line no-inner-declarations
@@ -275,12 +277,19 @@ export const authOptions = {
                     console.log(insertToLogs);
                   }
                   if (user.rows[0].role === 1) {
+
                     // get the student data
                     const ST = await findData(
                       connection,
                       'student',
                       'student_id',
                       user.rows[0].userid
+                    );
+                    const ST_major = await findData(
+                      connection,
+                      "major",
+                      "major_id",
+                      ST_major.rows[0].major_id
                     );
                     // console.log('this is ST ');
                     // console.log(ST);
@@ -292,12 +301,9 @@ export const authOptions = {
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${
-                            req.body.userid
-                          }=${userAgentinfo.os.family}=${
-                            userAgentinfo.os.major
-                          }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                            userAgentinfo.device.family
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                          }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
 
@@ -308,9 +314,10 @@ export const authOptions = {
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
                           image: userinfo.rows[0].profileurl,
-                          accessToken: `${user.rows[0].access_token}`,
+                          accessToken :`${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
+                          majorName:ST_major.rows[0].major_name
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -320,6 +327,7 @@ export const authOptions = {
                   }
                 } else {
                   if (user.rows[0].role === 1) {
+
                     // get the student data
                     const ST = await findData(
                       connection,
@@ -332,13 +340,14 @@ export const authOptions = {
                       'major',
                       'major_id',
                       ST.rows[0].major_id
-                    );
+                    )
 
                     if (ST.rows[0].status === 'limited') {
                       await updateStatusPreBlue(
                         connection,
                         user.rows[0].userid
-                      );
+                      )
+
                     }
                     // console.log('this is ST ');
                     // console.log(ST);
@@ -350,12 +359,9 @@ export const authOptions = {
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${
-                            req.body.userid
-                          }=${userAgentinfo.os.family}=${
-                            userAgentinfo.os.major
-                          }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                            userAgentinfo.device.family
+                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                          }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
 
@@ -365,7 +371,7 @@ export const authOptions = {
                           role: user.rows[0].role.toString(),
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
-                          accessToken: `${user.rows[0].access_token}`,
+                          accessToken :`${user.rows[0].access_token}`,
                           image: userinfo.rows[0].profileurl,
                           majorid: ST.rows[0].major_id,
                           majorName: ST_major.rows[0].major_name,
@@ -378,7 +384,6 @@ export const authOptions = {
                     }
                   }
                 }
-
                 // console.log("=======================");
                 // console.log(data.blocked);
                 // console.log(data);
@@ -459,12 +464,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.userid
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -473,29 +475,6 @@ export const authOptions = {
                     console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
-                      //<<<<<<< batoul
-                      //                              name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      //                              // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                      //                              role: (user.rows[0].role).toString(),
-                      //                              status: `${data.blocked ? 'limited' : 'active'}`,
-                      //                              userid: `${user.rows[0].userid}`,
-                      //                              // ID: `${user.rows[0].userid}`,
-                      //                              image: userinfo.rows[0].profileurl,
-                      //
-                      //                            };
-                      //                    }
-                      //                    else{
-                      //                      // if the student is not exists then send this message to frontend
-                      //                      message = 'Student does not exists'
-                      //                    }
-                      //                  }else if(user.rows[0].role === 2){
-                      //                      // get the program_manager data
-                      //                      const PM = await findData(
-                      //                        connection,
-                      //                        'program_manager',
-                      //                        'pm_id',
-                      //                        user.rows[0].userid,
-                      //=======
                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
                       status: admin.rows[0].admin_status,
@@ -524,6 +503,7 @@ export const authOptions = {
                 //                // if the student is not exists then send this message to frontend
                 //               message = 'Student does not exists';
                 //            }
+
                 else if (user.rows[0].role === 2) {
                   // get the program_manager data
                   const PM = await findData(
@@ -537,7 +517,7 @@ export const authOptions = {
                     'major',
                     'major_id',
                     PM.rows[0].major_id
-                  );
+                  )
                   // console.log(user.rows[0].userid);
                   // console.log(PM);
                   // if the program_manager exists then send the data to frontend
@@ -548,12 +528,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.userid
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -624,7 +601,7 @@ export const authOptions = {
                     'major',
                     'major_id',
                     AS.rows[0].major_id
-                  );
+                  )
                   // console.log(user.rows[0].userid);
                   // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
@@ -635,12 +612,9 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${
-                          req.body.email
-                        }=${userAgentinfo.os.family}=${
-                          userAgentinfo.os.major
-                        }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                          userAgentinfo.device.family
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.email
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
@@ -724,12 +698,9 @@ export const authOptions = {
               // if the password is incorrect then send this message
               message = 'Invalid Password';
               sis_app_logger.error(
-                `${new Date()}=From nextauth signin=---=${
-                  req.body.userid
-                }=${message}=${userAgentinfo.os.family}=${
-                  userAgentinfo.os.major
-                }=${userAgentinfo.family}=${userAgentinfo.source}=${
-                  userAgentinfo.device.family
+                `${new Date()}=From nextauth signin=---=${req.body.userid
+                }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                 }`
               );
             }
@@ -882,10 +853,8 @@ export const authOptions = {
           console.log('connection to DB unsucces nextauth signin');
           message = connection.message;
           sis_app_logger.error(
-            `${new Date()}=From nextauth signin,connection unsuccess=---=${
-              req.body.email
-            }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${
-              userAgentinfo.family
+            `${new Date()}=From nextauth signin,connection unsuccess=---=${req.body.email
+            }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${userAgentinfo.family
             }=${userAgentinfo.source}=${userAgentinfo.device.family}`
           );
         }

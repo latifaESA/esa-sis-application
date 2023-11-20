@@ -40,7 +40,7 @@ async function handler(req, res) {
     return res.status(201).json({
         success:true,
         code:201,
-        message:"Promotion Create Successfully !",
+        message:"Promotion Created Successfully !",
         data : result
     })
   } catch (error) {

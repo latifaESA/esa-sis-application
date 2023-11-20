@@ -18,7 +18,7 @@ import axios from "axios";
 import { WarningMessageGrade } from "./WarningMessage";
 
 
-const GradeList = ({ users, setUser }) => {
+const GradeListGMP = ({ users, setUser }) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
@@ -73,7 +73,7 @@ const GradeList = ({ users, setUser }) => {
     const { field, value } = params;
 
     // Check if the edited field is "grade" and update the edited grade value
-    if (field === "grade") {
+    if (field === "grades") {
       setEditedGrade(value);
     }
   };
@@ -82,21 +82,21 @@ const GradeList = ({ users, setUser }) => {
   const handleConfirm = async () => {
     try {
       const payload = {
-        grade: editedGrade, // Use the edited grade value
+        table:'grades_gmp',
+        grades: editedGrade, // Use the edited grade value
         student_id: selectedUser.student_id,
-        course_id: selectedUser.courseid,
+        course_id: selectedUser.course_id,
+        // task_name :selectedUser.task_name
       };
 
-      const response = await axios.post("/api/pmApi/updateGrade", payload);
+     await axios.post("/api/pmApi/updateGradesEXED", payload);
 
       setUser((prevState) => {
         const updatedAttendance = prevState.map((row) => {
           if (row.student_id === selectedUser.student_id) {
             return {
               ...row,
-              grade: editedGrade, // Update grade with the edited value
-              gpa: response.data.data.GPA,
-              rank: response.data.data.Rank,
+              grades: editedGrade, // Update grade with the edited value
             };
           }
           return row;
@@ -111,112 +111,103 @@ const GradeList = ({ users, setUser }) => {
   };
   const columns = [
     {
-      field: "student_id",
-      headerName: "Student ID",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+        field: "student_id",
+        headerName: "Student ID",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "first_name",
-      headerName: "First Name",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      {
+        field: "student_lastname",
+        headerName: "Family Name",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
-    {
-      field: "last_name",
-      headerName: "Last Name",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      },
+      {
+        field: "student_firstname",
+        headerName: "First Name",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "promotion",
-      headerName: "Promotion",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      {
+        field: "promotion",
+        headerName: "Promotion",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "courseid",
-      headerName: "Course ID",
-      headerAlign: "center",
-      align: "center",
-      width: 120,
-    },
-    {
-      field: "task_name",
-      headerName: "Task Name",
-      headerAlign: "center",
-      align: "center",
-      width: 120,
-    },
+      {
+        field: "course_id",
+        headerName: "Certificate Name",
+        headerAlign: "center",
+        align: "center",
+        width: 120,
+      },
+      {
+        field: "task_name",
+        headerName: "Task Name",
+        headerAlign: "center",
+        align: "center",
+        width: 120,
+      },
 
-    {
-      field: "grade",
-      headerName: "Grade",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-      editable: true,
-    },
+      {
+        field: "grades",
+        headerName: "Grade",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
+        editable: true,
+      },
+      // {
+      //   field: "comments",
+      //   headerName: "Comments",
+      //   headerAlign: "center",
+      //   align: "center",
+      //   width: 150,
+      //   editable: true,
+      // },
+      {
+        field: "action",
+        headerName: "Action",
+        width: `${(session?.user.role === "2" || session?.user.role === "3") ? 300 : 150}`,
+        headerAlign: "center",
+        align: "center",
+        sortable: false,
+        renderCell: (params) => (
+          <div className="flex gap-2">
+            <button
+              className="primary-button hover:text-white"
 
-    {
-      field: "gpa",
-      headerName: "GPA",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+              // disabled={params.id !== presentEnable}
+              type="button"
+              hidden={
+                session.user.role === "1" || session.user.role === "0"
+                  ? true
+                  : false
+              }
+              onClick={() => {
+                setSelectedUser(params.row);
+                setEditedGrade(params.row.grades);
+                handleConfirmDel(params.row);
+                setDetails(params.row);
+              }}
 
-    },
-    {
-      field: "rank",
-      headerName: "Rank",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: `${(session?.user.role === "2" || session?.user.role === "3") ? 300 : 150}`,
-      headerAlign: "center",
-      align: "center",
-      sortable: false,
-      renderCell: (params) => (
-        <div className="flex gap-2">
-          <button
-            className="primary-button hover:text-white"
-
-            // disabled={params.id !== presentEnable}
-            type="button"
-            hidden={
-              session.user.role === "1" || session.user.role === "0"
-                ? true
-                : false
-            }
-            onClick={() => {
-              setSelectedUser(params.row);
-              setEditedGrade(params.row.grade);
-              handleConfirmDel(params.row);
-              setDetails(params.row);
-            }}
-
-          >
-            Edit
-          </button>
-        </div>
-      ),
-    },
+            >
+              Edit
+            </button>
+          </div>
+        ),
+      },
   ];
 
 
@@ -270,4 +261,4 @@ const GradeList = ({ users, setUser }) => {
   );
 };
 
-export default GradeList;
+export default GradeListGMP;

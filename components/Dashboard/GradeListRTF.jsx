@@ -18,7 +18,8 @@ import axios from "axios";
 import { WarningMessageGrade } from "./WarningMessage";
 
 
-const GradeList = ({ users, setUser }) => {
+const GradeListRTF = ({ users, setUser }) => {
+
 
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
@@ -31,7 +32,7 @@ const GradeList = ({ users, setUser }) => {
   // const [selectedRows, setSelectedRows] = useState([]);
   // const [editCellProps, setEditCellProps] = useState(null); // Track edited cell
   const [editedGrade, setEditedGrade] = useState(null); // Track edited grade value
-
+  const [editedGradeOver30, setEditedGradeOver30] = useState(null); // Track edited grade value
   useEffect(() => {
     if (Array.isArray(users)) {
       const sorted = [...users].sort((a, b) => a.grade_id - b.grade_id);
@@ -71,10 +72,12 @@ const GradeList = ({ users, setUser }) => {
 
   const handleEditCellChange = (params) => {
     const { field, value } = params;
-
+   
     // Check if the edited field is "grade" and update the edited grade value
-    if (field === "grade") {
+    if (field === "grade_over_20" && field === 'grade_over_30') {
       setEditedGrade(value);
+      setEditedGradeOver30(value)
+    
     }
   };
 
@@ -82,21 +85,23 @@ const GradeList = ({ users, setUser }) => {
   const handleConfirm = async () => {
     try {
       const payload = {
-        grade: editedGrade, // Use the edited grade value
+        table:'grades_rtf',
+        grade_over_20: editedGrade, // Use the edited grade value
+        grade_over_30:editedGradeOver30,
         student_id: selectedUser.student_id,
-        course_id: selectedUser.courseid,
+        course_id: selectedUser.course_id,
+        // task_name :selectedUser.task_name
       };
 
-      const response = await axios.post("/api/pmApi/updateGrade", payload);
+     await axios.post("/api/pmApi/updateRTF", payload);
 
       setUser((prevState) => {
         const updatedAttendance = prevState.map((row) => {
           if (row.student_id === selectedUser.student_id) {
             return {
               ...row,
-              grade: editedGrade, // Update grade with the edited value
-              gpa: response.data.data.GPA,
-              rank: response.data.data.Rank,
+              grade_over_20: editedGrade, // Update grade with the edited value
+              grade_over_30:editedGradeOver30
             };
           }
           return row;
@@ -111,112 +116,112 @@ const GradeList = ({ users, setUser }) => {
   };
   const columns = [
     {
-      field: "student_id",
-      headerName: "Student ID",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+        field: "student_id",
+        headerName: "Student ID",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "first_name",
-      headerName: "First Name",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      {
+        field: "student_lastname",
+        headerName: "Family Name",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
-    {
-      field: "last_name",
-      headerName: "Last Name",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      },
+      {
+        field: "student_firstname",
+        headerName: "First Name",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "promotion",
-      headerName: "Promotion",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+      {
+        field: "promotion",
+        headerName: "Promotion",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
 
-    },
+      },
 
-    {
-      field: "courseid",
-      headerName: "Course ID",
-      headerAlign: "center",
-      align: "center",
-      width: 120,
-    },
-    {
-      field: "task_name",
-      headerName: "Task Name",
-      headerAlign: "center",
-      align: "center",
-      width: 120,
-    },
+      {
+        field: "course_id",
+        headerName: "Certificate Name",
+        headerAlign: "center",
+        align: "center",
+        width: 120,
+      },
+      {
+        field: "task_name",
+        headerName: "Task Name",
+        headerAlign: "center",
+        align: "center",
+        width: 120,
+      },
+      {
+        field: "grade_over_20",
+        headerName: "Grade/20",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
+        editable: true,
+      },
+      {
+        field: "grade_over_30",
+        headerName: "Grade/30",
+        headerAlign: "center",
+        align: "center",
+        width: 150,
+        editable: true,
+      },
 
-    {
-      field: "grade",
-      headerName: "Grade",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-      editable: true,
-    },
+      // {
+      //   field: "comments",
+      //   headerName: "Comments",
+      //   headerAlign: "center",
+      //   align: "center",
+      //   width: 150,
+      //   editable: true,
+      // },
+      {
+        field: "action",
+        headerName: "Action",
+        width: `${(session?.user.role === "2" || session?.user.role === "3") ? 300 : 150}`,
+        headerAlign: "center",
+        align: "center",
+        sortable: false,
+        renderCell: (params) => (
+          <div className="flex gap-2">
+            <button
+              className="primary-button hover:text-white"
 
-    {
-      field: "gpa",
-      headerName: "GPA",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
+              // disabled={params.id !== presentEnable}
+              type="button"
+              hidden={
+                session.user.role === "1" || session.user.role === "0"
+                  ? true
+                  : false
+              }
+              onClick={() => {
+                setSelectedUser(params.row);
+                setEditedGradeOver30(params.row.grade_over_30)
+                setEditedGrade(params.row.grade_over_20);
+                handleConfirmDel(params.row);
+                setDetails(params.row);
+              }}
 
-    },
-    {
-      field: "rank",
-      headerName: "Rank",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: `${(session?.user.role === "2" || session?.user.role === "3") ? 300 : 150}`,
-      headerAlign: "center",
-      align: "center",
-      sortable: false,
-      renderCell: (params) => (
-        <div className="flex gap-2">
-          <button
-            className="primary-button hover:text-white"
-
-            // disabled={params.id !== presentEnable}
-            type="button"
-            hidden={
-              session.user.role === "1" || session.user.role === "0"
-                ? true
-                : false
-            }
-            onClick={() => {
-              setSelectedUser(params.row);
-              setEditedGrade(params.row.grade);
-              handleConfirmDel(params.row);
-              setDetails(params.row);
-            }}
-
-          >
-            Edit
-          </button>
-        </div>
-      ),
-    },
+            >
+              Edit
+            </button>
+          </div>
+        ),
+      },
   ];
 
 
@@ -270,4 +275,4 @@ const GradeList = ({ users, setUser }) => {
   );
 };
 
-export default GradeList;
+export default GradeListRTF;

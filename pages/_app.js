@@ -22,6 +22,7 @@ import sendMailClass from "../utilities/emailing/emailBeforeClass";
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
+
   const checkIfEight = () => {
     const now = new Date();
     const hours = now.getHours();
@@ -31,7 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     }
   };
 
-  setInterval(checkIfEight, 40000);
+  setInterval(checkIfEight, 55000);
 
   if (Component.getLayout) {
     return (

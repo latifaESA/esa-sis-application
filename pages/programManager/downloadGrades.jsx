@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+
 // import { FaCloudDownloadAlt } from "react-icons/fa";
 import axios from 'axios';
 import Select from 'react-select';
@@ -29,18 +30,64 @@ export default function DownloadGrades({ setClickDownload }) {
     { value: 'winter', label: 'Winter' },
   ];
 
-  const header = [
-    [
-      'StudentID',
-      'StudentFirstName',
-      'StudentLastName',
-      'CourseID',
-      'TaskName',
-      'Grade',
-      'Semester',
-      'Academic_year',
-    ],
-  ];
+// <<<<<<< Ali
+//   const header = [
+//     [
+//       'StudentID',
+//       'StudentFirstName',
+//       'StudentLastName',
+//       'CourseID',
+//       'TaskName',
+//       'Grade',
+//       'Semester',
+//       'Academic_year',
+//     ],
+//   ];
+// =======
+  const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
+  const getFirstWordAfterHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[1];
+      }
+    }
+    return "";
+  };
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+  const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+ 
+  const isExeMajor = firstMajorWord === "EXED";
+  let header = []
+  if (isExeMajor) {
+    if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
+      header = [
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
+      ]
+    }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+      header = [
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20'],
+      ]
+    }
+
+
+
+  } else {
+    header = [
+      ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
+    ]
+
+  }
+
+// >>>>>>> main
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -145,19 +192,73 @@ export default function DownloadGrades({ setClickDownload }) {
     }
 
     // Create the data for the Excel sheet, including student data
-    const data = header.concat(
-      student.map((studentData) => [
-        studentData.student_id,
-        studentData.student_firstname,
-        studentData.student_lastname,
-        courses,
-        taskName,
-        '',
-        semester,
-        academic_year,
-        '',
-      ])
-    );
+// <<<<<<< Ali
+//     const data = header.concat(
+//       student.map((studentData) => [
+//         studentData.student_id,
+//         studentData.student_firstname,
+//         studentData.student_lastname,
+//         courses,
+//         taskName,
+//         '',
+//         semester,
+//         academic_year,
+//         '',
+//       ])
+//     );
+// =======
+    let data = []
+    if (isExeMajor) {
+      if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
+         data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            academic_year,
+            '',
+            ''
+          ])
+        );
+      
+      }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+        data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            academic_year,
+            '',
+            '',
+            
+          ])
+        ); 
+      }
+  
+  
+  
+    } else {
+       data = header.concat(
+        student.map((studentData) => [
+          studentData.student_id,
+          studentData.student_firstname,
+          studentData.student_lastname,
+          courses,
+          taskName,
+          '',
+          semester,
+          academic_year,
+          ''
+        ])
+      );
+  
+    
+    }
+// >>>>>>> main
 
     const columnWidths = calculateColumnWidths(data);
     const worksheet = XLSX.utils.aoa_to_sheet(data);
@@ -245,55 +346,119 @@ export default function DownloadGrades({ setClickDownload }) {
                             <p className="font-bold">Select Task</p>
                           </div>
 
-                          <div className="flex flex-rows">
-                            <div className="mr-5">
-                              <input
-                                type="radio"
-                                value={'assignment'}
-                                onChange={(e) => setTaskValue(e.target.value)}
-                                name="task"
-                              />
-                              Assignment
-                            </div>
-                            <div>
-                              <input
-                                type="radio"
-                                value={'exam'}
-                                onChange={(e) => setTaskValue(e.target.value)}
-                                name="task"
-                              />
-                              Exam
+// <<<<<<< Ali
+//                           <div className="flex flex-rows">
+//                             <div className="mr-5">
+//                               <input
+//                                 type="radio"
+//                                 value={'assignment'}
+//                                 onChange={(e) => setTaskValue(e.target.value)}
+//                                 name="task"
+//                               />
+//                               Assignment
+//                             </div>
+//                             <div>
+//                               <input
+//                                 type="radio"
+//                                 value={'exam'}
+//                                 onChange={(e) => setTaskValue(e.target.value)}
+//                                 name="task"
+//                               />
+//                               Exam
+//                             </div>
+//                           </div>
+//                         </div>
+//                         {session.user?.majorName ===
+//                         'BBA (Bachelor in Business Administration)' ? (
+//                           <>
+//                             <div className="m-5 text-slate-500 text-lg leading-relaxed flex flex-col">
+//                               <p className=" font-bold">Select semester </p>
+//                               <Select
+//                                 isMulti={false}
+//                                 options={semesterOptions} // Use your semesterOptions array here
+//                                 placeholder="Select a Semester"
+//                                 value={semesterOptions.find(
+//                                   (option) => option.value === semester
+//                                 )} // Set the selected option
+//                                 onChange={handleSemester}
+//                                 className="place-items-center w-96"
+//                               />
+//                             </div>
+//                           </>
+//                         ) : (
+//                           <></>
+//                         )}
+
+//                         <div className="m-5 text-slate-500 text-lg leading-relaxed ">
+//                           <p className=" font-bold">Academic year </p>
+//                           <input
+//                             type="text"
+//                             placeholder="academic year"
+//                             value={academic_year}
+//                             onChange={(e) => setAcademicYear(e.target.value)}
+// =======
+                            <div className='flex flex-rows'>
+                              <div className='mr-5'>
+
+                                <input type='radio' value={'assignment'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Assignment
+                              </div>
+                              <div>
+                                <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Exam
+                              </div>
+                              <div>
+                                <input type='radio' value={'project'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Project
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        {session.user?.majorName ===
-                        'BBA (Bachelor in Business Administration)' ? (
-                          <>
-                            <div className="m-5 text-slate-500 text-lg leading-relaxed flex flex-col">
-                              <p className=" font-bold">Select semester </p>
-                              <Select
-                                isMulti={false}
-                                options={semesterOptions} // Use your semesterOptions array here
-                                placeholder="Select a Semester"
-                                value={semesterOptions.find(
-                                  (option) => option.value === semester
-                                )} // Set the selected option
-                                onChange={handleSemester}
-                                className="place-items-center w-96"
-                              />
-                            </div>
-                          </>
-                        ) : (
-                          <></>
-                        )}
+                          {session.user?.majorName === 'BBA (Bachelor in Business Administration)' ?
+                            <>
+                              <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col'>
+                                <p className=" font-bold">Select semester </p>
+                                <Select
+                                  isMulti={false}
+                                  options={semesterOptions} // Use your semesterOptions array here
+                                  placeholder="Select a Semester"
+                                  value={semesterOptions.find(option => option.value === semester)} // Set the selected option
+                                  onChange={handleSemester}
+                                  className='place-items-center w-96'
+                                />
 
-                        <div className="m-5 text-slate-500 text-lg leading-relaxed ">
-                          <p className=" font-bold">Academic year </p>
-                          <input
-                            type="text"
-                            placeholder="academic year"
-                            value={academic_year}
-                            onChange={(e) => setAcademicYear(e.target.value)}
+                              </div>
+                            </>
+                            : <></>}
+                          <div className='m-5 text-slate-500 text-lg leading-relaxed '>
+                            <p className=" font-bold">Academic year </p>
+                            <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
+                          </div>
+
+
+
+                          <div className='m-5 text-slate-500 text-lg leading-relaxed flex flex-col justify-center'>
+                            <button
+                              type='button'
+                              className="primary-button rounded btnCol text-white hover:text-white hover:font-bold "
+
+                              onClick={createExcelTemplateCourse}>
+                              Download
+                            </button>
+                          </div>
+                        </form>
+
+                      </div>
+
+                    </>
+
+                    :
+                    <>
+                      <div className='relative p-6 flex-auto '>
+                        <form className="m-8 text-slate-500 text-lg leading-relaxed">
+                          <Select
+                            isMulti={false}
+                            options={promotion.map((promotion) => ({ value: promotion.promotion_name, label: promotion.promotion_name }))}
+                            placeholder="Select a Promotion"
+                            onChange={handlePromotion}
+                            className='place-items-center w-96'
+// >>>>>>> main
                           />
                         </div>
                         <div className="m-5 text-slate-500 text-lg leading-relaxed flex flex-col justify-center">
