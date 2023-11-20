@@ -31,7 +31,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       sendMailClass();
     }
   };
-
   setInterval(checkIfEight, 55000);
 
   if (Component.getLayout) {

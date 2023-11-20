@@ -109,9 +109,8 @@ const sendMailClass = async () => {
       <li>Class: ${allClasses[k]} : ${courseName} - ${teacherName}</li>
       <li>Start Date: ${dateFormatter(startdate)} at  ${timeFormatter(
           from_time
-        )} till  ${timeFormatter(
-          to_time
-        )} - Building: ${building} - Room: ${room_name}  </li>
+        )} till  ${timeFormatter(to_time)}   </li>
+        <li> Building: ${building} - Room: ${room_name}</li>
       </ul>` +
         `<p>If you have any questions or require any further information, please do
       not hesitate to contact your program manager.</p>` +
