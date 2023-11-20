@@ -29,7 +29,8 @@ const SendEmailTo = async (
       `<p>We would like to remind you about your upcoming class next week:</p>` +
       `<ul>
       <li>Class: ${className} : ${courseName} - ${teacherName}</li>
-      <li>Start Date: ${startdate} at  ${from_time} till  ${to_time} - Building: ${building} - Room: ${room_name}  </li>
+      <li>Start Date: ${startdate} at  ${from_time} till  ${to_time}</li>
+      <li> Building: ${building} - Room: ${room_name}  </li>
       </ul>` +
       `<p>If you have any questions or require any further information, please do
       not hesitate to contact your program manager.</p>` +
