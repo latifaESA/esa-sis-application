@@ -1,34 +1,34 @@
-import Head from "next/head";
+import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
-import CourseList from "../../components/Dashboard/CourseList";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import CourseList from '../../components/Dashboard/CourseList';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
-import axios from "axios";
+import axios from 'axios';
 
 export default function Courses() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
 
   // const [majorid, setMajorid] = useState('')
-  const [courseid, setCourseid] = useState("");
-  const [courseName, setcourseName] = useState("");
-  const [courseCredit, setcourseCredit] = useState("");
-  const [courseType, setcourseType] = useState("");
+  const [courseid, setCourseid] = useState('');
+  const [courseName, setcourseName] = useState('');
+  const [courseCredit, setcourseCredit] = useState('');
+  const [courseType, setcourseType] = useState('');
   const router = useRouter();
-  const [type, setType] = useState([])
+  const [type, setType] = useState([]);
 
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
   const getAllType = async () => {
-    let table = 'course_type'
-    let typeCourse = await axios.post('/api/pmApi/getAll', { table })
-    console.log(typeCourse)
-    setType(typeCourse.data.rows)
-  }
+    let table = 'course_type';
+    let typeCourse = await axios.post('/api/pmApi/getAll', { table });
+    console.log(typeCourse);
+    setType(typeCourse.data.rows);
+  };
   const handleCourses = async () => {
     // console.log(courseid, courseName, courseCredit, majorid)
     let sendData = {
@@ -41,36 +41,37 @@ export default function Courses() {
     // console.log(sendData)
     // console.log(JSON.stringify(sendData))
     // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
+    let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 
-    console.log("this is data");
+    console.log('this is data');
     console.log(data);
     setUsers(data.data);
   };
   useEffect(() => {
     handleShowAll();
-    getAllType()
+    getAllType();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleShowAll = async () => {
     let sendData = {
-      course_id: "",
-      course_name: "",
-      course_credit: "",
+      course_id: '',
+      course_name: '',
+      course_credit: '',
       major_id: session.user.majorid,
-      course_type: "",
+      course_type: '',
     };
     console.log(sendData);
     console.log(sendData);
     // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post("/api/pmApi/filterCourse", sendData);
-    
+    let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
+
     setUsers(data.data);
     // setMajorid('')
-    setCourseid("");
-    setcourseName("");
-    setcourseCredit("");
-    setcourseType("");
+    setCourseid('');
+    setcourseName('');
+    setcourseCredit('');
+    setcourseType('');
   };
 
   return (
@@ -78,7 +79,7 @@ export default function Courses() {
       <Head>
         <title>SIS Admin - Courses</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3" ? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Courses</p>
           <form>
@@ -133,8 +134,8 @@ export default function Courses() {
                   type="number"
                   name="major_id"
                   placeholder="Major Name"
-                // value={formData.ID}
-                // onChange={(e) => {setMajorid(e.target.value)}}
+                  // value={formData.ID}
+                  // onChange={(e) => {setMajorid(e.target.value)}}
                 ></input>
               </label>
               <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
@@ -143,8 +144,8 @@ export default function Courses() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
                   type="date"
                   name="from"
-                // value={formData.from}
-                // onChange={handleChange}
+                  // value={formData.from}
+                  // onChange={handleChange}
                 ></input>
               </label>
 
@@ -154,8 +155,8 @@ export default function Courses() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                // value={formData.to}
-                // onChange={handleChange}
+                  // value={formData.to}
+                  // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -178,7 +179,6 @@ export default function Courses() {
                       </>
                     ))}
                 </select>
-
               </label>
 
               <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
@@ -186,10 +186,10 @@ export default function Courses() {
                 <select
                   className="ml-5 w-40 max-[850px]:ml-[52px] invisible max-[850px]:visible max-[850px]:hidden"
                   name="status"
-                // value={formData.status}
-                // onChange={(e) => {setPresence(e.target.value)}}
+                  // value={formData.status}
+                  // onChange={(e) => {setPresence(e.target.value)}}
                 >
-                  <option value={""}>Choose Value...</option>
+                  <option value={''}>Choose Value...</option>
                   <option value={true}>Present</option>
                   <option value={false}>Absent</option>
                 </select>

@@ -1,12 +1,12 @@
-import Head from "next/head";
+import Head from 'next/head';
 // import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 // import { appIsWaiting } from '../../redux/slices/appSlice';
-import AttendanceList from "../../components/Dashboard/AttendanceList";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import AttendanceList from '../../components/Dashboard/AttendanceList';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
-import axios from "axios";
+import axios from 'axios';
 
 export default function Attendance() {
   const { data: session } = useSession();
@@ -14,20 +14,20 @@ export default function Attendance() {
 
   const router = useRouter();
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
-  const [attendance_id, setAttendanceId] = useState("");
-  const [student_id, setStudentId] = useState("");
-  const [teacher_id, setTeacherId] = useState("");
+  const [attendance_id, setAttendanceId] = useState('');
+  const [student_id, setStudentId] = useState('');
+  const [teacher_id, setTeacherId] = useState('');
   // const [major_id, setMajorid] = useState('');
   const [major, setMajor] = useState([]);
   // const [allMajor, setAllMajor] = useState([])
-  const [course_id, setCourseId] = useState("");
-  const [present, setPresent] = useState("");
-  const [teacher_firstName, setTeacherFirstName] = useState("");
-  const [teacher_lastName, setTeacherLastName] = useState("");
-  const [attendance_date, setAttendanceDate] = useState("");
+  const [course_id, setCourseId] = useState('');
+  const [present, setPresent] = useState('');
+  const [teacher_firstName, setTeacherFirstName] = useState('');
+  const [teacher_lastName, setTeacherLastName] = useState('');
+  const [attendance_date, setAttendanceDate] = useState('');
   // const [major_name, setMajorName] = useState('')
   // // const [allmajor, setallMajor] = useState([])
   // const [majorValue, setMajorValue] = useState([])
@@ -35,9 +35,9 @@ export default function Attendance() {
 
   useEffect(() => {
     const getMajor = async () => {
-      let table = "major";
+      let table = 'major';
 
-      let { data } = await axios.post("/api/pmApi/getAll", { table });
+      let { data } = await axios.post('/api/pmApi/getAll', { table });
 
       // console.log('major')
       // // console.log(data.rows)
@@ -56,18 +56,18 @@ export default function Attendance() {
     const fetchData = async () => {
       try {
         const payload = {
-          attendanceId: "",
-          studentId: "",
-          teacherId: "",
+          attendanceId: '',
+          studentId: '',
+          teacherId: '',
           majorId: session.user.majorid,
-          courseId: "",
-          attendanceDate: "",
-          present: "",
-          teacher_firstname: "",
-          teacher_lastname: "",
-          major_name: "",
+          courseId: '',
+          attendanceDate: '',
+          present: '',
+          teacher_firstname: '',
+          teacher_lastname: '',
+          major_name: '',
         };
-        const result = await axios.post("/api/pmApi/filterAttendance", payload);
+        const result = await axios.post('/api/pmApi/filterAttendance', payload);
         // console.log("data", result.data.data)
 
         setUsers(result.data.data);
@@ -76,33 +76,34 @@ export default function Attendance() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // console.log(session.user.majorid)
 
   const handleShowAll = async () => {
     try {
       const payload = {
-        attendanceId: "",
-        studentId: "",
-        teacherId: "",
+        attendanceId: '',
+        studentId: '',
+        teacherId: '',
         majorId: session.user.majorid,
-        courseId: "",
-        attendanceDate: "",
-        present: "",
-        teacher_teacherfirstname: "",
-        teacher_teacherlastname: "",
-        major_name: "",
+        courseId: '',
+        attendanceDate: '',
+        present: '',
+        teacher_teacherfirstname: '',
+        teacher_teacherlastname: '',
+        major_name: '',
       };
-      const result = await axios.post("/api/pmApi/filterAttendance", payload);
+      const result = await axios.post('/api/pmApi/filterAttendance', payload);
       setUsers(result.data.data);
-      setAttendanceId("");
-      setCourseId("");
-      setTeacherId("");
-      setStudentId("");
-      setAttendanceDate("");
-      setPresent("");
-      setTeacherFirstName("");
-      setTeacherLastName("");
+      setAttendanceId('');
+      setCourseId('');
+      setTeacherId('');
+      setStudentId('');
+      setAttendanceDate('');
+      setPresent('');
+      setTeacherFirstName('');
+      setTeacherLastName('');
       // setMajorName('')
       // setMajorValue('')
       // setTest(true)
@@ -127,7 +128,7 @@ export default function Attendance() {
         teacher_lastname: teacher_lastName,
       };
 
-      const result = await axios.post("/api/pmApi/filterAttendance", payload);
+      const result = await axios.post('/api/pmApi/filterAttendance', payload);
 
       setUsers(result.data.data);
     } catch (error) {
@@ -160,7 +161,7 @@ export default function Attendance() {
       <Head>
         <title>SIS Admin - Attendance</title>
       </Head>
-      {session?.user.role === "2" || session?.user.role === "3" ? (
+      {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Attendance
@@ -174,7 +175,7 @@ export default function Attendance() {
                   type="date"
                   name="date"
                   placeholder=""
-                  id={"date"}
+                  id={'date'}
                   value={attendance_date}
                   onChange={(e) => {
                     setAttendanceDate(e.target.value);
@@ -203,7 +204,7 @@ export default function Attendance() {
                   type="text"
                   name="Lname"
                   placeholder="Course ID"
-                  id={"text"}
+                  id={'text'}
                   value={course_id}
                   onChange={(e) => {
                     setCourseId(e.target.value);
@@ -219,7 +220,7 @@ export default function Attendance() {
                   type="text"
                   name="firstname"
                   placeholder="First Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_firstName}
                   onChange={(e) => {
                     setTeacherFirstName(e.target.value);
@@ -245,7 +246,7 @@ export default function Attendance() {
                   type="text"
                   name="lastname"
                   placeholder="Last Name"
-                  id={"teacherId"}
+                  id={'teacherId'}
                   value={teacher_lastName}
                   onChange={(e) => {
                     setTeacherLastName(e.target.value);

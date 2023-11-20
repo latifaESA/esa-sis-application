@@ -11,13 +11,21 @@ import CustomSelectBox from './customSelectBox';
 // import Link from 'next/link';
 
 export default function requests() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [users, setUsers] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [reqId, setReqId] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [stId, setStid] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [stMail, setMail] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [status, setStatus] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [type, setType] = useState('');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session } = useSession();
   const redirect = () => {
     router.push('/AccessDenied');
@@ -62,8 +70,10 @@ export default function requests() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     handleShowAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

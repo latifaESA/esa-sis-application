@@ -1,11 +1,10 @@
 // import { useDispatch } from 'react-redux';
 // import { LowerButtons } from '../../components/Admin/LowerButtons';
 // import { appIsWaiting } from '../../../redux/slices/appSlice';
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import https from "https";
-
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import https from 'https';
 
 const StudentBlue = () => {
   const [survey, setSurvey] = useState([]);
@@ -17,22 +16,21 @@ const StudentBlue = () => {
   useEffect(() => {
     const BlueData = async () => {
       let { data } = await axios.get(
-        `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${userid}&SubjectIDs=2024_DBA-RF-IR_09`
-        , {
-
+        `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${userid}&SubjectIDs=2024_DBA-RF-IR_09`,
+        {
           httpsAgent: new https.Agent({
             rejectUnauthorized: false,
-          })
+          }),
         }
       );
       // console.log("dataTask",data.Tasks)
-      setSurvey(data.Tasks)
+      setSurvey(data.Tasks);
     };
     BlueData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const name = session.user?.name
-  const firstname = name.split(' ')[0]
-
+  const name = session.user?.name;
+  const firstname = name.split(' ')[0];
 
   return (
     <>
@@ -40,7 +38,7 @@ const StudentBlue = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg">
         {survey && survey.length > 0 && (
           <div className="text-center text-red-600">
-            <h4>Dear  {firstname} , your account is limited</h4>
+            <h4>Dear {firstname} , your account is limited</h4>
             <p className="text-gray-700 text-xl pt-5 mb-10 ">
               Please Fill up the following survey to reactivate your account
             </p>
@@ -57,7 +55,7 @@ const StudentBlue = () => {
                 </p>
                 <p className="text-gray-700 text-xl pt-5 mb-2">{Name}</p>
                 <p className="text-gray-700 text-xl pt-5 mb-2">
-                  Follow the Link to take the Survey{" "}
+                  Follow the Link to take the Survey{' '}
                   <a className="underline" href={Link}>
                     Take Survey
                   </a>
@@ -71,7 +69,6 @@ const StudentBlue = () => {
           })}
       </div>
     </>
-
   );
 };
 

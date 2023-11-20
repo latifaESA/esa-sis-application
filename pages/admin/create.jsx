@@ -1,11 +1,11 @@
-import { useSession } from "next-auth/react";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import AccountsList from "../../components/Dashboard/AccountsList";
-import AccountsAssistance from "../../components/Dashboard/AccountsAssistance";
-import axios from "axios";
-import { useRouter } from "next/router";
-import AdminList from "../../components/Dashboard/AdminList";
+import { useSession } from 'next-auth/react';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import AccountsList from '../../components/Dashboard/AccountsList';
+import AccountsAssistance from '../../components/Dashboard/AccountsAssistance';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import AdminList from '../../components/Dashboard/AdminList';
 
 // import Link from 'next/link';
 // import TeachersList from '../../components/Dashboard/TeachersList'
@@ -21,162 +21,156 @@ export default function Create() {
   // const [dates, setDates] = useState([]);
   // const [status, setStatus] = useState([]);
   // const [promotion, setPromotion] = useState([]);
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [idvalue, setIDvalue] = useState("");
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("");
-  const [role, setRole] = useState("2");
-  const [majorName, setMajorName] = useState("")
-  const [major, setMajor] = useState([])
-  const [admin, setAdminList] = useState([])
+  const [fname, setFname] = useState('');
+  const [lname, setLname] = useState('');
+  const [idvalue, setIDvalue] = useState('');
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('');
+  const [role, setRole] = useState('2');
+  const [majorName, setMajorName] = useState('');
+  const [major, setMajor] = useState([]);
+  const [admin, setAdminList] = useState([]);
 
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
   useEffect(() => {
     handleDataFetch(); // Call the common data fetch function when role changes
-    handleMajor()
+    handleMajor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]); // Add 'role' as a dependency to re-run the effect when it changes
 
   const handleDataFetch = async () => {
-    if (role === "2") {
+    if (role === '2') {
       handleShowAll();
-    } else if (role === "3") {
+    } else if (role === '3') {
       handleShow();
-    } else if (role === "4") {
+    } else if (role === '4') {
       handleShowAdmin();
     }
   };
 
-
   const handleMajor = async () => {
     try {
-      const table = 'major'
-      const data = await axios.post('/api/pmApi/getAll', { table })
-      setMajor(data.data.rows)
-
+      const table = 'major';
+      const data = await axios.post('/api/pmApi/getAll', { table });
+      setMajor(data.data.rows);
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
 
   const handleShowAll = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
-    setFname("");
-    setLname("");
-    setIDvalue("");
-    setEmail("");
-    setStatus("active");
+    setFname('');
+    setLname('');
+    setIDvalue('');
+    setEmail('');
+    setStatus('active');
 
-    setMajorName("")
+    setMajorName('');
 
-    setRole("2");
-
+    setRole('2');
 
     let sendpmData = {
-      pm_id: "".trim(),
-      pm_firstname: "".trim(),
-      pm_lastname: "".trim(),
-      pm_email: "".trim(),
-      pm_status: "active".trim(),
-      majorName: ""
+      pm_id: ''.trim(),
+      pm_firstname: ''.trim(),
+      pm_lastname: ''.trim(),
+      pm_email: ''.trim(),
+      pm_status: 'active'.trim(),
+      majorName: '',
     };
     try {
       // id,firstname,lastname,major,promotion,status
-      let { data } = await axios.post("/api/admin/adminApi/filterpm", sendpmData);
+      let { data } = await axios.post(
+        '/api/admin/adminApi/filterpm',
+        sendpmData
+      );
 
       // console.log(data);
       setUsers(data);
     } catch (error) {
-      return error
+      return error;
     }
 
     // // console.log('this is users')
     // // console.log(users)
-
   };
   const handleShow = async () => {
     // pm_id, pm_firstname, pm_lastname, pm_email
-    setRole("3");
-    setFname("");
-    setLname("");
-    setIDvalue("");
-    setEmail("");
-    setStatus("active");
-    setMajorName("")
+    setRole('3');
+    setFname('');
+    setLname('');
+    setIDvalue('');
+    setEmail('');
+    setStatus('active');
+    setMajorName('');
     let sendData = {
-      pm_ass_id: "".trim(),
-      pm_ass_firstname: "".trim(),
-      pm_ass_lastname: "".trim(),
-      pm_ass_email: "".trim(),
-      pm_ass_status: "active".trim(),
-      majorName: ""
+      pm_ass_id: ''.trim(),
+      pm_ass_firstname: ''.trim(),
+      pm_ass_lastname: ''.trim(),
+      pm_ass_email: ''.trim(),
+      pm_ass_status: 'active'.trim(),
+      majorName: '',
     };
     // console.log(sendData);
     // id,firstname,lastname,major,promotion,status
     try {
       let { data } = await axios.post(
-        "/api/admin/adminApi/filterassistance",
+        '/api/admin/adminApi/filterassistance',
         sendData
       );
 
       // console.log(sendData);
       setAssistance(data.rows);
     } catch (error) {
-      return error
+      return error;
     }
-
-
-
-
   };
 
   const handleShowAdmin = async () => {
-    setRole("4");
-    setFname("");
-    setLname("");
-    setIDvalue("");
-    setEmail("");
-    setStatus("active");
-    setMajorName("")
+    setRole('4');
+    setFname('');
+    setLname('');
+    setIDvalue('');
+    setEmail('');
+    setStatus('active');
+    setMajorName('');
     let sendDataAdmin = {
-      adminid: "".trim(),
-      admin_firstname: "".trim(),
-      admin_lastname: "".trim(),
-      adminemail: "".trim(),
-      admin_status: "active".trim(),
+      adminid: ''.trim(),
+      admin_firstname: ''.trim(),
+      admin_lastname: ''.trim(),
+      adminemail: ''.trim(),
+      admin_status: 'active'.trim(),
     };
     try {
-
       let { data } = await axios.post(
-        "/api/admin/adminApi/filterAdmin",
+        '/api/admin/adminApi/filterAdmin',
         sendDataAdmin
       );
-      setAdminList(data.rows)
-
+      setAdminList(data.rows);
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
 
   const handleAccounts = async () => {
     // e.preventDefault();
     // // console.log(idvalue, fname, lname, email, courseid)
-    if (role == "3") {
+    if (role == '3') {
       let sendData = {
         pm_ass_id: idvalue.trim(),
         pm_ass_firstname: fname.trim(),
         pm_ass_lastname: lname.trim(),
         pm_ass_email: email.trim(),
         pm_ass_status: status.trim(),
-        majorName: majorName
+        majorName: majorName,
       };
       // console.log(sendData);
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        "/api/admin/adminApi/filterassistance",
+        '/api/admin/adminApi/filterassistance',
         sendData
       );
 
@@ -190,11 +184,10 @@ export default function Create() {
         admin_status: status.trim(),
       };
       let { data } = await axios.post(
-        "/api/admin/adminApi/filterAdmin",
+        '/api/admin/adminApi/filterAdmin',
         sendDataAdmin
       );
-      setAdminList(data.rows)
-
+      setAdminList(data.rows);
     } else {
       let sendpmData = {
         pm_id: idvalue.trim(),
@@ -202,11 +195,11 @@ export default function Create() {
         pm_lastname: lname.trim(),
         pm_email: email.trim(),
         pm_status: status.trim(),
-        majorName: majorName
+        majorName: majorName,
       };
       // // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post(
-        "/api/admin/adminApi/filterpm",
+        '/api/admin/adminApi/filterpm',
         sendpmData
       );
 
@@ -214,14 +207,13 @@ export default function Create() {
     }
   };
 
-
   return (
     <>
       <Head>
         <title>SIS Admin - Accounts</title>
       </Head>
 
-      {session?.user.role === "0" ? (
+      {session?.user.role === '0' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Accounts
@@ -295,58 +287,62 @@ export default function Create() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                // value={formData.from}
-                // onChange={handleChange}
+                  // value={formData.from}
+                  // onChange={handleChange}
                 ></input>
               </label>
-              {role === "4" ?
-
+              {role === '4' ? (
                 <label className="invisible max-[850px]:visible max-[850px]:hidden">
                   Major:
                   <select
                     className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                     value={majorName}
-                    onChange={(e) => setMajorName(e.target.value)}>
+                    onChange={(e) => setMajorName(e.target.value)}
+                  >
                     <option value=" ">Major</option>
                     <>
-                      <>{major.length > 0 ? major.map((item, index) => (
-                        <option key={index} value={item.major_name} >{item.major_name}</option>
-
-                      )) : <option value={""}>NO major</option>}</>
-
+                      <>
+                        {major.length > 0 ? (
+                          major.map((item, index) => (
+                            <option key={index} value={item.major_name}>
+                              {item.major_name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value={''}>NO major</option>
+                        )}
+                      </>
                     </>
-
-
                   </select>
                 </label>
-
-                :
-
+              ) : (
                 <label className="">
                   Major:
                   <select
                     className="ml-9 w-40"
                     value={majorName}
-                    onChange={(e) => setMajorName(e.target.value)}>
+                    onChange={(e) => setMajorName(e.target.value)}
+                  >
                     <option value=" ">Major</option>
                     <>
-                      <>{major.length > 0 ? major.map((item, index) => (
-                        <option key={index} value={item.major_name} >{item.major_name}</option>
-
-                      )) : <option value={""}>NO major</option>}</>
-
+                      <>
+                        {major.length > 0 ? (
+                          major.map((item, index) => (
+                            <option key={index} value={item.major_name}>
+                              {item.major_name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value={''}>NO major</option>
+                        )}
+                      </>
                     </>
-
-
                   </select>
                 </label>
-
-              }
-
+              )}
 
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
-
 
               <label>
                 Status:
@@ -368,14 +364,13 @@ export default function Create() {
                   className="ml-9 w-40 max-[840px]:ml-[50px]"
                   onChange={(e) => {
                     setRole(e.target.value);
-                    setFname("");
-                    setLname("");
-                    setIDvalue("");
-                    setEmail("");
-                    setStatus("active");
-                    setMajorName("");
+                    setFname('');
+                    setLname('');
+                    setIDvalue('');
+                    setEmail('');
+                    setStatus('active');
+                    setMajorName('');
                   }}
-
                 >
                   <option value="2">Program Manager</option>
                   <option value="3"> Assistance</option>
@@ -408,16 +403,15 @@ export default function Create() {
                     Show All
                   </button>
                 </>} */}
-                {role === "4" ? (
-                   <button
-                   className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                   type="button"
-                   onClick={handleShowAdmin}
-                 >
-                   Show All
-                 </button>
-                ) : role === "3" ? (
-                 
+                {role === '4' ? (
+                  <button
+                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleShowAdmin}
+                  >
+                    Show All
+                  </button>
+                ) : role === '3' ? (
                   <button
                     className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
                     type="button"
@@ -427,22 +421,20 @@ export default function Create() {
                   </button>
                 ) : (
                   <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={handleShowAll}
-                >
-                  Show All
-                </button>
+                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleShowAll}
+                  >
+                    Show All
+                  </button>
                 )}
-
               </div>
             </div>
-
           </form>
-          {role === "4" ? (
+          {role === '4' ? (
             // Render AdminList for role 4 users
             <AdminList admin={admin} setAdminList={setAdminList} />
-          ) : role === "3" ? (
+          ) : role === '3' ? (
             // Render AccountsAssistance for role 3 users
             <AccountsAssistance
               assistance={assistance}
