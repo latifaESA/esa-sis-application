@@ -7,15 +7,12 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-
 export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF }) {
-
-// export default function UploadGrades({ setClickUpload, showAll }) {
-// >>>>>>> main
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
     const [isClick, setIsClick] = useState(false);
+    const [student, setStudentData] = useState([]);
     const router = useRouter();
 
     const redirect = () => {
@@ -36,7 +33,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
         setConfirmOpenMessage(false);
         setIsClick(false);
     };
-
 
     const getFirstWordBeforeHyphen = (text) => {
         if (text) {
@@ -88,19 +84,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
         return () => clearInterval(interval);
     }, []);
 
-//     useEffect(() => {
-//         showAll();
-//         // Auto-refresh the page 
-//         const interval = setInterval(() => {
-//             showAll();
-//         }, 1000);
-// >>>>>>> main
-
-        // Clear the interval when the component unmounts
-        return () => clearInterval(interval);
-    }, []);
     const validateColumnHeaders = (columnA) => {
-
         if (!isExeMajor) {
             const templateFields = [
                 'StudentID',
@@ -197,53 +181,12 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 } else {
                     return true; // All required fields are present and not empty
                 }
-
-        const templateFields = [
-            'StudentID',
-            'StudentFirstName',
-            'StudentLastName',
-            'CourseID',
-            'Grade'
-        ]; // Replace with your actual template fields
-
-        // Check if all template fields exist in columnA
-        const missingFields = templateFields.filter(
-            (field) => !columnA.includes(field)
-        );
-
-        if (missingFields.length === 0) {
-            // All template fields are present
-            return true;
-        } else {
-            // Some template fields are missing
-            return false;
-        }
-    };
-    const validateRow = (rowData) => {
-        const requiredFields = [
-            'StudentID',
-            'StudentFirstName',
-            'StudentLastName',
-            'CourseID',
-            'TaskName',
-            'Grade',
-            'Semester',
-            'Academic_year'
-        ];
-
-        for (const field of requiredFields) {
-           
-            if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
-                return false; // Missing or empty required field
-            } else {
-                return true; // All required fields are present and not empty
-
             }
         }
 
 
-    };
 
+    };
 
     const fetchStudent = async () => {
         try {
@@ -273,9 +216,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             return error;
         }
     };
-// =======
-
-// >>>>>>> main
     const handleAdd = async () => {
         try {
             setIsClick(true);
@@ -336,7 +276,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrade",
-
                         formData,
 
                     );
@@ -409,9 +348,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGMPGrades",
                         formData,
-// =======
-//                         formData
-// >>>>>>> main
                     );
     
                     if (data.success === true) {
@@ -426,7 +362,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     }
                 }
             };
-
     
             reader.readAsArrayBuffer(file);
         } catch (error) {
@@ -497,16 +432,14 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     }
                 }
             };
-  
-
-// >>>>>>> main
+    
             reader.readAsArrayBuffer(file);
         } catch (error) {
             setConfirmOpenMessage(true);
             setMessages("Something went wrong. Please try again later.");
         }
     };
-
+    
 
 
 
@@ -573,7 +506,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                     <button
                                                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                                         type="button"
-
                                                         onClick={
                                                             isExeMajor && SecondMajorWord === 'GMP' ?
                                                                 handleAddGMP :
@@ -581,9 +513,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                                     handleAddRTF
                                                                     : handleAdd
                                                         }
-// =======
-//                                                         onClick={handleAdd}
-// >>>>>>> main
                                                     >
                                                         Scan
                                                     </button>
