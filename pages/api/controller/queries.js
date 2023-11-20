@@ -314,7 +314,7 @@ async function getAll(connection, table) {
 }
 
 // get the major of the program manager
-async function getMajorPM(connection, majorID){
+async function getMajorPM(connection, majorID) {
   try {
     const result = await connection.query(`SELECT *
     FROM major
@@ -398,7 +398,8 @@ const countNotification = async (connection, receiver_id) => {
 
 const getEmailsSender = async (connection, receiver_id) => {
   try {
-    const result = connection.query(`
+    const result = connection.query(
+      `
     SELECT
     nt.*,
     CASE
@@ -413,7 +414,9 @@ const getEmailsSender = async (connection, receiver_id) => {
   LEFT JOIN program_manager pm ON nt.sender_id = pm.pm_id
   WHERE nt.receiver_id = $1
   ORDER BY nt.date DESC;  
-    `,[receiver_id])
+    `,
+      [receiver_id]
+    );
     return result;
   } catch (error) {
     return error;
@@ -2352,7 +2355,7 @@ async function uploadGrades(
     rank,
     semester,
     academic_year,
-    comments
+    comments,
   }
 ) {
   try {
@@ -2377,16 +2380,15 @@ async function uploadGMPGrade(
     course_id,
     task_name,
     grade,
-    comments
+    comments,
   }
 ) {
   try {
-
     const query = {
       text: `  
       INSERT INTO grades_gmp (student_id , student_firstname , student_lastname  , academic_year, course_id , grades, comments , task_name)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8) `,
-      values: [ 
+      values: [
         student_id,
         student_firstname,
         student_lastname,
@@ -2394,11 +2396,11 @@ async function uploadGMPGrade(
         course_id,
         grade,
         comments,
-        task_name
+        task_name,
       ],
     };
-  
-    const res = await connection.query(query)
+
+    const res = await connection.query(query);
     return res;
   } catch (error) {
     return error;
@@ -2610,11 +2612,7 @@ async function updateUsers(connection, accessToken, user_id) {
   }
 }
 
-async function roleStudent
-(
-  connection, 
-  majorId
-  ) {
+async function roleStudent(connection, majorId) {
   try {
     const query = `
     SELECT major_id,status, 
@@ -2681,44 +2679,30 @@ async function getRequests(connection) {
     return res;
   } catch (error) {
     return error;
-
-async function createCertificate 
-(
-  connection ,
-  majorId ,
-  name 
-  ){
-
-  try {
-    const query = `INSERT INTO major (major_id , major_name) VALUES ('${majorId}' , 'EXED-${name}') RETURNING major_id , major_name , status`
-    const res = await connection.query(query)
-    return res
-  } catch (error) {
-    return error
   }
-      
 }
-
-async function updateStatusActive (
-  connection, 
-  status,
-  majorId
-
-){
+async function createCertificate(connection, majorId, name) {
   try {
-    const query =`UPDATE major SET status = '${status}' WHERE major_id='${majorId}'`
-    
-    const res = await connection.query(query)
-    return res
+    const query = `INSERT INTO major (major_id , major_name) VALUES ('${majorId}' , 'EXED-${name}') RETURNING major_id , major_name , status`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-async function Certificate
-(
-  connection
-  ) {
+async function updateStatusActive(connection, status, majorId) {
+  try {
+    const query = `UPDATE major SET status = '${status}' WHERE major_id='${majorId}'`;
+
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function Certificate(connection) {
   try {
     const query = `
     SELECT major_id,status, 
@@ -2729,28 +2713,28 @@ async function Certificate
        END AS modified_major_name
 FROM major
 WHERE  major_name LIKE 'EXED%'
-    `
-    const res = await connection.query(query)
-    return res
+    `;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
-async function getGradeStudent(connection ,table, studentId){
+async function getGradeStudent(connection, table, studentId) {
   try {
     const query = `
     SELECT ${table}.*, courses.course_name 
     FROM ${table} 
     INNER JOIN courses ON ${table}.course_id = courses.course_id
     WHERE student_id = '${studentId}'
-    `
-   
-    const res = await connection.query(query)
+    `;
 
-    return res
+    const res = await connection.query(query);
+
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function filterGMPGrades(
@@ -2763,7 +2747,6 @@ async function filterGMPGrades(
   course_id,
   grades,
   task_name
- 
 ) {
   try {
     let query = `SELECT grades_gmp.* ,  student.promotion , student.major_id
@@ -2772,7 +2755,7 @@ async function filterGMPGrades(
       WHERE student.major_id = '${major_id}'  
       `;
 
-    if (student_id != '') {
+    if (student_id != "") {
       query += ` AND student.student_id = '${student_id}'`;
     }
     if (first_name) {
@@ -2787,14 +2770,13 @@ async function filterGMPGrades(
     if (promotion) {
       query += ` AND lower(trim(student.promotion)) LIKE lower(trim('%${promotion}%'))`;
     }
-    if (course_id != '') {
+    if (course_id != "") {
       query += ` AND lower(trim(grades_gmp.course_id)) LIKE lower(trim('%${course_id}%'))`;
     }
 
-    if (grades != '') {
+    if (grades != "") {
       query += ` AND grades_gmp.grades = '${grades}'`;
     }
-
 
     const res = await connection.query(query);
 
@@ -2804,30 +2786,35 @@ async function filterGMPGrades(
   }
 }
 
-async function updateGradesExED(connection , table ,grades , student_id , course_id){
+async function updateGradesExED(
+  connection,
+  table,
+  grades,
+  student_id,
+  course_id
+) {
   try {
-    const query =   `UPDATE ${table} SET grades = '${grades}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `UPDATE ${table} SET grades = '${grades}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
-async function searchEmailStudent (connection , major_id){
+async function searchEmailStudent(connection, major_id) {
   try {
-    const  query = `SELECT student.*, user_contact.email
+    const query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
-     WHERE student.major_id ='${major_id}'`
-     const res = await connection.query(query)
-     return res
+     WHERE student.major_id ='${major_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function uploadGradesRTF(
-  connection 
-  ,
+  connection,
   {
     student_id,
     student_firstname,
@@ -2836,16 +2823,15 @@ async function uploadGradesRTF(
     course_id,
     task_name,
     grade_over_20,
-    grade_over_30
+    grade_over_30,
   }
-  
-  ){
+) {
   try {
     const query = {
       text: `  
       INSERT INTO grades_rtf (student_id , student_firstname , student_lastname  , academic_year, course_id ,task_name, grade_over_20, grade_over_30)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8) `,
-      values: [ 
+      values: [
         student_id,
         student_firstname,
         student_lastname,
@@ -2853,15 +2839,14 @@ async function uploadGradesRTF(
         course_id,
         task_name,
         grade_over_20,
-        grade_over_30
-    
+        grade_over_30,
       ],
     };
-  
-    const res = await connection.query(query)
+
+    const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function filterRTFGrades(
@@ -2875,7 +2860,6 @@ async function filterRTFGrades(
   grades_over_20,
   grades_over_30,
   task_name
- 
 ) {
   try {
     let query = `SELECT grades_rtf.* ,  student.promotion , student.major_id
@@ -2884,7 +2868,7 @@ async function filterRTFGrades(
       WHERE student.major_id = '${major_id}'  
       `;
 
-    if (student_id != '') {
+    if (student_id != "") {
       query += ` AND student.student_id = '${student_id}'`;
     }
     if (first_name) {
@@ -2899,19 +2883,18 @@ async function filterRTFGrades(
     if (promotion) {
       query += ` AND lower(trim(student.promotion)) LIKE lower(trim('%${promotion}%'))`;
     }
-    if (course_id != '') {
+    if (course_id != "") {
       query += ` AND lower(trim(grades_rtf.course_id)) LIKE lower(trim('%${course_id}%'))`;
     }
 
-    if (grades_over_20 != '') {
+    if (grades_over_20 != "") {
       query += ` AND grades_rtf.grade_over_20 = '${grades_over_20}'`;
     }
-    
-    if (grades_over_30 != '') {
+
+    if (grades_over_30 != "") {
       query += ` AND grades_rtf.grade_over_30 = '${grades_over_30}'`;
     }
 
-    
     const res = await connection.query(query);
 
     return res;
@@ -2920,20 +2903,19 @@ async function filterRTFGrades(
   }
 }
 async function updateGradesRTF(
-  connection ,
-   table ,
-   grade_over_20 ,
-   grade_over_30 , 
-   student_id , 
-   course_id
-   ){
+  connection,
+  table,
+  grade_over_20,
+  grade_over_30,
+  student_id,
+  course_id
+) {
   try {
-    const query =   `UPDATE ${table} SET grade_over_20 = '${grade_over_20}' , grade_over_30 ='${grade_over_30}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`
-    const res = await connection.query(query)
-    return res
+    const query = `UPDATE ${table} SET grade_over_20 = '${grade_over_20}' , grade_over_30 ='${grade_over_30}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
-
+    return error;
   }
 }
 
@@ -2947,7 +2929,7 @@ module.exports = {
   updateGradesExED,
   filterGMPGrades,
   getGradeStudent,
- Certificate,
+  Certificate,
   updateStatusActive,
   createCertificate,
   roleStudent,
@@ -3084,6 +3066,5 @@ module.exports = {
   getRoomAndTimeForSendMail,
   changeViewed,
   getRequests,
-  getMajorPM
-
+  getMajorPM,
 };
