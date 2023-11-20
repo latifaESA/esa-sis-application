@@ -42,7 +42,7 @@ const ProgramManagerView = () => {
       }
     };
     handleMajorPM();
-  }, []);
+  }, [session.user.majorid]);
 
      // Function to extract the first word before a hyphen "-"
      const getFirstWordBeforeHyphen = (text) => {
