@@ -4,17 +4,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Loader from '../../components/Loader/Loader';
-import CustomSelectBox from './customSelectBox';
 
 export default function send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session } = useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [majors, setMajors] = useState([]);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [allmajors, setAllMajors] = useState([]);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isLoading, setIsLoading] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -28,7 +23,6 @@ export default function send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [afterSub, setAfterSub] = useState(false);
   const [loadingMajor, setLoadingMajor] = useState(true);
   const redirect = () => {
     router.push('/AccessDenied');
@@ -52,7 +46,7 @@ export default function send() {
       }
     };
     handleMajorPM();
-  }, [session]); // Empty dependency array means this effect runs once when the component mounts
+  }, [session,selectedMajorID]); // Empty dependency array means this effect runs once when the component mounts
 
   // const handleSelect = (selectedValue) => {
   //   if (selectedValue.trim() !== '') {
@@ -93,10 +87,8 @@ export default function send() {
         setMessageClass('text-green-500');
         setSubjectContent(''),
           setEmailContent(''),
-          setAfterSub(true),
           setTimeout(() => {
             setMessage('');
-            setAfterSub(false);
           }, 5000);
         if (res) {
           setIsLoading(false);
