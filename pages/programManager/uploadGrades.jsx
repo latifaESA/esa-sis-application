@@ -7,7 +7,7 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll , showAllGMP , showAllRTF }) {
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF }) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -36,56 +36,56 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
 
     const getFirstWordBeforeHyphen = (text) => {
         if (text) {
-          const words = text.split("-");
-          if (words.length > 0) {
-            return words[0];
-          }
+            const words = text.split("-");
+            if (words.length > 0) {
+                return words[0];
+            }
         }
         return "";
-      };
-      const getFirstWordAfterHyphen = (text) => {
+    };
+    const getFirstWordAfterHyphen = (text) => {
         if (text) {
-          const words = text.split("-");
-          if (words.length > 0) {
-            return words[1];
-          }
+            const words = text.split("-");
+            if (words.length > 0) {
+                return words[1];
+            }
         }
         return "";
-      };
-      const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
-      const SecondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
-      const isExeMajor = firstMajorWord === "EXED";
+    };
+    const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+    const SecondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+    const isExeMajor = firstMajorWord === "EXED";
 
-      useEffect(()=>{
+    useEffect(() => {
         fetchStudent()
-      },[student])
+    }, [student])
 
-      useEffect(() => {
-        if(!isExeMajor){
-           showAll();
-        }else if(isExeMajor && SecondMajorWord === 'GMP'){
-           showAllGMP();
-        } else if(isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services'){
-            showAllRTF()
-         }
-  
-       // Auto-refresh the page 
-       const interval = setInterval(() => {
-        if(!isExeMajor){
+    useEffect(() => {
+        if (!isExeMajor) {
             showAll();
-         }else if(isExeMajor && SecondMajorWord === 'GMP'){
+        } else if (isExeMajor && SecondMajorWord === 'GMP') {
             showAllGMP();
-         } else if(isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services'){
+        } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
             showAllRTF()
-         }
-       }, 2000);
+        }
 
-       // Clear the interval when the component unmounts
-       return () => clearInterval(interval);
-   }, []);
+        // Auto-refresh the page 
+        const interval = setInterval(() => {
+            if (!isExeMajor) {
+                showAll();
+            } else if (isExeMajor && SecondMajorWord === 'GMP') {
+                showAllGMP();
+            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
+                showAllRTF()
+            }
+        }, 2000);
+
+        // Clear the interval when the component unmounts
+        return () => clearInterval(interval);
+    }, []);
 
     const validateColumnHeaders = (columnA) => {
-        if(!isExeMajor){
+        if (!isExeMajor) {
             const templateFields = [
                 'StudentID',
                 'StudentFirstName',
@@ -93,43 +93,43 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                 'CourseID',
                 'Grade'
             ]; // Replace with your actual template fields
-    
-            // Check if all template fields exist in columnA
-            const missingFields = templateFields.filter(
-                (field) => !columnA.includes(field)
-            );
-    
-            if (missingFields.length === 0) {
-                // All template fields are present
-                return true;
-            } else {
-                // Some template fields are missing
-                return false;
-            }
-        }else if(SecondMajorWord === 'GMP' || SecondMajorWord==='gmp' || SecondMajorWord === 'Gmp'){
-            const templateFields =  ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments']
-    
-            // Check if all template fields exist in columnA
-            const missingFields = templateFields.filter(
-                (field) => !columnA.includes(field)
-            );
-    
-            if (missingFields.length === 0) {
-                // All template fields are present
-                return true;
-            } else {
-                // Some template fields are missing
-                return false;
-            }
-        }else if(SecondMajorWord === 'Digital Transformation in Financial Services'){
-            const templateFields =['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20']
 
-    
             // Check if all template fields exist in columnA
             const missingFields = templateFields.filter(
                 (field) => !columnA.includes(field)
             );
-    
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
             if (missingFields.length === 0) {
                 // All template fields are present
                 return true;
@@ -140,7 +140,7 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
         }
     };
     const validateRow = (rowData) => {
-        if(!isExeMajor){
+        if (!isExeMajor) {
             const requiredFields = [
                 'StudentID',
                 'StudentFirstName',
@@ -151,31 +151,31 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                 'Semester',
                 'Academic_year'
             ];
-    
+
             for (const field of requiredFields) {
-               
+
                 if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
                     return false; // Missing or empty required field
                 } else {
                     return true; // All required fields are present and not empty
                 }
             }
-        }else if(SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp'){
-            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments']
-    
+        } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
+            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+
             for (const field of requiredFields) {
-               
+
                 if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
                     return false; // Missing or empty required field
                 } else {
                     return true; // All required fields are present and not empty
                 }
             }
-        }else if(SecondMajorWord === 'Digital Transformation in Financial Services'){
-            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30','GradeOver20']
-    
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+
             for (const field of requiredFields) {
-               
+
                 if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
                     return false; // Missing or empty required field
                 } else {
@@ -190,22 +190,32 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
 
     const fetchStudent = async () => {
         try {
-          const payload = {
-            major_id: session.user.majorid
-          };
-          const response = await axios.post('/api/pmApi/studentEmail', payload);
-          const unsortedStudentData = response.data.data;
-    
-          // Sort the student data by student_id in increasing order
-          const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
-            a.student_id - b.student_id
-          );
-          const emails = sortedStudentData.map(student => student.email);
-          setStudentData(emails);
+            const payload = {
+                major_id: session.user.majorid
+            };
+            const response = await axios.post('/api/pmApi/studentEmail', payload);
+            console.log('data',response.data.data)
+            const unsortedStudentData = response.data.data;
+
+            // Sort the student data by student_id in increasing order
+            const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
+                a.student_id - b.student_id
+            );
+            // Extract the required information (first name, last name, and email)
+            const studentInfo = sortedStudentData.map(student => ({
+                studentID :student.student_id,
+                firstName: student.student_firstname,
+                lastName: student.student_lastname,
+                email: student.email,
+                pm_id : session.user?.userid
+            }));
+        
+            // Set the student data in your state or wherever you need it
+            setStudentData(studentInfo);
         } catch (error) {
-          return error;
+            return error;
         }
-      };
+    };
     const handleAdd = async () => {
         try {
             setIsClick(true);
@@ -266,8 +276,8 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrade",
-                        formData , 
-                       
+                        formData,
+
                     );
 
                     if (data.success === true) {
@@ -289,18 +299,18 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
             setMessages("Something went wrong. Please try again later.");
         }
     };
-    
+
     const handleAddGMP = async () => {
         try {
             setIsClick(true);
     
             // Fetch student emails separately
-            const studentEmails = student;
-            // console.log('student',studentEmails)
+            const studentInfo = student;
+            // console.log('student', studentInfo)
     
-            if (!studentEmails || studentEmails.length === 0) {
+            if (!studentInfo || studentInfo.length === 0) {
                 setConfirmOpenMessage(true);
-                setMessages("Error: Unable to fetch student emails.");
+                setMessages("Error: Unable to fetch student information.");
                 return;
             }
     
@@ -329,16 +339,17 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                     setMessages("Error File! Please upload the Grade Template and don't change the header.");
                     return;
                 }
+    
                 const formData = new FormData();
                 formData.append("files", file);
-                formData.append("emails", [studentEmails]);
-
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
+    
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGMPGrades",
                         formData,
                     );
-
+    
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
@@ -364,12 +375,12 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
             setIsClick(true);
     
             // Fetch student emails separately
-            const studentEmails = student;
-            // console.log('student',studentEmails)
+            const studentInfo = student;
+            // console.log('student', studentInfo)
     
-            if (!studentEmails || studentEmails.length === 0) {
+            if (!studentInfo || studentInfo.length === 0) {
                 setConfirmOpenMessage(true);
-                setMessages("Error: Unable to fetch student emails.");
+                setMessages("Error: Unable to fetch student information.");
                 return;
             }
     
@@ -398,16 +409,17 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                     setMessages("Error File! Please upload the Grade Template and don't change the header.");
                     return;
                 }
+    
                 const formData = new FormData();
                 formData.append("files", file);
-                formData.append("emails", [studentEmails]);
-
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
+    
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrades_RTF",
                         formData,
                     );
-
+    
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
@@ -427,8 +439,8 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
             setMessages("Something went wrong. Please try again later.");
         }
     };
-
     
+
 
 
     return (
@@ -495,12 +507,12 @@ export default function UploadGrades({ setClickUpload, showAll , showAllGMP , sh
                                                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                                         type="button"
                                                         onClick={
-                                                        isExeMajor && SecondMajorWord === 'GMP' ?
-                                                        handleAddGMP : 
-                                                        isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ? 
-                                                        handleAddRTF 
-                                                        :handleAdd
-                                                    }
+                                                            isExeMajor && SecondMajorWord === 'GMP' ?
+                                                                handleAddGMP :
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ?
+                                                                    handleAddRTF
+                                                                    : handleAdd
+                                                        }
                                                     >
                                                         Scan
                                                     </button>

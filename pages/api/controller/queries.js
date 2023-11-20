@@ -2775,7 +2775,7 @@ async function searchEmailStudent (connection , major_id){
     const  query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
-     WHERE student.major_id ='${major_id}'`
+     WHERE student.major_id ='${major_id}' AND student.status = 'active'`
      const res = await connection.query(query)
      return res
   } catch (error) {

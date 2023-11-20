@@ -1,6 +1,7 @@
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
+import axios from 'axios'
 
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
@@ -181,14 +182,52 @@ async function handler(req, res) {
     // Send email using the last processed row outside the loop
     if (processedRows.length > 0) {
       const lastProcessedRow = processedRows[processedRows.length - 2];
-      const recipientEmails = fields.emails.split(',');
-      // Send email to each recipient in recipientEmails
-      for (const email of recipientEmails) {
-        // Assuming the SendEmail function requires the recipient's email and other parameters
-        await SendEmail(
-          lastProcessedRow.CertificateName,
-          email.trim() // Remove leading/trailing whitespaces
-        );
+    
+      // Assuming fields.studentInfo is a JSON string
+      const recipientInfoString = fields.studentInfo;
+    
+      // Parse the JSON string into an array of objects
+      const recipientInfoArray = JSON.parse(recipientInfoString);
+
+    
+      // Assuming recipientInfoArray is an array of objects with the specified properties
+      for (const recipientInfo of recipientInfoArray) {
+        try {   
+          // Assuming the SendEmail function requires the recipient's email, first name, and last name
+          await SendEmail(
+             lastProcessedRow.CertificateName,
+             recipientInfo.email,
+             recipientInfo.firstName,
+             recipientInfo.lastName,
+          );
+          await axios.post('http://localhost:3001/api/pmApi/addNotification',{
+            receiverIds:[recipientInfo.studentID], 
+            senderId:recipientInfo.pm_id, 
+            content:'<!DOCTYPE html>' +
+            '<html><head><title>Grades</title>' +
+            '</head><body><div>' +
+            `<div style="text-align: center;">
+               </div>` +
+            `</br>` +
+            `<p>Dear <span style="font-weight: bold">${ recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
+            `<p>We trust this email finds you well.</p> ` +
+            `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
+            // `<p> Please login using the below credentials:</p>` +
+            // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
+            // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
+      
+            `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
+            `<p>
+            Should you have any inquiries or require further clarification regarding the updated grade, do not hesitate to contact your program manager.</p>` +
+            `<p>Best regards,</p> ` +
+            `<p>ESA Business School</p> ` +
+      
+            '</div></body></html>',
+             subject:'Student Grades'
+          })
+        } catch (error) {
+          console.error('Error sending email:', error);
+        }
       }
     }
 
