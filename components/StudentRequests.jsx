@@ -1,28 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 // import EmailForSendingRequest from "../utilities/emailing/emailForSendingRequest";
 // import { useDispatch } from "react-redux";
-import axios from "axios";
+import axios from 'axios';
 // import emailRequestTranscript from "../pages/api/user/emailRequestTranscript";
-import Loader from "./Loader/Loader";
+import Loader from './Loader/Loader';
 
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
 const StudentRequests = () => {
   const { data: session } = useSession();
 
-  const [semester, setSemester] = useState("");
-  const [academicYear, setAcademicYear] = useState("");
-  const [reason, setReason] = useState("");
-  const [major, setMajor] = useState("");
-  const [stEmail, setStEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [messageClass, setMessageClass] = useState("");
-  const [gpa, setGpa] = useState("Included");
+  const [semester, setSemester] = useState('');
+  const [academicYear, setAcademicYear] = useState('');
+  const [reason, setReason] = useState('');
+  const [major, setMajor] = useState('');
+  const [stEmail, setStEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [messageClass, setMessageClass] = useState('');
+  const [gpa, setGpa] = useState('Included');
   const [isLoading, setIsLoading] = useState(false);
-  const [pm_firstName, setPm_firstName] = useState("");
-  const [pm_lastname, setPm_lastname] = useState("");
-  const [pm_email, setPm_email] = useState("");
-  const [pm_id, setPm_id] = useState("");
+  const [pm_firstName, setPm_firstName] = useState('');
+  const [pm_lastname, setPm_lastname] = useState('');
+  const [pm_email, setPm_email] = useState('');
+  const [pm_id, setPm_id] = useState('');
 
   // console.log(session?.user);
   const getStudent = async () => {
@@ -31,7 +31,7 @@ const StudentRequests = () => {
     };
     try {
       const res = await axios.post(
-        "/api/user/studentForRequestTranscript",
+        '/api/user/studentForRequestTranscript',
         sendData
       );
       // setGpa(res.data.rows[0].gpa);
@@ -49,14 +49,14 @@ const StudentRequests = () => {
     };
     try {
       const res = await axios.post(
-        "/api/user/getPmDetailsForRequests",
+        '/api/user/getPmDetailsForRequests',
         sendData
       );
       setPm_firstName(res.data.rows[0].pm_firstname);
       setPm_lastname(res.data.rows[0].pm_lastname);
       setPm_email(res.data.rows[0].pm_email);
       setPm_id(res.data.rows[0].pm_id);
-      console.log("asdfwq", res.data.rows[0]);
+      console.log('asdfwq', res.data.rows[0]);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -66,6 +66,7 @@ const StudentRequests = () => {
   useEffect(() => {
     getStudent();
     getPM();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const radioRef = useRef(null);
@@ -85,22 +86,22 @@ const StudentRequests = () => {
     //   gpa,
     // });
     if (
-      session?.user.majorName === "BBA (Bachelor in Business Administration)" &&
-      semester === ""
+      session?.user.majorName === 'BBA (Bachelor in Business Administration)' &&
+      semester === ''
     ) {
-      setMessage("All Fields Must be Filled !");
-      setMessageClass("text-red-500");
+      setMessage('All Fields Must be Filled !');
+      setMessageClass('text-red-500');
       setIsLoading(false);
       setTimeout(() => {
-        setMessage("");
+        setMessage('');
       }, 3000);
     }
-    if (reason === "") {
-      setMessage("All Fields Must be Filled !");
-      setMessageClass("text-red-500");
+    if (reason === '') {
+      setMessage('All Fields Must be Filled !');
+      setMessageClass('text-red-500');
       setIsLoading(false);
       setTimeout(() => {
-        setMessage("");
+        setMessage('');
       }, 3000);
     } else {
       try {
@@ -119,7 +120,7 @@ const StudentRequests = () => {
           pm_email,
         };
         console.log(sendData);
-        let res = await axios.post("/api/admin/adminApi/sendReqToPM", sendData);
+        let res = await axios.post('/api/admin/adminApi/sendReqToPM', sendData);
         console.log(res);
         let sendToPm = {
           pm_id,
@@ -129,13 +130,13 @@ const StudentRequests = () => {
           promotion: session?.user.promotion,
           gpa: gpa,
         };
-        let response = await axios.post("/api/pmApi/addRequestForPm", sendToPm);
-        console.log("this response", response);
-        setMessage("Request Sent !");
-        setMessageClass("text-green-500");
-        setReason(""), setSemester(""), setAcademicYear("");
+        let response = await axios.post('/api/pmApi/addRequestForPm', sendToPm);
+        console.log('this response', response);
+        setMessage('Request Sent !');
+        setMessageClass('text-green-500');
+        setReason(''), setSemester(''), setAcademicYear('');
         setTimeout(() => {
-          setMessage("");
+          setMessage('');
         }, 5000);
         if (res) {
           setIsLoading(false);
@@ -146,7 +147,7 @@ const StudentRequests = () => {
       }
     }
   };
-  const handleRadioClick = (e) => {
+  const handleRadioClick = () => {
     if (radioRef.current) {
       radioRef.current.blur();
     }
@@ -161,7 +162,7 @@ const StudentRequests = () => {
       </div>
       <form onSubmit={submitHandler} className="mt-12">
         {session?.user.majorName ===
-          "BBA (Bachelor in Business Administration)" && (
+          'BBA (Bachelor in Business Administration)' && (
           <div className="mb-4">
             <label>Semester:</label>
             <input
@@ -188,7 +189,6 @@ const StudentRequests = () => {
             <label className="text-sm font-medium text-primary">
               Include GPA
             </label>
-
           </div>
           <div className="flex items-center">
             <input
@@ -204,7 +204,6 @@ const StudentRequests = () => {
             <label className="text-sm font-medium text-primary">
               Exclude GPA
             </label>
-
           </div>
         </div>
         <div className="flex flex-col">
@@ -224,7 +223,7 @@ const StudentRequests = () => {
               type="submit"
               disabled={isLoading}
             >
-              {isLoading ? "Sending..." : "Send"}
+              {isLoading ? 'Sending...' : 'Send'}
             </button>
             {isLoading && <Loader />}
           </div>

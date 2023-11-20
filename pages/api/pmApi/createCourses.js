@@ -37,7 +37,7 @@ async function handler(req, res) {
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `Course ${course_name} Create Successfully`,
+      message: `Course ${course_name} Created Successfully`,
       // data:response.rows[0].attendance_id
     });
   } catch (error) {

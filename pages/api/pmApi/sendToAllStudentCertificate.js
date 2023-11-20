@@ -1,43 +1,38 @@
-import dotenv from "dotenv";
-import createTransporter from "../../../utilities/emailing/smtp";
+import dotenv from 'dotenv';
+import createTransporter from '../../../utilities/emailing/smtp';
 
-dotenv.config("../env");
+dotenv.config('../env');
 const transporter = createTransporter();
 
-const SendEmailTo = async (
-  emails,
-  emailContent
-) => {
+const SendEmailTo = async (emails, emailContent, subjectContent) => {
   try {
-    const attachments = [
-      {
-        path: `http://80.77.180.245:3000/file/setting/public/esa.png`,
-        cid: "esalogo",
-      },
-    ];
+    // const attachments = [
+    //   {
+    //     path: `http://80.77.180.245:3000/file/setting/public/esa.png`,
+    //     cid: 'esalogo',
+    //   },
+    // ];
     const emailBody =
-      "<!DOCTYPE html>" +
-      "<html><head><title>From Program manage</title>" +
-      "</head><body><div>" +
-      `<div style="text-align: center;">
-        <img src="cid:esalogo" alt="" width = "120">
-        </div>` +
-      `<p>${emailContent}</p>` +
+      '<!DOCTYPE html>' +
+      '<html><head><title>From Program manager</title>' +
+      '</head><body><div>' +
+      `<p>Dear <span style="font-weight: bold">Student</span>,</p>` +
+      `<pre style="font-family: inherit; font-size: inherit; line-height: inherit; margin: 0; padding: 0;">${emailContent}</pre>` +
       `</br>` +
       `<p>Thank you.</p> ` +
       `</br>` +
       `<p>Best Regards,</p> ` +
-      "</div></body></html>";
-      const emailTo = emails.join(', ')
+      '</div></body></html>';
+    const emailTo = emails.join(', ');
     const mailOptions = {
-      from: "noreply@esa.edu.lb",
+      from: 'noreply@esa.edu.lb',
       to: emailTo,
-      cc: "",
-      bcc: "",
-      subject: "Certificat purpose",
+      cc: '',
+      bcc: '',
+      subject: subjectContent,
       html: emailBody,
-      attachments: attachments,
-      purpose: "Certificat purpose",
+      // attachments: attachments,
+      purpose: 'Certificat purpose',
     };
 
     await transporter.sendMail(mailOptions);

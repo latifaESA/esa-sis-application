@@ -6,13 +6,13 @@
  * Copyright (c) 2023 ESA
  */
 
-const { insertData } = require("../controller/queries");
-const { insertPromotion } = require("../controller/queries");
-const { addStudentActivityToLogs } = require("../controller/queries");
-const { connect } = require("../../../utilities/db");
-const sis_app_logger = require("../logger");
-const useragent = require("useragent");
-const { env } = require("process");
+const { insertData } = require('../controller/queries');
+const { insertPromotion } = require('../controller/queries');
+const { addStudentActivityToLogs } = require('../controller/queries');
+const { connect } = require('../../../utilities/db');
+const sis_app_logger = require('../logger');
+const useragent = require('useragent');
+const { env } = require('process');
 
 // // Generate a strong KEY from an online key generator
 // const ONLINE_SIS_SECRET_KEY = 'ONLINE_SIS_SECRET_KEY';
@@ -148,28 +148,28 @@ export default async function handler(req, res) {
   // because we plan to deploy progresvly the SIS application in the production server
   const allowIntegration = env.ALLOW_INTEGRATION;
 
-  res.setHeader("Access-Control-Allow-Origin", ONLINE_URL);
-  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+  res.setHeader('Access-Control-Allow-Origin', ONLINE_URL);
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   if (
     allowIntegration &&
-    req.method === "POST" &&
-    req.url === "/api/external_applications/recieve_active_student_info_in_SIS"
+    req.method === 'POST' &&
+    req.url === '/api/external_applications/recieve_active_student_info_in_SIS'
   ) {
     // Verify authorization token
-    const authHeader = req.headers["authorization"];
+    const authHeader = req.headers['authorization'];
     if (!authHeader || authHeader !== ONLINE_SIS_SECRET_KEY) {
-      res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Unauthorized");
+      res.writeHead(401, { 'Content-Type': 'text/plain' });
+      res.end('Unauthorized');
       return;
     }
-    const userAgent = req.headers["user-agent"];
+    const userAgent = req.headers['user-agent'];
     const userAgentinfo = useragent.parse(userAgent);
 
     let { studentInfo, adminName } = req.body;
     console.log(adminName);
-    console.log("===============");
+    console.log('===============');
     console.log(studentInfo[0].UserProfileID);
-    console.log("===============");
+    console.log('===============');
     let isSuccess = true;
     if (studentInfo) {
       // // console.log(studentInfo[0]);
@@ -179,7 +179,7 @@ export default async function handler(req, res) {
       const connection = await connect();
 
       // insert the user
-      const columns_user = ["userid", "role", "userpassword"];
+      const columns_user = ['userid', 'role', 'userpassword'];
       const values_user = [
         `${recieved_data.UserProfileID}`,
         1,
@@ -187,19 +187,20 @@ export default async function handler(req, res) {
       ];
       let resUser = await insertData(
         connection,
-        "users",
+        'users',
         columns_user,
         values_user
       );
       // // console.log('resUser: ', resUser.rowCount > 0);
       isSuccess = isSuccess && resUser.rowCount > 0;
 
+      // eslint-disable-next-line no-inner-declarations
       function formatDate(date) {
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
         const formattedDate = `${day}-${month}-${year}-${hours}:${minutes}`;
         return formattedDate;
       }
@@ -208,25 +209,26 @@ export default async function handler(req, res) {
       const formattedCurrentDate = formatDate(currentDate);
 
       // insert into logs
+      // eslint-disable-next-line no-unused-vars
       const insertToLogs = await addStudentActivityToLogs(
         connection,
         studentInfo[0].UserProfileID,
-        "status",
-        "active",
-        "online application",
+        'status',
+        'active',
+        'online application',
         adminName,
         formattedCurrentDate
       );
 
       // insert the student
       const columns_student = [
-        "student_id",
-        "student_firstname",
-        "student_lastname",
-        "status",
-        "major_id",
-        "promotion",
-        "academic_year",
+        'student_id',
+        'student_firstname',
+        'student_lastname',
+        'status',
+        'major_id',
+        'promotion',
+        'academic_year',
       ];
       const values_student = [
         `${recieved_data.UserProfileID}`,
@@ -235,11 +237,11 @@ export default async function handler(req, res) {
         `${recieved_data.status}`,
         `${recieved_data.major}`,
         `${recieved_data.promotion}`,
-        "2023",
+        '2023',
       ];
       const date = new Date();
       let current_year = date.getFullYear();
-      const columns_promotion = ["promotion_name", "major_id", "academic_year"];
+      const columns_promotion = ['promotion_name', 'major_id', 'academic_year'];
       const promotion_data = [
         `${recieved_data.promotion}`,
         `${recieved_data.major}`,
@@ -248,27 +250,27 @@ export default async function handler(req, res) {
       // console.log(promotion_data);
       let resstudent = await insertData(
         connection,
-        "student",
+        'student',
         columns_student,
         values_student
       );
-      console.log("student" , resstudent)
+      console.log('student', resstudent);
       //here
       let insertIntoPromotionIfNotExist = await insertPromotion(
         connection,
-        "promotions",
+        'promotions',
         columns_promotion,
         promotion_data
       );
       console.log(
-        "insertIntoPromotionIfNotExist:",
+        'insertIntoPromotionIfNotExist:',
         insertIntoPromotionIfNotExist
       );
 
       isSuccess = isSuccess && resstudent.rowCount > 0;
 
       // insert the major
-      const columns_major = ["major_id", "major_name", "current_promotion"];
+      const columns_major = ['major_id', 'major_name', 'current_promotion'];
       const values_major = [
         `${recieved_data.major}`,
         `${recieved_data.program}`,
@@ -279,30 +281,30 @@ export default async function handler(req, res) {
       // eslint-disable-next-line no-unused-vars
       const resMajor = await insertData(
         connection,
-        "major",
+        'major',
         columns_major,
         values_major
       );
       // // console.log('resMajor: ', resMajor);
-      console.log("major" , resMajor)
+      console.log('major', resMajor);
 
       // insert the user_personal_info
       const columns_user_personal_info = [
-        "userid",
-        "title",
-        "firstname",
-        "fathername",
-        "lastname",
-        "maidename",
-        "mothername",
-        "gender",
-        "dateofbirth",
-        "countryofbirth",
-        "placeofbirth",
-        "registrationnumber",
-        "maritalstatus",
-        "firstnationality",
-        "secondnationality",
+        'userid',
+        'title',
+        'firstname',
+        'fathername',
+        'lastname',
+        'maidename',
+        'mothername',
+        'gender',
+        'dateofbirth',
+        'countryofbirth',
+        'placeofbirth',
+        'registrationnumber',
+        'maritalstatus',
+        'firstnationality',
+        'secondnationality',
       ];
       const values_user_personal_info = [
         `${recieved_data.UserProfileID}`,
@@ -323,22 +325,22 @@ export default async function handler(req, res) {
       ];
       const resUserPersonalInfo = await insertData(
         connection,
-        "user_personal_info",
+        'user_personal_info',
         columns_user_personal_info,
         values_user_personal_info
       );
 
       // // console.log('resUserPersonalInfo: ', resUserPersonalInfo.rowCount > 0);
-      console.log("resInfo" , resUserPersonalInfo)
+      console.log('resInfo', resUserPersonalInfo);
       isSuccess = isSuccess && resUserPersonalInfo.rowCount > 0;
 
       // insert the user_contact
       const columns_user_contact = [
-        "userid",
-        "email",
-        "email_two",
-        "mobile_number",
-        "landline_number",
+        'userid',
+        'email',
+        'email_two',
+        'mobile_number',
+        'landline_number',
       ];
       const values_user_contact = [
         `${recieved_data.UserProfileID}`,
@@ -349,25 +351,25 @@ export default async function handler(req, res) {
       ];
       const res_user_contact = await insertData(
         connection,
-        "user_contact",
+        'user_contact',
         columns_user_contact,
         values_user_contact
       );
 
       // // console.log('res_user_contact: ', res_user_contact.rowCount > 0);
-      console.log('resContact' , res_user_contact)
+      console.log('resContact', res_user_contact);
       isSuccess = isSuccess && res_user_contact.rowCount > 0;
 
       // insert the user_personal_address
       const columns_user_personal_address = [
-        "userid",
-        "address_country",
-        "address_region",
-        "address_city",
-        "address_street",
-        "address_building",
-        "address_floor",
-        "address_postal",
+        'userid',
+        'address_country',
+        'address_region',
+        'address_city',
+        'address_street',
+        'address_building',
+        'address_floor',
+        'address_postal',
       ];
       const values_user_personal_address = [
         `${recieved_data.UserProfileID}`,
@@ -381,26 +383,26 @@ export default async function handler(req, res) {
       ];
       const res_user_personal_address = await insertData(
         connection,
-        "user_personal_address",
+        'user_personal_address',
         columns_user_personal_address,
         values_user_personal_address
       );
 
       // // console.log('res_user_personal_address: ', res_user_personal_address.rowCount > 0);
-      console.log("resAddress" , res_user_personal_address)
+      console.log('resAddress', res_user_personal_address);
       isSuccess = isSuccess && res_user_personal_address.rowCount > 0;
 
       // insert the user_emergency_contact
       const columns_user_emergency_contact = [
-        "userid",
-        "prefix",
-        "emerg_firstname",
-        "emerg_middlename",
-        "emerg_lastname",
-        "emerg_phonenumber",
-        "emerg_relationship",
-        "emerg_medicalhealth",
-        "emerg_diseasetype",
+        'userid',
+        'prefix',
+        'emerg_firstname',
+        'emerg_middlename',
+        'emerg_lastname',
+        'emerg_phonenumber',
+        'emerg_relationship',
+        'emerg_medicalhealth',
+        'emerg_diseasetype',
       ];
       const values_user_emergency_contact = [
         `${recieved_data.UserProfileID}`,
@@ -415,7 +417,7 @@ export default async function handler(req, res) {
       ];
       const res_user_emergency_contact = await insertData(
         connection,
-        "user_emergency_contact",
+        'user_emergency_contact',
         columns_user_emergency_contact,
         values_user_emergency_contact
       );
@@ -425,13 +427,13 @@ export default async function handler(req, res) {
 
       // insert the user_education
       const columns_user_education = [
-        "userid",
-        "degree_level",
-        "series",
-        "obtain_date",
-        "education_country",
-        "establishment",
-        "other_establishment",
+        'userid',
+        'degree_level',
+        'series',
+        'obtain_date',
+        'education_country',
+        'establishment',
+        'other_establishment',
       ];
       const values_user_education = [
         `${recieved_data.UserProfileID}`,
@@ -444,7 +446,7 @@ export default async function handler(req, res) {
       ];
       const res_user_education = await insertData(
         connection,
-        "user_education",
+        'user_education',
         columns_user_education,
         values_user_education
       );
@@ -465,14 +467,14 @@ export default async function handler(req, res) {
       // // console.log("respromotion: ", resPromotion);
 
       // insert the user_document
-      const columns_document = ["userid", "profileURL"];
+      const columns_document = ['userid', 'profileURL'];
       const values_document = [
         `${recieved_data.UserProfileID}`,
         `${recieved_data.profilePhotoURL}`,
       ];
       let resDocument = await insertData(
         connection,
-        "user_document",
+        'user_document',
         columns_document,
         values_document
       );
@@ -483,21 +485,21 @@ export default async function handler(req, res) {
 
       if (!isSuccess) {
         const responseData = {
-          message: "The data did not save in the sis database",
+          message: 'The data did not save in the sis database',
         };
         // else send
         // const responseData = { message: 'Failed to insert student info' };
         // the online application will handle the response for further actions
-        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end(JSON.stringify(responseData));
       }
     } else {
       // // console.log('no student info');
-      const responseData = { message: "No Student Info" };
+      const responseData = { message: 'No Student Info' };
       // else send
       // const responseData = { message: 'Failed to insert student info' };
       // the online application will handle the response for further actions
-      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end(JSON.stringify(responseData));
     }
 
@@ -512,15 +514,15 @@ export default async function handler(req, res) {
     // Send a response to the online application
     // FIXME: Dear SIS developper please handle if the student record inserted or not
     //  if inserted send
-    const responseData = { message: "Received student info" };
+    const responseData = { message: 'Received student info' };
     // else send
     // const responseData = { message: 'Failed to insert student info' };
     // the online application will handle the response for further actions
-    res.writeHead(200, { "Content-Type": "application/json" });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(responseData));
   } else {
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Not found");
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not found');
     // TODO: Dear SIS developper
     // TODO: write an error log
   }

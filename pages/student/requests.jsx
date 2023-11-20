@@ -1,3 +1,4 @@
+//  Hassan
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -5,6 +6,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Main from "./request";
 import StudentRequests from "../../components/StudentRequests";
+// =======
+// import { useSession } from 'next-auth/react';
+// import Head from 'next/head';
+// import { useRouter } from 'next/router';
+// import Link from 'next/link';
+// // import { useEffect } from "react";
+// // import axios from "axios";
+
+// main
 export default function Accounts() {
   const { data: session } = useSession();
 
@@ -14,7 +24,7 @@ export default function Accounts() {
   const router = useRouter();
 
   const redirect = () => {
-    router.push("/AccessDenied");
+    router.push('/AccessDenied');
   };
 
   const getRequestType = async () => {
@@ -35,7 +45,7 @@ export default function Accounts() {
         <title>SIS Admin - Requests</title>
       </Head>
 
-      {session?.user.role === "1" ? (
+      {session?.user.role === '1' ? (
         <>
           <h2 className="text-gray-700 text-3xl p-6 font-bold">Requests</h2>
           <div>

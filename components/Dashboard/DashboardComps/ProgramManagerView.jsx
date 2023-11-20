@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   PencilIcon,
@@ -18,9 +18,47 @@ import {
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
+
+// // >>>>>>> main
 const ProgramManagerView = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  const [existExed, setExistExed] = useState([]);
+  useEffect(() => {
+    const handleMajorPM = async () => {
+      try {
+        let major_id = session.user.majorid;
+        const { data } = await axios.post('/api/pmApi/getMajorPM', {
+          majorID: major_id,
+        });
+        setExistExed(data)
+        return;
+      } catch (error) {
+        return error;
+      }
+    };
+    handleMajorPM();
+  }, [session.user.majorid]);
+
+     // Function to extract the first word before a hyphen "-"
+     const getFirstWordBeforeHyphen = (text) => {
+      if (text) {
+        const words = text.split("-");
+        if (words.length > 0) {
+          return words[0];
+        }
+      }
+      return "";
+    };
+  
+    const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+  
+    const isExeMajor = firstMajorWord === "EXED";
+
 
   return (
     <>
@@ -144,11 +182,17 @@ const ProgramManagerView = () => {
         </Link>
 
         {/* course Management system */}
-        <Link href="/programManager/ViewAssign">
+        {
+          isExeMajor
+          ?
+          <>
+           <Link href="/programManager/Certificate">
           {/* <Link href='/admin/payments'> */}
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/ViewAssign'
+
+               router.pathname == "/programManager/Certificate"
+
                 ? // router.pathname == '/programManager/Create/createAttendance'
                   // router.pathname == '/admin/Payments'
                   'bg-blue-100 text-blue-500'
@@ -159,10 +203,32 @@ const ProgramManagerView = () => {
               <UserGroupIcon className="h-5 w-5" />
             </div>
             <div>
-              <p>Assign</p>
+              <p>Certificate</p>
             </div>
           </div>
         </Link>
+          </>:
+           <Link href="/programManager/ViewAssign">
+           {/* <Link href='/admin/payments'> */}
+           <div
+             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+               router.pathname == "/programManager/ViewAssign"
+                 ? // router.pathname == '/programManager/Create/createAttendance'
+                   // router.pathname == '/admin/Payments'
+                   "bg-blue-100 text-blue-500"
+                 : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+             }`}
+           >
+             <div className="mr-2">
+               <UserGroupIcon className="h-5 w-5" />
+             </div>
+             <div>
+               <p>Assign</p>
+             </div>
+           </div>
+         </Link>
+        }
+       
         {/* grade */}
         <Link href="/programManager/grades" disabled>
           <div
@@ -202,27 +268,6 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
-        {/* Edit Profile */}
-        <Link href="/programManager/profile">
-          {/* <Link href='/admin/Settings/Settings'> */}
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              // router.pathname == '/admin/Settings/Settings' ||
-              // router.pathname == '/admin/Settings/General' ||
-              // router.pathname == '/admin/Settings/DropDownList'
-              router.pathname == '/programManager/profile'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <PencilIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Edit Profile</p>
-            </div>
-          </div>
-        </Link>
         <Link href="/programManager/requests">
           {/* <Link href='/admin/Settings/Settings'> */}
           <div
@@ -230,9 +275,11 @@ const ProgramManagerView = () => {
               // router.pathname == '/admin/Settings/Settings' ||
               // router.pathname == '/admin/Settings/General' ||
               // router.pathname == '/admin/Settings/DropDownList'
-              router.pathname == '/programManager/requests'
-                ? 'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+
+              router.pathname == "/programManager/requests"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+
             }`}
           >
             <div className="mr-2">
@@ -243,6 +290,32 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
+        {/* Edit Profile */}
+        <Link href="/programManager/profile">
+          {/* <Link href='/admin/Settings/Settings'> */}
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              // router.pathname == '/admin/Settings/Settings' ||
+              // router.pathname == '/admin/Settings/General' ||
+              // router.pathname == '/admin/Settings/DropDownList'
+
+              router.pathname == "/programManager/profile"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+
+            }`}
+          >
+            <div className="mr-2">
+              <PencilIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Edit Profile</p>
+            </div>
+          </div>
+        </Link>
+
+        {existExed.length > 0 &&
+
         <Link href="/programManager/send">
           {/* <Link href='/admin/Settings/Settings'> */}
           <div
@@ -263,6 +336,7 @@ const ProgramManagerView = () => {
             </div>
           </div>
         </Link>
+        }
         {/* Dear Hassan the PM don't have a settings section only the Admin */}
         {/* <Link href='/programManager/Settings/Settings'>
     <div
@@ -283,6 +357,7 @@ const ProgramManagerView = () => {
     </div>
   </Link> */}
 
+        
         {/* Dashboard Section */}
         <Link href="/programManager/main">
           <div

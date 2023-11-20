@@ -43,7 +43,7 @@ async function handler (req , res){
             return res.status(201).json({
                 success:true,
                 code:201,
-                message:'Assign Create Successfully',
+                message:'Assign Created Successfully',
                 data:response.rows[0]
             })
         }

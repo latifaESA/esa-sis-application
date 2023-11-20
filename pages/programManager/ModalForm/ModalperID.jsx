@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useState, useRef } from "react";
-import moment from "moment";
-import ReactToPrint from "react-to-print";
-import axios from "axios";
+import React, { useEffect } from 'react';
+import { useState, useRef } from 'react';
+import moment from 'moment';
+import ReactToPrint from 'react-to-print';
+import axios from 'axios';
 
 export default function ModalperID({
   setShowPrint,
@@ -34,7 +34,7 @@ export default function ModalperID({
           attendance_date: attendanceDate,
         };
         const data = await axios.post(
-          "/api/pmApi/getPromoFromSchedule",
+          '/api/pmApi/getPromoFromSchedule',
           payload
         );
         setPromotion(data.data.data[0].promotion);
@@ -46,15 +46,15 @@ export default function ModalperID({
     const handlePromotion = async () => {
       try {
         const attendance_id = details[0].attendance_id;
-        const data = await axios.post("/api/pmApi/getStudentPromotions", {
+        const data = await axios.post('/api/pmApi/getStudentPromotions', {
           attendance_id,
         });
         const sortedStudents = data.data.data.sort((a, b) => {
           const fullNameA = a.student_fullname.toLowerCase();
           const fullNameB = b.student_fullname.toLowerCase();
 
-          const [firstNameA, lastNameA] = fullNameA.split(" ");
-          const [firstNameB, lastNameB] = fullNameB.split(" ");
+          const [firstNameA, lastNameA] = fullNameA.split(' ');
+          const [firstNameB, lastNameB] = fullNameB.split(' ');
 
           if (firstNameA === firstNameB) {
             return lastNameA.localeCompare(lastNameB);
@@ -76,6 +76,7 @@ export default function ModalperID({
     setTimeout(() => {
       handlePromotion();
     }, 2000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [details]);
   // console.log("promotions", promotion);
   return (
@@ -112,7 +113,7 @@ export default function ModalperID({
                           //     'https://res.cloudinary.com/ds6avfn6i/image/upload/v1684261612/esaonlineapp/public/esa-logo_y9a1ha.png'
                           // }
                           // src={appState.appVar.esa_logo}
-                          src={"../../../../esa.png"}
+                          src={'../../../../esa.png'}
                           alt="ESA logo"
                         />
                       </picture>
@@ -130,7 +131,7 @@ export default function ModalperID({
                       </div>
                       <div className=" border-b-2 border-black">
                         <p className="text-base">
-                          {moment(date).format("DD/MM/YYYY")}
+                          {moment(date).format('DD/MM/YYYY')}
                         </p>
                       </div>
                     </div>
@@ -155,7 +156,7 @@ export default function ModalperID({
                       </div>
                     </div>
                     <div className="mt-2">
-                      <table className=" border-collapse border mt-4 border-1 border-black w-full mt-2">
+                      <table className=" border-collapse border mt-4 border-1 border-black w-full">
                         <thead>
                           <tr>
                             <th className="border border-1 border-black text-center p-0 font-medium">
@@ -202,10 +203,10 @@ export default function ModalperID({
                   className="primary-button btnCol text-white hover:text-white "
                   onClick={() => {
                     setShowPrint(false),
-                      setDate(""),
-                      setCourseName(""),
-                      setTeacherFirstName(""),
-                      setTeacherlastname(""),
+                      setDate(''),
+                      setCourseName(''),
+                      setTeacherFirstName(''),
+                      setTeacherlastname(''),
                       setDetails([]);
                   }}
                 >

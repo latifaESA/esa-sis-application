@@ -92,7 +92,7 @@ export default function Create() {
         setMessage("ID Already Exist");
       } else {
         setConfirmOpenMessage(true);
-        setMessages(`Account Program Manager Create Successfully`);
+        setMessages(`Account Program Manager Created Successfully`);
         // setMessage(
         //   `user Created Successfully with a password : ${generatedPass}`
         // );
@@ -128,7 +128,7 @@ export default function Create() {
         setMessages(`Account Program Manager Assistance Already Exist`);
       } else {
         setConfirmOpenMessage(true);
-        setMessages(` Account of Assistant Program Manager Create Successfully`);
+        setMessages(` Account of Assistant Program Manager Created Successfully`);
       }
     } else if (role == "0" && fname != "" && email != "") {
       const prefix = "AD";
@@ -158,7 +158,7 @@ export default function Create() {
       } 
       else {
         setConfirmOpenMessage(true);
-        setMessages(`Admin Account Create Successfully`);
+        setMessages(`Admin Account Created Successfully`);
       }
     }
     if (fname == "" && email == "") {

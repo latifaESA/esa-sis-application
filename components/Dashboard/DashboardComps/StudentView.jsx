@@ -140,11 +140,10 @@ const StudentView = () => {
         {isExeMajor && (
           <Link href="/student/InRole">
             <div
-              className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                router.pathname == "/student/InRole"
-                  ? "bg-blue-100 text-blue-500"
-                  : "text-gray-400 hover-bg-blue-100 hover-text-blue-500"
-              }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/InRole"
+            ? "bg-blue-100 text-blue-500"
+            : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
             >
               <div className="mr-2">
                 <PaperAirplaneIcon className="h-5 w-5" />
@@ -192,38 +191,17 @@ const StudentView = () => {
                 </div>
               </div>
             </Link> */}
-
-        {/* Edit Profile */}
-
-        <Link href="/student/profile">
-          <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/student/profile"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
-          >
-            <div className="mr-2">
-              <PencilIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p> Edit Profile</p>
-            </div>
-          </div>
-        </Link>
         {/* Schedule Section */}
         {!isLimited && (
           <Link href="/student/grades">
             <div
-              // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              //   router.pathname == '/student/grades'
-              //     ? 'bg-blue-100 text-blue-500'
-              //     : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-
-              // }`}
-              className={`pl-2 py-3 mx-5  text-red-400 hover:bg-red-100 hover:text-red-500 rounded text-center cursor-pointer mb-3 flex items-center transition-colors bg-red-100 text-red-500"
-                
-                `}
+        
+              className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                router.pathname == "/student/grade"
+                  ? "bg-blue-100 text-blue-500"
+                  : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}                
+              
             >
               <div className="mr-2">
                 <AcademicCapIcon className="h-5 w-5" />
@@ -255,6 +233,25 @@ const StudentView = () => {
             </div>
           </div>
         )}
+
+        {/* Edit Profile */}
+
+        <Link href="/student/profile">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/profile"
+              ? "bg-blue-100 text-blue-500"
+              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
+          >
+            <div className="mr-2">
+              <PencilIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p> Edit Profile</p>
+            </div>
+          </div>
+        </Link>
+
       </div>
     </>
   );
