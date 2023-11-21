@@ -213,7 +213,7 @@ export const authOptions = {
 
                     // eslint-disable-next-line no-inner-declarations
 
-                    function formatDate(date) {
+                    const formatDate = (date) => {
                       const day = date.getDate().toString().padStart(2, '0');
                       const month = (date.getMonth() + 1)
                         .toString()
