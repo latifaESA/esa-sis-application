@@ -3,11 +3,14 @@ import Head from 'next/head';
 import StudentsList from '../../components/Dashboard/StudentsList';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 import axios from 'axios';
 // import { x64 } from 'crypto-js';
 
 import CustomSelectBox from './customSelectBox';
+import UploadStudent from './UploadStudent';
 // import Link from 'next/link';
 
 export default function Students() {
@@ -26,31 +29,128 @@ export default function Students() {
   const [majorValue, setMajorValue] = useState('');
   const [statusValue, setStatusValue] = useState('');
   const [promotionValue, setPromotionValue] = useState('');
+  const [promotionsName , setPromotionName] = useState('')
+  const [openUpload , setOpenUpload] = useState(false)
 
+     // Function to extract the first word before a hyphen "-"
+     const getFirstWordBeforeHyphen = (text) => {
+      if (text) {
+        const words = text.split("-");
+        if (words.length > 0) {
+          return words[0];
+        }
+      }
+      return "";
+    };
+  
+    const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+  
+    const isExeMajor = firstMajorWord === "EXED";
+  
+  const headerStudent = [
+    [
+      'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
+
+      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'Title','SecondEmail', 'LandLineNumber',
+
+      'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
+
+      'FirstNationality', 'SecondNationality', 'Country', 'Region', 'City', 'Street', 'Building', 'Floor', 'Postal',
+
+      'Degree', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
+
+      'EmergencePrefix', 'EmergenceFirstName', 'EmergenceMiddleName', 'EmergenceLastName', 'EmergencePhoneNumber',
+
+      'EmergenceRelationShip', 'EmergenceMedicalHealth', 'EmergenceDisease'
+
+    ],
+
+];
+
+  // const headerTeacher = [['FirstName' , 'LastName' , 'Email']];
+  // const headerAluminStudent = [['StudentID' , 'Status' , 'GraduatedYear']];
   const redirect = () => {
-    router.push('/AccessDenied');
+    router.push("/AccessDenied");
   };
 
+
+  const calculateColumnWidths = (data) => {
+    const columnWidths = data[0].map((col, colIndex) => {
+      const maxContentWidth = data.reduce((max, row) => {
+        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+        const contentWidth = cellContent.length;
+        return Math.max(max, contentWidth);
+      }, col.length);
+      
+      return { wch: maxContentWidth };
+    });
+
+    return columnWidths;
+  };
+
+
+  // const createExcelTemplateCourse = () => {
+  //   const majors = session.user?.majorid
+  //   const data = headerCourse.concat([
+  //     ['', '', '', '', majors], // MajorName data
+  //   ])
+  
+  //   const columnWidths = calculateColumnWidths(data);
+  //   const worksheet = XLSX.utils.aoa_to_sheet(data);
+  //   worksheet['!cols'] = columnWidths;
+  
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Course');
+  
+  //   const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+  //   const excelBlob = new Blob([excelBuffer], {
+  //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //   });
+  //   saveAs(excelBlob, 'course.xlsx');
+  // };
+  const handlePromotions = async()=>{
+    try {
+      const dates = new Date().getFullYear()
+      
+      const data = await axios.post('/api/pmApi/getPromotionMajorDate' , {
+       major_id : session.user?.majorid,
+       date : dates
+      })
+   
+      setPromotionName(data.data.data[0].promotion_name)
+    } catch (error) {
+      return error
+    }
+  }
+  
+  const createExcelTemplateStudent = () => {
+    const majors = session.user?.majorName
+    const data2 = headerStudent.concat([
+        ['', '', '', '', '', promotionsName, majors, '', '', '', '', '', '', '', '', '', '', '', '', '',
+
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+
+            '', '', ''], // MajorName data
+    ])
+
+    const columnWidths = calculateColumnWidths(data2);
+    const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    worksheet['!cols'] = columnWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Student');
+
+    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+    const excelBlob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(excelBlob, 'student.xlsx');
+  };
+
+
+
   useEffect(() => {
-    // const getMajor = async () => {
-    //   let table = 'promotions';
-    //   let Where='major_id';
-    //   let id = session.user.majorid;
-    //   let {data} = await axios.post('/api/pmApi/getAllCourses', {table , Where, id})
-
-    //      console.log("data"  , data)
-    //   setallMajor(data.data)
-
-    //   const datesArray = [];
-    //   data.data.forEach((promotion) => {
-    //     datesArray.push(promotion.promotion_name);
-    //   });
-
-    //   setPromotionValue(datesArray);
-
-    // }
-    // getMajor()
-
+    handlePromotions()
     const getStatus = async () => {
       let table = 'status';
       let { data } = await axios.post('/api/pmApi/getAll', { table });
@@ -94,8 +194,15 @@ export default function Students() {
       setPromotion(datesArray);
     };
     getPromotion();
+   
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+
+  const handleUpload = ()=>{
+    setOpenUpload(true)
+  }
 
   useEffect(() => {
     renderValues();
@@ -111,8 +218,7 @@ export default function Students() {
       promotion: '',
       status: '',
     };
-    console.log(sendData);
-    console.log(sendData);
+
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
     console.log(sendData);
@@ -128,8 +234,7 @@ export default function Students() {
       promotion: '',
       status: '',
     };
-    console.log(sendData);
-    console.log(sendData);
+
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
     console.log(sendData);
@@ -173,14 +278,6 @@ export default function Students() {
 
   const handleStudents = async (e) => {
     e.preventDefault();
-    console.log(
-      idValue,
-      firstnameValue,
-      lastnameValue,
-      majorValue,
-      statusValue,
-      promotionValue
-    );
     let sendData = {
       id: idValue,
       firstname: firstnameValue,
@@ -198,9 +295,16 @@ export default function Students() {
     setUsers(data.rows);
   };
 
+  
+
   //>>>>>>> main
   return (
     <>
+  
+   {openUpload ? <>
+   <UploadStudent setOpenUpload={setOpenUpload}/>
+    
+    </>:<></>}
       <Head>
         <title>SIS Admin - Students</title>
       </Head>
@@ -332,6 +436,25 @@ export default function Students() {
                   Show All
                 </button>
               </div>
+              {isExeMajor ? <>
+                <div className="flex flex-col min-[850px]:flex-row gap-4">
+                <button
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={createExcelTemplateStudent}
+                >
+                  Student Template
+                </button>
+                <button
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </button>
+              </div>
+              </>:<></>}
+
             </div>
             <StudentsList users={users} setUsers={setUsers} />
           </form>

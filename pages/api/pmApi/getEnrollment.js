@@ -4,10 +4,11 @@ const { Certificate } = require("../controller/queries");
 async function handler(req, res) {
   try {
     const connection = await connect();
+    const {major_id} =  req.body
   
     // console.log(major_id)
-    const response = await Certificate(connection);
-
+    const response = await Certificate(connection ,major_id);
+  
     await disconnect(connection);
     if (response.rows.length === 0) {
       return res.status(404).json({

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import StudentGradesRTF from '../../components/Dashboard/studentGradesRTF';
 import StudentGradesGMP from '../../components/Dashboard/StudentGradesGMP';
+import StudentGradesEXED from '../../components/Dashboard/StudentGradeEXED';
 
 
 export default function Grades() {
@@ -46,7 +47,7 @@ export default function Grades() {
   const getGrade = async () => {
     try {
       const data = await axios.post('/api/user/StudentGrades', {
-        table:'student_grade',
+        table:'student_grades',
         studentId: session.user?.userid
       })
 
@@ -82,6 +83,21 @@ export default function Grades() {
       return error
     }
   }
+
+  const getGradesEXED= async () => {
+    try {
+
+      const data = await axios.post('/api/user/StudentGrades', {
+        table:'grade_exed',
+        studentId: session.user?.userid
+
+      })
+
+      setStudentGrades(data.data.data.rows)
+    } catch (error) {
+      return error
+    }
+  }
   useEffect(() => {
     if(!isExeMajor){
       getGrade();
@@ -90,7 +106,9 @@ export default function Grades() {
     }else if(isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'){
 
       getGradesRTF();
-      console.log('rtfffffffffffff')
+      
+    }else if(isExeMajor){
+      getGradesEXED();
     }
    
   }, [])
@@ -110,7 +128,7 @@ export default function Grades() {
              <StudentGradesRTF studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
              :isExeMajor && secondMajorWord === 'GMP'?
               <StudentGradesGMP  studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
-             :<></>
+             : isExeMajor ?<StudentGradesEXED  studentGrades={studentGrades} setStudentGrades={setStudentGrades} />:<></>
           }
 
           </>

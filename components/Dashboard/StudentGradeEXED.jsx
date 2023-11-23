@@ -20,12 +20,12 @@ import CustomPagination from "./Pagination";
 
 
 
-const StudentGrades = ({
+const StudentGradesEXED = ({
     studentGrades,
 
 }) => {
 
-   
+  
     const [pageSize, setPageSize] = useState(10);
     const [message, setMessage] = useState("");
 
@@ -43,7 +43,7 @@ const StudentGrades = ({
 
         {
             field: "course_name",
-            headerName: "course Name",
+            headerName: "Certificate Name",
             headerAlign: "center",
             align: "center",
             width: 200,
@@ -57,31 +57,23 @@ const StudentGrades = ({
             width: 200,
 
         },
-
         {
-            field: "grade",
-            headerName: "Grades",
+            field: "grades",
+            headerName: "Grade",
             headerAlign: "center",
             align: "center",
             width: 200,
 
         },
         {
-            field: "gpa",
-            headerName: "GPA",
+            field: "comments",
+            headerName: "Comments",
             headerAlign: "center",
             align: "center",
-            width: 200,
+            width: 700,
 
         },
-        {
-            field: "rank",
-            headerName: "Rank",
-            headerAlign: "center",
-            align: "center",
-            width: 200,
 
-        },
     ]
 
 
@@ -116,4 +108,4 @@ const StudentGrades = ({
     );
 };
 
-export default StudentGrades;
+export default StudentGradesEXED;

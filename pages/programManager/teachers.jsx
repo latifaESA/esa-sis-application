@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import TeachersList from "../../components/Dashboard/TeachersList";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { saveAs } from 'file-saver';
+import UploadTeachers from "./UploadTeachers";
 // import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 export default function Students() {
   const { data: session } = useSession();
@@ -22,10 +25,61 @@ export default function Students() {
   const [email, setEmail] = useState("");
   const [courseid, setCourseid] = useState("");
   const [temp, setTemp] = useState("");
-
+  const [openUpload , setOpenUpload] = useState(false)
+  
   const redirect = () => {
     router.push("/AccessDenied");
   };
+  const headerTeacher = [['FirstName' , 'LastName' , 'Email']];
+  
+       // Function to extract the first word before a hyphen "-"
+       const getFirstWordBeforeHyphen = (text) => {
+        if (text) {
+          const words = text.split("-");
+          if (words.length > 0) {
+            return words[0];
+          }
+        }
+        return "";
+      };
+
+      const calculateColumnWidths = (data) => {
+        const columnWidths = data[0].map((col, colIndex) => {
+          const maxContentWidth = data.reduce((max, row) => {
+            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+            const contentWidth = cellContent.length;
+            return Math.max(max, contentWidth);
+          }, col.length);
+          
+          return { wch: maxContentWidth };
+        });
+    
+        return columnWidths;
+      };
+      
+    
+      const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+    
+      const isExeMajor = firstMajorWord === "EXED";
+      const createExcelTemplateTeacher = () => {
+ 
+        const columnWidths = calculateColumnWidths(headerTeacher);
+         const worksheet = XLSX.utils.aoa_to_sheet(headerTeacher);
+         worksheet['!cols'] = columnWidths;
+     
+         const workbook = XLSX.utils.book_new();
+     
+         XLSX.utils.book_append_sheet(workbook, worksheet, 'Teacher');
+     
+         const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+         const excelBlob = new Blob([excelBuffer], {
+           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+         });
+         saveAs(excelBlob, 'Teacher.xlsx');
+       };
+       const handleUpload = ()=>{
+        setOpenUpload(true)
+      }
 
   useEffect(() => {
     handleShowAll();
@@ -82,6 +136,10 @@ export default function Students() {
       </Head>
       {session?.user.role === "2" || session?.user.role === "3"? (
         <>
+        {
+          openUpload ?     <UploadTeachers  setOpenUpload={setOpenUpload}/>:<></>
+        }
+   
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             List Of Teachers
           </p>
@@ -208,6 +266,24 @@ export default function Students() {
                   Show All
                 </button>
               </div>
+              {isExeMajor ? <>
+                <div className="flex flex-col min-[850px]:flex-row gap-4">
+                <button
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={createExcelTemplateTeacher}
+                >
+                  Teacher Template
+                </button>
+                <button
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </button>
+              </div>
+              </>:<></>}
             </div>
             <TeachersList users={users} setUsers={setUsers} />
           </form>
