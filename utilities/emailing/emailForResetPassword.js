@@ -20,7 +20,7 @@ async function EmailForResetPassword({
   email,
   router,
 }) {
-  // console.log('resetemail')
+  console.log("resetemail");
   // console.log(emailToken)
   // console.log(ID)
   // console.log(email)

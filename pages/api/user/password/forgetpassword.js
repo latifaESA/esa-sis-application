@@ -11,7 +11,7 @@
 import {
   findDataForResetPassword,
   newEmailToken,
-  Userinfo,
+  // Userinfo,
   // UpdateData,
   // UpdateActivityTime,
 } from "../../controller/queries";
@@ -27,6 +27,7 @@ async function handler(req, res) {
       .json({ message: "HTTP method not valid only POST Accepted" });
   }
   const { email } = req.body;
+  console.log(email, "email in forget password");
   if (!email || !email.includes("@")) {
     res.status(422).json({
       message: "Validation error",
@@ -50,19 +51,26 @@ async function handler(req, res) {
       message: message,
     });
   } else {
+    console.log("start validation");
+    console.log("===============");
+
     const validateUserEmail = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
+      "userid",
       "email",
       email
     );
+    // console.log("asd", validateUserEmail);
+    // table, fromTable, userid1, userId2, where, columnName;
     const validatePmEmail = await findDataForResetPassword(
       connection,
       "users",
       "program_manager",
       "pm_id",
+      "userid",
       "pm_email",
       email
     );
@@ -71,6 +79,7 @@ async function handler(req, res) {
       "users",
       "admin",
       "adminid",
+      "userid",
       "adminemail",
       email
     );
@@ -79,6 +88,7 @@ async function handler(req, res) {
       "users",
       "program_manager_assistance",
       "pm_ass_id",
+      "userid",
       "pm_ass_email",
       email
     );
@@ -87,6 +97,7 @@ async function handler(req, res) {
     // // console.log(validateUserEmail.rows[0].userid)
     if (validateUserEmail.rows[0] != null) {
       // Set the emailToken
+      console.log("inside if");
       await newEmailToken(connection, validateUserEmail.rows[0].userid);
       //validateUserEmail.emailToken = crypto.randomBytes(64).toString('hex');
       //await validateUserEmail.save();
@@ -104,37 +115,48 @@ async function handler(req, res) {
       });
       return;
     }
-
+    console.log("after if");
     // Disconnect From DB and send message and user authentication to front end
-    const userinfo = await Userinfo(
+    console.log("after if");
+    const userinfo = await findDataForResetPassword(
       connection,
+      "users",
       "user_contact",
+      "userid",
       "userid",
       "email",
       email
     );
-    const userPminfo = await Userinfo(
+    console.log("userinf ====", userinfo.rows[0]);
+    console.log("after userInfo");
+    const userPminfo = await findDataForResetPassword(
       connection,
+      "users",
       "program_manager",
       "pm_id",
+      "userid",
       "pm_email",
       email
     );
-    const userPmAssinfo = await Userinfo(
+    const userPmAssinfo = await findDataForResetPassword(
       connection,
+      "users",
       "program_manager_assistance",
       "pm_ass_id",
+      "userid",
       "pm_ass_email",
       email
     );
-    const admininfo = await Userinfo(
+    const admininfo = await findDataForResetPassword(
       connection,
+      "users",
       "admin",
       "adminid",
+      "userid",
       "adminemail",
       email
     );
-    // // console.log("userinf ====", userinfo);
+    // console.log("userinf ====", userinfo);
     if (userinfo.rows[0]) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",

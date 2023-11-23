@@ -96,26 +96,29 @@ async function handler(req, res) {
       message: message,
     });
   } else {
+    console.log("ana bel else");
     const existingUserEmail = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
+      "userid",
       "email",
       email
     );
     // // console.log("this is existing email user smthng");
-    // // console.log(existingUserToken.rows[0]);
+    // console.log(existingUserToken.rows[0]);
     const existingUserToken = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
+      "userid",
       "token",
       emailToken
     );
     // // console.log("this is existing token user smthng");
-    // // console.log(existingUserToken.rows[0]);
+    // console.log(existingUserToken.rows[0]);
 
     // for Program Manager
     const existingPMEmail = await findDataForResetPassword(
@@ -123,9 +126,11 @@ async function handler(req, res) {
       "users",
       "program_manager",
       "pm_id",
+      "userid",
       "pm_email",
       email
     );
+    console.log(existingPMEmail);
     // // console.log("this is existing pm email user smthng");
 
     const existingPMToken = await findDataForResetPassword(
@@ -133,6 +138,7 @@ async function handler(req, res) {
       "users",
       "program_manager",
       "pm_id",
+      "userid",
       "token",
       emailToken
     );
@@ -144,6 +150,7 @@ async function handler(req, res) {
       "users",
       "program_manager_assistance",
       "pm_ass_id",
+      "userid",
       "pm_ass_email",
       email
     );
@@ -152,6 +159,7 @@ async function handler(req, res) {
       "users",
       "program_manager_assistance",
       "pm_ass_id",
+      "userid",
       "token",
       emailToken
     );
@@ -161,6 +169,7 @@ async function handler(req, res) {
       "users",
       "admin",
       "adminid",
+      "userid",
       "adminemail",
       email
     );
@@ -171,6 +180,7 @@ async function handler(req, res) {
       "users",
       "admin",
       "adminid",
+      "userid",
       "token",
       emailToken
     );

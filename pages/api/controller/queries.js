@@ -29,12 +29,25 @@ import bcryptjs from "bcryptjs";
  * It finds Data from the databasevand returns true or false
  * </code>
  */
-
-async function findDataForResetPassword(connection, table, where, columnName) {
+// "users",
+// "program_manager",
+// "userid",
+// "pm_id",
+// "pm_email",
+// email
+async function findDataForResetPassword(
+  connection,
+  table,
+  fromTable,
+  userid1,
+  userId2,
+  where,
+  columnName
+) {
   try {
     let result =
-      connection.query(`SELECT users.*, user_contact.email from ${table} 
-    LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`);
+      connection.query(`SELECT ${table}.*, ${fromTable}.* from ${table} 
+    LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE ${where} = '${columnName}'`);
     return result;
   } catch (err) {
     return err;
@@ -2807,14 +2820,14 @@ async function searchEmailStudent(connection, major_id) {
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
 
-     WHERE student.major_id ='${major_id}' AND student.status = 'active'`
-     const res = await connection.query(query)
-     return res
+     WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
+    const res = await connection.query(query);
+    return res;
 
-//      WHERE student.major_id ='${major_id}'`;
-//     const res = await connection.query(query);
-//     return res;
-// >>>>>>> main
+    //      WHERE student.major_id ='${major_id}'`;
+    //     const res = await connection.query(query);
+    //     return res;
+    // >>>>>>> main
   } catch (error) {
     return error;
   }
