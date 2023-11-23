@@ -4,7 +4,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Main from "./request";
 import StudentRequests from "../../components/StudentRequests";
 // =======
 // import { useSession } from 'next-auth/react';
