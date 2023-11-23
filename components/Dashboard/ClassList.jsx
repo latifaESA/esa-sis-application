@@ -66,6 +66,7 @@ const ClassList = ({ users }) => {
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [messages, setMessages] = useState("");
 
+  console.log('confirmOccupied from classlist : ', confirmOccupied)
   const getAllRooms = async () => {
     console.log(course_type);
     try {
