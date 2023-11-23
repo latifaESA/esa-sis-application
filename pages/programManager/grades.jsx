@@ -10,6 +10,7 @@ import UploadGrades from './uploadGrades';
 import axios from 'axios';
 import GradeListGMP from '../../components/Dashboard/GradeListGMP';
 import GradeListRTF from '../../components/Dashboard/GradeListRTF';
+import GradesEXEDList from '../../components/Dashboard/GradesEXEDList';
 export default function Grades() {
     const { data: session } = useSession();
     const [clickDownload, setClickDownload] = useState(false)
@@ -65,6 +66,7 @@ export default function Grades() {
     const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
 
     const isExeMajor = firstMajorWord === "EXED";
+
     const fetchPromotion = async () => {
         try {
             const payload = {
@@ -78,6 +80,7 @@ export default function Grades() {
             return error
         }
     }
+
     const fetchGPA = async () => {
         try {
             const payload = {
@@ -119,6 +122,7 @@ export default function Grades() {
             return error
         }
     }
+
     const search = async () => {
         try {
             const payload = {
@@ -168,6 +172,7 @@ export default function Grades() {
             return error
         }
     }
+
     const searchGMP = async () => {
         try {
             const payload = {
@@ -217,6 +222,7 @@ export default function Grades() {
             return error
         }
     }
+
     const searchRTF = async () => {
         try {
             const payload = {
@@ -239,6 +245,54 @@ export default function Grades() {
         }
     }
 
+    const showAllEXED = async () => {
+        try {
+            const payload = {
+                student_id:'',
+                first_name:'',
+                last_name:'',
+                promotion:'',
+                major_id:session.user?.majorid ,
+                course_id:'',
+                task_name:'',
+                grades:''
+            }
+            const response = await axios.post('/api/pmApi/filterGradesEXED', payload)
+
+            setUser(response.data.data)
+            setStudentID("")
+            setStudentFirstName("")
+            setStudentLast("")
+            setGrades("")
+            setCourseId("")
+            setPromotion("")
+            setTaskName("")
+        } catch (error) {
+            return error
+        }
+    }
+
+    const searchEXED = async () => {
+        try {
+            const payload = {
+                student_id:studentId,
+                first_name:studentFirstName,
+                last_name:studentLastName,
+                promotion:promotions,
+                major_id:session.user?.majorid,
+                course_id:courseId,
+                task_name:taskName,
+                grades:grade
+            }
+
+            const response = await axios.post('/api/pmApi/filterGradesEXED', payload)
+
+            setUser(response.data.data)
+        } catch (error) {
+            return error
+        }
+    }
+
     useEffect(() => {
         if (!isExeMajor) {
             fetchGPA()
@@ -253,6 +307,10 @@ export default function Grades() {
             fetchPromotion()
             showAllRTF()
             searchRTF()
+        }else if(isExeMajor){
+            fetchPromotion()
+            showAllEXED()
+            searchEXED()
         }
 
     }, [])
@@ -269,7 +327,7 @@ export default function Grades() {
                     <form>
                         {clickDownload && <DownloadGrades setClickDownload={setClickDownload} />}
                         {clickUpload && <UploadGrades setClickUpload={setClickUpload} showAll={showAll}
-                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} />}
+                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} />}
 
                         <div className="mb-4 md:mb-12 p-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -461,7 +519,7 @@ export default function Grades() {
                                     (secondMajorWord === 'GMP' ?
                                         searchGMP :
                                         isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
-                                            ? searchRTF : <></>)
+                                            ? searchRTF : isExeMajor ? searchEXED :<></>)
                                 }
                             >
                                 Search
@@ -473,7 +531,7 @@ export default function Grades() {
                                     (secondMajorWord === 'GMP' ?
                                         showAllGMP :
                                         isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
-                                            ? showAllRTF : <></>)
+                                            ? showAllRTF : isExeMajor ? showAllEXED :<></>)
                                 }
                             >
                                 Show All
@@ -501,7 +559,7 @@ export default function Grades() {
                                 : isExeMajor && secondMajorWord === 'GMP' ? <GradeListGMP users={users} setUser={setUser} />
                                     : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' ?
                                         <GradeListRTF users={users} setUser={setUser} />
-                                        : <></>
+                                        : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} />:<></>
 
                         }
 

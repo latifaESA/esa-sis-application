@@ -1,11 +1,11 @@
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
-import axios from 'axios';
+import axios from 'axios'
 
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
-const { uploadGradesRTF } = require("../controller/queries");
+const { uplaodEXEDGrade } = require("../controller/queries");
 
 import xlsx from "xlsx";
 // import { env } from 'process';
@@ -92,7 +92,7 @@ async function handler(req, res) {
     }
 
     const { fields } = await readFile(req, true, directory);
-
+    console.log(fields.emails)
 
     let grade_file = await fs.readdirSync(directory);
 
@@ -160,20 +160,19 @@ async function handler(req, res) {
         //   })
         // }
 
-        await uploadGradesRTF(
+        await uplaodEXEDGrade(
           connection,
           {
-            student_id: row.StudentID,
-            student_firstname: row.FirstName,
-            student_lastname: row.FamilyName,
-            academic_year: row.Year,
-            course_id: row.CertificateName,
-            task_name: row.TaskName,
-            grade_over_20: row.GradeOver20,
-            grade_over_30: row.GradeOver30
+            student_id:row.StudentID,
+            student_firstname:row.FirstName,
+            student_lastname:row.FamilyName,
+            course_id:row.CertificateName,
+            task_name:row.TaskName,
+            academic_year:row.Year,
+            grades:row.Grade,
+            comments:row.Comments
           }
         )
-
         processedRows.push(row);
 
       } catch (error) {
@@ -197,7 +196,7 @@ async function handler(req, res) {
           // Assuming the SendEmail function requires the recipient's email, first name, and last name
           await SendEmail(
              lastProcessedRow.CertificateName,
-              recipientInfo.email,
+             recipientInfo.email,
              recipientInfo.firstName,
              recipientInfo.lastName,
           );
@@ -210,7 +209,7 @@ async function handler(req, res) {
             `<div style="text-align: center;">
                </div>` +
             `</br>` +
-            `<p>Dear <span style="font-weight: bold">${recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
+            `<p>Dear <span style="font-weight: bold">${ recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
             `<p>We trust this email finds you well.</p> ` +
             `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
             // `<p> Please login using the below credentials:</p>` +
@@ -226,13 +225,11 @@ async function handler(req, res) {
             '</div></body></html>',
              subject:'Student Grades'
           })
-
         } catch (error) {
           console.error('Error sending email:', error);
         }
       }
     }
-    
 
     // Close the database connection after all operations
     await disconnect(connection);
