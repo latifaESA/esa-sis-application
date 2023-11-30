@@ -61,6 +61,7 @@ async function handler(req, res) {
   const query = JSON.parse(decrypt(encryptedBody));
   const emailToken = query.token;
   const email = query.email;
+  const id = query.id;
   // const password = req.query.password;
   // console.log("quesries");
   // console.log(emailToken);
@@ -97,17 +98,18 @@ async function handler(req, res) {
     });
   } else {
     console.log("ana bel else");
+    console.log(id);
     const existingUserEmail = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
       "userid",
-      "email",
-      email
+      "userid",
+      id
     );
-    // // console.log("this is existing email user smthng");
-    // console.log(existingUserToken.rows[0]);
+    // console.log("this is existing email user smthng");
+    // console.log(existingUserEmail.rows[0]);
     const existingUserToken = await findDataForResetPassword(
       connection,
       "users",
@@ -127,11 +129,9 @@ async function handler(req, res) {
       "program_manager",
       "pm_id",
       "userid",
-      "pm_email",
-      email
+      "userid",
+      id
     );
-    console.log(existingPMEmail);
-    // // console.log("this is existing pm email user smthng");
 
     const existingPMToken = await findDataForResetPassword(
       connection,
@@ -151,8 +151,8 @@ async function handler(req, res) {
       "program_manager_assistance",
       "pm_ass_id",
       "userid",
-      "pm_ass_email",
-      email
+      "userid",
+      id
     );
     const existingPMAssistanceToken = await findDataForResetPassword(
       connection,
@@ -170,8 +170,8 @@ async function handler(req, res) {
       "admin",
       "adminid",
       "userid",
-      "adminemail",
-      email
+      "userid",
+      id
     );
     // console.log("this is existing admin user smthng");
     // console.log(existingAdminEmail.rows[0]);
@@ -193,10 +193,33 @@ async function handler(req, res) {
     // FIXME: Verify the emailToken validation (time validation)
     // Email Verification
     // if (existingUserToken !== null) {
+    console.log("=====u=u=u=u=u=u=u=u=u=u=u=u=u=u=u====");
+    console.log(
+      (existingUserEmail.rows[0] != null &&
+        existingUserEmail.rows[0].userid != null) &
+        (existingUserToken.rows[0] != null)
+    );
+    console.log("====p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=");
+    console.log(
+      (existingPMEmail.rows[0] != null &&
+        existingPMEmail.rows[0].pm_id != null) & existingPMToken.rows[0]
+    );
+    console.log("====a=a=a=a=a=a=a=a=aa=a=a=a=a=a==");
+    console.log(
+      (existingAdminEmail.rows[0] != null &&
+        existingAdminEmail.rows[0].adminid != null) &
+        (existinAdminToken.rows[0] != null)
+    );
+    console.log(existingAdminEmail.rows[0] != null);
+    console.log(existingAdminEmail.rows[0].adminid != null);
+    console.log(existinAdminToken.rows[0] != null);
     if (
-      (existingUserEmail.rows[0] != null) &
-      (existingUserToken.rows[0] != null)
+      existingUserEmail.rows[0] != null &&
+      existingUserEmail.rows[0].userid != null &&
+      existingUserToken.rows[0] != null
     ) {
+      console.log("this is adminid inside the user section");
+      console.log(existingAdminEmail.rows[0].adminid);
       if (
         existingUserEmail.rows[0].email != null &&
         existingUserToken.rows[0].token != null
@@ -279,7 +302,13 @@ async function handler(req, res) {
           );
         }
       }
-    } else if (existingPMEmail.rows[0] != null && existingPMToken.rows[0]) {
+    } else if (
+      (existingPMEmail.rows[0] != null &&
+        existingPMEmail.rows[0].pm_id != null) &
+      (existingPMToken.rows[0] != null)
+    ) {
+      console.log("this is adminid inside the pm section");
+      console.log(existingAdminEmail.rows[0].adminid);
       // program manager
       if (
         existingPMEmail.rows[0].pm_email != null &&
@@ -364,9 +393,12 @@ async function handler(req, res) {
         }
       }
     } else if (
-      existingPMAssistanceEmail.rows[0] != null &&
-      existingPMAssistanceToken.rows[0]
+      (existingPMAssistanceEmail.rows[0] != null &&
+        existingPMAssistanceEmail.rows[0].pm_ass_id != null) &
+      (existingPMAssistanceToken.rows[0] != null)
     ) {
+      console.log("this is adminid inside the pm ass section");
+      console.log(existingAdminEmail.rows[0].adminid);
       // program manager assistance
       if (
         existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
@@ -451,12 +483,19 @@ async function handler(req, res) {
         }
       }
     } else if (
-      existingAdminEmail.rows[0] != null &&
-      existinAdminToken.rows[0]
+      (existingAdminEmail.rows[0] != null &&
+        existingAdminEmail.rows[0].adminid != null) &
+      (existinAdminToken.rows[0] != null)
     ) {
+      console.log("this is adminid");
+      console.log(existingAdminEmail.rows[0].adminid);
       // admin
       // existingAdminEmail
       // existinAdminToken
+      console.log(
+        existingAdminEmail.rows[0].adminemail != null &&
+          existinAdminToken.rows[0].token != null
+      );
       if (
         existingAdminEmail.rows[0].adminemail != null &&
         existinAdminToken.rows[0].token != null

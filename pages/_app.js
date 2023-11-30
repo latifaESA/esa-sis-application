@@ -23,15 +23,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
 
-  const checkIfEight = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    if (hours === 8 && minutes === 0) {
-      sendMailClass();
-    }
-  };
-  setInterval(checkIfEight, 55000);
+  // const checkIfEight = () => {
+  //   const now = new Date();
+  //   const hours = now.getHours();
+  //   const minutes = now.getMinutes();
+  //   if (hours === 8 && minutes === 0) {
+  //     sendMailClass();
+  //   }
+  // };
+  // setInterval(checkIfEight, 55000);
+
+  // sendMailClass();
 
   if (Component.getLayout) {
     return (
