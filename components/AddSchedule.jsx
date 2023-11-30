@@ -77,12 +77,10 @@ export default function AddSchedule({
       console.error("Error occurred while saving: ", error);
     }
   };
-  console.log(messages)
+  console.log('isClicked : ', isClicked)
+  console.log('confirmOccupied : ', confirmOccupied)
   return (
     <>
-
-
-
       {isClicked && confirmOccupied ? <>
 
         <>
@@ -160,7 +158,7 @@ export default function AddSchedule({
         >
           <div className="relative w-auto my-6 mx-auto max-w-3xl">
             {/*content*/}
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none ">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none h-screen">
               {/*header*/}
               <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                 <h3 className="text-gray-700 text-3xl font-bold">
@@ -180,54 +178,54 @@ export default function AddSchedule({
                 <div className="flex flex-col mb-6 mr-0">
                   <div className="flex flex-row justify-between">
                     <span
-                      className={` py-1 px-2 primary-button hover:text-white cursor-pointer  ${selectedValues.includes(1)
-                        ? " primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(1)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(1)}
                     >
                       Mon
                     </span>
                     <span
-                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(2)
-                        ? "primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(2)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(2)}
                     >
                       Tue
                     </span>
                     <span
-                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(3)
-                        ? "primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(3)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(3)}
                     >
                       Wed
                     </span>
                     <span
-                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(4)
-                        ? "primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(4)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(4)}
                     >
                       Thurs
                     </span>
                     <span
-                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(5)
-                        ? "primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(5)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(5)}
                     >
                       Fri
                     </span>
                     <span
-                      className={`py-1 px-2 cursor-pointer primary-button hover:text-white  ${selectedValues.includes(6)
-                        ? "primary-button btnCol text-white"
-                        : "bg-green-500"
+                      className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(6)
+                        ? " bg-third btnCol text-white"
+                        : "bg-primary"
                         }`}
                       onClick={() => handleSelect(6)}
                     >

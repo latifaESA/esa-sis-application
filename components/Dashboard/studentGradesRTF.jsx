@@ -42,7 +42,7 @@ const StudentGradesRTF = ({
     const columns = [
 
         {
-            field: "course_id",
+            field: "course_name",
             headerName: "Certificate Name",
             headerAlign: "center",
             align: "center",

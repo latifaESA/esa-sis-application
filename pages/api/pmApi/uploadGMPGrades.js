@@ -181,7 +181,7 @@ async function handler(req, res) {
     }
     // Send email using the last processed row outside the loop
     if (processedRows.length > 0) {
-      const lastProcessedRow = processedRows[processedRows.length - 2];
+      const lastProcessedRow = processedRows[processedRows.length - 1];
     
       // Assuming fields.studentInfo is a JSON string
       const recipientInfoString = fields.studentInfo;

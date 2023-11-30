@@ -61,6 +61,10 @@ export default function DownloadGrades({ setClickDownload }) {
       header = [
         ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20'],
       ]
+    }else{
+      header = [
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
+      ]
     }
 
 
@@ -209,6 +213,19 @@ export default function DownloadGrades({ setClickDownload }) {
             
           ])
         ); 
+      }else{
+        data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            academic_year,
+            '',
+            ''
+          ]))
+
       }
   
   

@@ -6,7 +6,7 @@
     "dev": "next dev -p 3001",
     "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "next lint",
     "generate-sitemap": "next-sitemap",
     "test": "npx playwright test"
