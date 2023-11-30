@@ -47,7 +47,7 @@ async function findDataForResetPassword(
   try {
     let result =
       connection.query(`SELECT ${table}.*, ${fromTable}.* from ${table} 
-    LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE ${where} = '${columnName}'`);
+    LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE users.${where} = '${columnName}'`);
     return result;
   } catch (err) {
     return err;
