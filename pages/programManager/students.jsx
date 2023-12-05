@@ -26,7 +26,7 @@ export default function Students() {
   const [idValue, setIdValue] = useState('');
   const [firstnameValue, setFirstnameValue] = useState('');
   const [lastnameValue, setLastnameValue] = useState('');
-  const [majorValue, setMajorValue] = useState('');
+  // const [majorValue, setMajorValue] = useState('');
   const [statusValue, setStatusValue] = useState('');
   const [promotionValue, setPromotionValue] = useState('');
   const [promotionsName , setPromotionName] = useState('')
@@ -147,10 +147,14 @@ export default function Students() {
     saveAs(excelBlob, 'student.xlsx');
   };
 
+  useEffect(()=>{
+    handlePromotions()
+  },[promotionValue])
+ 
 
 
   useEffect(() => {
-    handlePromotions()
+
     const getStatus = async () => {
       let table = 'status';
       let { data } = await axios.post('/api/pmApi/getAll', { table });
@@ -207,7 +211,7 @@ export default function Students() {
   useEffect(() => {
     renderValues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [promotionValue]);
 
   const renderValues = async () => {
     let sendData = {
@@ -239,7 +243,7 @@ export default function Students() {
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
     console.log(sendData);
     setUsers(data.rows);
-    setMajorValue('');
+    // setMajorValue('');
     setTest(true);
     setIdValue('');
     setallMajor([]);
@@ -260,9 +264,9 @@ export default function Students() {
         (major) => major.major_name === selectedValue
       );
       console.log(majorID[0].major_id);
-      setMajorValue(majorID[0].major_id);
+      // setMajorValue(majorID[0].major_id);
     } else {
-      setMajorValue('');
+      // setMajorValue('');
     }
   };
   const handleStatus = (selectedValue) => {

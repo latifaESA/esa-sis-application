@@ -32,6 +32,7 @@ import CustomPagination from "./Pagination";
 import UpdateModal from "../../pages/programManager/ModalForm/UpdateModal";
 import ModalperID from "../../pages/programManager/ModalForm/ModalperID";
 import Archive from "../../pages/programManager/ModalForm/Archive";
+import ModalByMajorPM from "../../pages/programManager/ModalForm/ModalByMajorPM";
 
 const AttendanceList = ({ users }) => {
   const [pageSize, setPageSize] = useState(10);
@@ -214,8 +215,7 @@ const AttendanceList = ({ users }) => {
       align: "center",
       width: 150,
       renderCell: (params) =>
-        `${params.row.teacher_firstname || ""} ${
-          params.row.teacher_lastname || ""
+        `${params.row.teacher_firstname || ""} ${params.row.teacher_lastname || ""
         }`,
     },
     // {
@@ -389,7 +389,7 @@ const AttendanceList = ({ users }) => {
   return (
     <>
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
-      {showPrint && (
+      {showPrint && session.user?.hasMultiMajor === "false"? 
         <ModalperID
           setShowPrint={setShowPrint}
           attendance={attendance}
@@ -404,8 +404,25 @@ const AttendanceList = ({ users }) => {
           setCourseName={setCourseName}
           setTeacherFirstName={setTeacherFirstName}
           setTeacherlastname={setTeacherlastname}
-        />
-      )}
+        />:showPrint && session.user?.hasMultiMajor === "true" && (
+          <ModalByMajorPM 
+            setShowPrint={setShowPrint}
+            attendance={attendance}
+            session={session}
+            courseName={courseName}
+            teachersFirstname={teachersFirstname}
+            teacherslastname={teacherslastname}
+            date={date}
+            details={details}
+            setDetails={setDetails}
+            setDate={setDate}
+            setCourseName={setCourseName}
+            setTeacherFirstName={setTeacherFirstName}
+            setTeacherlastname={setTeacherlastname}
+          />
+        )
+      }
+   
       {editModal && (
         <UpdateModal
           editModal={editModal}

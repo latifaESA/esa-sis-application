@@ -8,7 +8,7 @@ async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const { pm_id, req_id, student_id, student_email, status, type } = req.body;
+    const { pm_id, req_id, student_id, student_email, status, type , major_id } = req.body;
     const data = await getRequestsForPm(
       connection,
       pm_id,
@@ -16,7 +16,8 @@ async function handler(req, res) {
       student_id,
       student_email,
       status,
-      type
+      type , 
+      major_id
     );
     console.log("=====================");
     console.log(data);
