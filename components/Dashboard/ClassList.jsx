@@ -275,6 +275,7 @@ const ClassList = ({ users }) => {
                 }
               }
             } catch (error) {
+              console.log(error.response.data.success)
               if (error.response && error.response.data.success === false) {
                 setConfirmOccupied(true);
                 setMessages(error.response.data.message);

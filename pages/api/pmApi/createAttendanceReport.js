@@ -65,12 +65,13 @@ async function handler(req, res) {
       course_id,
       attendance_date
     );
+    const date_exist = attendance_date.split('T')[0]
 
     if (exist) {
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: `Attendance Report is already Exist !`,
+      return res.status(400).json({
+        code: 400,
+        success: false,
+        message: `Scheduled Already Exist ${date_exist}!`,
       });
     }
     const response = await createAttendance(

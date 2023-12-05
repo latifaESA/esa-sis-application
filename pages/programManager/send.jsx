@@ -24,29 +24,61 @@ export default function send() {
   const [selectedMajorID, setSelectedMajorID] = useState(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [loadingMajor, setLoadingMajor] = useState(true);
+  const [majors, setMajors] = useState([])
+  const [majorValue, setMajorValue] = useState([])
   const redirect = () => {
     router.push('/AccessDenied');
   };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const handleMajors = async () => {
+    try {
+      const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+        pm_id: session.user?.userid
+      })
+
+      setMajors(data.data.data)
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const handleMajorPM = async () => {
-      try {
+    handleMajors()
+
+  }, [])
+
+  const handleMajorPM = async () => {
+    try {
+      if (session.user?.hasMultiMajor === 'true') {
+        let major_id = majorValue;
+        const { data } = await axios.post('/api/pmApi/getMajorPM', {
+          majorID: major_id,
+        });
+        setSelectedMajorID(data[0].major_id)
+        setLoadingMajor(false)
+        return;
+      } else {
         let major_id = session.user.majorid;
         const { data } = await axios.post('/api/pmApi/getMajorPM', {
           majorID: major_id,
         });
         setSelectedMajorID(data[0].major_id)
         setLoadingMajor(false)
-        console.log(selectedMajorID)
         return;
-
-      } catch (error) {
-        return error;
       }
-    };
+
+
+    } catch (error) {
+      return error;
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+
     handleMajorPM();
-  }, [session,selectedMajorID]); // Empty dependency array means this effect runs once when the component mounts
+  }, [session, selectedMajorID , majorValue]); // Empty dependency array means this effect runs once when the component mounts
 
   // const handleSelect = (selectedValue) => {
   //   if (selectedValue.trim() !== '') {
@@ -118,22 +150,18 @@ export default function send() {
       </Head>
 
 
-      {loadingMajor ?
-      <div>
-        Loading ...
-      </div>
-      :
-      (session?.user.role === '2' || session?.user.role === '3') &&  selectedMajorID !== null ? (
-        <>
-          <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
 
-          <div>
-            <div className="flex flex-col items-start justify-center w-2/4">
-              <div className="text-center">
-                <p className={` ${messageClass}`}>{message}</p>
-              </div>
-              <form onSubmit={submitHandler} className='w-full'>
-                <div>
+      {session?.user.role === '2' || session?.user.role === '3'? (
+      <>
+        <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
+
+        <div>
+          <div className="flex flex-col items-start justify-center w-2/4">
+            <div className="text-center">
+              <p className={` ${messageClass}`}>{message}</p>
+            </div>
+            <form onSubmit={submitHandler} className='w-full'>
+              <div>
                 {/*
                   <div className="flex m-10 flex-col md:flex-row">
                     <label className="w-[350px] mb-2">Select Major:</label>
@@ -148,42 +176,66 @@ export default function send() {
                     />
                   </div>
                    */}
+                {
+                  session.user?.hasMultiMajor === 'true' &&
+                  <label>
+                    Major:
+                    <select
+                      onChange={(e) => setMajorValue(e.target.value)}
+                      value={majorValue}
+                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
 
-                  <div className="m-4">
-                    <input
-                      type="text"
-                      value={subjectContent}
-                      onChange={(e) => setSubjectContent(e.target.value)}
-                      placeholder="Subject"
-                    />
-                  </div>
-                  <div className="m-4">
-                    <textarea
-                      className="w-full p-2 border rounded"
-                      rows="6"
-                      name="emailContent"
-                      value={emailContent}
-                      onChange={(e) => setEmailContent(e.target.value)}
-                      placeholder="Message"
-                    />
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:gap-4 justify-end">
-                    <button
-                      className="w-full sm:w-1/2 p-2 rounded primary-button"
-                      type="submit"
-                      disabled={isLoading}
                     >
-                      {isLoading ? 'Sending...' : 'Send'}
-                    </button>
-                    {isLoading && <Loader />}
-                  </div>
+                      <option key={"uu2isdvf"} value="">
+                        Choose a Major
+                      </option>
+                      {majors &&
+                        majors.map((major) => (
+                          <>
+                            <option key={major.major_id} value={major.major_id}>
+                              {major.major_name}
+                            </option>
+                          </>
+                        ))}
+                    </select>
+                  </label>
+                }
+
+                <div className="m-4">
+                  <input
+                    type="text"
+                    value={subjectContent}
+                    onChange={(e) => setSubjectContent(e.target.value)}
+                    placeholder="Subject"
+                  />
                 </div>
-              </form>
-            </div>
+                <div className="m-4">
+                  <textarea
+                    className="w-full p-2 border rounded"
+                    rows="6"
+                    name="emailContent"
+                    value={emailContent}
+                    onChange={(e) => setEmailContent(e.target.value)}
+                    placeholder="Message"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row sm:gap-4 justify-end">
+                  <button
+                    className="w-full sm:w-1/2 p-2 rounded primary-button"
+                    type="submit"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Sending...' : 'Send'}
+                  </button>
+                  {isLoading && <Loader />}
+                </div>
+              </div>
+            </form>
           </div>
-        </>
+        </div>
+      </>
       ) : (
-        redirect()
+      redirect()
       )}
     </>
   );

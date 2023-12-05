@@ -26,6 +26,8 @@ const CertificateList = ({
     setUsers
 }) => {
 
+    console.log(users)
+
     const { data: session } = useSession()
     const [pageSize, setPageSize] = useState(10);
     const [message, setMessage] = useState("");
@@ -48,16 +50,19 @@ const CertificateList = ({
         { value: 'active', label: 'active' },
         { value: 'inactive', label: 'inactive' },
     ];
-
+   
     setTimeout(() => {
         setMessage("");
     }, selection_data.message_disapear_timing);
 
     useEffect(() => {
+       
         if (Array.isArray(users)) {
             const sorted = [...users].sort((a, b) => b.major_id - a.major_id);
             setSortedRows(sorted);
         }
+        
+      
     }, [users]);
 
     const handleEditCellChange = (params) => {
@@ -103,7 +108,7 @@ const CertificateList = ({
 
     const columns = [
         {
-            field: "modified_major_name",
+            field: "major_name",
             headerName: "Certificate Name",
             headerAlign: "center",
             align: "center",

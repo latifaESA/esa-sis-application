@@ -46,14 +46,12 @@ async function findDataForResetPassword(
 ) {
   try {
     let result =
-      // <<<<<<< batoul
-      //       connection.query(`SELECT users.*, user_contact.email from ${table}
-      //     LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`);
 
-      // =======
       connection.query(`SELECT ${table}.*, ${fromTable}.* from ${table} 
 
+
     LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE users.${where} = '${columnName}'`);
+
 
     return result;
   } catch (err) {
@@ -1513,8 +1511,10 @@ async function createPMAccount(
   pm_email,
   pm_status,
   userpassword,
-  major_id
+  major_id,
+
 ) {
+
   try {
     let query = `
     insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status, major_id)
@@ -1540,6 +1540,19 @@ async function createPMAccount(
     return err;
   }
 }
+
+async function createExtra(connection, pm_id, major_id) {
+  try {
+
+    const query = `INSERT INTO program_manager_extra_major(pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`
+    const res = await connection.query(query)
+    return res
+
+  } catch (error) {
+    return error
+  }
+}
+
 async function createASAccount(
   connection,
   pm_ass_id,
@@ -1640,6 +1653,8 @@ async function getExistTeacher(connection, teacher_mail) {
     return error;
   }
 }
+
+
 
 //filter AttendanceStudent
 async function filterStudentAttendance(
@@ -2375,6 +2390,8 @@ async function uploadGrades(
     rank,
     semester,
     academic_year,
+
+
   }
 ) {
   try {
@@ -2519,7 +2536,14 @@ async function getPmDetailsForRequests(connection, major_id) {
   try {
     const query = `SELECT pm_firstname, pm_lastname, pm_email, pm_id 
     FROM program_manager
-      WHERE major_id = '${major_id}'`;
+    WHERE major_id = '${major_id}'
+    
+    UNION
+    
+    SELECT program_manager.pm_firstname, program_manager.pm_lastname, program_manager.pm_email, program_manager_extra_major.pm_id 
+    FROM program_manager_extra_major
+    INNER Join program_manager ON program_manager_extra_major.pm_id = program_manager.pm_id
+    WHERE program_manager_extra_major.major_id = '${major_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2561,7 +2585,8 @@ async function getRequestsForPm(
   student_id,
   student_email,
   status,
-  type
+  type, 
+  major_id
 ) {
   try {
     let query = `SELECT req_id , student_id,
@@ -2587,6 +2612,9 @@ async function getRequestsForPm(
     }
     if (type != "") {
       query += ` AND type='${type}'`;
+    }
+    if (major_id != "") {
+      query += ` AND major_id='${major_id}'`;
     }
     const res = await connection.query(query);
     // console.log(query);
@@ -2825,9 +2853,11 @@ async function searchEmailStudent(connection, major_id) {
     const query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
+
      WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
     const res = await connection.query(query);
     return res;
+
     // =======
     //      WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
     //     const res = await connection.query(query);
@@ -3032,6 +3062,65 @@ async function filterEXEDGrade(
 }
 
 async function getPromtionsMajor(connection, major_id, date) {
+// <<<<<<< batoul
+//   try {
+//     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
+//     const res = await connection.query(query)
+//     console.log('res', res)
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+// async function getMajorPMExtra(connection, pm_id) {
+//   try {
+//     const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
+//     FROM program_manager_extra_major 
+// 	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
+//     WHERE pm_id ='${pm_id}'
+//     `
+//     const res = await connection.query(query)
+
+//     return res
+//   } catch (error) {
+//     return error
+//   }
+// }
+
+// async function getMajorFromPM (connection , pm_id){
+//   try {
+//     const query = `
+//     SELECT
+//         pm.pm_id,
+//         pm.pm_firstname AS name,
+//         pm.major_id AS major_id,
+//         m.major_name AS major_name
+//     FROM
+//         program_manager pm
+//     LEFT JOIN
+//         major m ON pm.major_id = m.major_id
+//     WHERE
+//         pm.pm_id = 'PM7143'
+    
+//     UNION
+    
+//     SELECT
+//         pmem.pm_id,
+//         pmem.pm_id AS name,
+//         pmem.major_id AS major_id,
+//         m.major_name AS major_name
+//     FROM
+//         program_manager_extra_major pmem
+//     JOIN
+//         major m ON pmem.major_id = m.major_id
+//     WHERE
+//         pmem.pm_id = '${pm_id}';
+//     `
+  
+//     const res = await connection.query(query)
+//     return res
+// =======
   try {
     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
     const res = await connection.query(query);
@@ -3078,6 +3167,8 @@ async function getStudentEmailsForEmailClass(connection, promo) {
 /* End Postegresql */
 
 module.exports = {
+  getMajorFromPM,
+  getMajorPMExtra,
   getPromtionsMajor,
   uplaodEXEDGrade,
   filterEXEDGrade,
@@ -3226,7 +3317,11 @@ module.exports = {
   changeViewed,
   getRequests,
   getMajorPM,
+// <<<<<<< batoul
+//   createExtra
+// =======
   getClassInfoForEmail,
   getLocationInfo,
   getStudentEmailsForEmailClass,
+
 };
