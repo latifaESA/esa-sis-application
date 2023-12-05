@@ -68,6 +68,7 @@
     "next-seo": "^5.15.0",
     "next-sitemap": "^3.1.44",
     "next-translate": "^1.6.0",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.8.0",
     "path": "^0.12.7",
     "pdfjs-dist": "^3.1.81",

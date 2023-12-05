@@ -58,17 +58,18 @@ const ForgetPassword = () => {
       const res = await axios.post("/api/user/password/forgetpassword", {
         email,
       });
-      console.log("res", res);
+      console.log("res", res.data);
 
       // console.log("=======res.data======");
       // // console.log(errorMessage)
       // console.log(res.data);
       const emailToken = res.data.emailToken;
-      console.log("emailToken", emailToken);
+      // console.log("emailToken", emailToken);
       // const lname = res.data.lname;
       // const fname = res.data.fname;
       const ID = res.data.ID;
-      console.log("ID", ID);
+      const idForRes = res.data.email;
+      console.log("email", idForRes);
       // // console.log(emailToken)
 
       // console.log("before email");
@@ -76,7 +77,7 @@ const ForgetPassword = () => {
       await EmailForResetPassword({
         emailToken,
         ID,
-        email,
+        idForRes,
         router,
       });
       // console.log("after email");
@@ -113,7 +114,7 @@ const ForgetPassword = () => {
             <h1 className="mb-4 text-3xl font-bold">
               Forget Your Account Password?
             </h1>
-            <h1 className="mb-4 text-xl">Please Enter Your Email Address.</h1>
+            <h1 className="mb-4 text-xl">Please Enter Your ID .</h1>
             {errors && (
               <div className="text-red-500 text-xl font-bold w-full text-center mt-4 mb-4">
                 {errorMessage}
@@ -121,8 +122,8 @@ const ForgetPassword = () => {
             )}
             <div>
               <input
-                type="email"
-                placeholder="Enter Your Email Address"
+                type="text"
+                placeholder="Enter Your ID"
                 className={
                   errors.email
                     ? "w-1/2 text-center text-xl text-black mb-3 mt-2 border-8 border-red-400"

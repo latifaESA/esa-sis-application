@@ -14,6 +14,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 // import Link from 'next/link';
 import selection_data from "../../utilities/selection_data";
+import sendMailClass from "../../utilities/emailing/emailBeforeClass";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
 // import { LowerButtons } from './LowerButtons';
@@ -66,7 +67,7 @@ const ClassList = ({ users }) => {
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [messages, setMessages] = useState("");
 
-  console.log('confirmOccupied from classlist : ', confirmOccupied)
+  console.log("confirmOccupied from classlist : ", confirmOccupied);
   const getAllRooms = async () => {
     console.log(course_type);
     try {
@@ -91,18 +92,13 @@ const ClassList = ({ users }) => {
   //   setToTime(selectedValue);
   // };
 
-
-  const handleFrom = (e)=>{
-    setFromTime(e.target.value)
-    
+  const handleFrom = (e) => {
+    setFromTime(e.target.value);
   };
-  const handleTo = (e)=>{
-    setToTime(e.target.value)
-    
-    
-  }
+  const handleTo = (e) => {
+    setToTime(e.target.value);
+  };
   const handleLocation = (selectedValue) => {
-
     setLocation(
       selectedValue.length > 0 &&
         theRoom.filter((room) => room.room_name === selectedValue)[0].room_id
@@ -123,7 +119,6 @@ const ClassList = ({ users }) => {
   };
   const getDetails = async (event) => {
     try {
-
       setTeacherValue(event.teacher_id);
       setCourseValue(event.course_id);
       setDateFrom(event.startdate);
@@ -135,11 +130,11 @@ const ClassList = ({ users }) => {
   };
   const handleOpenNotificatonMessages = () => {
     setConfirmOccupied(true);
-};
-const handleCloseNotificatonMessages = () => {
+  };
+  const handleCloseNotificatonMessages = () => {
     setConfirmOccupied(false);
-    setIsClicked(false)
-};
+    setIsClicked(false);
+  };
 
   const getStudent = async (event) => {
     try {
@@ -233,14 +228,13 @@ const handleCloseNotificatonMessages = () => {
       // console.log("weekDays inside: ", weekDays);
       // console.log("weekDays inside: ", selectedValues);
       setIsClicked(true);
-      
+
       let createTheSchedule = async () => {
         const formattedDates = weekDays.map((date) =>
           new Date(date).toISOString()
         );
         // console.log("date", formattedDates);
         setWeekDays(formattedDates);
-
 
         setIsClicked(true);
         let schedulesCreated = 0; // Initialize a counter for created schedules
@@ -261,13 +255,16 @@ const handleCloseNotificatonMessages = () => {
           for (let i = 0; i < weekDays.length; i++) {
             const attendance_date = weekDays[i];
             const payload2 = { ...payload, attendance_date };
-      
+
             try {
-              const data3 = await axios.post("/api/pmApi/createAttendanceReport", payload2);
-      
+              const data3 = await axios.post(
+                "/api/pmApi/createAttendanceReport",
+                payload2
+              );
+
               const attendance_id = data3.data.data;
               createdAttendanceIds.push(attendance_id);
-      
+
               if (data3.data.code === 201) {
                 for (let j = 0; j < student.length; j++) {
                   const student_id = student[j].student_id;
@@ -284,52 +281,51 @@ const handleCloseNotificatonMessages = () => {
                 setMessages(error.response.data.message);
               }
             }
-      
+
             // Create the schedule for the current attendance record
             const attendance_id = createdAttendanceIds[i];
-            console.log(attendance_id)
-          
-              const scheduleData = {
-                classId: classID,
-                days: [attendance_date], // Use the current attendance_date
-                fromTime: fromTime,
-                toTime: toTime,
-                room: location,
-                pmID: session.user.userid,
-                attendanceId: attendance_id,
-              };
-        
-              try {
-                if(attendance_id.length !== 0){
-                  const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-        
-                  if (data.success) {
-                    schedulesCreated++; // Increment the counter for each successfully created schedule
-                    
-                    // Check if all schedules have been created
-                    if (schedulesCreated === totalSchedules) {
-                      // All schedules have been created, so we can set these states
-                      setIsClicked(false);
-                      setIsAddSchedule(false);
-                      setSelectedValues([]);
-                    }
+            console.log(attendance_id);
+
+            const scheduleData = {
+              classId: classID,
+              days: [attendance_date], // Use the current attendance_date
+              fromTime: fromTime,
+              toTime: toTime,
+              room: location,
+              pmID: session.user.userid,
+              attendanceId: attendance_id,
+            };
+
+            try {
+              if (attendance_id.length !== 0) {
+                const { data } = await axios.post(
+                  "/api/pmApi/createSchedule",
+                  scheduleData
+                );
+
+                if (data.success) {
+                  schedulesCreated++; // Increment the counter for each successfully created schedule
+
+                  // Check if all schedules have been created
+                  if (schedulesCreated === totalSchedules) {
+                    // All schedules have been created, so we can set these states
+                    setIsClicked(false);
+                    setIsAddSchedule(false);
+                    setSelectedValues([]);
                   }
-                }else{
-                     console.log("error")
                 }
-           
-              } catch (error) {
-                 return error
+              } else {
+                console.log("error");
               }
-                
-          
-        
-     
+            } catch (error) {
+              return error;
+            }
           }
+
+          sendMailClass(classID, fromTime, toTime, location);
         } catch (error) {
-            return error
+          return error;
         }
-        
       };
       createTheSchedule();
     }
@@ -341,8 +337,6 @@ const handleCloseNotificatonMessages = () => {
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
-
-
 
   const columns = [
     {
@@ -425,7 +419,9 @@ const handleCloseNotificatonMessages = () => {
     {
       field: "action",
       headerName: "Action",
-      width: `${(session.user.role === "2" || session.user.role === "3" )? 300 : 150}`,
+      width: `${
+        session.user.role === "2" || session.user.role === "3" ? 300 : 150
+      }`,
       headerAlign: "center",
       align: "center",
       sortable: false,
@@ -540,10 +536,10 @@ const handleCloseNotificatonMessages = () => {
       </div> */}
       {isAddSchedule && (
         <AddSchedule
-        handleOpenNotificatonMessages={handleOpenNotificatonMessages}
-        handleCloseNotificatonMessages={handleCloseNotificatonMessages}
-        messages={messages}
-        confirmOccupied={confirmOccupied}
+          handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+          handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+          messages={messages}
+          confirmOccupied={confirmOccupied}
           handleFrom={handleFrom}
           handleTo={handleTo}
           setIsClicked={setIsClicked}
