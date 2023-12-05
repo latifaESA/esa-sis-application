@@ -3061,73 +3061,99 @@ async function filterEXEDGrade(
   }
 }
 
-async function getPromtionsMajor(connection, major_id, date) {
-// <<<<<<< batoul
-//   try {
-//     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
-//     const res = await connection.query(query)
-//     console.log('res', res)
-//     return res
-//   } catch (error) {
-//     return error
-//   }
-// }
+// async function getPromtionsMajor(connection, major_id, date) {
+// // <<<<<<< batoul
+// //   try {
+// //     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
+// //     const res = await connection.query(query)
+// //     console.log('res', res)
+// //     return res
+// //   } catch (error) {
+// //     return error
+// //   }
+// // }
 
-// async function getMajorPMExtra(connection, pm_id) {
-//   try {
-//     const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
-//     FROM program_manager_extra_major 
-// 	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
-//     WHERE pm_id ='${pm_id}'
-//     `
-//     const res = await connection.query(query)
+// // async function getMajorPMExtra(connection, pm_id) {
+// //   try {
+// //     const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
+// //     FROM program_manager_extra_major 
+// // 	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
+// //     WHERE pm_id ='${pm_id}'
+// //     `
+// //     const res = await connection.query(query)
 
-//     return res
-//   } catch (error) {
-//     return error
-//   }
-// }
+// //     return res
+// //   } catch (error) {
+// //     return error
+// //   }
+// // }
 
-// async function getMajorFromPM (connection , pm_id){
-//   try {
-//     const query = `
-//     SELECT
-//         pm.pm_id,
-//         pm.pm_firstname AS name,
-//         pm.major_id AS major_id,
-//         m.major_name AS major_name
-//     FROM
-//         program_manager pm
-//     LEFT JOIN
-//         major m ON pm.major_id = m.major_id
-//     WHERE
-//         pm.pm_id = 'PM7143'
+// // async function getMajorFromPM (connection , pm_id){
+// //   try {
+// //     const query = `
+// //     SELECT
+// //         pm.pm_id,
+// //         pm.pm_firstname AS name,
+// //         pm.major_id AS major_id,
+// //         m.major_name AS major_name
+// //     FROM
+// //         program_manager pm
+// //     LEFT JOIN
+// //         major m ON pm.major_id = m.major_id
+// //     WHERE
+// //         pm.pm_id = 'PM7143'
     
-//     UNION
+// //     UNION
     
-//     SELECT
-//         pmem.pm_id,
-//         pmem.pm_id AS name,
-//         pmem.major_id AS major_id,
-//         m.major_name AS major_name
-//     FROM
-//         program_manager_extra_major pmem
-//     JOIN
-//         major m ON pmem.major_id = m.major_id
-//     WHERE
-//         pmem.pm_id = '${pm_id}';
-//     `
+// //     SELECT
+// //         pmem.pm_id,
+// //         pmem.pm_id AS name,
+// //         pmem.major_id AS major_id,
+// //         m.major_name AS major_name
+// //     FROM
+// //         program_manager_extra_major pmem
+// //     JOIN
+// //         major m ON pmem.major_id = m.major_id
+// //     WHERE
+// //         pmem.pm_id = '${pm_id}';
+// //     `
   
-//     const res = await connection.query(query)
-//     return res
-// =======
+// //     const res = await connection.query(query)
+// //     return res
+// // =======
+//   try {
+//     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
+//     const res = await connection.query(query);
+//     console.log("res", res);
+//     return res;
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+async function getMajorPMExtra(connection, pm_id) {
   try {
-    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
-    const res = await connection.query(query);
-    console.log("res", res);
-    return res;
+    const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
+    FROM program_manager_extra_major 
+	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
+    WHERE pm_id ='${pm_id}'
+    `
+    const res = await connection.query(query)
+
+    return res
   } catch (error) {
-    return error;
+    return error
+  }
+}
+
+async function getPromtionsMajor(connection, major_id, date) {
+  try {
+    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
+    const res = await connection.query(query)
+    console.log('res', res)
+    return res
+  } catch (error) {
+    return error
   }
 }
 async function getClassInfoForEmail(connection, class_id) {
@@ -3161,6 +3187,42 @@ async function getStudentEmailsForEmailClass(connection, promo) {
     return res;
   } catch (error) {
     return error;
+  }
+}
+async function getMajorFromPM (connection , pm_id){
+  try {
+    const query = `
+    SELECT
+        pm.pm_id,
+        pm.pm_firstname AS name,
+        pm.major_id AS major_id,
+        m.major_name AS major_name
+    FROM
+        program_manager pm
+    LEFT JOIN
+        major m ON pm.major_id = m.major_id
+    WHERE
+        pm.pm_id = 'PM7143'
+    
+    UNION
+    
+    SELECT
+        pmem.pm_id,
+        pmem.pm_id AS name,
+        pmem.major_id AS major_id,
+        m.major_name AS major_name
+    FROM
+        program_manager_extra_major pmem
+    JOIN
+        major m ON pmem.major_id = m.major_id
+    WHERE
+        pmem.pm_id = '${pm_id}';
+    `
+  
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
   }
 }
 
@@ -3317,9 +3379,9 @@ module.exports = {
   changeViewed,
   getRequests,
   getMajorPM,
-// <<<<<<< batoul
-//   createExtra
-// =======
+
+  createExtra,
+
   getClassInfoForEmail,
   getLocationInfo,
   getStudentEmailsForEmailClass,
