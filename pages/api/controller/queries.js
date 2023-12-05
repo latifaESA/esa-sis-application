@@ -46,11 +46,11 @@ async function findDataForResetPassword(
 ) {
   try {
     let result =
-// <<<<<<< batoul
-//       connection.query(`SELECT users.*, user_contact.email from ${table} 
-//     LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`);
+      // <<<<<<< batoul
+      //       connection.query(`SELECT users.*, user_contact.email from ${table}
+      //     LEFT JOIN user_contact ON user_contact.userid = users.userid WHERE ${where} = '${columnName}'`);
 
-// =======
+      // =======
       connection.query(`SELECT ${table}.*, ${fromTable}.* from ${table} 
 
     LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE users.${where} = '${columnName}'`);
@@ -2375,7 +2375,6 @@ async function uploadGrades(
     rank,
     semester,
     academic_year,
-    
   }
 ) {
   try {
@@ -2722,7 +2721,7 @@ async function updateStatusActive(connection, status, majorId) {
   }
 }
 
-async function Certificate(connection , major_id) {
+async function Certificate(connection, major_id) {
   try {
     const query = `
     SELECT major_id,status, 
@@ -2826,14 +2825,14 @@ async function searchEmailStudent(connection, major_id) {
     const query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
-     WHERE student.major_id ='${major_id}' AND student.status = 'active'`
-    const res = await connection.query(query)
-    return res
-// =======
-//      WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
-//     const res = await connection.query(query);
-//     return res;
-// >>>>>>> main
+     WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
+    const res = await connection.query(query);
+    return res;
+    // =======
+    //      WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
+    //     const res = await connection.query(query);
+    //     return res;
+    // >>>>>>> main
 
     //      WHERE student.major_id ='${major_id}'`;
     //     const res = await connection.query(query);
@@ -2958,7 +2957,7 @@ async function uplaodEXEDGrade(
     task_name,
     academic_year,
     grades,
-    comments
+    comments,
   }
 ) {
   try {
@@ -2974,7 +2973,7 @@ async function uplaodEXEDGrade(
         task_name,
         academic_year,
         grades,
-        comments
+        comments,
       ],
     };
     const res = await connnection.query(query);
@@ -3032,14 +3031,47 @@ async function filterEXEDGrade(
   }
 }
 
-async function getPromtionsMajor(connection , major_id , date){
+async function getPromtionsMajor(connection, major_id, date) {
   try {
-    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
-    const res = await connection.query(query)
-    console.log('res' , res)
-    return res
+    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
   } catch (error) {
-    return error
+    return error;
+  }
+}
+async function getClassInfoForEmail(connection, class_id) {
+  try {
+    const query = `SELECT tmpclass.* , teachers.teacher_firstname, teachers.teacher_lastname , courses.course_name
+    FROM tmpclass JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id 
+    JOIN courses ON tmpclass.course_id = courses.course_id
+    WHERE tmpclass_id = '${class_id}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function getLocationInfo(connection, room_id) {
+  try {
+    const query = `SELECT * FROM rooms WHERE room_id = '${room_id}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+async function getStudentEmailsForEmailClass(connection, promo) {
+  try {
+    const query = `SELECT user_contact.email ,student.student_id FROM student JOIN user_contact ON student.student_id = user_contact.userid WHERE promotion = '${promo}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
+  } catch (error) {
+    return error;
   }
 }
 
@@ -3194,4 +3226,7 @@ module.exports = {
   changeViewed,
   getRequests,
   getMajorPM,
+  getClassInfoForEmail,
+  getLocationInfo,
+  getStudentEmailsForEmailClass,
 };

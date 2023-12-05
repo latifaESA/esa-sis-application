@@ -333,7 +333,11 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                 </div>
               )}
             </button>
-            {session?.user.role == "1" && <MoodleSvg />}
+            {session?.user.role == "1" && (
+              <Link href="https://moodle.esa.edu.lb/">
+                <MoodleSvg />
+              </Link>
+            )}
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center">
