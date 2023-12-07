@@ -32,7 +32,7 @@ async function handler(req, res) {
       .send({ message: "Signin Required To Change Password" });
   }
   const { user } = session;
-  // // console.log('req.body=', req.body);
+  // console.log('req.body=', req.body);
   const password = req.body.password;
   // const email = req.body.email;
 
@@ -61,7 +61,7 @@ async function handler(req, res) {
           userAgentinfo.family
         }=${userAgentinfo.source}=${userAgentinfo.device.family}`
       );
-      res.status(500).json({
+      return res.status(500).json({
         message: message,
       });
     } else {
@@ -72,7 +72,7 @@ async function handler(req, res) {
   }
 
   // console.log('User Password Updated');
-  res.send({
+  return res.send({
     message: "User Password Updated",
   });
 }
