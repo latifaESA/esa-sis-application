@@ -65,7 +65,7 @@ async function handler(req, res) {
         message: message,
       });
     } else {
-      await newpassword(connection, user.userid, password);
+      await newpassword(connection, req.body.userid, password);
       // // console.log(update);
       await disconnect(connection);
     }

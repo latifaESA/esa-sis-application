@@ -6,6 +6,9 @@ import AccountsAssistance from '../../components/Dashboard/AccountsAssistance';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import AdminList from '../../components/Dashboard/AdminList';
+import AdminListResetPassword from '../../components/Dashboard/AdminListResetPassword';
+import AccountsAssistanceResetPassword from '../../components/Dashboard/AccountsAssistanceResetPassword';
+import AccountsListResetPassword from '../../components/Dashboard/AccountsListResetPassword';
 
 // import Link from 'next/link';
 // import TeachersList from '../../components/Dashboard/TeachersList'
@@ -374,7 +377,7 @@ export default function Create() {
                 >
                   <option value="2">Program Manager</option>
                   <option value="3"> Assistance</option>
-                  <option value="4"> Student</option>
+                  <option value="4"> Admin</option>
                   {/* <option value="4"> admin</option> */}
                 </select>
               </label>
@@ -386,64 +389,21 @@ export default function Create() {
                 >
                   Search
                 </button>
-                {/* {role == "2" ? <>
-
-                  <button
-                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                    type="button"
-                    onClick={handleShowAll}
-                  >
-                    Show All
-                  </button>
-                </> : <>
-                  <button
-                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                    type="button"
-                    onClick={handleShow}
-                  >
-                    Show All
-                  </button>
-                </>} */}
-                {role === '4' ? (
-                  <button
-                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                    type="button"
-                    onClick={handleShowAdmin}
-                  >
-                    Show All
-                  </button>
-                ) : role === '3' ? (
-                  <button
-                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                    type="button"
-                    onClick={handleShow}
-                  >
-                    Show All
-                  </button>
-                ) : (
-                  <button
-                    className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                    type="button"
-                    onClick={handleShowAll}
-                  >
-                    Show All
-                  </button>
-                )}
               </div>
             </div>
           </form>
           {role === '4' ? (
             // Render AdminList for role 4 users
-            <AdminList admin={admin} setAdminList={setAdminList} />
+            <AdminListResetPassword admin={admin} setAdminList={setAdminList} />
           ) : role === '3' ? (
             // Render AccountsAssistance for role 3 users
-            <AccountsAssistance
+            <AccountsAssistanceResetPassword
               assistance={assistance}
               setAssistance={setAssistance}
             />
           ) : (
             // Render AccountsList for role 2 users
-            <AccountsList users={users} setUsers={setUsers} />
+            <AccountsListResetPassword users={users} setUsers={setUsers} />
           )}
         </>
       ) : (
