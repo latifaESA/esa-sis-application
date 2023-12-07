@@ -38,8 +38,7 @@ import CustomPagination from './Pagination';
 
 // import { Pagination, Stack } from '@mui/material';
 
-const AdminList= ({ admin, setAdminList }) => {
-
+const AdminList = ({ admin, setAdminList }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
@@ -52,7 +51,6 @@ const AdminList= ({ admin, setAdminList }) => {
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
-
 
   //incomplete modal
   const handleConfirmIncomplete = (user) => {
@@ -97,96 +95,96 @@ const AdminList= ({ admin, setAdminList }) => {
     );
   };
 
-//   const handleSave = async (user) => {
-//     let sendData = {
-//       pm_id: user.pm_id,
-//       pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//       note: 'test',
-//     };
-//     axios
-//       .put(
-//         '/api/admin/adminApi/updatePm',
-//         sendData
-//         // {
-//         //   data: encrypt(
-//         //     JSON.stringify({
-//         //       pm_id: user.pm_id,
-//         //       pm_status: 'inactive',
-//         //     }
-//         //     )
-//         //   ),
-//         // }
-//       )
-//       .then((response) => {
-//         // Handle success
-//         console.log(response.data);
-//         setMessage('User Status Changed Succesfully!');
+  //   const handleSave = async (user) => {
+  //     let sendData = {
+  //       pm_id: user.pm_id,
+  //       pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+  //       note: 'test',
+  //     };
+  //     axios
+  //       .put(
+  //         '/api/admin/adminApi/updatePm',
+  //         sendData
+  //         // {
+  //         //   data: encrypt(
+  //         //     JSON.stringify({
+  //         //       pm_id: user.pm_id,
+  //         //       pm_status: 'inactive',
+  //         //     }
+  //         //     )
+  //         //   ),
+  //         // }
+  //       )
+  //       .then((response) => {
+  //         // Handle success
+  //         console.log(response.data);
+  //         setMessage('User Status Changed Succesfully!');
 
-//         //Update the user's status and major in the table
-//         setAdminList((prevUsers) =>
-//           prevUsers.map((u) =>
-//             u.pm_id === user.pm_id
-//               ? {
-//                   ...u,
-//                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//                 }
-//               : u
-//           )
-//         );
-//       })
-//       .catch((error) => {
-//         // Handle error
-//         console.log(error);
-//       });
-//   };
-//   const handleEnable = async (user) => {
-    // let genPassword = generatePasswod(8);
-    // const salt = await bcryptjs.genSalt(8);
-    // const genPass = await bcryptjs.hash(genPassword, salt);
-    // let sendData = {
-    //   pm_id: user.pm_id,
-    //   userpassword: genPass,
-    // };
-    // axios
-    //   .post(
-    //     '/api/admin/adminApi/enablepm',
-    //     sendData
-    //     // {
-    //     //   data: encrypt(
-    //     //     JSON.stringify({
-    //     //       pm_id: user.pm_id,
-    //     //       pm_status: 'inactive',
-    //     //     }
-    //     //     )
-    //     //   ),
-    //     // }
-    //   )
-//       .then((response) => {
-//         // Handle success
-//         console.log(response.data);
-//         setMessage('User Status Changed Succesfully!');
+  //         //Update the user's status and major in the table
+  //         setAdminList((prevUsers) =>
+  //           prevUsers.map((u) =>
+  //             u.pm_id === user.pm_id
+  //               ? {
+  //                   ...u,
+  //                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+  //                 }
+  //               : u
+  //           )
+  //         );
+  //       })
+  //       .catch((error) => {
+  //         // Handle error
+  //         console.log(error);
+  //       });
+  //   };
+  //   const handleEnable = async (user) => {
+  // let genPassword = generatePasswod(8);
+  // const salt = await bcryptjs.genSalt(8);
+  // const genPass = await bcryptjs.hash(genPassword, salt);
+  // let sendData = {
+  //   pm_id: user.pm_id,
+  //   userpassword: genPass,
+  // };
+  // axios
+  //   .post(
+  //     '/api/admin/adminApi/enablepm',
+  //     sendData
+  //     // {
+  //     //   data: encrypt(
+  //     //     JSON.stringify({
+  //     //       pm_id: user.pm_id,
+  //     //       pm_status: 'inactive',
+  //     //     }
+  //     //     )
+  //     //   ),
+  //     // }
+  //   )
+  //       .then((response) => {
+  //         // Handle success
+  //         console.log(response.data);
+  //         setMessage('User Status Changed Succesfully!');
 
-//         //Update the user's status and major in the table
-//         setAdminList((prevUsers) =>
-//           prevUsers.map((u) =>
-//             u.pm_id === user.pm_id
-//               ? {
-//                   ...u,
-//                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//                   note: `the current password is: ${genPassword}`,
-//                 }
-//               : u
-//           )
-//         );
-//         setTimeout(() => {
-//           setAdminList(prevUsers => prevUsers.filter(u => u.pm_status === 'inactive'));
-//         }, 10000); // 10000 milliseconds = 10 seconds
-//       })
-//       .catch((error) => {
-//         // Handle error
-//         console.log(error);
-//       });
-//   };
+  //         //Update the user's status and major in the table
+  //         setAdminList((prevUsers) =>
+  //           prevUsers.map((u) =>
+  //             u.pm_id === user.pm_id
+  //               ? {
+  //                   ...u,
+  //                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
+  //                   note: `the current password is: ${genPassword}`,
+  //                 }
+  //               : u
+  //           )
+  //         );
+  //         setTimeout(() => {
+  //           setAdminList(prevUsers => prevUsers.filter(u => u.pm_status === 'inactive'));
+  //         }, 10000); // 10000 milliseconds = 10 seconds
+  //       })
+  //       .catch((error) => {
+  //         // Handle error
+  //         console.log(error);
+  //       });
+  //   };
   // const handleDelete = (user) => {
   //   let sendData = {
   //     pm_id: user.pm_id,
@@ -208,115 +206,108 @@ const AdminList= ({ admin, setAdminList }) => {
   //     )
   //     // eslint-disable-next-line no-unused-vars
   //     .then((response) => {
-        
 
   //       //Update the user's status and major in the table
-        // setTimeout(() => {
-        //   setAdminList(prevUsers => prevUsers.filter(u => u.admin_status === 'active'));
-        // }, 1000); // 10000 milliseconds = 10 seconds
-    
-        // // Handle success
-        // // console.log(response.data);
-        // setMessage('User deleted Succesfully!');
+  // setTimeout(() => {
+  //   setAdminList(prevUsers => prevUsers.filter(u => u.admin_status === 'active'));
+  // }, 1000); // 10000 milliseconds = 10 seconds
 
-        
+  // // Handle success
+  // // console.log(response.data);
+  // setMessage('User deleted Succesfully!');
+
   //     })
   //     .catch((error) => {
   //       // Handle error
   //       console.log(error);
   //     });
   // };
-  const handleEnable = async(event)=>{
+  const handleEnable = async (event) => {
     try {
-     console.log(event , "events")
+      console.log(event, 'events');
       let genPassword = generatePasswod(8);
       const salt = await bcryptjs.genSalt(8);
       const genPass = await bcryptjs.hash(genPassword, salt);
-      
+
       let sendData = {
         adminid: event.adminid,
         userpassword: genPass,
         password: genPassword,
-        name : event.admin_firstname,
+        name: event.admin_firstname,
         email: event.adminemail,
-        role:'Admin'
-
+        role: 'Admin',
       };
 
-      
-     await axios
-      .post(
-        '/api/admin/adminApi/enableAdmin',
-        sendData
-      )
-     
+      await axios.post('/api/admin/adminApi/enableAdmin', sendData);
+
       setMessage('User Status Changed Successfully!');
 
-        //Update the user's status and major in the table
-        setAdminList((prevUsers) =>
-          prevUsers.map((u) =>
-            u.adminid === event.adminid
-              ? {
-                  ...u,
-                  admin_status: event.admin_status == 'active' ? 'inactive' : 'active',
-                  note: `the current password is: ${genPassword}`,
-                }
-              : u
-          )
-        );
-        setTimeout(() => {
-          setAdminList(prevUsers => prevUsers.filter(u => u.admin_status === 'inactive'));
-        }, 10000); // 10000 milliseconds = 10 seconds
-      
-    } catch (error) {
-      return error
-    }
-  }
-  const handleSave = async (event) => {
-    try {
-      const payload = {
-        adminid : event.adminid,
-        admin_status: event.admin_status == 'active' ? 'inactive' : 'active',
-   
-      }
-     
-      await axios.post('/api/admin/adminApi/updateAdminStatus' , payload)
       //Update the user's status and major in the table
       setAdminList((prevUsers) =>
         prevUsers.map((u) =>
           u.adminid === event.adminid
             ? {
                 ...u,
-                admin_status: event.admin_status == 'active' ? 'inactive' : 'active',
+                admin_status:
+                  event.admin_status == 'active' ? 'inactive' : 'active',
+                note: `the current password is: ${genPassword}`,
               }
             : u
         )
       );
-    
-       
+      setTimeout(() => {
+        setAdminList((prevUsers) =>
+          prevUsers.filter((u) => u.admin_status === 'inactive')
+        );
+      }, 10000); // 10000 milliseconds = 10 seconds
     } catch (error) {
-      return error
+      return error;
     }
-  } 
+  };
+  const handleSave = async (event) => {
+    try {
+      const payload = {
+        adminid: event.adminid,
+        admin_status: event.admin_status == 'active' ? 'inactive' : 'active',
+      };
+
+      await axios.post('/api/admin/adminApi/updateAdminStatus', payload);
+      //Update the user's status and major in the table
+      setAdminList((prevUsers) =>
+        prevUsers.map((u) =>
+          u.adminid === event.adminid
+            ? {
+                ...u,
+                admin_status:
+                  event.admin_status == 'active' ? 'inactive' : 'active',
+              }
+            : u
+        )
+      );
+    } catch (error) {
+      return error;
+    }
+  };
   const handleDelete = async (event) => {
     try {
       const payload = {
-        pm_id :event.adminid
-      }
-      await axios.post('/api/admin/adminApi/deletePm' , payload)
-   
+        pm_id: event.adminid,
+      };
+      await axios.post('/api/admin/adminApi/deletePm', payload);
+
       setTimeout(() => {
-        setAdminList(prevUsers => prevUsers.filter(u => u.admin_status === 'active'));
+        setAdminList((prevUsers) =>
+          prevUsers.filter((u) => u.admin_status === 'active')
+        );
       }, 1000); // 10000 milliseconds = 10 seconds
-  
-  
+
       // Handle success
       // console.log(response.data);
       setMessage('User deleted successfully!');
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
 
   const handleConfirm = () => {
     handleEnable(selectedUser);
@@ -332,8 +323,7 @@ const AdminList= ({ admin, setAdminList }) => {
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
   };
- 
-  
+
   setTimeout(() => {
     setMessage('');
   }, selection_data.message_disapear_timing);
@@ -354,7 +344,9 @@ const AdminList= ({ admin, setAdminList }) => {
       align: 'center',
       width: 150,
       renderCell: (params) =>
-        `${params.row.admin_firstname || ''} ${params.row.admin_lastname || ''}`,
+        `${params.row.admin_firstname || ''} ${
+          params.row.admin_lastname || ''
+        }`,
     },
     {
       field: 'adminemail',
@@ -372,8 +364,6 @@ const AdminList= ({ admin, setAdminList }) => {
       width: 180,
     },
 
-    
-
     {
       field: 'action',
       headerName: 'Action',
@@ -390,7 +380,6 @@ const AdminList= ({ admin, setAdminList }) => {
               // handleSave(params.row)
               // handleEnable(params.row)
               handleConfirmIncomplete(params.row);
-           
             }}
             type="button"
           >
@@ -404,7 +393,6 @@ const AdminList= ({ admin, setAdminList }) => {
               // handleDelete(params.row)
               // handleConfirmIncomplete(params.row)
               handleConfirmDel(params.row);
-              
             }}
             type="button"
           >
@@ -472,7 +460,7 @@ const AdminList= ({ admin, setAdminList }) => {
   //       const response = await axios.get('/api/admin/listusers/listexport');
   //       const incomingData = JSON.parse(decrypt(response.data.data));
   //       if (response.status === 200) {
-        
+
   //         await exportSelect(selectedRows, incomingData, session);
   //       } else {
   //         setAdminList([]);
@@ -490,7 +478,7 @@ const AdminList= ({ admin, setAdminList }) => {
   //       const response = await axios.get('/api/admin/listusers/listexport');
   //       const incomingData = JSON.parse(decrypt(response.data.data));
   //       if (response.status === 200) {
-         
+
   //         await exportAll(incomingData, session);
   //       } else {
   //         setUsers([]);
@@ -502,9 +490,9 @@ const AdminList= ({ admin, setAdminList }) => {
   // };
   // const handlePrintSelected = () => {
   //   const selectedIDs = selectedRows;
-   
+
   //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-   
+
   //   selectedUsers.forEach((user) => {
   //     if (user.reportURL) {
   //       window.open(user.reportURL);
@@ -513,7 +501,6 @@ const AdminList= ({ admin, setAdminList }) => {
   //     }
   //   });
 
-   
   // };
 
   return (
