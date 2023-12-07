@@ -1,11 +1,11 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import AccountsList from '../../components/Dashboard/AccountsList';
-import AccountsAssistance from '../../components/Dashboard/AccountsAssistance';
+// import AccountsList from '../../components/Dashboard/AccountsList';
+// import AccountsAssistance from '../../components/Dashboard/AccountsAssistance';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import AdminList from '../../components/Dashboard/AdminList';
+// import AdminList from '../../components/Dashboard/AdminList';
 import AdminListResetPassword from '../../components/Dashboard/AdminListResetPassword';
 import AccountsAssistanceResetPassword from '../../components/Dashboard/AccountsAssistanceResetPassword';
 import AccountsListResetPassword from '../../components/Dashboard/AccountsListResetPassword';
