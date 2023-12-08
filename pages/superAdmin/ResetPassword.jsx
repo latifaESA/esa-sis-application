@@ -238,7 +238,7 @@ export default function Create() {
         <title>SIS Admin - Reset Password</title>
       </Head>
 
-      {session?.user.role === '0' ? (
+      {session?.user.role === '4' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Reset Password
@@ -408,6 +408,7 @@ export default function Create() {
                   <option value="1">Students</option>
                   <option value="2">Program Manager</option>
                   <option value="3"> Assistance</option>
+                  <option value="4"> Admin</option>
                   {/* <option value="4"> admin</option> */}
                 </select>
               </label>

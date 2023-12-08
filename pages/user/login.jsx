@@ -140,6 +140,8 @@ export default function LoginScreen() {
       }
       else if (session?.user.role === "0") {
         router.push(redirect || "/admin/Accounts");
+      } else if (session?.user.role === "4") {
+        router.push(redirect || "/superAdmin/ResetPassword");
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "inactive"

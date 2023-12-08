@@ -16,7 +16,7 @@ import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 import ResetPassComponent from '../ResetPassComponent';
 
-const AccountsListResetPassword = ({ users, setUsers }) => {
+const StudentsListResetPassword = ({ users, setUsers }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
@@ -53,11 +53,13 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
       setSuccess(result.data.message);
       setError('');
       setIsSuccess(true);
+      return;
     } catch (e) {
       setError(e.response.data.message);
       setIsSuccess(false);
       setLoading(false);
       setSuccess('');
+      return;
     }
   };
   const handleCancel = () => {
@@ -187,7 +189,7 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
 
   const columns = [
     {
-      field: 'pm_id',
+      field: 'student_id',
       headerName: 'ID',
       headerAlign: 'center',
       align: 'center',
@@ -201,10 +203,10 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
       align: 'center',
       width: 150,
       renderCell: (params) =>
-        `${params.row.pm_firstname || ''} ${params.row.pm_lastname || ''}`,
+        `${params.row.student_firstname || ''} ${params.row.student_lastname || ''}`,
     },
     {
-      field: 'pm_email',
+      field: 'email',
       headerName: 'E-mail',
       headerAlign: 'center',
       align: 'center',
@@ -212,7 +214,7 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
       type: 'singleSelect',
     },
     {
-      field: 'pm_status',
+      field: 'status',
       headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
@@ -256,7 +258,7 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          getRowId={(r) => r.pm_id}
+          getRowId={(r) => r.student_id}
           rows={users}
           getRowHeight={() => 'auto'}
           columns={columns}
@@ -282,4 +284,4 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
   );
 };
 
-export default AccountsListResetPassword;
+export default StudentsListResetPassword;

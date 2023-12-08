@@ -1008,6 +1008,47 @@ async function filterassistance(
     return err;
   }
 }
+
+async function filterStudentForResetPassword(
+  connection,
+  studentid,
+  studentemail,
+  student_firstname,
+  student_lastname,
+  student_status,
+  majorID
+) {
+  try {
+    let query = `
+    SELECT student.*, user_contact.email
+    FROM student
+    JOIN user_contact ON student.student_id = user_contact.userid
+      WHERE 1=1`;
+    if (studentid.trim() != "") {
+      query += ` AND lower(trim(student.student_id)) LIKE lower(trim('%${studentid}%'))`;
+    }
+    if (studentemail.trim() != "") {
+      query += ` AND lower(trim(user_contact.email)) LIKE lower(trim('%${studentemail}%'))`;
+    }
+    if (student_firstname.trim() != "") {
+      query += ` AND lower(trim(student.student_firstname)) LIKE lower(trim('%${student_firstname}%'))`;
+    }
+    if (student_lastname.trim() != "") {
+      query += ` AND lower(trim(student.student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
+    }
+    if (majorID != "" && majorID != null) {
+      query += ` AND student.major_id='${majorID}'`;
+    }
+    if (student_status != "") {
+      query += ` AND student.status='${student_status}'`;
+    }
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function filterAdmin(
   connection,
   adminid,
@@ -3073,4 +3114,5 @@ module.exports = {
   changeViewed,
   getRequests,
   getMajorPM,
+  filterStudentForResetPassword
 };

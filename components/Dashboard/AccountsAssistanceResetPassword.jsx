@@ -54,6 +54,7 @@ const AccountsAccistanceResetPassword = ({ assistance, setAssistance }) => {
       setError('');
       setIsSuccess(true);
     } catch (e) {
+      setError(e.response.data.message);
       setIsSuccess(false);
       setLoading(false);
       setSuccess('');
@@ -62,6 +63,9 @@ const AccountsAccistanceResetPassword = ({ assistance, setAssistance }) => {
   const handleCancel = () => {
     setOpenChangePass(!openChangePass);
     setConfirmOpenDelete(!confirmOpenDelete);
+    setError(''); 
+    setSuccess('');
+    setNewPass('');
   };
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
