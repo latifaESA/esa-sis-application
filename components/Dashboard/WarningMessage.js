@@ -43,6 +43,41 @@ function WarningMessageIncomplete({
     </Modal>
   );
 }
+function WarningConfirmChangeEmail({
+  confirmOpenIncomplete,
+  handleConfirmClose,
+  handleConfirm,
+}) {
+  return (
+    <Modal
+      open={confirmOpenIncomplete}
+      onClose={handleConfirmClose}
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
+    >
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 mb-4">
+          Are you sure you want to Change this User's Email ?
+        </p>
+        <div className="flex justify-end">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+            onClick={handleConfirmClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 function ReasonForDeactivation({
   confirmOpenIncomplete,
   handleConfirmClose,
@@ -299,7 +334,6 @@ function WarningMessageGrade({
   handleConfirm,
   details,
 }) {
-  
   return (
     <Modal
       open={confirmOpenObsolote}
@@ -307,15 +341,14 @@ function WarningMessageGrade({
       className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
-       
-          <p className="text-gray-700 mb-4">
-            Are you sure you want to Change Grade{" "}
-            <span className="text-red-500 font-bold">
-              {details.first_name} {details.last_name}
-            </span>{" "}
-            for course{" "}
-            <span className="text-red-500 font-bold">{details.courseid}</span>?
-          </p>
+        <p className="text-gray-700 mb-4">
+          Are you sure you want to Change Grade{" "}
+          <span className="text-red-500 font-bold">
+            {details.first_name} {details.last_name}
+          </span>{" "}
+          for course{" "}
+          <span className="text-red-500 font-bold">{details.courseid}</span>?
+        </p>
         <div className="flex justify-end">
           <button
             className="bg-red-500 text-white px-4 py-2 rounded mr-4"
@@ -336,15 +369,12 @@ function WarningMessageGrade({
     </Modal>
   );
 }
-
 
 function WarningMessageStatus({
   confirmOpenObsolote,
   handleConfirmClose,
   handleConfirm,
-
 }) {
-  
   return (
     <Modal
       open={confirmOpenObsolote}
@@ -352,10 +382,9 @@ function WarningMessageStatus({
       className="top-0 left-0 w-full h-full flex items-center justify-center"
     >
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
-       
-          <p className="text-gray-700 mb-4">
-            Are you sure you want to Change status?{" "}
-          </p>
+        <p className="text-gray-700 mb-4">
+          Are you sure you want to Change status?{" "}
+        </p>
         <div className="flex justify-end">
           <button
             className="bg-red-500 text-white px-4 py-2 rounded mr-4"
@@ -376,7 +405,6 @@ function WarningMessageStatus({
     </Modal>
   );
 }
-
 
 function ErrorMessage({ handleOpenErrorMessage, handleCloseErroMessage }) {
   return (
@@ -575,10 +603,10 @@ function WarningMessageVerified({
 function WarningMessageSchedule({
   confirmOpenDelete,
   handleConfirmClose,
-  details
+  details,
 }) {
-  console.log("details" , details)
-  console.log("date" , details.date.toDateString())
+  console.log("details", details);
+  console.log("date", details.date.toDateString());
   return (
     <Modal
       open={confirmOpenDelete}
@@ -587,10 +615,10 @@ function WarningMessageSchedule({
     >
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
         <h1 className="text-red-700 font-bold text-4xl text-center mb-6">
-         {details.course}
+          {details.course}
         </h1>
         <h3 className="text-slate-500 font-bold text-base text-center mb-6">
-         {details.date.toDateString()}
+          {details.date.toDateString()}
         </h3>
         <div className="flex justify-end">
           <button
@@ -630,4 +658,5 @@ export {
   WarningMessageVerified,
   NotificatonMessages,
   ReasonForHolding,
+  WarningConfirmChangeEmail,
 };

@@ -1225,6 +1225,18 @@ async function getAllMajors(connection) {
     return error;
   }
 }
+
+async function getStdEmailForEditProfile(connection, user_id) {
+  try {
+    const query = `SELECT * FROM user_contact WHERE userid = '${user_id}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
 //unassign teacher to course
 
 async function unassign(connection, teacher_id, course_id) {
@@ -3189,6 +3201,19 @@ async function getStudentEmailsForEmailClass(connection, promo) {
     return error;
   }
 }
+// <<<<<<< Hassan
+async function updateEmailForEditProfile(connection, email, user_id) {
+  try {
+    const query = ` UPDATE user_contact
+    SET email = '${email}'
+    WHERE userid = '${user_id}'; `;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
+  } catch (error) {
+    return error;
+  }
+// // =======
 async function getMajorFromPM(connection, pm_id) {
   try {
     const query = `
@@ -3286,6 +3311,7 @@ async function exportAttendanceData(
     return res
   } catch (error) {
     return error
+// >>>>>>> main
   }
 }
 
@@ -3431,7 +3457,7 @@ module.exports = {
   getRequestsForPm,
   updateRequestStatus,
   uploadGMPGrade,
-
+  getStdEmailForEditProfile,
   getTheMajors,
   getEmailsByMajorId,
   insertNotifications,
@@ -3449,5 +3475,7 @@ module.exports = {
   getClassInfoForEmail,
   getLocationInfo,
   getStudentEmailsForEmailClass,
+
+  updateEmailForEditProfile,
 
 };
