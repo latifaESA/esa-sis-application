@@ -17,7 +17,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Cookies from "js-cookie";
 import Head from "next/head";
-import sendMailClass from "../utilities/emailing/emailBeforeClass";
+// import sendMailClass from "../utilities/emailing/emailBeforeClass";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);

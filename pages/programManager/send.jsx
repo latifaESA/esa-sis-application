@@ -23,7 +23,7 @@ export default function send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [loadingMajor, setLoadingMajor] = useState(true);
+  
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
   const redirect = () => {
@@ -56,7 +56,7 @@ export default function send() {
           majorID: major_id,
         });
         setSelectedMajorID(data[0].major_id)
-        setLoadingMajor(false)
+ 
         return;
       } else {
         let major_id = session.user.majorid;
@@ -64,7 +64,7 @@ export default function send() {
           majorID: major_id,
         });
         setSelectedMajorID(data[0].major_id)
-        setLoadingMajor(false)
+        
         return;
       }
 
