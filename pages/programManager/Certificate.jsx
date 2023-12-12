@@ -30,21 +30,49 @@ export default function Certificate() {
   //   setModal(false)
   // }
 
-  const handleCertificate = async () => {
-    try {
-      const response = await axios.post('/api/pmApi/getEnrollment' , {
-        major_id :  session.user?.majorid
-      })
-      setUsers(response.data.data)
-    } catch (error) {
-      return error
-    }
-  }
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (session.user?.hasMultiMajor === 'true') {
+          const majorsResponse = await axios.post('/api/pmApi/getMajorPMExtra', {
+            pm_id: session.user?.userid
+          });
+  
+          const coursesResponse = await axios.post('/api/pmApi/getAllCourses', {
+            table: 'major',
+            Where: 'major_id',
+            id: session.user?.majorid
+          });
+  
+          const majors = majorsResponse.data.data;
+          const courses = coursesResponse.data.data;
+  
+          courses.forEach((course) => {
+            majors.push({
+              major_id: course.major_id,
+              major_name: course.major_name,
+              status: course.status
+            });
+          });
+          setUsers(majors);
+        } else {
+          const response = await axios.post('/api/pmApi/getEnrollment', {
+            major_id: session.user?.majorid
+          });
+  
+          setUsers(response.data.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData();
+  }, [session.user?.pm_id, session.user?.hasMultiMajor]);
+  
 
-    handleCertificate();
-  }, []);
+
+
 
   return (
     <>
