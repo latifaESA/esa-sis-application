@@ -2585,7 +2585,7 @@ async function getRequestsForPm(
   student_id,
   student_email,
   status,
-  type, 
+  type,
   major_id
 ) {
   try {
@@ -3102,9 +3102,9 @@ async function filterEXEDGrade(
 // //         major m ON pm.major_id = m.major_id
 // //     WHERE
 // //         pm.pm_id = 'PM7143'
-    
+
 // //     UNION
-    
+
 // //     SELECT
 // //         pmem.pm_id,
 // //         pmem.pm_id AS name,
@@ -3117,7 +3117,7 @@ async function filterEXEDGrade(
 // //     WHERE
 // //         pmem.pm_id = '${pm_id}';
 // //     `
-  
+
 // //     const res = await connection.query(query)
 // //     return res
 // // =======
@@ -3189,7 +3189,7 @@ async function getStudentEmailsForEmailClass(connection, promo) {
     return error;
   }
 }
-async function getMajorFromPM (connection , pm_id){
+async function getMajorFromPM(connection, pm_id) {
   try {
     const query = `
     SELECT
@@ -3202,7 +3202,7 @@ async function getMajorFromPM (connection , pm_id){
     LEFT JOIN
         major m ON pm.major_id = m.major_id
     WHERE
-        pm.pm_id = 'PM7143'
+        pm.pm_id = '${pm_id}'
     
     UNION
     
@@ -3218,8 +3218,71 @@ async function getMajorFromPM (connection , pm_id){
     WHERE
         pmem.pm_id = '${pm_id}';
     `
-  
+
     const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function exportAttendanceData(
+  connection, 
+  major_id , 
+  student_id , 
+  student_firstname, 
+  student_lastname ,
+  course_id,
+  course_name ,
+  attendance_date ,
+  present
+  ) {
+  try {
+    let query = `
+    SELECT 
+    attendance_report.*,
+    attendance.student_id,
+    CASE 
+      WHEN attendance.present = true THEN 'Present'
+      ELSE 'Absent'
+    END AS attendance_status,
+    student.student_firstname,
+    student.student_lastname,
+    courses.course_name,
+    teachers.teacher_firstname,
+    teachers.teacher_lastname,
+    major.major_name
+  FROM 
+    attendance_report
+    INNER JOIN courses ON attendance_report.course_id = courses.course_id
+    INNER JOIN teachers ON attendance_report.teacher_id = teachers.teacher_id
+    INNER JOIN major ON attendance_report.major_id = major.major_id
+    INNER JOIN attendance ON attendance_report.attendance_id = attendance.attendance_id
+    INNER JOIN student ON attendance.student_id = student.student_id
+  WHERE 
+    attendance_report.major_id ='${major_id}'`
+    if (course_id != "") {
+      query += ` AND lower(trim(attendance_report.course_id)) LIKE lower(trim('%${course_id}%'))`;
+    }
+    if (student_id != "") {
+      query += ` AND lower(trim(attendance.student_id)) LIKE lower(trim('%${student_id}%'))`;
+    }
+    if (student_firstname != "") {
+      query += ` AND lower(trim(student.student_firstname)) LIKE lower(trim('%${student_firstname}%'))`;
+    }
+    if (student_lastname != "") {
+      query += ` AND lower(trim(student.student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
+    }
+    if (course_name != "") {
+      query += ` AND lower(trim(courses.course_name)) LIKE lower(trim('%${course_name}%'))`;
+    }
+    if (attendance_date != "") {
+      query += ` AND attendance_date = '${attendance_date}'`;
+    }
+    if (present != "") {
+      query += ` AND present = '${present}'`;
+    }
+    
+    const res = connection.query(query)
     return res
   } catch (error) {
     return error
@@ -3229,6 +3292,7 @@ async function getMajorFromPM (connection , pm_id){
 /* End Postegresql */
 
 module.exports = {
+  exportAttendanceData,
   getMajorFromPM,
   getMajorPMExtra,
   getPromtionsMajor,

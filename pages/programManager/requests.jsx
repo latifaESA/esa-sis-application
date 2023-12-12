@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 // import { x64 } from 'crypto-js';
 
-import CustomSelectBox from './customSelectBox';
+
 // import Link from 'next/link';
 
 export default function requests() {
@@ -61,7 +61,7 @@ export default function requests() {
         major_id:majorValue
       };
       let data = await axios.post('/api/pmApi/getRequests', sendData);
-      console.log('asdasd', data);
+    
       setUsers(data.data.rows);
     } catch (err) {
       console.log(err);
