@@ -12,12 +12,12 @@ const MoodleSvg = () => {
           gradientTransform="matrix(1 0 0 -1 -297.6 -460.9)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#FAAF40"></stop>
-          <stop offset=".043" stop-color="#F9A538"></stop>
-          <stop offset=".112" stop-color="#F89D31"></stop>
-          <stop offset=".227" stop-color="#F89A2F"></stop>
-          <stop offset=".528" stop-color="#F7922D"></stop>
-          <stop offset="1" stop-color="#F37B28"></stop>
+          <stop offset="0" stopColor="#FAAF40"></stop>
+          <stop offset=".043" stopColor="#F9A538"></stop>
+          <stop offset=".112" stopColor="#F89D31"></stop>
+          <stop offset=".227" stopColor="#F89A2F"></stop>
+          <stop offset=".528" stopColor="#F7922D"></stop>
+          <stop offset="1" stopColor="#F37B28"></stop>
         </radialGradient>
         <path
           fill="url(#a)"
@@ -36,13 +36,13 @@ const MoodleSvg = () => {
           gradientTransform="matrix(1 0 0 -1 -297.6 -460.9)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#929497"></stop>
-          <stop offset=".124" stop-color="#757578"></stop>
-          <stop offset=".279" stop-color="#575658"></stop>
-          <stop offset=".44" stop-color="#403E3F"></stop>
-          <stop offset=".609" stop-color="#302D2E"></stop>
-          <stop offset=".788" stop-color="#262223"></stop>
-          <stop offset="1" stop-color="#231F20"></stop>
+          <stop offset="0" stopColor="#929497"></stop>
+          <stop offset=".124" stopColor="#757578"></stop>
+          <stop offset=".279" stopColor="#575658"></stop>
+          <stop offset=".44" stopColor="#403E3F"></stop>
+          <stop offset=".609" stopColor="#302D2E"></stop>
+          <stop offset=".788" stopColor="#262223"></stop>
+          <stop offset="1" stopColor="#231F20"></stop>
         </linearGradient>
         <path
           fill="url(#b)"
@@ -57,8 +57,8 @@ const MoodleSvg = () => {
           gradientTransform="matrix(1 0 0 -1 -297.6 -460.9)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#231F20"></stop>
-          <stop offset="1" stop-color="#231F20" stop-opacity="0"></stop>
+          <stop offset="0" stopColor="#231F20"></stop>
+          <stop offset="1" stopColor="#231F20" stopOpacity="0"></stop>
         </linearGradient>
         <path
           fill="url(#c)"
@@ -73,13 +73,13 @@ const MoodleSvg = () => {
           gradientTransform="matrix(1 0 0 -1 -297.6 -460.9)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#929497"></stop>
-          <stop offset=".124" stop-color="#757578"></stop>
-          <stop offset=".279" stop-color="#575658"></stop>
-          <stop offset=".44" stop-color="#403E3F"></stop>
-          <stop offset=".609" stop-color="#302D2E"></stop>
-          <stop offset=".788" stop-color="#262223"></stop>
-          <stop offset="1" stop-color="#231F20"></stop>
+          <stop offset="0" stopColor="#929497"></stop>
+          <stop offset=".124" stopColor="#757578"></stop>
+          <stop offset=".279" stopColor="#575658"></stop>
+          <stop offset=".44" stopColor="#403E3F"></stop>
+          <stop offset=".609" stopColor="#302D2E"></stop>
+          <stop offset=".788" stopColor="#262223"></stop>
+          <stop offset="1" stopColor="#231F20"></stop>
         </linearGradient>
         <path
           fill="url(#d)"
@@ -88,25 +88,25 @@ const MoodleSvg = () => {
         <path
           fill="none"
           stroke="#4A4A4C"
-          stroke-width=".5"
+          strokeWidth=".5"
           d="M83.812 22.246l-32.145 23.299"
         ></path>
         <path
           fill="#231F20"
           d="M45.545 34.66c.34 3.744-.511-3.572 0 0"
-          enable-background="new"
+          enableBackground="new"
           opacity=".23"
         ></path>
         <path
           fill="none"
           stroke="#A8ABAD"
-          stroke-width=".5"
+          strokeWidth=".5"
           d="M2.178 47.08l49.489-1.535"
         ></path>
         <path
           fill="none"
           stroke="#F16922"
-          stroke-width=".5"
+          strokeWidth=".5"
           d="M42.484 35.002c-8.504 2.381-36.394 8.504-36.737 12.078-.849 6.631-.167 17.176-.167 17.176"
         ></path>
         <path

@@ -20,28 +20,57 @@ import { LowerButtons } from "./LowerButtons";
 import exportSelect from "../../utilities/ExcelExport/exportSelect";
 import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
-// import {
-//   WarningMessageCancleIncomplete,
-//   WarningMessageIncomplete,
-//   WarningMessageObsolote,
-// } from './WarningMessage';
+import { WarningConfirmChangeEmail } from "./WarningMessage";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 
 const StudentsList = ({ users, setUsers }) => {
-  console.log(users)
+  console.log(users);
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
-  // const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
+
+  const handleConfirmClose = () => {
+    setConfirmOpenIncomplete(false);
+  };
+
+  const handleConfirm = async () => {
+    console.log("saveModal");
+    console.log(selectedUser);
+    if (selectedUser.email != null) {
+      let sendData = {
+        email: selectedUser.email,
+        user_id: selectedUser.student_id,
+      };
+      const res = await axios.post(
+        "/api/user/updateEmailForEditProfile",
+        sendData
+      );
+      console.log(res.status);
+      if (res.status === 200) {
+        setMessage("User's Email Changed Successfully!!!");
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      }
+    }
+    setConfirmOpenIncomplete(false);
+  };
+
+  const sendDataToModal = (users) => {
+    // console.log("user", users);
+    setConfirmOpenIncomplete(true);
+    setSelectedUser(users);
+  };
 
   //incomplete modal
   // const handleConfirmIncomplete = (user) => {
@@ -180,7 +209,7 @@ const StudentsList = ({ users, setUsers }) => {
     // If "status" is not defined in the user object, exclude by default
     return false;
   };
-  
+
   // Define the initial columns array with common columns
   const commonColumns = [
     {
@@ -291,7 +320,7 @@ const StudentsList = ({ users, setUsers }) => {
       headerAlign: "center",
       align: "center",
       width: 100,
-   
+
       cellClassName: (params) =>
         params.row.status === "active"
           ? "text-green-600 font-bold"
@@ -299,8 +328,9 @@ const StudentsList = ({ users, setUsers }) => {
           ? "text-red-600 font-bold"
           : "" || params.row.status === "Inactive"
           ? "text-blue-600 font-bold"
-          : ""  || params.row.status === "Alumni"
-          ? "text-green-600 font-bold" :"",
+          : "" || params.row.status === "Alumni"
+          ? "text-green-600 font-bold"
+          : "",
       type: "singleSelect",
       valueOptions: statusData,
     },
@@ -309,7 +339,8 @@ const StudentsList = ({ users, setUsers }) => {
       headerName: "Email",
       headerAlign: "center",
       align: "center",
-      width: 150,
+      width: 250,
+      editable: true,
     },
     {
       field: "mobile_number",
@@ -318,24 +349,45 @@ const StudentsList = ({ users, setUsers }) => {
       align: "center",
       width: 150,
     },
+    {
+      field: "action",
+      headerName: "Action",
+      width: `${session.user.role === "0" ? 350 : 150}`,
+      headerAlign: "center",
+      align: "center",
+      sortable: false,
+      renderCell: (params) => (
+        <div className="flex gap-2">
+          <button
+            className="primary-button hover:text-white"
+            onClick={() => {
+              // console.log(params.row);
+              sendDataToModal(params.row);
+            }}
+            type="button"
+          >
+            Save
+          </button>
+        </div>
+      ),
+    },
   ];
-  
 
-  
   // Create a new columns array based on the conditions
   const columns = shouldIncludeGraduatedYear(users[0]) // Check with the first user
-    ? [...commonColumns, // Include common columns
-       {
-         field: "graduated_year",
-         headerName: "Graduated Year",
-         headerAlign: "center",
-         align: "center",
-         width: 150,
-       }]
+    ? [
+        ...commonColumns, // Include common columns
+        {
+          field: "graduated_year",
+          headerName: "Graduated Year",
+          headerAlign: "center",
+          align: "center",
+          width: 150,
+        },
+      ]
     : commonColumns; // Exclude "graduated_year" column
-  
+
   // Now the "columns" array will only include "graduated_year" for users with valid statuses
-  
 
   const exportButton = async () => {
     if (users.length > 0) {
@@ -385,15 +437,15 @@ const StudentsList = ({ users, setUsers }) => {
 
   return (
     <>
-      {/* {confirmOpenIncomplete && (
-        <WarningMessageIncomplete
+      {confirmOpenIncomplete && (
+        <WarningConfirmChangeEmail
           confirmOpenIncomplete={confirmOpenIncomplete}
           handleConfirmClose={handleConfirmClose}
           handleConfirm={handleConfirm}
         />
       )}
 
-      {confirmOpenObsolote && (
+      {/* {confirmOpenObsolote && (
         <WarningMessageObsolote
           confirmOpenObsolote={confirmOpenObsolote}
           handleConfirmClose={handleConfirmClose}

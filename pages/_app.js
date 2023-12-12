@@ -23,8 +23,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
 
-  console.log("test");
-
   if (Component.getLayout) {
     return (
       <>
