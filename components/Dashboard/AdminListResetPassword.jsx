@@ -45,7 +45,7 @@ const AdminListResetPassword = ({ admin, setAdminList }) => {
     // alert('the password changed successfully')
     setLoading(true)
     try {
-      const result = await axios.put("/api/user/password/changepassword", {
+      const result = await axios.put("/api/user/password/adminchangepassword", {
         userid:id,
         password:newPass,
       });

@@ -3,24 +3,26 @@ import React from 'react'
 export default function ResetPassComponent({id,handleChangePass,handleCancel,newPass,setNewPass,loading,error,success,isSuccess}) {
   return (
     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-      <div className="relative w-auto my-6 mx-auto max-w-3xl">
-      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+      <div className="relative my-6 mx-auto max-w-3xl w-1/3">
+      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none p-4">
         <>
         {isSuccess ?
-        <h1 className="text-green-700 font-bold text-4xl text-center mb-6">
+        <h6 className="text-green-700 font-bold text-center mb-6">
         {success}
-       </h1>
+       </h6>
         :
-        <h1 className="text-red-700 font-bold text-4xl text-center mb-6">
+        <h6 className="text-red-700 font-bold text-center mb-6">
          {error}
-        </h1>
+        </h6>
         }
         </>
         <>
-        <p>{id}</p>
+        <p className='self-center'>{id}</p>
         <input onChange={(e) => setNewPass(e.target.value)} value={newPass} />
-        <button onClick={handleChangePass}>Change Password</button>
-        <button onClick={handleCancel}>Cancel</button>
+        <div className='flex justify-between mt-2 mb-2'>
+          <button onClick={handleChangePass} className='primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold'>Change Password</button>
+          <button onClick={handleCancel} className='cancel-button rounded w-60 btnCol text-white hover:text-white hover:font-bold bg-gray-100'>Cancel</button>
+        </div>
         </>
         {loading &&
                 <div role="status" className="flex flex-col  justify-center absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">

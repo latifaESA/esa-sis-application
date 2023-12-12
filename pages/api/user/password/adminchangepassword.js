@@ -32,6 +32,9 @@ async function handler(req, res) {
       .send({ message: "Signin Required To Change Password" });
   }
   const { user } = session;
+  if(user.role !== '0' && user.role !== '4'){
+    return res.status(401).send({ message: `Only Admins can change the passwords` });
+  }
   // console.log('req.body=', req.body);
   const password = req.body.password;
   // const email = req.body.email;
@@ -65,7 +68,7 @@ async function handler(req, res) {
         message: message,
       });
     } else {
-      await newpassword(connection, user.userid, password);
+      await newpassword(connection, req.body.userid, password);
       // // console.log(update);
       await disconnect(connection);
     }
