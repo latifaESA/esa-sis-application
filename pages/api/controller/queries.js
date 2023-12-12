@@ -46,12 +46,10 @@ async function findDataForResetPassword(
 ) {
   try {
     let result =
-
       connection.query(`SELECT ${table}.*, ${fromTable}.* from ${table} 
 
 
     LEFT JOIN  ${fromTable} ON  ${fromTable}.${userid1} =  ${table}.${userId2} WHERE users.${where} = '${columnName}'`);
-
 
     return result;
   } catch (err) {
@@ -1523,10 +1521,8 @@ async function createPMAccount(
   pm_email,
   pm_status,
   userpassword,
-  major_id,
-
+  major_id
 ) {
-
   try {
     let query = `
     insert into program_manager(pm_id, pm_firstname, pm_lastname, pm_email, pm_status, major_id)
@@ -1555,13 +1551,11 @@ async function createPMAccount(
 
 async function createExtra(connection, pm_id, major_id) {
   try {
-
-    const query = `INSERT INTO program_manager_extra_major(pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`
-    const res = await connection.query(query)
-    return res
-
+    const query = `INSERT INTO program_manager_extra_major(pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
@@ -1665,8 +1659,6 @@ async function getExistTeacher(connection, teacher_mail) {
     return error;
   }
 }
-
-
 
 //filter AttendanceStudent
 async function filterStudentAttendance(
@@ -2402,8 +2394,6 @@ async function uploadGrades(
     rank,
     semester,
     academic_year,
-
-
   }
 ) {
   try {
@@ -3088,7 +3078,7 @@ async function filterEXEDGrade(
 // // async function getMajorPMExtra(connection, pm_id) {
 // //   try {
 // //     const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
-// //     FROM program_manager_extra_major 
+// //     FROM program_manager_extra_major
 // // 	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
 // //     WHERE pm_id ='${pm_id}'
 // //     `
@@ -3149,23 +3139,23 @@ async function getMajorPMExtra(connection, pm_id) {
     FROM program_manager_extra_major 
 	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
     WHERE pm_id ='${pm_id}'
-    `
-    const res = await connection.query(query)
+    `;
+    const res = await connection.query(query);
 
-    return res
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 async function getPromtionsMajor(connection, major_id, date) {
   try {
-    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`
-    const res = await connection.query(query)
-    console.log('res', res)
-    return res
+    const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
+    const res = await connection.query(query);
+    console.log("res", res);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function getClassInfoForEmail(connection, class_id) {
@@ -3213,6 +3203,7 @@ async function updateEmailForEditProfile(connection, email, user_id) {
   } catch (error) {
     return error;
   }
+}
 // // =======
 async function getMajorFromPM(connection, pm_id) {
   try {
@@ -3242,25 +3233,25 @@ async function getMajorFromPM(connection, pm_id) {
         major m ON pmem.major_id = m.major_id
     WHERE
         pmem.pm_id = '${pm_id}';
-    `
+    `;
 
-    const res = await connection.query(query)
-    return res
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-    return error
+    return error;
   }
 }
 async function exportAttendanceData(
-  connection, 
-  major_id , 
-  student_id , 
-  student_firstname, 
-  student_lastname ,
+  connection,
+  major_id,
+  student_id,
+  student_firstname,
+  student_lastname,
   course_id,
-  course_name ,
-  attendance_date ,
+  course_name,
+  attendance_date,
   present
-  ) {
+) {
   try {
     let query = `
     SELECT 
@@ -3284,7 +3275,7 @@ async function exportAttendanceData(
     INNER JOIN attendance ON attendance_report.attendance_id = attendance.attendance_id
     INNER JOIN student ON attendance.student_id = student.student_id
   WHERE 
-    attendance_report.major_id ='${major_id}'`
+    attendance_report.major_id ='${major_id}'`;
     if (course_id != "") {
       query += ` AND lower(trim(attendance_report.course_id)) LIKE lower(trim('%${course_id}%'))`;
     }
@@ -3306,12 +3297,12 @@ async function exportAttendanceData(
     if (present != "") {
       query += ` AND present = '${present}'`;
     }
-    
-    const res = connection.query(query)
-    return res
+
+    const res = connection.query(query);
+    return res;
   } catch (error) {
-    return error
-// >>>>>>> main
+    return error;
+    // >>>>>>> main
   }
 }
 
@@ -3477,5 +3468,4 @@ module.exports = {
   getStudentEmailsForEmailClass,
 
   updateEmailForEditProfile,
-
 };
