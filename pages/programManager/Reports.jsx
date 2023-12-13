@@ -256,7 +256,14 @@ export default function Reports() {
               // onChange={handleChange}
             ></input>
           </label>
-          <div className="flex flex-col-1 min-[850px]:flex-row gap-4">
+          <div className="flex flex-col-1 min-[850px]:flex-row gap-2">
+          <button
+              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+              type="button"
+              onClick={exportData}
+            >
+              Export
+            </button>
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"
@@ -271,13 +278,7 @@ export default function Reports() {
             >
               Show All
             </button>
-            <button
-              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-              type="reset"
-              onClick={exportData}
-            >
-              Export
-            </button>
+
           </div>
         </div>
         <ExportAttendanceData data={data} />

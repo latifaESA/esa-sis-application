@@ -107,133 +107,107 @@ export default function ReportById({
   const formatDate = (dateString) => {
     return moment(dateString).format("DD/MM/YYYY");
   };
-
   return (
     <>
-      <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Reports</p>
+      {/* <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Report</p> */}
       <form>
-        <div className="grid grid-cols-1 gap-2 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-          <label>
-            ID:
+        <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
+          <label className="w-[350px]">
+            Student ID:
             <input
               className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="number"
               name="ID"
               onChange={(e) => setStudentId(e.target.value)}
               placeholder="Select Student ID"
-              // value={formData.ID}
-              // onChange={handleChange}
+            // value={formData.ID}
+            // onChange={handleChange}
             ></input>
           </label>
 
-          <label>
+          <label className="w-[350px]">
             First Name:
             <input
-              className="ml-10 mt-3 w-30 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="text"
               name="Fname"
               onChange={(e) => setStudentFirstName(e.target.value)}
-              placeholder=" Name"
-              // value={formData.Fname}
-              // onChange={handleChange}
+              placeholder="Select Name"
+            // value={formData.Fname}
+            // onChange={handleChange}
             ></input>
           </label>
 
-          <label>
+          <label className="w-[350px]">
             Last Name:
             <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="text"
               name="Lname"
               onChange={(e) => setStudentLatName(e.target.value)}
-              placeholder=" surname"
-              // value={formData.Lname}
-              // onChange={handleChange}
+              placeholder="Select surname"
+            // value={formData.Lname}
+            // onChange={handleChange}
             ></input>
           </label>
-
-          <label>
+          <label className="w-[350px]">
             Course ID:
             <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-12 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
               type="text"
               name="ID"
               onChange={(e) => setCourseId(e.target.value)}
               placeholder="Select Course ID"
-              // value={formData.ID}
-              // onChange={handleChange}
+            // value={formData.ID}
+            // onChange={handleChange}
             ></input>
           </label>
-
           <label className="invisible max-[850px]:visible max-[850px]:hidden">
             From:
             <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+              className="ml-10 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
               type="date"
               name="from"
-              // value={formData.from}
-              // onChange={handleChange}
+            // value={formData.from}
+            // onChange={handleChange}
             ></input>
           </label>
 
-          <label>
+          <label className="w-[350px]">
             Course Name:
             <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-0 mt-3 w-40 max-[850px]:ml-6 max-[850px]:mt-0"
               type="text"
               name="ID"
               onChange={(e) => setCourseName(e.target.value)}
-              placeholder="Select Course ID"
-              // value={formData.ID}
-              // onChange={handleChange}
+              placeholder="Select Course Name"
+            // value={formData.ID}
+            // onChange={handleChange}
             ></input>
           </label>
-          <label>
-            present:
-            <select
-              onChange={(e) => setPresent(e.target.value)}
-              value={presents}
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-            >
-              <option value=""></option>
-              <option value="true">Present</option>
-              <option value="false">Absent</option>
-            </select>
-          </label>
+          {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
-          <label className="invisible max-[850px]:visible max-[850px]:hidden">
-            To:
-            <input
-              className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-              type="date"
-              name="to"
-              // value={formData.to}
-              // onChange={handleChange}
-            ></input>
-          </label>
-
-          <label>
-            Date:
-            <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-              type="date"
-              name="date"
-              placeholder=""
-              id={"date"}
-              value={attendance_Date}
-              onChange={(e) => {
-                setAttendanceDate(e.target.value);
-              }}
-            ></input>
-          </label>
-          <label>
+          {/* <label className="w-[350px]">
+                Promotion:
+                {
+                  <CustomSelectBox
+                    options={promotion}
+                    placeholder="Select Promotion"
+                    onSelect={handlePromotion}
+                    styled={
+                      'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]'
+                    }
+                  />
+                }
+              </label> */}
+          <label className="w-[350px]">
             Major:
             <select
-              onChange={(e) => {
-                setMajorValue(e.target.value);
-              }}
+              onChange={(e) => { setMajorValue(e.target.value) }}
               value={majorValue}
-              className="ml-10 mt-3 w-45 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-20 mt-3 w-40 max-[850px]:ml-20 max-[850px]:mt-0 "
+
             >
               <option key={"uu2isdvf"} value="">
                 Choose a Major
@@ -248,34 +222,73 @@ export default function ReportById({
                 ))}
             </select>
           </label>
-          <label className="invisible max-[850px]:visible max-[850px]:hidden">
-            To:
-            <input
-              className="ml-16 w-60 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-              type="date"
-              name="to"
-              // value={formData.to}
-              // onChange={handleChange}
-            ></input>
+
+
+
+          <label className="w-[350px]">
+            present:
+            <select
+              onChange={(e) => setPresent(e.target.value)}
+              value={presents}
+              className="ml-10 mt-3 w-40 max-[850px]:ml-16 max-[850px]:mt-0"
+            >
+              <option value="">Choose a Value</option>
+              <option value="true">Present</option>
+              <option value="false">Absence</option>
+            </select>
           </label>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <label className="w-[350px]">
+            Date:
+            <input
+              className="ml-16 mt-3 w-40 max-[850px]:ml-[85px] max-[850px]:mt-0"
+              type="date"
+              name="date"
+              placeholder=""
+              id={"date"}
+              value={attendance_Date}
+              onChange={(e) => {
+                setAttendanceDate(e.target.value);
+              }}
+            ></input>
+          </label>
+          <label className="invisible max-[850px]:visible max-[850px]:hidden">
+            From:
+            <input
+              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+              type="date"
+              name="from"
+            // value={formData.from}
+            // onChange={handleChange}
+            ></input>
+          </label>
+          <label className="invisible max-[850px]:visible max-[850px]:hidden">
+            From:
+            <input
+              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+              type="date"
+              name="from"
+            // value={formData.from}
+            // onChange={handleChange}
+            ></input>
+          </label>
+          <div className="flex flex-col-1 min-[850px]:flex-row gap-2">
             <button
-              className="primary-button btnCol text-white w-40 sm:w-40 mt-3 sm:mt-0"
+              className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"
               onClick={search}
             >
               Search
             </button>
             <button
-              className="primary-button btnCol text-white w-40 sm:w-40 mt-3 sm:mt-0"
+              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
               type="button"
               onClick={handleShowAll}
             >
               Show All
             </button>
             <button
-              className="primary-button btnCol text-white w-40 sm:w-40 mt-3 sm:mt-0"
+              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
               type="reset"
               onClick={exportData}
             >
@@ -283,9 +296,9 @@ export default function ReportById({
             </button>
           </div>
         </div>
+        <ExportAttendanceData data={data} />
         {/* <StudentsList users={users} setUsers={setUsers} /> */}
       </form>
-      <ExportAttendanceData data={data} />
     </>
   );
 }
