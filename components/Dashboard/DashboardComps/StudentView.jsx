@@ -16,6 +16,7 @@ import {
   // WalletIcon ,
   LockClosedIcon,
   PaperAirplaneIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -68,11 +69,11 @@ const StudentView = () => {
 
         <Link href="/student/financial">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/financial"
-              ? "bg-blue-100 text-blue-500"
-              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-              }`}
-
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == "/student/financial"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
             disabled={true}
           >
             <div className="mr-2">
@@ -136,14 +137,31 @@ const StudentView = () => {
             </div>
           </div>
         </Link>
+        <Link href="/student/surveys">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == "/student/surveys"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
+          >
+            <div className="mr-2">
+              <ClipboardDocumentListIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p> Surveys</p>
+            </div>
+          </div>
+        </Link>
 
         {isExeMajor && (
           <Link href="/student/InRole">
             <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/InRole"
-            ? "bg-blue-100 text-blue-500"
-            : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-            }`}
+              className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                router.pathname == "/student/InRole"
+                  ? "bg-blue-100 text-blue-500"
+                  : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              }`}
             >
               <div className="mr-2">
                 <PaperAirplaneIcon className="h-5 w-5" />
@@ -195,13 +213,11 @@ const StudentView = () => {
         {!isLimited && (
           <Link href="/student/grades">
             <div
-        
               className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                 router.pathname == "/student/grade"
                   ? "bg-blue-100 text-blue-500"
                   : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-              }`}                
-              
+              }`}
             >
               <div className="mr-2">
                 <AcademicCapIcon className="h-5 w-5" />
@@ -238,10 +254,11 @@ const StudentView = () => {
 
         <Link href="/student/profile">
           <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == "/student/profile"
-              ? "bg-blue-100 text-blue-500"
-              : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
-              }`}
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == "/student/profile"
+                ? "bg-blue-100 text-blue-500"
+                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+            }`}
           >
             <div className="mr-2">
               <PencilIcon className="h-5 w-5" />
@@ -251,7 +268,6 @@ const StudentView = () => {
             </div>
           </div>
         </Link>
-
       </div>
     </>
   );
