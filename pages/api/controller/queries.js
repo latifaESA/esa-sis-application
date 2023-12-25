@@ -43,9 +43,10 @@ async function findDataForResetPassword(connection, table, where, columnName) {
 
 async function findData(connection, table, where, columnName) {
   try {
-    let result = connection.query(
+    let result = await connection.query(
       `SELECT * from ${table} WHERE ${where} = '${columnName}'`
     );
+    // console.log('the result : ', result)
     return result;
   } catch (err) {
     return err;

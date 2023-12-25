@@ -178,7 +178,6 @@ export default function LoginScreen() {
         userid,
         password,
       });
-      // // console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();

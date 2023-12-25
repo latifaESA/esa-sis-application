@@ -104,7 +104,11 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        if (connection.success) {
+        // console.log('=================================')
+        // console.log('the connection success result : ', connection.success)
+        // console.log('=================================')
+        // console.log('the connection result : ', connection._connected)
+        if (connection._connected) {
           console.log('connection to DB succes nextauth signin');
 
           // get the user info
@@ -114,11 +118,9 @@ export const authOptions = {
             'userid',
             credentials.userid
           );
-         
           const userinfo = await Userinfo(connection, credentials.userid); //email from req body
           // console.log(userinfo.rows[0].profileurl)
           // console.log("---------------------------------")
-
           //  check if there is user with the given id
           if (user.rowCount > 0) {
             // check if the password is correct
@@ -178,8 +180,8 @@ export const authOptions = {
                       .getDate()
                       .toString()
                       .padStart(2, '0')}-${(oneWeekLater.getMonth() + 1)
-                      .toString()
-                      .padStart(2, '0')}-${oneWeekLater.getFullYear()}`;
+                        .toString()
+                        .padStart(2, '0')}-${oneWeekLater.getFullYear()}`;
 
                     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
 
@@ -286,10 +288,10 @@ export const authOptions = {
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
                           image: userinfo.rows[0].profileurl,
-                          accessToken :`${user.rows[0].access_token}`,
+                          accessToken: `${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
-                          majorName:ST_major.rows[0].major_name
+                          majorName: ST_major.rows[0].major_name
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -299,7 +301,6 @@ export const authOptions = {
                   }
                 } else {
                   if (user.rows[0].role === 1) {
-
                     // get the student data
                     const ST = await findData(
                       connection,
@@ -313,6 +314,7 @@ export const authOptions = {
                       'major_id',
                       ST.rows[0].major_id
                     )
+
 
                     if (ST.rows[0].status === 'limited') {
                       await updateStatusPreBlue(
@@ -336,14 +338,24 @@ export const authOptions = {
                           }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
-
+                        // console.log('name', `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                        //                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                        //                           'role', user.rows[0].role.toString(),
+                        //                           'status', `${data.blocked ? 'limited' : 'active'}`,
+                        //                           'userid', `${user.rows[0].userid}`,
+                        //                           'accessToken' ,`${user.rows[0].access_token}`,
+                        //                           'image', userinfo.rows[0].profileurl,
+                        //                           'majorid', ST.rows[0].major_id,
+                        //                           'majorName', ST_major.rows[0].major_name,
+                        //                           'promotion', ST.rows[0].promotion
+                        //                           )
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           role: user.rows[0].role.toString(),
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
-                          accessToken :`${user.rows[0].access_token}`,
+                          accessToken: `${user.rows[0].access_token}`,
                           image: userinfo.rows[0].profileurl,
                           majorid: ST.rows[0].major_id,
                           majorName: ST_major.rows[0].major_name,
