@@ -146,7 +146,7 @@ const GradeList = ({ users, setUser }) => {
     },
 
     {
-      field: "courseid",
+      field: "course_id",
       headerName: "Course ID",
       headerAlign: "center",
       align: "center",

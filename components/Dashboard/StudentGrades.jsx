@@ -49,6 +49,14 @@ const StudentGrades = ({
             width: 200,
 
         },
+        {
+            field: "task_name",
+            headerName: "Task Name",
+            headerAlign: "center",
+            align: "center",
+            width: 200,
+
+        },
 
         {
             field: "grade",
@@ -59,11 +67,19 @@ const StudentGrades = ({
 
         },
         {
-            field: "comments",
-            headerName: "Comments",
+            field: "gpa",
+            headerName: "GPA",
             headerAlign: "center",
             align: "center",
-            width: 900,
+            width: 200,
+
+        },
+        {
+            field: "rank",
+            headerName: "Rank",
+            headerAlign: "center",
+            align: "center",
+            width: 200,
 
         },
     ]

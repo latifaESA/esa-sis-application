@@ -11,7 +11,7 @@
 import {
   findDataForResetPassword,
   newEmailToken,
-  Userinfo,
+  // Userinfo,
   // UpdateData,
   // UpdateActivityTime,
 } from "../../controller/queries";
@@ -27,12 +27,13 @@ async function handler(req, res) {
       .json({ message: "HTTP method not valid only POST Accepted" });
   }
   const { email } = req.body;
-  if (!email || !email.includes("@")) {
-    res.status(422).json({
-      message: "Validation error",
-    });
-    return;
-  }
+  console.log(email, "email in forget password");
+  // if (!email || !email.includes("@")) {
+  //   res.status(422).json({
+  //     message: "Validation error",
+  //   });
+  //   return;
+  // }
   const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
 
@@ -50,12 +51,16 @@ async function handler(req, res) {
       message: message,
     });
   } else {
+    console.log("start validation");
+    console.log("===============");
+
     const validateUserEmail = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
-      "email",
+      "userid",
+      "userid",
       email
     );
     const validatePmEmail = await findDataForResetPassword(
@@ -63,7 +68,8 @@ async function handler(req, res) {
       "users",
       "program_manager",
       "pm_id",
-      "pm_email",
+      "userid",
+      "userid",
       email
     );
     const validateAdmin = await findDataForResetPassword(
@@ -71,32 +77,48 @@ async function handler(req, res) {
       "users",
       "admin",
       "adminid",
-      "adminemail",
+      "userid",
+      "userid",
       email
     );
+
     const validatePmAssistanteEmail = await findDataForResetPassword(
       connection,
       "users",
       "program_manager_assistance",
       "pm_ass_id",
-      "pm_ass_email",
+      "userid",
+      "userid",
       email
     );
     // // console.log(validateUserEmail)
     // const validateUserEmail = await UserProfile.findOne({ email });
     // // console.log(validateUserEmail.rows[0].userid)
-    if (validateUserEmail.rows[0] != null) {
+    if (
+      validateUserEmail.rows[0] != null &&
+      validateUserEmail.rows[0].userid != null
+    ) {
       // Set the emailToken
+      console.log("inside if");
       await newEmailToken(connection, validateUserEmail.rows[0].userid);
       //validateUserEmail.emailToken = crypto.randomBytes(64).toString('hex');
       //await validateUserEmail.save();
 
       // res.status(200).json('Email Verified Successfully.');
-    } else if (validatePmEmail.rows[0] != null) {
+    } else if (
+      validatePmEmail.rows[0] != null &&
+      validatePmEmail.rows[0].userid != null
+    ) {
       await newEmailToken(connection, validatePmEmail.rows[0].userid);
-    } else if (validatePmAssistanteEmail.rows[0] != null) {
+    } else if (
+      validatePmAssistanteEmail.rows[0] != null &&
+      validatePmAssistanteEmail.rows[0].userid != null
+    ) {
       await newEmailToken(connection, validatePmAssistanteEmail.rows[0].userid);
-    } else if (validateAdmin.rows[0] != null) {
+    } else if (
+      validateAdmin.rows[0] != null &&
+      validateAdmin.rows[0].userid != null
+    ) {
       await newEmailToken(connection, validateAdmin.rows[0].userid);
     } else {
       res.status(404).json({
@@ -104,62 +126,75 @@ async function handler(req, res) {
       });
       return;
     }
-
+    console.log("after if");
     // Disconnect From DB and send message and user authentication to front end
-    const userinfo = await Userinfo(
+    const userinfo = await findDataForResetPassword(
       connection,
+      "users",
       "user_contact",
       "userid",
-      "email",
+      "userid",
+      "userid",
       email
     );
-    const userPminfo = await Userinfo(
+
+    const userPminfo = await findDataForResetPassword(
       connection,
+      "users",
       "program_manager",
       "pm_id",
-      "pm_email",
+      "userid",
+      "userid",
       email
     );
-    const userPmAssinfo = await Userinfo(
+    const userPmAssinfo = await findDataForResetPassword(
       connection,
+      "users",
       "program_manager_assistance",
       "pm_ass_id",
-      "pm_ass_email",
+      "userid",
+      "userid",
       email
     );
-    const admininfo = await Userinfo(
+    const admininfo = await findDataForResetPassword(
       connection,
+      "users",
       "admin",
       "adminid",
-      "adminemail",
+      "userid",
+      "userid",
       email
     );
-    // // console.log("userinf ====", userinfo);
-    if (userinfo.rows[0]) {
+    console.log(userPminfo.rows[0]);
+    if (userinfo.rows[0] && userinfo.rows[0].userid != null) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",
-        email: email,
+        email: userinfo.rows[0].email,
         emailToken: userinfo.rows[0].token,
         ID: userinfo.rows[0].userid,
       });
-    } else if (userPminfo.rows[0]) {
+    } else if (userPminfo.rows[0] && userPminfo.rows[0].pm_id != null) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",
-        email: email,
+        email: userPminfo.rows[0].pm_email,
         emailToken: userPminfo.rows[0].token,
         ID: userPminfo.rows[0].userid,
       });
-    } else if (userPmAssinfo.rows[0]) {
+    } else if (
+      userPmAssinfo.rows[0] &&
+      userPmAssinfo.rows[0].pm_ass_id != null
+    ) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",
-        email: email,
+        email: userPmAssinfo.rows[0].pm_ass_email,
         emailToken: userPmAssinfo.rows[0].token,
         ID: userPmAssinfo.rows[0].userid,
       });
-    } else if (admininfo.rows[0]) {
+    } else if (admininfo.rows[0] && admininfo.rows[0].adminid != null) {
+      console.log("seret bel else admin");
       res.status(201).send({
         message: "Ready To send Reset Password Email",
-        email: email,
+        email: admininfo.rows[0].adminemail,
         emailToken: admininfo.rows[0].token,
         ID: admininfo.rows[0].userid,
       });

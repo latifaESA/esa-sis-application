@@ -6,7 +6,7 @@ import axios from "axios";
 import bcryptjs from "bcryptjs";
 import { useRouter } from "next/router";
 import { NotificatonMessage } from "../../components/Dashboard/WarningMessage";
-
+import Select from 'react-select';
 function generateID(prefix) {
   const prefixLength = prefix.length;
   const randomDigits = Math.floor(Math.random() * 10000)
@@ -30,8 +30,10 @@ export default function Create() {
   // eslint-disable-next-line no-unused-vars
   const [status, setStatus] = useState("active");
   const [role, setRole] = useState("");
-  const [major, setMajor] = useState();
+  const [major, setMajor] = useState([]);
+
   const [majorValue, setMajorValue] = useState("");
+  // const [majorValueExtra, setMajorValueExtra] = useState("");
   const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
   const [messages, setMessages] = useState("");
   // const [confirmCancleMessage , setConfirmCancleMessage] = useState(false)
@@ -39,6 +41,8 @@ export default function Create() {
   const redirect = () => {
     router.push("/AccessDenied");
   };
+
+  console.log(majorValue)
 
   const getAllMajors = async () => {
     let majorData = await axios.get("/api/admin/adminApi/getMajor");
@@ -71,8 +75,8 @@ export default function Create() {
         pm_status: status.trim(),
         userpassword: genPass,
         password: generatedPass,
-        major_id: majorValue.trim(),
-        role:'Program Manager'
+        major_id: majorValue[0],
+        role: 'Program Manager'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -80,10 +84,20 @@ export default function Create() {
         "/api/admin/adminApi/createPMAccount",
         sendData
       );
+      if (majorValue.length > 1) {
+        for (let i = 1; i < majorValue.length; i++) {
+          let dataExtra = {
+            pm_id: gen.trim(),
+            major_id: majorValue[i],
+          };
 
-      console.log("data", data);
+          await axios.post("/api/admin/adminApi/createExtra", dataExtra);
+        }
+      }
+
       if (data === true) {
         setConfirmOpenMessage(true);
+        setMajorValue('')
         setMessages(`Account Program Manager Already Exist`);
       }
       // console.log(data[0].rowCount);
@@ -114,8 +128,8 @@ export default function Create() {
         pm_ass_status: status.trim(),
         userpassword: genPass,
         major_id: majorValue.trim(),
-        password : generatedPass,
-        role:'Program Manager Assistance'
+        password: generatedPass,
+        role: 'Program Manager Assistance'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -140,8 +154,8 @@ export default function Create() {
         userpassword: genPass,
         admin_lastname: lname.trim(),
         admin_status: status.trim(),
-        password : generatedPass,
-        role:'Admin'
+        password: generatedPass,
+        role: 'Admin'
       };
 
       // id,firstname,lastname,major,promotion,status
@@ -155,7 +169,7 @@ export default function Create() {
       if (data === true) {
         setConfirmOpenMessage(true);
         setMessages(`Account Admin Already Exist`);
-      } 
+      }
       else {
         setConfirmOpenMessage(true);
         setMessages(`Admin Account Created Successfully`);
@@ -174,7 +188,7 @@ export default function Create() {
       if (fname == "" && lname == "" && email == "") {
         setMessage("Please Fill all the required Fields");
       }
- 
+
     }
     setEmail('')
     setFname('')
@@ -190,6 +204,17 @@ export default function Create() {
     setConfirmOpenMessage(false);
 
   };
+
+  const handleMajor = (selectedOptions) => {
+    // Extract an array of selected values
+    const selectedValues = selectedOptions.map((option) => option.value);
+
+    // Update the state with the array of selected values
+    setMajorValue(selectedValues);
+  };
+
+
+
 
   return (
     <>
@@ -259,25 +284,19 @@ export default function Create() {
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
               <label>
                 Major:
-                <select
-                  onChange={(e) => setMajorValue(e.target.value)}
-                  value={majorValue}
-                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-                  disabled={role == "0" ? true : false}
-                >
-                  <option key={"uu2isdvf"} value="">
-                    Choose a Major
-                  </option>
-                  {major &&
-                    major.map((major) => (
-                      <>
-                        <option key={major.major_id} value={major.major_id}>
-                          {major.major_name}
-                        </option>
-                      </>
-                    ))}
-                </select>
+
+                <Select
+                  isMulti={true}
+                  options={major.map((majors) => ({ value: majors.major_id, label: majors.major_name })).sort((a, b) => a.label.localeCompare(b.label))}
+                  placeholder="Select a Major"
+                  onChange={handleMajor}
+                  className='place-items-center'
+                />
+
+
               </label>
+
+
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 From:
@@ -285,8 +304,8 @@ export default function Create() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -296,8 +315,8 @@ export default function Create() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -309,7 +328,7 @@ export default function Create() {
                   className="ml-9 w-40"
                   onChange={(e) => setStatus(e.target.value)}
                   value={status}
-                  // disabled={role == "0" ? true : false}
+                // disabled={role == "0" ? true : false}
                 >
                   {/* <option value="">Choose Value..</option> */}
                   <option value="active">Active</option>
@@ -320,7 +339,7 @@ export default function Create() {
               <label className="">
                 Role:
                 <select
-                value={role}
+                  value={role}
                   className="ml-9 w-40 max-[840px]:ml-[50px]"
                   onChange={(e) => setRole(e.target.value)}
                 >

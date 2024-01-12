@@ -7,7 +7,7 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF }) {
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF , showAllEXED }) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -67,6 +67,8 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             showAllGMP();
         } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
             showAllRTF()
+        }else if (isExeMajor){
+            showAllEXED()
         }
 
         // Auto-refresh the page 
@@ -77,6 +79,8 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 showAllGMP();
             } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services') {
                 showAllRTF()
+            }else if (isExeMajor){
+                showAllEXED()
             }
         }, 2000);
 
@@ -137,6 +141,21 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Some template fields are missing
                 return false;
             }
+        }else if(isExeMajor){
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+
+            // Check if all template fields exist in columnA
+            const missingFields = templateFields.filter(
+                (field) => !columnA.includes(field)
+            );
+
+            if (missingFields.length === 0) {
+                // All template fields are present
+                return true;
+            } else {
+                // Some template fields are missing
+                return false;
+            }
         }
     };
     const validateRow = (rowData) => {
@@ -173,6 +192,17 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             }
         } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
             const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+
+            for (const field of requiredFields) {
+
+                if (!rowData[field] || rowData[field] === "" || rowData[field] === undefined) {
+                    return false; // Missing or empty required field
+                } else {
+                    return true; // All required fields are present and not empty
+                }
+            }
+        }else if(isExeMajor){
+            const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
 
             for (const field of requiredFields) {
 
@@ -219,6 +249,15 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     const handleAdd = async () => {
         try {
             setIsClick(true);
+                        // Fetch student emails separately
+                        const studentInfo = student;
+                        // console.log('student', studentInfo)
+                
+                        if (!studentInfo || studentInfo.length === 0) {
+                            setConfirmOpenMessage(true);
+                            setMessages("Error: Unable to fetch student information.");
+                            return;
+                        }
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
 
@@ -271,7 +310,9 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
                 // All validation checks passed, proceed with API call
                 const formData = new FormData();
+                
                 formData.append("files", file);
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
 
                 try {
                     const { data } = await axios.post(
@@ -347,6 +388,76 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGMPGrades",
+                        formData,
+                    );
+    
+                    if (data.success === true) {
+                        setConfirmOpenMessage(true);
+                        setMessages(data.message);
+                    }
+                } catch (error) {
+                    if (error.response && error.response.data.success === false) {
+                        setConfirmOpenMessage(true);
+                        setIsClick(false);
+                        setMessages(error.response.data.message);
+                    }
+                }
+            };
+    
+            reader.readAsArrayBuffer(file);
+        } catch (error) {
+            setConfirmOpenMessage(true);
+            setMessages("Something went wrong. Please try again later.");
+        }
+    };
+
+    const handleAddEXED = async () => {
+        try {
+            setIsClick(true);
+    
+            // Fetch student emails separately
+            const studentInfo = student;
+            // console.log('student', studentInfo)
+    
+            if (!studentInfo || studentInfo.length === 0) {
+                setConfirmOpenMessage(true);
+                setMessages("Error: Unable to fetch student information.");
+                return;
+            }
+    
+            const file = uploadPhotoData.fileList[0];
+            const reader = new FileReader();
+    
+            reader.onload = async function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+    
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+    
+                const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+                if (rows.length < 2) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error: File is empty!");
+                    return;
+                }
+    
+                const firstRow = rows[0];
+                const isValidHeaders = validateColumnHeaders(firstRow);
+                if (!isValidHeaders) {
+                    setConfirmOpenMessage(true);
+                    setMessages("Error File! Please upload the Grade Template and don't change the header.");
+                    return;
+                }
+    
+                const formData = new FormData();
+                formData.append("files", file);
+                formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
+    
+                try {
+                    const { data } = await axios.post(
+                        "/api/pmApi/uploadGradesExED",
                         formData,
                     );
     
@@ -511,7 +622,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                                 handleAddGMP :
                                                                 isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ?
                                                                     handleAddRTF
-                                                                    : handleAdd
+                                                                    : isExeMajor?handleAddEXED : handleAdd
                                                         }
                                                     >
                                                         Scan

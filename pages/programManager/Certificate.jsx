@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 import axios from "axios";
-import CertificateModal from "./ModalForm/CertificateModal";
+// import CertificateModal from "./ModalForm/CertificateModal";
 import CertificateList from "../../components/Dashboard/CertificateList";
 
 
@@ -14,39 +14,69 @@ export default function Certificate() {
 
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false)
+  // const [modal, setModal] = useState(false)
 
   const router = useRouter();
   const redirect = () => {
     router.push("/AccessDenied");
   };
 
-  const openModal = () => {
+  // const openModal = () => {
 
-    setModal(true)
+  //   setModal(true)
 
-  };
-  const closeModal = () => {
-    setModal(false)
-  }
-
-  const handleCertificate = async () => {
-    try {
-      const response = await axios.post('/api/pmApi/getEnrollment')
-      setUsers(response.data.data)
-    } catch (error) {
-      return error
-    }
-  }
+  // };
+  // const closeModal = () => {
+  //   setModal(false)
+  // }
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (session.user?.hasMultiMajor === 'true') {
+          const majorsResponse = await axios.post('/api/pmApi/getMajorPMExtra', {
+            pm_id: session.user?.userid
+          });
+  
+          const coursesResponse = await axios.post('/api/pmApi/getAllCourses', {
+            table: 'major',
+            Where: 'major_id',
+            id: session.user?.majorid
+          });
+  
+          const majors = majorsResponse.data.data;
+          const courses = coursesResponse.data.data;
+  
+          courses.forEach((course) => {
+            majors.push({
+              major_id: course.major_id,
+              major_name: course.major_name,
+              status: course.status
+            });
+          });
+          setUsers(majors);
+        } else {
+          const response = await axios.post('/api/pmApi/getEnrollment', {
+            major_id: session.user?.majorid
+          });
+  
+          setUsers(response.data.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData();
+  }, [session.user?.pm_id, session.user?.hasMultiMajor]);
+  
 
-    handleCertificate();
-  }, []);
+
+
 
   return (
     <>
-      {modal ? <CertificateModal closeModal={closeModal} setUsers={setUsers} /> : <></>}
+      {/* {modal ? <CertificateModal closeModal={closeModal} setUsers={setUsers} /> : <></>} */}
       <Head>
         <title>SIS Admin - Certificate</title>
       </Head>
@@ -62,13 +92,13 @@ export default function Certificate() {
               <div className="flex flex-col min-[850px]:flex-row gap-4">
               </div>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
-                <button
+                {/* <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={openModal}
                 >
                   Add Certificate
-                </button>
+                </button> */}
               </div>
             </div>
             <div>

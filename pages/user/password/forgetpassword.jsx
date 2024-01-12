@@ -18,12 +18,14 @@ import { useState } from "react";
 import EmailForResetPassword from "../../../utilities/emailing/emailForResetPassword";
 // import selection_data from '../../../utilities/selection_data';
 import { useSelector } from "react-redux";
+import Loader from "../../../components/Loader/Loader";
 const ForgetPassword = () => {
   // Edited By:KANSO ADI 11/12/2022
   // Very important to prevent the routing if loged inn and the user pass the url of this page
   /* Checking if the user is logged in or not. If the user is logged in, it will redirect him to the
   home page. */
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
   const appState = useSelector(
     (state) => state.persistedReducer.app_state.appState
@@ -49,17 +51,25 @@ const ForgetPassword = () => {
 
   // Edited By:KANSO ADI 11/12/2022
   const submitHandler = async ({ email }) => {
+    console.log(email);
+    setIsLoading(true);
     try {
+      console.log("before axios");
       const res = await axios.post("/api/user/password/forgetpassword", {
         email,
       });
+      console.log("res", res.data);
+
       // console.log("=======res.data======");
       // // console.log(errorMessage)
       // console.log(res.data);
       const emailToken = res.data.emailToken;
+      // console.log("emailToken", emailToken);
       // const lname = res.data.lname;
       // const fname = res.data.fname;
       const ID = res.data.ID;
+      const idForRes = res.data.email;
+      console.log("email", idForRes);
       // // console.log(emailToken)
 
       // console.log("before email");
@@ -67,7 +77,7 @@ const ForgetPassword = () => {
       await EmailForResetPassword({
         emailToken,
         ID,
-        email,
+        idForRes,
         router,
       });
       // console.log("after email");
@@ -76,7 +86,7 @@ const ForgetPassword = () => {
       // console.log(ID);
       // console.log(email);
     } catch (err) {
-      // console.log(err);
+      setIsLoading(false);
       setErrorMessage(getError(err));
     }
   };
@@ -104,7 +114,7 @@ const ForgetPassword = () => {
             <h1 className="mb-4 text-3xl font-bold">
               Forget Your Account Password?
             </h1>
-            <h1 className="mb-4 text-xl">Please Enter Your Email Address.</h1>
+            <h1 className="mb-4 text-xl">Please Enter Your ID .</h1>
             {errors && (
               <div className="text-red-500 text-xl font-bold w-full text-center mt-4 mb-4">
                 {errorMessage}
@@ -112,8 +122,8 @@ const ForgetPassword = () => {
             )}
             <div>
               <input
-                type="email"
-                placeholder="Enter Your Email Address"
+                type="text"
+                placeholder="Enter Your ID"
                 className={
                   errors.email
                     ? "w-1/2 text-center text-xl text-black mb-3 mt-2 border-8 border-red-400"
@@ -133,10 +143,14 @@ const ForgetPassword = () => {
               </span>
             )}
             <div className="mb-4 bt-4 mt-2">
-              <button className="bg-blue-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded border-b-4 border-blue-700">
+              <button
+                disabled={isLoading}
+                className="bg-blue-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded border-b-4 border-blue-700"
+              >
                 Reset My Password
               </button>
             </div>
+            {isLoading && <Loader />}
           </form>
         </>
       ) : (

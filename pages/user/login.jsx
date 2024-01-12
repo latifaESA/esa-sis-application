@@ -119,6 +119,9 @@ export default function LoginScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+
+
   useEffect(() => {
     // // console.log('this is session');
     // // console.log(session?.user.status);
@@ -129,8 +132,15 @@ export default function LoginScreen() {
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "active"
+        && session?.user.hasMultiMajor === 'false'
       ) {
         router.push(redirect || "/programManager/students");
+      } else if (
+        session?.user.role === "2" &&
+        session?.user.status == "active" &&
+        session?.user.hasMultiMajor === 'true'
+      ) {
+        router.push(redirect || "/programManager/studentView");
       } 
       else if (
         session?.user.role === "3" &&

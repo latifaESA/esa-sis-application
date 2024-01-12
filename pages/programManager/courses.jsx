@@ -7,6 +7,9 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
+import UploadCourses from './UploadCourses';
+import { saveAs } from 'file-saver';
 
 export default function Courses() {
   const { data: session } = useSession();
@@ -19,10 +22,19 @@ export default function Courses() {
   const [courseType, setcourseType] = useState('');
   const router = useRouter();
   const [type, setType] = useState([]);
+  const [openUpload , setOpenUpload] = useState(false)
+
+  const headerCourse = [
+    ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
+  ];
 
   const redirect = () => {
     router.push('/AccessDenied');
   };
+
+  const handleUpload = ()=>{
+    setOpenUpload(true)
+  }
   const getAllType = async () => {
     let table = 'course_type';
     let typeCourse = await axios.post('/api/pmApi/getAll', { table });
@@ -74,13 +86,65 @@ export default function Courses() {
     setcourseType('');
   };
 
+      // Function to extract the first word before a hyphen "-"
+      const getFirstWordBeforeHyphen = (text) => {
+        if (text) {
+          const words = text.split("-");
+          if (words.length > 0) {
+            return words[0];
+          }
+        }
+        return "";
+      };
+      const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+    
+      const isExeMajor = firstMajorWord === "EXED";
+      const calculateColumnWidths = (data) => {
+        const columnWidths = data[0].map((col, colIndex) => {
+          const maxContentWidth = data.reduce((max, row) => {
+            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+            const contentWidth = cellContent.length;
+            return Math.max(max, contentWidth);
+          }, col.length);
+          
+          return { wch: maxContentWidth };
+        });
+    
+        return columnWidths;
+      };
+      const createExcelTemplateCourse = () => {
+        const majors = session.user?.majorName
+        const data = headerCourse.concat([
+          ['', '', '', '', majors], // MajorName data
+        ])
+      
+        const columnWidths = calculateColumnWidths(data);
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        worksheet['!cols'] = columnWidths;
+      
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Course');
+      
+        const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+        const excelBlob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        saveAs(excelBlob, 'course.xlsx');
+      };
+      
+    
+   
+
   return (
     <>
       <Head>
         <title>SIS Admin - Courses</title>
       </Head>
+      
       {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
+             {openUpload ? <UploadCourses setOpenUpload={setOpenUpload} />:<></>}
+    
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Courses</p>
           <form>
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
@@ -210,6 +274,24 @@ export default function Courses() {
                   Show All
                 </button>
               </div>
+              {isExeMajor ? <>
+                <div className="flex flex-col min-[850px]:flex-row gap-4">
+                <button
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={createExcelTemplateCourse}
+                >
+                  Course Template
+                </button>
+                <button
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </button>
+              </div>
+              </>:<></>}
             </div>
             <CourseList users={users} setUsers={setUsers} />
           </form>

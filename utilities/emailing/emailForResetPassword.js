@@ -17,10 +17,11 @@ async function EmailForResetPassword({
   // lname,
   // fname,
   ID,
-  email,
+  idForRes,
   router,
 }) {
-  // console.log('resetemail')
+  console.log("resetemail");
+  console.log(idForRes);
   // console.log(emailToken)
   // console.log(ID)
   // console.log(email)
@@ -44,7 +45,8 @@ async function EmailForResetPassword({
     encrypt(
       JSON.stringify({
         token: `${emailToken}`,
-        email: `${email}`,
+        email: `${idForRes}`,
+        id: `${ID}`,
       })
     )
   );
@@ -104,7 +106,7 @@ async function EmailForResetPassword({
     "</div></body></html>";
   const payload = JSON.stringify({
     from: fromEmail,
-    to: email,
+    to: idForRes,
     cc: ccEmail,
     // bcc: bccEmail,
     subject: subject,

@@ -23,6 +23,8 @@ export default function ProfileScreen() {
   const [message, setMessage] = useState("");
   const { data: session } = useSession();
   const [profileUrl, setProfileUrl] = useState(null);
+  const [email, setEmail] = useState("");
+  const [initialEmail, setInitialEmail] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
     useState(false);
@@ -58,9 +60,25 @@ export default function ProfileScreen() {
     totalSize: 0,
   });
 
+  const getEmail = async () => {
+    if (session?.user.role == 1) {
+      try {
+        let res = await axios.post("/api/user/getStdEmailForEditProfile", {
+          user_id: session?.user.userid,
+        });
+        setEmail(res.data.rows[0].email);
+        setInitialEmail(res.data.rows[0].email);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   useEffect(() => {
+    getEmail();
     setValue("fname", session.user.name.trim().split(/\s+/)[0]);
     setValue("lname", session.user.name.trim().split(/\s+/)[1]);
+    // setEmail()
     setValue("password", null);
     setValue("confirmPassword", null);
     if (userState.user.appisSaved === false) {
@@ -132,18 +150,30 @@ export default function ProfileScreen() {
         password,
         profileUrl: userState.user.profileUrl,
       });
+      console.log(email != initialEmail);
       // // console.log(response.data)
       // // console.log('response.message=', response.data.message);
       if (response.data.message === "User Profile Updated") {
         dispatch(userNameChanged(fname + " " + lname));
       }
       setMessage("Profile Updated Successfully");
+      if (email != initialEmail) {
+        let sendData = {
+          email: email.trim(),
+          user_id: session?.user.userid,
+        };
+        const resp = await axios.post(
+          "/api/user/updateEmailForEditProfile",
+          sendData
+        );
+      }
       if (password) {
         const result = await signIn("credentials", {
           redirect: false,
           userid: userState.user.userid,
           password,
         });
+
         // router.push(redirect || '/');
 
         if (result.error) {
@@ -155,7 +185,7 @@ export default function ProfileScreen() {
       // console.log(err)
     }
   };
-
+  console.log(session?.user.role);
   return (
     <>
       <Head>
@@ -195,7 +225,21 @@ export default function ProfileScreen() {
             )}
           </div>
         )}
-
+        {session?.user.role == 1 && (
+          <div className="mb-4">
+            <label className="font-bold text-primary" htmlFor="fname">
+              Email
+            </label>
+            <input
+              type="email"
+              className="w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              // disabled="true"
+            />
+          </div>
+        )}
         <div className="mb-4">
           <label className="font-bold text-primary" htmlFor="fname">
             First Name
@@ -214,6 +258,7 @@ export default function ProfileScreen() {
             <div className="text-red-500">{errors.fname.message}</div>
           )}
         </div>
+
         <div className="mb-4">
           <label className="font-bold text-primary" htmlFor="lname">
             Last Name

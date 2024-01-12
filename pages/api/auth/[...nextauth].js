@@ -71,6 +71,7 @@ export const authOptions = {
       if (user?.majorName) token.majorName = user.majorName;
       if (user?.majorid) token.majorid = user.majorid;
       if (user?.promotion) token.promotion = user.promotion;
+      if (user?.hasMultiMajor) token.hasMultiMajor = user.hasMultiMajor;
 
       if (user?.profileurl) token.profileurl = user.profileurl;
       return token;
@@ -86,6 +87,7 @@ export const authOptions = {
       if (token?.majorid) session.user.majorid = token.majorid;
       if (token?.promotion) session.user.promotion = token.promotion;
       if (token?.majorName) session.user.majorName = token.majorName;
+      if (token?.hasMultiMajor) session.user.hasMultiMajor = token.hasMultiMajor;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       return session;
@@ -455,11 +457,21 @@ export const authOptions = {
                     'major_id',
                     PM.rows[0].major_id
                   )
+                  const extra = await findData(
+                    connection,
+                    'program_manager_extra_major',
+                    'pm_id',
+                    PM.rows[0].pm_id
+                  )
+                  const isExtra = extra.rowCount
+                  console.log(isExtra >0)
                   // console.log(user.rows[0].userid);
                   // console.log(PM);
                   // if the program_manager exists then send the data to frontend
                   if (PM.rows) {
                     await disconnect(connection);
+            
+
                     // Write to logger
                     if (req) {
                       // Log user information
@@ -519,6 +531,7 @@ export const authOptions = {
                       userid: user.rows[0].userid,
                       majorid: PM.rows[0].major_id,
                       majorName: pm_major.rows[0].major_name,
+                      hasMultiMajor:`${isExtra > 0 ? true : false}` ,
                       image: userinfo.rows[0].profileurl,
                     };
                   } else {

@@ -19,6 +19,7 @@ const SendEmailTo = async (
   pm_email,
   promotion
 ) => {
+  console.log(pm_email);
   try {
     // console.log(
     //   semester,
@@ -93,7 +94,7 @@ const SendEmailTo = async (
       "</div></body></html>";
     const mailOptions = {
       from: "noreply@esa.edu.lb",
-      to: "chakkour.h@esa.edu.lb",
+      to: pm_email,
       cc: "",
       bcc: "",
       subject: "Request Transcript",
