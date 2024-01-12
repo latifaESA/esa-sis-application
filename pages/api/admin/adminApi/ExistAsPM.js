@@ -4,7 +4,7 @@ const AsPMExist = async( connection , pm_ass_email , major_id)=>{
 
     
     const exist = await getExistASPM(connection , pm_ass_email , major_id)
-    console.log('exist' , exist)
+
     if(exist.rowCount === 0){
         return false
     }else{

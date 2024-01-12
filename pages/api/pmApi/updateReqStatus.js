@@ -12,7 +12,7 @@ async function handler(req, res) {
     const data = await updateRequestStatus(connection, req_id, status);
     // console.log(pm_id, req_id, student_id, student_email, status);
     await disconnect(connection);
-    console.log(data);
+    
     // // console.log(data.rows)
     return res.status("200").send(data);
   } catch (error) {

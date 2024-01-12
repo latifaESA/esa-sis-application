@@ -47,7 +47,7 @@ export default function StudentByMajor() {
         return error
     }
   }
-  console.log('major' , majors)
+  
   const handlePromotions = async()=>{
     try {
       const dates = new Date().getFullYear()
@@ -202,7 +202,7 @@ export default function StudentByMajor() {
         Where,
         id,
       });
-      console.log('data', data.data.data);
+    
 
       // setUsers(data)
 
@@ -245,7 +245,7 @@ export default function StudentByMajor() {
 
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
-    console.log(sendData);
+    
     setUsers(data.rows);
   };
 
@@ -261,7 +261,7 @@ export default function StudentByMajor() {
 
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
-    console.log(sendData);
+   
     setUsers(data.rows);
     // setMajorValue('');
     setTest(true);
@@ -275,15 +275,15 @@ export default function StudentByMajor() {
 
   const handleMajor = (selectedValue) => {
     // Do something with the selected value
-    console.log('Selected Value:', selectedValue);
+    
     if (test) {
       selectedValue == '';
     }
     if (selectedValue.trim() !== '') {
-      let majorID = allMajor.filter(
+      allMajor.filter(
         (major) => major.major_name === selectedValue
       );
-      console.log(majorID);
+      
       // setMajorValue(majorID[0].major_id);
     } else {
       // setMajorValue('');
@@ -291,12 +291,12 @@ export default function StudentByMajor() {
   };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
-    console.log('Selected Value:', selectedValue);
+
     setStatusValue(selectedValue);
   };
   const handlePromotion = (selectedValue) => {
     // Do something with the selected value
-    console.log('Selected Value:', selectedValue);
+   
     setPromotionValue(selectedValue);
   };
 
@@ -310,12 +310,11 @@ export default function StudentByMajor() {
       promotion: promotionValue,
       status: statusValue,
     };
-    console.log(sendData);
-    console.log(JSON.stringify(sendData));
+    
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterSearch', sendData);
 
-    console.log(data.rows);
+   
     setUsers(data.rows);
   };
 

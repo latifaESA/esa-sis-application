@@ -11,7 +11,7 @@ export default function ReportById({
   majorValue,
   setMajorValue,
   majors,
-  setMajors,
+  // setMajors,
 }) {
   const [studentFirstName, setStudentFirstName] = useState("");
   const [studentLatName, setStudentLatName] = useState("");
@@ -39,7 +39,7 @@ export default function ReportById({
         present: "",
       };
       const data = await axios.post("/api/pmApi/exportAttendanceData", payload);
-      console.log("data", data);
+     
       setData(data.data.data);
       setStudentId("");
       setCourseId("");
@@ -85,7 +85,7 @@ export default function ReportById({
         Date: formatDate(item.attendance_date), // Assuming formatDate is a function to update the date format
         Status: item.attendance_status,
       }));
-      console.log("modifiedData", data);
+     
 
       // Convert modified data to XLSX format
       const ws = XLSX.utils.json_to_sheet(modifiedData);
@@ -133,7 +133,7 @@ export default function ReportById({
               name="Fname"
               onChange={(e) => setStudentFirstName(e.target.value)}
               placeholder="Select Name"
-            // value={formData.Fname}
+            value={studentFirstName}
             // onChange={handleChange}
             ></input>
           </label>
@@ -146,7 +146,7 @@ export default function ReportById({
               name="Lname"
               onChange={(e) => setStudentLatName(e.target.value)}
               placeholder="Select surname"
-            // value={formData.Lname}
+            value={studentLatName}
             // onChange={handleChange}
             ></input>
           </label>
@@ -158,7 +158,7 @@ export default function ReportById({
               name="ID"
               onChange={(e) => setCourseId(e.target.value)}
               placeholder="Select Course ID"
-            // value={formData.ID}
+            value={courseId}
             // onChange={handleChange}
             ></input>
           </label>
@@ -181,7 +181,7 @@ export default function ReportById({
               name="ID"
               onChange={(e) => setCourseName(e.target.value)}
               placeholder="Select Course Name"
-            // value={formData.ID}
+            value={courseName}
             // onChange={handleChange}
             ></input>
           </label>

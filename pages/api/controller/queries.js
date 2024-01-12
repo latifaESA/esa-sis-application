@@ -6,9 +6,10 @@
  * Copyright (c) 2023 ESA
  */
 
-import { executeQuery } from "../../../utilities/db";
-import crypto from "crypto";
-import bcryptjs from "bcryptjs";
+const { executeQuery } = require("../../../utilities/db");
+
+const crypto = require("crypto");
+const bcryptjs = require("bcryptjs");
 // const { executeQuery } = require('../../../utilities/db');
 
 // async function current_applicant_promotion(major_id, user_id, connection) {
@@ -1270,7 +1271,7 @@ async function getStdEmailForEditProfile(connection, user_id) {
   try {
     const query = `SELECT * FROM user_contact WHERE userid = '${user_id}'`;
     const res = await connection.query(query);
-    console.log("res", res);
+    
     return res;
   } catch (error) {
     return error;
@@ -1307,7 +1308,7 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
     const query = `UPDATE teacher_courses SET teacher_id = '${teacher_id}' WHERE course_id = '${course_id}' AND teacher_id='${condition}' RETURNING teacher_courses_id`;
 
     const res = await connection.query(query);
-    console.log("query", query);
+    
     return res;
   } catch (error) {
     return error;
@@ -2398,7 +2399,7 @@ async function occupiedRoom(connection, attendance_date, room) {
 async function updateStatusBlue(connection, student_id) {
   try {
     const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`;
-    console.log(query);
+   
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3194,7 +3195,7 @@ async function getPromtionsMajor(connection, major_id, date) {
   try {
     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
     const res = await connection.query(query);
-    console.log("res", res);
+ 
     return res;
   } catch (error) {
     return error;
@@ -3207,7 +3208,7 @@ async function getClassInfoForEmail(connection, class_id) {
     JOIN courses ON tmpclass.course_id = courses.course_id
     WHERE tmpclass_id = '${class_id}'`;
     const res = await connection.query(query);
-    console.log("res", res);
+  
     return res;
   } catch (error) {
     return error;
@@ -3217,7 +3218,7 @@ async function getLocationInfo(connection, room_id) {
   try {
     const query = `SELECT * FROM rooms WHERE room_id = '${room_id}'`;
     const res = await connection.query(query);
-    console.log("res", res);
+   
     return res;
   } catch (error) {
     return error;
@@ -3227,7 +3228,7 @@ async function getStudentEmailsForEmailClass(connection, promo) {
   try {
     const query = `SELECT user_contact.email ,student.student_id FROM student JOIN user_contact ON student.student_id = user_contact.userid WHERE promotion = '${promo}'`;
     const res = await connection.query(query);
-    console.log("res", res);
+ 
     return res;
   } catch (error) {
     return error;
@@ -3240,7 +3241,7 @@ async function updateEmailForEditProfile(connection, email, user_id) {
     SET email = '${email}'
     WHERE userid = '${user_id}'; `;
     const res = await connection.query(query);
-    console.log("res", res);
+    
     return res;
   } catch (error) {
     return error;
@@ -3347,10 +3348,77 @@ async function exportAttendanceData(
     // >>>>>>> main
   }
 }
+async function updateScheduleSharepointID (connection , sharepointId , attendanceId){
+  try {
+    const query = `UPDATE tmpschedule Set sharepoint_id =${sharepointId} WHERE attendance_id ='${attendanceId}' `
+    
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
+async function createBooking (connection , bookingId , room , space ,bookingBy ,date , fromTime , toTime){
+  try {
+   
+    const query = `INSERT INTO booking (booking_id , rooms , space ,bookingby ,date_booking , from_time , to_time) VALUES (${bookingId} , '${room}' , '${space}' ,'${bookingBy}' ,'${date}' , '${fromTime}' , '${toTime}')`
+   
+    const res = await connection.query(query)
+   
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function deleteBooking (connection){
+  try {
+    const query = `DELETE FROM booking`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function SearchBooking (connection , space , date , fromTime , toTime ){
+  try {
+    const query =  `SELECT * FROM booking WHERE space='${space}' AND date_booking ='${date}' AND from_time='${fromTime}' AND to_time='${toTime}'`
+   
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function AddRoomFromSharePoint(connection , roomName , roomBuilding){
+  try {
+    const query = `INSERT INTO rooms (room_name , room_building) VALUES ('${roomName}' , '${roomBuilding}')`
+    
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function getRoom(connection ){
+  try {
+    const query = `SELECT * FROM rooms`
+
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
+  getRoom,
+  AddRoomFromSharePoint,
+  SearchBooking,
+  deleteBooking,
   exportAttendanceData,
   getMajorFromPM,
   getMajorPMExtra,
@@ -3509,4 +3577,6 @@ module.exports = {
   getStudentEmailsForEmailClass,
   updateEmailForEditProfile,
 
+  updateScheduleSharepointID,
+  createBooking
 };

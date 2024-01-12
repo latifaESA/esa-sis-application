@@ -23,7 +23,7 @@ async function handler(req, res) {
         message: `Course is already Exist !`,
       });
     }
-    const response = await createCourse(
+    await createCourse(
       connection,
       course_id,
       course_name,
@@ -31,7 +31,7 @@ async function handler(req, res) {
       major_id,
       course_type
     );
-    console.log(response);
+    
     await disconnect(connection);
 
     return res.status(201).json({

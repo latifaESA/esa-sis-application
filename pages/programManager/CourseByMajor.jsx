@@ -37,7 +37,7 @@ export default function CourseByMajor() {
         return error
     }
   }
-  console.log('major' , majors)
+  
   useEffect(()=>{
     handleMajorName()
     
@@ -57,11 +57,11 @@ export default function CourseByMajor() {
   const getAllType = async () => {
     let table = 'course_type';
     let typeCourse = await axios.post('/api/pmApi/getAll', { table });
-    console.log(typeCourse);
+    
     setType(typeCourse.data.rows);
   };
   const handleCourses = async () => {
-    // console.log(courseid, courseName, courseCredit, majorid)
+    
     let sendData = {
       course_id: courseid.trim(),
       course_name: courseName,
@@ -69,13 +69,11 @@ export default function CourseByMajor() {
       major_id: majorId,
       course_type: courseType,
     };
-    // console.log(sendData)
-    // console.log(JSON.stringify(sendData))
+
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 
-    console.log('this is data');
-    console.log(data);
+
     setUsers(data.data);
   };
   useEffect(() => {
@@ -92,8 +90,7 @@ export default function CourseByMajor() {
       major_id: majorId,
       course_type: '',
     };
-    console.log(sendData);
-    console.log(sendData);
+ 
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 

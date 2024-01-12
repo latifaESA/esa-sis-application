@@ -9,7 +9,7 @@ const transporter = createTransporter();
 
 const SendEmailTo = async (name, email, password, ID , esa_logo , role) => {
   try {
-    console.log(name, email, password, ID)
+    
     // const itServiceDeskEmail = emailing_data.itServiceDeskEmail;
     const fromEmail = emailing_data.fromEmail;
     const link = `${process.env.NEXTAUTH_URL}`

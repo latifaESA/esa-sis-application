@@ -26,7 +26,7 @@ async function handler(req, res) {
     // return error;
   } finally {
     await disconnect(connection);
-    console.log("db Released");
+    // console.log("db Released");
   }
 }
 // export default handler;

@@ -67,6 +67,7 @@ export default function CopyClass({
         
         // setOpen(false)
       } catch (err) {
+        return err
         // console.log(err);
       }
     

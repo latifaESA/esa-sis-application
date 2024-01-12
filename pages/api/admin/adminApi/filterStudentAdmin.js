@@ -22,9 +22,9 @@ async function handler(req, res) {
       student_firstname,
       student_lastname
     );
-    console.log("========");
-    console.log(status);
-    console.log("========");
+    // console.log("========");
+    // console.log(status);
+    // console.log("========");
     return res.status("200").send(data);
   } catch (error) {
     // console.log('the error is: ', error)
