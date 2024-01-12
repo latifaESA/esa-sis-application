@@ -106,7 +106,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        
         setMessage("User Status Changed Successfully!");
 
         //Update the user's status and major in the table
@@ -124,7 +124,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
   const handleEnable = async (user) => {
@@ -144,7 +144,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -158,8 +158,8 @@ const TeachersList = ({ assistance, setAssistance }) => {
                 }
               : u
           ))
-        console.log(response.data);
-        setMessage("User Status Changed Succesfully!");
+        
+        setMessage("User Status Changed Successfully!");
 
         //Update the user's status and major in the table
         setTimeout(() => {
@@ -169,7 +169,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
   const handleDelete = async (user) => {
@@ -204,7 +204,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
   // console.log(assistance)
@@ -565,7 +565,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           setAssistance([]);
         }
       } catch (error) {
-        console.error(error);
+        return error
       }
     }
   };
@@ -584,7 +584,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           setAssistance([]);
         }
       } catch (error) {
-        console.error(error);
+        return error
       }
     }
   };

@@ -11,7 +11,7 @@ async function handler(req , res){
           
         }=req.body;
         const response = await getPromtionsMajor(connection , major_id , date);
-        console.log(response)
+        
         await disconnect(connection);
         if(response.rows.length === 0){
             return res.status(404).json({

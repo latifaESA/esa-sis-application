@@ -19,7 +19,7 @@ const SendEmailTo = async (
   pm_email,
   promotion
 ) => {
-  console.log(pm_email);
+ 
   try {
     // console.log(
     //   semester,

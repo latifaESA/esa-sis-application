@@ -26,7 +26,7 @@ import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 
 const StudentsList = ({ users, setUsers }) => {
-  console.log(users);
+
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const statusData = selection_data.application_status_inList;
@@ -44,8 +44,7 @@ const StudentsList = ({ users, setUsers }) => {
   };
 
   const handleConfirm = async () => {
-    console.log("saveModal");
-    console.log(selectedUser);
+
     if (selectedUser.email != null) {
       let sendData = {
         email: selectedUser.email,
@@ -55,7 +54,7 @@ const StudentsList = ({ users, setUsers }) => {
         "/api/user/updateEmailForEditProfile",
         sendData
       );
-      console.log(res.status);
+      
       if (res.status === 200) {
         setMessage("User's Email Changed Successfully!!!");
         setTimeout(() => {

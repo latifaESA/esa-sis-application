@@ -21,7 +21,7 @@ export default function Attendance() {
   const [student_id, setStudentId] = useState('');
   const [teacher_id, setTeacherId] = useState('');
   // const [major_id, setMajorid] = useState('');
-  const [major, setMajor] = useState([]);
+  // const [major, setMajor] = useState([]);
   // const [allMajor, setAllMajor] = useState([])
   const [course_id, setCourseId] = useState('');
   const [present, setPresent] = useState('');
@@ -48,8 +48,8 @@ export default function Attendance() {
         datesArray.push(attendance.major_name);
       });
 
-      setMajor(datesArray);
-      console.log(major);
+     
+      
     };
     getMajor();
 

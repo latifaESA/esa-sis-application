@@ -36,7 +36,7 @@ export default function Reports() {
         present: "",
       };
       const data = await axios.post("/api/pmApi/exportAttendanceData", payload);
-      console.log("data", data);
+     
       setData(data.data.data);
       setStudentId("");
       setCourseId("");
@@ -127,6 +127,7 @@ export default function Reports() {
               className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="text"
               name="Fname"
+              value={studentFirstName}
               onChange={(e) => setStudentFirstName(e.target.value)}
               placeholder="Select Name"
               // value={formData.Fname}
@@ -140,6 +141,7 @@ export default function Reports() {
               className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="text"
               name="Lname"
+              value={studentLatName}
               onChange={(e) => setStudentLatName(e.target.value)}
               placeholder="Select surname"
               // value={formData.Lname}
@@ -153,6 +155,7 @@ export default function Reports() {
               type="text"
               name="ID"
               onChange={(e) => setCourseId(e.target.value)}
+              value={courseId}
               placeholder="Select Course ID"
               // value={formData.ID}
               // onChange={handleChange}
@@ -204,6 +207,7 @@ export default function Reports() {
               name="ID"
               onChange={(e) => setCourseName(e.target.value)}
               placeholder="Select Course Name"
+              value={courseName}
               // value={formData.ID}
               // onChange={handleChange}
             ></input>
@@ -256,14 +260,7 @@ export default function Reports() {
               // onChange={handleChange}
             ></input>
           </label>
-          <div className="flex flex-col-1 min-[850px]:flex-row gap-2">
-          <button
-              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-              type="button"
-              onClick={exportData}
-            >
-              Export
-            </button>
+          <div className="flex flex-col-2 min-[850px]:flex-row gap-2">
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"
@@ -277,6 +274,13 @@ export default function Reports() {
               onClick={handleShowAll}
             >
               Show All
+            </button>
+            <button
+              className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+              type="button"
+              onClick={exportData}
+            >
+              Export
             </button>
 
           </div>

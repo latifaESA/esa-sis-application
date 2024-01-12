@@ -25,7 +25,7 @@ export default function UploadStudent({setOpenUpload}) {
     // const [majorId, setMajorId] = useState('')
     const router = useRouter();
 
-   console.log(isClick)
+  
 
     const redirect = () => {
         router.push("/AccessDenied");
@@ -262,7 +262,7 @@ export default function UploadStudent({setOpenUpload}) {
                             try {
                                 await axios.post('/api/admin/adminApi/uploadScanStudent', formData);
                             } catch (error) {
-                                console.error("API Error:", error);
+                                return error
 
                             }
 
@@ -322,7 +322,7 @@ export default function UploadStudent({setOpenUpload}) {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                                     <h3 className="text-gray-700 text-3xl font-bold">
-                                        Upload Grades
+                                        Upload Student
                                     </h3>
                                     <button
                                         className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"

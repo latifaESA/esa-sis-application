@@ -17,23 +17,23 @@ const NotifPage = () => {
         const changeView = async () => {
           try {
             const result = await axios.post(`/api/user/changeView/${userID}`);
-            console.log('the result of veeeee is : ', result.data.rowCount);
+            
             if (result.data.rowCount > 0) {
               dispatch(appNotification(null));
               return;
             }
           } catch (error) {
-            console.log(error);
+            return error
           }
         };
         const result = await axios.post(
           `/api/user/getEmailsSenderInfo/${userID}`
         );
-        console.log('the notifications are : ', result.data);
+        
         setNotifications(result.data);
         changeView();
       } catch (error) {
-        console.log(error);
+        return error
       }
     };
     getNot();

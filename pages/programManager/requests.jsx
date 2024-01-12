@@ -10,7 +10,7 @@ import axios from 'axios';
 
 // import Link from 'next/link';
 
-export default function requests() {
+export default function Requests() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [users, setUsers] = useState([]);
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -41,7 +41,7 @@ export default function requests() {
       setMajors(data.data.data)
 
     } catch (error) {
-      console.error(error);
+      return error;
     }
   };
 
@@ -58,13 +58,13 @@ export default function requests() {
         student_email: stMail.trim(),
         status: status.trim(),
         type: type.trim(),
-        major_id:majorValue
+        major_id: majorValue
       };
       let data = await axios.post('/api/pmApi/getRequests', sendData);
-    
+
       setUsers(data.data.rows);
     } catch (err) {
-      console.log(err);
+      return err
     }
   };
   const handleShowAll = async () => {
@@ -76,7 +76,7 @@ export default function requests() {
         student_email: '',
         status: '',
         type: '',
-        major_id:''
+        major_id: ''
       };
       setReqId('');
       setStid('');
@@ -85,10 +85,10 @@ export default function requests() {
       setType('');
       setMajorValue('')
       let res = await axios.post('/api/pmApi/getRequests', sendData);
-      console.log('res', res);
+      
       setUsers(res.data.rows);
     } catch (err) {
-      console.log(err);
+      return err
     }
   };
 
@@ -117,8 +117,8 @@ export default function requests() {
                   name="ID"
                   onChange={(e) => setReqId(e.target.value)}
                   placeholder="Select Request ID"
-                  // value={formData.ID}
-                  // onChange={handleChange}
+                // value={formData.ID}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -130,8 +130,8 @@ export default function requests() {
                   name="Fname"
                   onChange={(e) => setStid(e.target.value)}
                   placeholder="Student ID"
-                  // value={formData.Fname}
-                  // onChange={handleChange}
+                // value={formData.Fname}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -143,33 +143,37 @@ export default function requests() {
                   name="Lname"
                   onChange={(e) => setMail(e.target.value)}
                   placeholder="Student Email"
-                  // value={formData.Lname}
-                  // onChange={handleChange}
+                // value={formData.Lname}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label className=''>
-                    Major:
-                    <select
-                      onChange={(e) => setMajorValue(e.target.value)}
-                      value={majorValue}
-                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              {session.user?.hasMultiMajor === 'true' ?
+                <label className=''>
+                  Major:
+                  <select
+                    onChange={(e) => setMajorValue(e.target.value)}
+                    value={majorValue}
+                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
 
-                    >
-                      <option key={"uu2isdvf"} value="">
-                        Choose a Major
-                      </option>
-                      {majors &&
-                        majors.map((major) => (
-                          <>
-                            <option key={major.major_id} value={major.major_id}>
-                              {major.major_name}
-                            </option>
-                          </>
-                        ))}
-                    </select>
-                  </label>
+                  >
+                    <option key={"uu2isdvf"} value="">
+                      Choose a Major
+                    </option>
+                    {majors &&
+                      majors.map((major) => (
+                        <>
+                          <option key={major.major_id} value={major.major_id}>
+                            {major.major_name}
+                          </option>
+                        </>
+                      ))}
+                  </select>
+                </label>
+
+
+                : <></>}
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 From:
@@ -177,8 +181,8 @@ export default function requests() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -188,8 +192,8 @@ export default function requests() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               {/* </div>
@@ -245,5 +249,5 @@ export default function requests() {
     </>
   );
 }
-requests.auth = true;
-requests.adminOnly = true;
+Requests.auth = true;
+Requests.adminOnly = true;

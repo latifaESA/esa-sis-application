@@ -24,7 +24,7 @@ export default function Students() {
   const [idvalue, setIDvalue] = useState("");
   const [email, setEmail] = useState("");
   const [courseid, setCourseid] = useState("");
-  const [temp, setTemp] = useState("");
+  // const [temp, setTemp] = useState("");
   const [openUpload , setOpenUpload] = useState(false)
   
   const redirect = () => {
@@ -122,9 +122,9 @@ export default function Students() {
     let { data } = await axios.post("/api/pmApi/filterTeach", sendData);
 
     // console.log('this is data')
-    setTemp(parseInt(idvalue));
+    // setTemp(parseInt(idvalue));
     // // console.log(data)
-    console.log(typeof parseInt(temp));
+    
     setUsers(data);
   };
 

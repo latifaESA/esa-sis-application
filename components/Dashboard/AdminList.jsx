@@ -64,24 +64,7 @@ const AdminList= ({ admin, setAdminList }) => {
     setConfirmOpenDelete(true);
   };
 
-  //obsolete modal
-  // const handleConfirmObsolote = (user) => {
-  //   setSelectedUser(user);
-  //   setConfirmOpenObsolote(true);
-  // };
 
-  //cancle incomplete
-  // const handleCancleIncomplete = (user) => {
-  //   setSelectedUser(user);
-  //   setCancleIncomplete(true);
-  //   const prevStatus = admin.find((u) => u.ID === user.ID)?.status;
-  //   // console.log("prevStatus",prevStatus)
-  //   setAdminList((prevUsers) =>
-  //     prevUsers.map((u) =>
-  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
-  //     )
-  //   );
-  // };
 
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
@@ -97,138 +80,10 @@ const AdminList= ({ admin, setAdminList }) => {
     );
   };
 
-//   const handleSave = async (user) => {
-//     let sendData = {
-//       pm_id: user.pm_id,
-//       pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//       note: 'test',
-//     };
-//     axios
-//       .put(
-//         '/api/admin/adminApi/updatePm',
-//         sendData
-//         // {
-//         //   data: encrypt(
-//         //     JSON.stringify({
-//         //       pm_id: user.pm_id,
-//         //       pm_status: 'inactive',
-//         //     }
-//         //     )
-//         //   ),
-//         // }
-//       )
-//       .then((response) => {
-//         // Handle success
-//         console.log(response.data);
-//         setMessage('User Status Changed Succesfully!');
 
-//         //Update the user's status and major in the table
-//         setAdminList((prevUsers) =>
-//           prevUsers.map((u) =>
-//             u.pm_id === user.pm_id
-//               ? {
-//                   ...u,
-//                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//                 }
-//               : u
-//           )
-//         );
-//       })
-//       .catch((error) => {
-//         // Handle error
-//         console.log(error);
-//       });
-//   };
-//   const handleEnable = async (user) => {
-    // let genPassword = generatePasswod(8);
-    // const salt = await bcryptjs.genSalt(8);
-    // const genPass = await bcryptjs.hash(genPassword, salt);
-    // let sendData = {
-    //   pm_id: user.pm_id,
-    //   userpassword: genPass,
-    // };
-    // axios
-    //   .post(
-    //     '/api/admin/adminApi/enablepm',
-    //     sendData
-    //     // {
-    //     //   data: encrypt(
-    //     //     JSON.stringify({
-    //     //       pm_id: user.pm_id,
-    //     //       pm_status: 'inactive',
-    //     //     }
-    //     //     )
-    //     //   ),
-    //     // }
-    //   )
-//       .then((response) => {
-//         // Handle success
-//         console.log(response.data);
-//         setMessage('User Status Changed Succesfully!');
-
-//         //Update the user's status and major in the table
-//         setAdminList((prevUsers) =>
-//           prevUsers.map((u) =>
-//             u.pm_id === user.pm_id
-//               ? {
-//                   ...u,
-//                   pm_status: user.pm_status == 'active' ? 'inactive' : 'active',
-//                   note: `the current password is: ${genPassword}`,
-//                 }
-//               : u
-//           )
-//         );
-//         setTimeout(() => {
-//           setAdminList(prevUsers => prevUsers.filter(u => u.pm_status === 'inactive'));
-//         }, 10000); // 10000 milliseconds = 10 seconds
-//       })
-//       .catch((error) => {
-//         // Handle error
-//         console.log(error);
-//       });
-//   };
-  // const handleDelete = (user) => {
-  //   let sendData = {
-  //     pm_id: user.pm_id,
-  //   };
-
-  //   axios
-  //     .post(
-  //       '/api/admin/adminApi/deletePm',
-  //       sendData
-  //       // {
-  //       //   data: encrypt(
-  //       //     JSON.stringify({
-  //       //       pm_id: user.pm_id,
-  //       //       pm_status: 'inactive',
-  //       //     }
-  //       //     )
-  //       //   ),
-  //       // }
-  //     )
-  //     // eslint-disable-next-line no-unused-vars
-  //     .then((response) => {
-        
-
-  //       //Update the user's status and major in the table
-        // setTimeout(() => {
-        //   setAdminList(prevUsers => prevUsers.filter(u => u.admin_status === 'active'));
-        // }, 1000); // 10000 milliseconds = 10 seconds
-    
-        // // Handle success
-        // // console.log(response.data);
-        // setMessage('User deleted Succesfully!');
-
-        
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       console.log(error);
-  //     });
-  // };
   const handleEnable = async(event)=>{
     try {
-     console.log(event , "events")
+     
       let genPassword = generatePasswod(8);
       const salt = await bcryptjs.genSalt(8);
       const genPass = await bcryptjs.hash(genPassword, salt);
@@ -410,111 +265,15 @@ const AdminList= ({ admin, setAdminList }) => {
           >
             <PersonRemoveIcon />
           </button>
-          {/* <Link
-            className='text-black'
-            target='_blank'
-            href={`${params.row.reportURL}`}
-          >
-            <button
-              className='primary-button hover:text-white'
-              disabled={params.row.reportURL ? false : true}
-              type='button'
-            >
-              Print
-            </button>
-          </Link> */}
-          {/* <button
-            className='primary-button hover:text-white'
-            onClick={() => {
-              const prevStatus = admin.find(
-                (u) => u.ID === params.row.ID
-              )?.status;
-              if (prevStatus === 'incomplete') {
-                handleCancleIncomplete(params.row);
-              } else if (params.row.status === 'incomplete') {
-                handleConfirmIncomplete(params.row);
-              } else if (params.row.status === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else if (prevStatus === 'obsolete') {
-                handleConfirmObsolote(params.row);
-              } else {
-                handleSave(params.row);
-              }
-            }}
-            // disabled={params.id !== majorEnable}
-            type='button'
-            hidden={
-              session.user.role === '2' || session.user.role === '3'
-                ? true
-                : false
-            }
-          >
-            Deactivate
-          </button> */}
+        
         </div>
       ),
     },
 
-    // {
-    //   field: 'note',
-    //   headerName: 'Notes',
-    //   headerAlign: 'center',
-    //   align: 'center',
-    //   width: 150,
-    // },
+   
   ];
 
-  // export select to excel
 
-  // const exportButton = async () => {
-  //   if (admin.length > 0) {
-  //     try {
-  //       const response = await axios.get('/api/admin/listusers/listexport');
-  //       const incomingData = JSON.parse(decrypt(response.data.data));
-  //       if (response.status === 200) {
-        
-  //         await exportSelect(selectedRows, incomingData, session);
-  //       } else {
-  //         setAdminList([]);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
-
-  // // export all to excel
-  // const exportAllButton = async () => {
-  //   if (users.length > 0) {
-  //     try {
-  //       const response = await axios.get('/api/admin/listusers/listexport');
-  //       const incomingData = JSON.parse(decrypt(response.data.data));
-  //       if (response.status === 200) {
-         
-  //         await exportAll(incomingData, session);
-  //       } else {
-  //         setUsers([]);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
-  // const handlePrintSelected = () => {
-  //   const selectedIDs = selectedRows;
-   
-  //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-   
-  //   selectedUsers.forEach((user) => {
-  //     if (user.reportURL) {
-  //       window.open(user.reportURL);
-  //     } else {
-  //       setMessage('Please select a user with a report');
-  //     }
-  //   });
-
-   
-  // };
 
   return (
     <>

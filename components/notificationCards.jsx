@@ -3,8 +3,7 @@ import React from "react";
 const NotificationCards = ({ note }) => {
   const date = new Date(note.date);
   const formattedDate = date.toLocaleString();
-  console.log("note is : ", note);
-  console.log(typeof note.content);
+
   return (
     <div
       className={`mt-2 mb-5 px-6 py-4 bg-white rounded-lg shadow w-3/3 m-auto`}

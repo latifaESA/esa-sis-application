@@ -28,7 +28,7 @@ export default function Accounts() {
 
   const getRequestType = async () => {
     const res = await axios.post("/api/user/getRequest");
-    console.log(res.data.data);
+    
     setReqType(res.data.data);
   };
 
@@ -36,7 +36,7 @@ export default function Accounts() {
     getRequestType();
   }, []);
 
-  console.log("asd", reqType);
+  
 
   return (
     <>
