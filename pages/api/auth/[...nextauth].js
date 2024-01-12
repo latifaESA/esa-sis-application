@@ -106,7 +106,13 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        if (connection.success) {
+
+        // console.log('=================================')
+        // console.log('the connection success result : ', connection.success)
+        // console.log('=================================')
+        // console.log('the connection result : ', connection._connected)
+        if (connection._connected) {
+          // console.log('connection to DB succes nextauth signin');
 
           // get the user info
           const user = await findData(
