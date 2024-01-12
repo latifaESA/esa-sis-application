@@ -27,7 +27,7 @@ export default function ModalByMajorPM({
   const router = useRouter();
 
   const { majorId } = router.query;
-  console.log('major_id' , majorId)
+  
   useEffect(() => {
     const handlePromotionByID = async () => {
       try {
@@ -36,7 +36,7 @@ export default function ModalByMajorPM({
           major_id: majorId,
           attendance_date: attendanceDate,
         };
-        console.log('payload' , payload)
+        
         const data = await axios.post(
           '/api/pmApi/getPromoFromSchedule',
           payload

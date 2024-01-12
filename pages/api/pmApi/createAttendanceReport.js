@@ -12,7 +12,7 @@ async function handler(req, res) {
    
     const { teacher_id, course_id, major_id, attendance_date  ,fromTime,
       toTime,
-      room } = req.body;
+      room  } = req.body;
     if (teacher_id === "" || course_id === "") {
       return res.status(200).json({
         code: 200,
@@ -20,7 +20,19 @@ async function handler(req, res) {
         message: `Fields is required`,
       });
     }
- 
+   
+    let date;
+
+    if (attendance_date.split('T')[1] === '22:00:00.000Z') {
+      // If the time is '22:00:00.000Z', add one day and set time to '00:00:00.000Z'
+      date = moment(attendance_date).startOf('day').set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    } else {
+      date = moment(attendance_date).startOf('day');
+    }
+
+    // Format the date in the desired format
+    date = date.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+
     // const getTeacher = await getCourse(connection, 'tmpclass', 'tmpclass_id', classId)
 
     // const teacherId = getTeacher.rows[0].teacher_id
@@ -45,6 +57,7 @@ async function handler(req, res) {
         fromTime,
         toTime,
         room)
+        
     if (roomOccupied) {
         return res.status(400).json({
             success: false,
@@ -63,9 +76,9 @@ async function handler(req, res) {
       connection,
       teacher_id,
       course_id,
-      attendance_date
+      date
     );
-    const date_exist = attendance_date.split('T')[0]
+    const date_exist = date.split('T')[0]
 
     if (exist) {
       return res.status(400).json({
@@ -79,7 +92,7 @@ async function handler(req, res) {
       teacher_id,
       course_id,
       major_id,
-      attendance_date
+      date
     );
   
     await disconnect(connection);

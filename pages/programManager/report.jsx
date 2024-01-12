@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 // import Link from 'next/link';
 import axios from 'axios';
 import ReportById from './ReportById';
-import Reports from './Reports';
+// import Reports from './Reports';
 
 export default function Report() {
   const { data: session } = useSession();

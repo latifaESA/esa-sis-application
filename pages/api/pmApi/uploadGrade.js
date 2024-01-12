@@ -7,7 +7,7 @@ const { connect, disconnect } = require("../../../utilities/db");
 const { uploadGrades } = require("../controller/queries");
 
 import xlsx from "xlsx";
-// import { env } from 'process';
+import { env } from 'process';
 import { authOptions } from "../auth/[...nextauth]";
 import gpaToGrades from "./gpa";
 import SendEmail from "./emailGrade";
@@ -201,7 +201,7 @@ async function handler(req, res) {
                  recipientInfo.firstName,
                  recipientInfo.lastName,
               );
-              await axios.post('http://localhost:3001/api/pmApi/addNotification',{
+              await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`,{
                 receiverIds:[recipientInfo.studentID], 
                 senderId:recipientInfo.pm_id, 
                 content:'<!DOCTYPE html>' +

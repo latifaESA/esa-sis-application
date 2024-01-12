@@ -9,7 +9,7 @@ async function handler(req, res) {
     const connection = await connect();
 
     const { receiverIds, senderId, content, subject } = req.body;
-    console.log(receiverIds, content, subject, senderId);
+    
     const data = await insertNotifications(
       connection,
       receiverIds,

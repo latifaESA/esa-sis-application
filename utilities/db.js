@@ -1,7 +1,9 @@
-// // const mysql = require('mysql2');
-// // const { env } = require('process');
-// const { Client } = require("pg");
-// import dotenv from "dotenv";
+
+// const mysql = require('mysql2');
+// const { env } = require('process');
+const { Client } = require("pg");
+const dotenv = require("dotenv");
+
 
 // dotenv.config("../env");
 

@@ -69,7 +69,7 @@ export default function ProfileScreen() {
         setEmail(res.data.rows[0].email);
         setInitialEmail(res.data.rows[0].email);
       } catch (error) {
-        console.log(error);
+        return error
       }
     }
   };
@@ -150,7 +150,7 @@ export default function ProfileScreen() {
         password,
         profileUrl: userState.user.profileUrl,
       });
-      console.log(email != initialEmail);
+      
       // // console.log(response.data)
       // // console.log('response.message=', response.data.message);
       if (response.data.message === "User Profile Updated") {
@@ -162,7 +162,7 @@ export default function ProfileScreen() {
           email: email.trim(),
           user_id: session?.user.userid,
         };
-        const resp = await axios.post(
+        await axios.post(
           "/api/user/updateEmailForEditProfile",
           sendData
         );
@@ -185,7 +185,7 @@ export default function ProfileScreen() {
       // console.log(err)
     }
   };
-  console.log(session?.user.role);
+
   return (
     <>
       <Head>

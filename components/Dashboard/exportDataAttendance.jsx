@@ -17,14 +17,14 @@ import CustomPagination from "./Pagination";
 
 
 const ExportAttendanceData = ({ data }) => {
-  console.log('data' ,data)
+ 
   const [pageSize, setPageSize] = useState(10);
   const [sortedRows, setSortedRows] = useState(data);
   useEffect(() => {
     const sorted = [...data].sort((a, b) => a.attendance_id - b.attendance_id);
     setSortedRows(sorted);
   }, [data]);
-  console.log('sortedRows' ,sortedRows)
+  
 
 
   const columns = [

@@ -6,8 +6,8 @@ import { appIsWaiting } from "../../redux/slices/appSlice";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import StudentRequests from "../../components/StudentRequests";
-import MoodleSvg from "../../components/moodleSvg";
+// import StudentRequests from "../../components/StudentRequests";
+// import MoodleSvg from "../../components/moodleSvg";
 import SurveyContent from "../../components/SurveyContent";
 export default function Main() {
   const dispatch = useDispatch();

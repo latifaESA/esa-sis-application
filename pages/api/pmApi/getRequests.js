@@ -19,9 +19,9 @@ async function handler(req, res) {
       type , 
       major_id
     );
-    console.log("=====================");
-    console.log(data);
-    console.log("=====================");
+    // console.log("=====================");
+    // console.log(data);
+    // console.log("=====================");
     // console.log(pm_id, req_id, student_id, student_email, status);
     await disconnect(connection);
 

@@ -204,7 +204,7 @@ export default function ClassByMajor() {
       return error;
     }
   };
-  console.log('class', classes);
+ 
 
   const router = useRouter();
   const { majorId } = router.query;

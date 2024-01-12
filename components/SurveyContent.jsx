@@ -1,5 +1,5 @@
 import React from "react";
-import MoodleSvg from "./moodleSvg";
+// import MoodleSvg from "./moodleSvg";
 import Link from "next/link";
 
 const SurveyContent = () => {
@@ -130,7 +130,7 @@ const SurveyContent = () => {
           </svg>
         </p>
       </Link>
-      , go to 'Moodle Course Evaluation - Task List' section on the Moodle
+      , go to `Moodle Course Evaluation - Task List` section on the Moodle
       dashboard or by using the link sent to you via email.
     </div>
   );

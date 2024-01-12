@@ -15,7 +15,7 @@ export default function AttendanceById() {
   const router = useRouter();
   
   const { majorId } = router.query;
-  console.log('major_id' , majorId)
+  
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -24,7 +24,7 @@ export default function AttendanceById() {
   const [student_id, setStudentId] = useState('');
   const [teacher_id, setTeacherId] = useState('');
   // const [major_id, setMajorid] = useState('');
-  const [major, setMajor] = useState([]);
+  // const [major, setMajor] = useState([]);
   // const [allMajor, setAllMajor] = useState([])
   const [course_id, setCourseId] = useState('');
   const [present, setPresent] = useState('');
@@ -51,8 +51,8 @@ export default function AttendanceById() {
         datesArray.push(attendance.major_name);
       });
 
-      setMajor(datesArray);
-      console.log(major);
+      // setMajor(datesArray);
+      
     };
     getMajor();
 
@@ -70,7 +70,7 @@ export default function AttendanceById() {
           teacher_lastname: '',
           major_name: '',
         };
-        console.log(payload)
+        
         const result = await axios.post('/api/pmApi/filterAttendance', payload);
         // console.log("data", result.data.data)
 
