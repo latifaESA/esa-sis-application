@@ -106,7 +106,8 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        if (connection.success) {
+        console.log(connection._connected)
+        if (connection._connected) {
 
           // get the user info
           const user = await findData(
