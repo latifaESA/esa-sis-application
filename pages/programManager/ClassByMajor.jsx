@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import AddClass from '../../components/addClass';
-// import ClassList from '../../components/Dashboard/ClassList';
+
 import CopyClass from '../../components/copyClass';
 import ClassListById from '../../components/Dashboard/ClassListById';
+// import moment from 'moment';
 // import Link from 'next/link';
 
 export default function ClassByMajor() {
@@ -42,7 +43,6 @@ export default function ClassByMajor() {
   const [classes, setClasses] = useState([]);
 
 
-
   const handleCancel = () => {
     setOpen(false);
     setErrorEnd('');
@@ -56,6 +56,96 @@ export default function ClassByMajor() {
     setDateFrom('');
     setDateTo('');
   };
+  // const clientId = '42910b5b-82de-425f-81fd-fbfc51089a4a@f64c300e-4a43-49ab-8bc9-471ab9b9544e';
+  // const clientSecret = '5LXGHVnrQYtOVdJV5yt9lpv20TgYYxQ3KVVgCYdkDGE=';
+  // const tenantId = 'f64c300e-4a43-49ab-8bc9-471ab9b9544e';
+  // const resource = 'https://esalb.sharepoint.com'; // SharePoint API endpoint
+  
+  // // Your client-side code
+  // const getSharePointToken = async () => {
+  //   try {
+  //     const response = await fetch('/api/pmApi/getsharePointToken', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Accept':'application/json;odata=verbose',
+  //         'Content-Type':'application/json;odata=verbose',
+  //       },
+  //       body: JSON.stringify({
+  //         clientId: `${clientId}`,
+  //         clientSecret: `${clientSecret}`,
+  //         tenantId: `${tenantId}`,
+  //         resource: `${resource}`,
+  //       }),
+  //     });
+  
+  //     const data = await response.json();
+  
+  //     if (!data.access_token) {
+  //       throw new Error('Access token not obtained');
+  //     }
+  
+  //     return data.access_token;
+  //   } catch (error) {
+  //     console.error('Error obtaining SharePoint access token:', error.message);
+  //     throw error;
+  //   }
+  // };
+
+
+
+  // const getRoomBooking = async () => {
+  //   try {
+  //     const accessToken = await getSharePointToken();
+  
+  //     const apiUrl = `https://esalb.sharepoint.com/sites/test2/_api/web/lists/getbytitle('BookingRoom')/items`;
+  
+  //     const response = await fetch(apiUrl, {
+  //       method: 'GET',
+  //       headers: {
+  //         Accept: 'application/json;odata=verbose',
+  //         'Content-Type': 'application/json;odata=verbose',
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+  
+  //     const data = await response.json();
+  //     if (data.d.results.length > 0) {
+  //       for (const booking of data.d.results) {
+  //         // Format the date to 'YYYY-MM-DDT00:00:00Z'
+  //         const formattedDate = moment(booking.Date).format('YYYY-MM-DDT00:00:00[Z]');
+  
+  //         // Make the API call
+  //         const result = await axios.post('/api/pmApi/createBooking', {
+  //           bookingId: booking.ID,
+  //           room: booking.Title,
+  //           space: booking.Space,
+  //           bookingBy: booking.BookingBy,
+  //           date: formattedDate,
+  //           fromTime: booking.FromTime,
+  //           toTime: booking.ToTime,
+  //         });
+  //         console.log(result);
+  //       }
+  //     }
+  
+  //     return { ok: true, result: data };
+  
+  //   } catch (error) {
+  //     console.error('Error checking room availability in SharePoint:', error.message);
+  //     // Assuming an error means the room is not available
+  //     return { ok: false, result: false };
+  //   }
+  // };
+  
+  // useEffect(() => {
+  //   getRoomBooking();
+  // }, []);
+  
+  
+ 
+  // useEffect(()=>{
+  //   getRoomBooking()
+  // },[])
 
   // const handleCancelCopy = () => {
   //   setOpenCopy(false)
@@ -208,6 +298,7 @@ export default function ClassByMajor() {
 
   const router = useRouter();
   const { majorId } = router.query;
+
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -399,7 +490,7 @@ export default function ClassByMajor() {
   return (
     <>
       <Head>
-        <title>SIS Admin - Teachers</title>
+        <title>SIS Admin - Schedule</title>
       </Head>
       {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
@@ -584,11 +675,13 @@ export default function ClassByMajor() {
                 </button>
               </div>
             </div>
-           <ClassListById users={users} setUsers={setUsers} />
+            <ClassListById users={users} setUsers={setUsers} />
+            
           </form>
         </>
       ) : (
         redirect()
+
       )}
     </>
   );
