@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   PencilIcon,
   Cog8ToothIcon,
@@ -16,9 +16,9 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   UserPlusIcon,
-} from "@heroicons/react/24/solid";
-import { useRouter } from "next/router";
-import Link from "next/link";
+} from '@heroicons/react/24/solid';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const AdminView = () => {
   const router = useRouter();
@@ -26,20 +26,19 @@ const AdminView = () => {
   return (
     <>
       <div className="flex flex-col">
-
         {/* Account Managment */}
 
         <Link href="/admin/Accounts">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/Accounts" 
-              ||router.pathname == "/admin/CreateTeacherAccount" 
-              || router.pathname == "/admin/createAccount" 
-              || router.pathname == "/admin/create" 
-              || router.pathname == "/admin/UploadStudent"
-              || router.pathname == "/admin/UploadTeacher"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              router.pathname == '/admin/Accounts' ||
+              router.pathname == '/admin/CreateTeacherAccount' ||
+              router.pathname == '/admin/createAccount' ||
+              router.pathname == '/admin/create' ||
+              router.pathname == '/admin/UploadStudent' ||
+              router.pathname == '/admin/UploadTeacher'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
             disabled={true}
           >
@@ -55,11 +54,10 @@ const AdminView = () => {
         <Link href="/admin/Download">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/Download"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              router.pathname == '/admin/Download'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
-         
           >
             <div className="mr-2">
               <UserGroupIcon className="h-5 w-5" />
@@ -92,12 +90,12 @@ const AdminView = () => {
         <Link href="/admin/Courses">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/Courses" ||
-              router.pathname == '/admin/createCourse' || 
-              router.pathname == '/admin/assign'  || 
+              router.pathname == '/admin/Courses' ||
+              router.pathname == '/admin/createCourse' ||
+              router.pathname == '/admin/assign' ||
               router.pathname == '/admin/UploadCourses'
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
             disabled={true}
           >
@@ -114,8 +112,8 @@ const AdminView = () => {
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
               router.pathname == '/admin/AdditionList'
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
             disabled={true}
           >
@@ -128,15 +126,31 @@ const AdminView = () => {
           </div>
         </Link>
 
-        
+        <Link href="/admin/ResetPassword">
+          <div
+            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+              router.pathname == '/admin/ResetPassword'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+            }`}
+            disabled={true}
+          >
+            <div className="mr-2">
+              <UserPlusIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <p>Reset Password</p>
+            </div>
+          </div>
+        </Link>
 
         {/* Profile Section */}
         <Link href="/admin/profile">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == "/admin/profile"
-                ? "bg-blue-100 text-blue-500"
-                : "text-gray-400 hover:bg-blue-100 hover:text-blue-500"
+              router.pathname == '/admin/profile'
+                ? 'bg-blue-100 text-blue-500'
+                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
           >
             <div className="mr-2">
@@ -147,8 +161,8 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
-                {/* Main Board Section */}
-                <Link href="/admin/main">
+        {/* Main Board Section */}
+        <Link href="/admin/main">
           <div
             // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
             //   router.pathname == "/admin/main"
@@ -187,7 +201,7 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
-         {/* Settings Section */}
+        {/* Settings Section */}
         <Link href="/admin/main">
           <div
             // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
@@ -207,9 +221,9 @@ const AdminView = () => {
             </div>
           </div>
         </Link>
-                {/* Report Section */}
+        {/* Report Section */}
 
-                <Link href="/admin/report">
+        <Link href="/admin/report">
           <div
             // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
             //   router.pathname == "/admin/main"

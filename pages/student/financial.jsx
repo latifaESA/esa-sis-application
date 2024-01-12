@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import TabsComponent from '../../components/tabs/TabsComponent';
+import axios from 'axios';
+import Items from './items';
 // import Link from 'next/link';
 
 
@@ -18,6 +20,8 @@ export default function Financial() {
     dispatch(appIsWaiting(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  
 
   const { data: session } = useSession();
   const router = useRouter()
@@ -62,30 +66,7 @@ const items = [
   {
     title: 'Future Payment',
     content: (
-      <div className='border-2 border-primary rounded-lg p-4'>
-        <table className='w-full text-center'>
-          <thead className="border-b border-blue-gray-100 p-4 bg-blue-50 text-primary">
-            <tr>
-              <th>Date</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="p-4 border-b border-blue-gray-50">
-              <td>27/10/2023</td>
-              <td>1200</td>
-            </tr>
-            <tr className="p-4 border-b border-blue-gray-50">
-              <td>27/10/2023</td>
-              <td>1200</td>
-            </tr>
-            <tr className="p-4 border-b border-blue-gray-50">
-              <td>27/10/2023</td>
-              <td>1200</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+<Items />
     ),
   },
 ];

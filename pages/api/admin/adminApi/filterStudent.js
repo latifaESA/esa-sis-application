@@ -1,5 +1,5 @@
 const { connect, disconnect } = require('../../../../utilities/db');
-const { filterassistance } = require('../../controller/queries');
+const { filterStudentForResetPassword } = require('../../controller/queries');
 
 // const axios = require('axios')
 // import https from 'https';
@@ -9,24 +9,25 @@ async function handler(req, res) {
     const connection = await connect();
     // filterStudent(connection, id, firstname, lastname, major, promotion, status);
     const {
-      pm_ass_id,
-      pm_ass_firstname,
-      pm_ass_lastname,
-      pm_ass_email,
-      pm_ass_status,
-      majorName,
+      studentid,
+      studentemail,
+      student_firstname,
+      student_lastname,
+      student_status,
+      majorID
     } = req.body;
-    const data = await filterassistance(
+    const data = await filterStudentForResetPassword(
       connection,
-      pm_ass_id,
-      pm_ass_firstname,
-      pm_ass_lastname,
-      pm_ass_email,
-      pm_ass_status,
-      majorName
+      studentid,
+      studentemail,
+      student_firstname,
+      student_lastname,
+      student_status,
+      majorID
     );
+    // console.log('the data is ',data)
+    disconnect(connection);
     // console.log(data)
-    await disconnect(connection);
     return res.status('200').send(data);
   } catch (error) {
     // console.log('the error is: ', error)
