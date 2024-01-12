@@ -111,7 +111,7 @@ export const authOptions = {
         // console.log('=================================')
         // console.log('the connection result : ', connection._connected)
         if (connection._connected) {
-          console.log('connection to DB succes nextauth signin');
+          // console.log('connection to DB succes nextauth signin');
 
           // get the user info
           const user = await findData(
