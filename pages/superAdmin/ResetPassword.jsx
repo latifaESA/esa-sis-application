@@ -48,15 +48,15 @@ export default function Create() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]); // Add 'role' as a dependency to re-run the effect when it changes
 
-  const handleDataFetch = async () => {
-    if (role === '2') {
-      handleShowAll();
-    } else if (role === '3') {
-      handleShow();
-    } else if (role === '4') {
-      handleShowAdmin();
-    }
-  };
+  // const handleDataFetch = async () => {
+  //   if (role === '2') {
+  //     handleShowAll();
+  //   } else if (role === '3') {
+  //     handleShow();
+  //   } else if (role === '4') {
+  //     handleShowAdmin();
+  //   }
+  // };
 
   const handleMajor = async () => {
     try {
@@ -68,99 +68,99 @@ export default function Create() {
     }
   };
 
-  const handleShowAll = async () => {
-    // pm_id, pm_firstname, pm_lastname, pm_email
-    setFname('');
-    setLname('');
-    setIDvalue('');
-    setEmail('');
-    setStatus('active');
+  // const handleShowAll = async () => {
+  //   // pm_id, pm_firstname, pm_lastname, pm_email
+  //   setFname('');
+  //   setLname('');
+  //   setIDvalue('');
+  //   setEmail('');
+  //   setStatus('active');
 
-    setMajorName('');
+  //   setMajorName('');
 
-    setRole('2');
+  //   setRole('2');
 
-    let sendpmData = {
-      pm_id: ''.trim(),
-      pm_firstname: ''.trim(),
-      pm_lastname: ''.trim(),
-      pm_email: ''.trim(),
-      pm_status: 'active'.trim(),
-      majorName: '',
-    };
-    try {
-      // id,firstname,lastname,major,promotion,status
-      let { data } = await axios.post(
-        '/api/admin/adminApi/filterpm',
-        sendpmData
-      );
+  //   let sendpmData = {
+  //     pm_id: ''.trim(),
+  //     pm_firstname: ''.trim(),
+  //     pm_lastname: ''.trim(),
+  //     pm_email: ''.trim(),
+  //     pm_status: 'active'.trim(),
+  //     majorName: '',
+  //   };
+  //   try {
+  //     // id,firstname,lastname,major,promotion,status
+  //     let { data } = await axios.post(
+  //       '/api/admin/adminApi/filterpm',
+  //       sendpmData
+  //     );
 
-      // console.log(data);
-      setUsers(data);
-    } catch (error) {
-      return error;
-    }
+  //     // console.log(data);
+  //     setUsers(data);
+  //   } catch (error) {
+  //     return error;
+  //   }
 
-    // // console.log('this is users')
-    // // console.log(users)
-  };
-  const handleShow = async () => {
-    // pm_id, pm_firstname, pm_lastname, pm_email
-    setRole('3');
-    setFname('');
-    setLname('');
-    setIDvalue('');
-    setEmail('');
-    setStatus('active');
-    setMajorName('');
-    let sendData = {
-      pm_ass_id: ''.trim(),
-      pm_ass_firstname: ''.trim(),
-      pm_ass_lastname: ''.trim(),
-      pm_ass_email: ''.trim(),
-      pm_ass_status: 'active'.trim(),
-      majorName: '',
-    };
-    // console.log(sendData);
-    // id,firstname,lastname,major,promotion,status
-    try {
-      let { data } = await axios.post(
-        '/api/admin/adminApi/filterassistance',
-        sendData
-      );
+  //   // // console.log('this is users')
+  //   // // console.log(users)
+  // };
+  // const handleShow = async () => {
+  //   // pm_id, pm_firstname, pm_lastname, pm_email
+  //   setRole('3');
+  //   setFname('');
+  //   setLname('');
+  //   setIDvalue('');
+  //   setEmail('');
+  //   setStatus('active');
+  //   setMajorName('');
+  //   let sendData = {
+  //     pm_ass_id: ''.trim(),
+  //     pm_ass_firstname: ''.trim(),
+  //     pm_ass_lastname: ''.trim(),
+  //     pm_ass_email: ''.trim(),
+  //     pm_ass_status: 'active'.trim(),
+  //     majorName: '',
+  //   };
+  //   // console.log(sendData);
+  //   // id,firstname,lastname,major,promotion,status
+  //   try {
+  //     let { data } = await axios.post(
+  //       '/api/admin/adminApi/filterassistance',
+  //       sendData
+  //     );
 
-      // console.log(sendData);
-      setAssistance(data.rows);
-    } catch (error) {
-      return error;
-    }
-  };
+  //     // console.log(sendData);
+  //     setAssistance(data.rows);
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
-  const handleShowAdmin = async () => {
-    setRole('4');
-    setFname('');
-    setLname('');
-    setIDvalue('');
-    setEmail('');
-    setStatus('active');
-    setMajorName('');
-    let sendDataAdmin = {
-      adminid: ''.trim(),
-      admin_firstname: ''.trim(),
-      admin_lastname: ''.trim(),
-      adminemail: ''.trim(),
-      admin_status: 'active'.trim(),
-    };
-    try {
-      let { data } = await axios.post(
-        '/api/admin/adminApi/filterAdmin',
-        sendDataAdmin
-      );
-      setAdminList(data.rows);
-    } catch (error) {
-      return error;
-    }
-  };
+  // const handleShowAdmin = async () => {
+  //   setRole('4');
+  //   setFname('');
+  //   setLname('');
+  //   setIDvalue('');
+  //   setEmail('');
+  //   setStatus('active');
+  //   setMajorName('');
+  //   let sendDataAdmin = {
+  //     adminid: ''.trim(),
+  //     admin_firstname: ''.trim(),
+  //     admin_lastname: ''.trim(),
+  //     adminemail: ''.trim(),
+  //     admin_status: 'active'.trim(),
+  //   };
+  //   try {
+  //     let { data } = await axios.post(
+  //       '/api/admin/adminApi/filterAdmin',
+  //       sendDataAdmin
+  //     );
+  //     setAdminList(data.rows);
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
   const handleAccounts = async () => {
     // e.preventDefault();

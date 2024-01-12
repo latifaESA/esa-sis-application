@@ -2,8 +2,8 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+// import { useSession } from 'next-auth/react';
+// import { useRouter } from 'next/router';
 import axios from 'axios';
 
 export default function Items() {
@@ -28,12 +28,12 @@ export default function Items() {
 
   
 
-  const { data: session } = useSession();
-  const router = useRouter()
+  // const { data: session } = useSession();
+  // const router = useRouter()
 
-  const redirect = () => { 
-    router.push('/AccessDenied')
-  }
+  // const redirect = () => { 
+  //   router.push('/AccessDenied')
+  // }
 
   return (
     <>
@@ -50,7 +50,7 @@ export default function Items() {
             {
               paymentInfo && paymentInfo.map((pay,index) => 
                 pay.XACTS[0].XACT.map(payCur => 
-                    <tr className="p-4 border-b border-blue-gray-50">
+                    <tr className="p-4 border-b border-blue-gray-50" key={index}>
                         <td>{payCur.INPUTDATE[0]}</td>
                         <td>{payCur.DUEDATE[0]}</td>
                         <td>{payCur.BALANCE[0]} {pay.CURRENCY[0]}</td>

@@ -10,18 +10,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
-import generatePasswod from '../../utilities/generatePassword';
-import bcryptjs from 'bcryptjs';
+// import generatePasswod from '../../utilities/generatePassword';
+// import bcryptjs from 'bcryptjs';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 import ResetPassComponent from '../ResetPassComponent';
 
-const AccountsAccistanceResetPassword = ({ assistance, setAssistance }) => {
+const AccountsAccistanceResetPassword = ({ assistance }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  // const [selectedUser, setSelectedUser] = useState(null);
   const [openChangePass, setOpenChangePass] = useState(false);
   const [newPass, setNewPass] = useState('');
   const [id, setId] = useState(null);
@@ -31,15 +31,15 @@ const AccountsAccistanceResetPassword = ({ assistance, setAssistance }) => {
   const [success, setSuccess] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
 
-  //incomplete modal
-  const handleConfirmIncomplete = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenIncomplete(true);
-  };
-  const handleConfirmDel = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenDelete(true);
-  };
+  // //incomplete modal
+  // const handleConfirmIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenIncomplete(true);
+  // };
+  // const handleConfirmDel = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenDelete(true);
+  // };
 
   const handleChangePass = async () => {
     // alert('the password changed successfully')
@@ -67,121 +67,121 @@ const AccountsAccistanceResetPassword = ({ assistance, setAssistance }) => {
     setSuccess('');
     setNewPass('');
   };
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-    const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setAssistance((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleConfirmClose = (user) => {
+  //   setConfirmOpenIncomplete(false);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  //   const prevStatus = assistance.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setAssistance((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
-  const handleEnable = async (event) => {
-    try {
-      console.log(event, 'events');
-      let genPassword = generatePasswod(8);
-      const salt = await bcryptjs.genSalt(8);
-      const genPass = await bcryptjs.hash(genPassword, salt);
+  // const handleEnable = async (event) => {
+  //   try {
+  //     console.log(event, 'events');
+  //     let genPassword = generatePasswod(8);
+  //     const salt = await bcryptjs.genSalt(8);
+  //     const genPass = await bcryptjs.hash(genPassword, salt);
 
-      let sendData = {
-        pm_ass_id: event.pm_ass_id,
-        userpassword: genPass,
-        password: genPassword,
-        name: event.pm_ass_firstname,
-        email: event.pm_ass_email,
-        role: 'Assistance',
-      };
+  //     let sendData = {
+  //       pm_ass_id: event.pm_ass_id,
+  //       userpassword: genPass,
+  //       password: genPassword,
+  //       name: event.pm_ass_firstname,
+  //       email: event.pm_ass_email,
+  //       role: 'Assistance',
+  //     };
 
-      await axios.post('/api/admin/adminApi/enableAs', sendData);
+  //     await axios.post('/api/admin/adminApi/enableAs', sendData);
 
-      setMessage('User Status Changed Successfully!');
+  //     setMessage('User Status Changed Successfully!');
 
-      //Update the user's status and major in the table
-      setAssistance((prevUsers) =>
-        prevUsers.map((u) =>
-          u.pm_ass_id === event.pm_ass_id
-            ? {
-                ...u,
-                pm_ass__status:
-                  event.pm_ass_status == 'active' ? 'inactive' : 'active',
-                note: `the current password is: ${genPassword}`,
-              }
-            : u
-        )
-      );
-      setTimeout(() => {
-        setAssistance((prevUsers) =>
-          prevUsers.filter((u) => u.pm_ass_status === 'inactive')
-        );
-      }, 10000); // 10000 milliseconds = 10 seconds
-    } catch (error) {
-      return error;
-    }
-  };
-  const handleSave = async (event) => {
-    try {
-      const payload = {
-        pm_ass_id: event.pm_ass_id,
-        pm_ass_status: event.pm_ass_status == 'active' ? 'inactive' : 'active',
-      };
+  //     //Update the user's status and major in the table
+  //     setAssistance((prevUsers) =>
+  //       prevUsers.map((u) =>
+  //         u.pm_ass_id === event.pm_ass_id
+  //           ? {
+  //               ...u,
+  //               pm_ass__status:
+  //                 event.pm_ass_status == 'active' ? 'inactive' : 'active',
+  //               note: `the current password is: ${genPassword}`,
+  //             }
+  //           : u
+  //       )
+  //     );
+  //     setTimeout(() => {
+  //       setAssistance((prevUsers) =>
+  //         prevUsers.filter((u) => u.pm_ass_status === 'inactive')
+  //       );
+  //     }, 10000); // 10000 milliseconds = 10 seconds
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
+  // const handleSave = async (event) => {
+  //   try {
+  //     const payload = {
+  //       pm_ass_id: event.pm_ass_id,
+  //       pm_ass_status: event.pm_ass_status == 'active' ? 'inactive' : 'active',
+  //     };
 
-      await axios.post('/api/admin/adminApi/updateAssistance', payload);
-      //Update the user's status and major in the table
-      setAssistance((prevUsers) =>
-        prevUsers.map((u) =>
-          u.pm_ass_id === event.pm_ass_id
-            ? {
-                ...u,
-                pm_ass_status:
-                  event.pm_ass_status == 'active' ? 'inactive' : 'active',
-              }
-            : u
-        )
-      );
-    } catch (error) {
-      return error;
-    }
-  };
-  const handleDelete = async (event) => {
-    try {
-      const payload = {
-        pm_id: event.pm_ass_id,
-      };
-      await axios.post('/api/admin/adminApi/deletePm', payload);
+  //     await axios.post('/api/admin/adminApi/updateAssistance', payload);
+  //     //Update the user's status and major in the table
+  //     setAssistance((prevUsers) =>
+  //       prevUsers.map((u) =>
+  //         u.pm_ass_id === event.pm_ass_id
+  //           ? {
+  //               ...u,
+  //               pm_ass_status:
+  //                 event.pm_ass_status == 'active' ? 'inactive' : 'active',
+  //             }
+  //           : u
+  //       )
+  //     );
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
+  // const handleDelete = async (event) => {
+  //   try {
+  //     const payload = {
+  //       pm_id: event.pm_ass_id,
+  //     };
+  //     await axios.post('/api/admin/adminApi/deletePm', payload);
 
-      setTimeout(() => {
-        setAssistance((prevUsers) =>
-          prevUsers.filter((u) => u.pm_ass_status === 'active')
-        );
-      }, 1000); // 10000 milliseconds = 10 seconds
+  //     setTimeout(() => {
+  //       setAssistance((prevUsers) =>
+  //         prevUsers.filter((u) => u.pm_ass_status === 'active')
+  //       );
+  //     }, 1000); // 10000 milliseconds = 10 seconds
 
-      // Handle success
-      // console.log(response.data);
-      setMessage('User deleted successfully!');
-    } catch (error) {
-      return error;
-    }
-  };
+  //     // Handle success
+  //     // console.log(response.data);
+  //     setMessage('User deleted successfully!');
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
-  const handleConfirm = () => {
-    handleEnable(selectedUser);
-    handleSave(selectedUser);
-    setConfirmOpenIncomplete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-  };
-  const handleConfirmDelete = () => {
-    handleDelete(selectedUser);
-    handleSave(selectedUser);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-  };
+  // const handleConfirm = () => {
+  //   handleEnable(selectedUser);
+  //   handleSave(selectedUser);
+  //   setConfirmOpenIncomplete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
+  // const handleConfirmDelete = () => {
+  //   handleDelete(selectedUser);
+  //   handleSave(selectedUser);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
 
   setTimeout(() => {
     setMessage('');
