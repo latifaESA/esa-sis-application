@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Loader from '../../components/Loader/Loader';
 
-export default function send() {
+export default function Send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: session } = useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -240,5 +240,5 @@ export default function send() {
     </>
   );
 }
-send.auth = true;
-send.adminOnly = true;
+Send.auth = true;
+Send.adminOnly = true;

@@ -26,7 +26,7 @@ const CertificateList = ({
     setUsers
 }) => {
 
-    console.log(users)
+    
 
     const { data: session } = useSession()
     const [pageSize, setPageSize] = useState(10);

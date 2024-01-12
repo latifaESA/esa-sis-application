@@ -38,7 +38,7 @@ export default function Courses() {
   const getAllType = async () => {
     let table = 'course_type';
     let typeCourse = await axios.post('/api/pmApi/getAll', { table });
-    console.log(typeCourse);
+  
     setType(typeCourse.data.rows);
   };
   const handleCourses = async () => {
@@ -55,8 +55,7 @@ export default function Courses() {
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 
-    console.log('this is data');
-    console.log(data);
+   
     setUsers(data.data);
   };
   useEffect(() => {
@@ -73,8 +72,7 @@ export default function Courses() {
       major_id: session.user.majorid,
       course_type: '',
     };
-    console.log(sendData);
-    console.log(sendData);
+  
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 

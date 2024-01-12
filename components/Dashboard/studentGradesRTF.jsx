@@ -25,7 +25,7 @@ const StudentGradesRTF = ({
 
 }) => {
 
-   console.log(studentGrades)
+   
     const [pageSize, setPageSize] = useState(10);
     const [message, setMessage] = useState("");
 

@@ -118,8 +118,9 @@ const TeachersList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log(response.data);
-        setMessage('User Status Changed Succesfully!');
+       
+        setMessage('User Status Changed Succesfully!' );
+        console.log(response)
 
         //Update the user's status and major in the table
         setUsers((prevUsers) =>
@@ -135,7 +136,7 @@ const TeachersList = ({ users, setUsers }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
   const handleEnable = async (user) => {
@@ -167,7 +168,7 @@ const TeachersList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log(response.data);
+       console.log(response)
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -188,7 +189,7 @@ const TeachersList = ({ users, setUsers }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
   const handleDelete = (user) => {
@@ -227,7 +228,7 @@ const TeachersList = ({ users, setUsers }) => {
       })
       .catch((error) => {
         // Handle error
-        console.log(error);
+        return error
       });
   };
 
@@ -626,7 +627,7 @@ const TeachersList = ({ users, setUsers }) => {
           setUsers([]);
         }
       } catch (error) {
-        console.error(error);
+        return error
       }
     }
   };
@@ -644,7 +645,7 @@ const TeachersList = ({ users, setUsers }) => {
           setUsers([]);
         }
       } catch (error) {
-        console.error(error);
+        return error
       }
     }
   };

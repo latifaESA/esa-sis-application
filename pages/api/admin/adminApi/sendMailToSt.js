@@ -25,7 +25,7 @@ async function handler(req, res) {
       building,
     } = req.body;
 
-    const resp = await SendEmailTo(
+    await SendEmailTo(
       email,
       className,
       startdate,
@@ -36,7 +36,7 @@ async function handler(req, res) {
       room_name,
       building
     );
-    console.log(resp);
+   
     disconnect(connection);
     return res.status("200").send("ok");
   } catch (error) {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import moment from 'moment';
+// import moment from 'moment';
+import moment from 'moment-timezone';
 import {
   SevenColGrid,
   Wrapper,
@@ -46,9 +47,13 @@ const formatTime = (timeWithTimeZone) => {
   return `${formattedHours}:${minutes} ${period}`;
 };
 
+
+
+
 export const CalenderById = ({ schedule, setSchedule }) => {
   const [select, setSelect] = useState(false);
-
+  const [occupiedRooms, setOccupiedRooms] = useState([]);
+  const [remainingRooms, setRemainingRooms] = useState([]);
   const { data: session } = useSession();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState(MOCKAPPS);
@@ -76,8 +81,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [clickEdit, setIsClickEdit] = useState(false);
   const [student, setStudent] = useState([]);
   const [messages, setMessage] = useState('');
+  const [sharepointId, setSharePointId] = useState('')
+  const [fromSharePoint, setFromTimeEditSharePoint] = useState('')
+  const [toSharePoint, setToTimeEditSharePoint] = useState('')
+
   const [confirmOpenMessageNotification, setConfirmOpenMessageNotification] =
     useState(false);
+  const [isEdit, setIsEdit] = useState(false)
   const [confirmOccupied, setConfirmOccupied] = useState(false);
 
   const getAllRooms = async () => {
@@ -89,8 +99,104 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       // console.log(error);
     }
   };
+
+
+
+  const getRoomBooking = async () => {
+    try {
+      const accessToken = await getSharePointToken();
+
+      const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.d.results.length > 0) {
+        for (const booking of data.d.results) {
+          // Format the date to 'YYYY-MM-DDT00:00:00Z'
+          const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+
+          // Make the API call
+          await axios.post('/api/pmApi/createBooking', {
+            bookingId: booking.ID,
+            room: booking.Title,
+            space: booking.Space,
+            bookingBy: booking.BookedBy,
+            date: formattedDate,
+            fromTime: booking.FromTime,
+            toTime: booking.ToTime,
+          });
+
+        }
+      }
+
+      return { ok: true, result: data };
+
+    } catch (error) {
+      // console.error('Error checking room availability in SharePoint:', error.message);
+      // Assuming an error means the room is not available
+      return { ok: false, result: false };
+    }
+  };
+
+  // useEffect(() => {
+  //   getRoomBooking();
+  // }, []);
+  const [allrooms, setAllrooms] = useState([]);
+
+  
+
+useEffect(() => {
+ 
+}, [allrooms]); 
+
+
+
+
+  let allStages = [];
+  const [building, setBuilding] = useState('');
+  const handleStages = (selectedValue) => {
+
+    setBuilding(selectedValue);
+    setAllrooms([]);
+
+    allroomName.forEach((room) => {
+      if (room.room_building === selectedValue) {
+        setAllrooms((prevAllRooms) => [...prevAllRooms, room.room_name]);
+      }
+    });
+     
+    return allrooms
+  };
+
+
+
+  const allroomsRef = useRef([]);
+  const handleStages1 = (selectedValue) => {
+    allroomName.forEach((room) => {
+      if (room.room_building === selectedValue) {
+        allroomsRef.current.push(room.room_name);
+      }
+    });
+  };
+
+  isEdit && handleStages1(roomBuilding);
+
+  allroomName.forEach((room) => {
+    if (!allStages.includes(room.room_building)) {
+      allStages.push(room.room_building);
+    }
+  });
+
   const router = useRouter();
-  const { majorId } = router.query;
+  const { majorId } = router.query
 
   const getSchedule = async () => {
     const datesArray = [];
@@ -109,6 +215,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         room_building: sched.room_building,
         room_name: sched.room_name,
         attendanceId: sched.attendance_id,
+        sharepointId: sched.sharepoint_id,
         color: '#00CED1',
       });
     });
@@ -154,6 +261,180 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const searchBook = async () => {
+
+    try {
+      if (building !== '' && fromTime !== '' && toTime !== '') {
+        const occupiedRoomsArray = [];
+
+
+        const dates = new Date(theDate);
+        const formattedDate = moment(dates).format('YYYY-MM-DDT00:00:00[Z]');
+
+        const fromTimeSplit = fromTime;
+        const toTimeSplit = toTime;
+        const datess = formattedDate.split('T')[0];
+
+        const offset = 2;
+        const fromTimes = moment(`${datess}T${fromTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
+        const toTimes = moment(`${datess}T${toTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
+
+        if (fromTimes && toTimes) {
+          const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
+          const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
+
+          const payload = {
+            space: building,
+            date: formattedDate,
+            FromTime: formattedFromTime,
+            ToTime: formattedToTime,
+          };
+
+          const response = await axios.post('/api/pmApi/getBooking', payload);
+
+          const data = response.data.data;
+          if (response.data.success === true) {
+            // Collect occupied rooms
+            data.forEach(item => {
+              occupiedRoomsArray.push(item.rooms);
+            });
+
+            // Set state to store occupied rooms
+            setOccupiedRooms(occupiedRoomsArray);
+           
+            // Set state to store remaining rooms
+            const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
+
+            setRemainingRooms(remainingRoomsArray);
+          } else {
+            // If data.data.success is not true, set all rooms as remaining
+
+            setRemainingRooms(allrooms);
+          }
+        } else {
+          console.error('fromTimes or toTimes is null or undefined');
+        }
+
+      }
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  };
+  useEffect(() => {
+    searchBook();
+  
+    const parseTimeString = (timeString) => {
+      const [fromTimeString, toTimeString] = timeString.split(' to ');
+  
+      // Assuming fromTimeString and toTimeString are dynamic values
+      const fromTimes = convertToDesiredFormat(fromTimeString);
+      const toTimes = convertToDesiredFormat(toTimeString);
+  
+      return [fromTimes, toTimes];
+    };
+  
+    const convertToDesiredFormat = (timeString) => {
+      const date = new Date(`2000-01-01 ${timeString}`);
+      
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      const formattedTime = `${hours}:${minutes}:00+02`;
+  
+      return formattedTime;
+    };
+  
+    // Replace these with the actual dynamic time values you have
+    const dynamicFromTime = fromTime;
+    const dynamicToTime = toTime;
+  
+    const dynamicTimeString = `${dynamicFromTime} to ${dynamicToTime}`;
+    const [fromTimes, toTimes] = parseTimeString(dynamicTimeString);
+  
+    // Now you can use fromTime and toTime in your searchBookEdit function
+    searchBookEdit(theDate, building, fromTimes, toTimes);
+  }, [building, fromTime, toTime]);
+  
+  
+  
+  
+  
+  
+  useEffect(() => {
+
+    // This will be triggered when occupiedRooms or allrooms changes
+    const remainingRoomsArray = allrooms.filter((room) => !occupiedRooms.includes(room));
+    setRemainingRooms(remainingRoomsArray);
+
+  }, [occupiedRooms, allrooms , building]);
+
+  const searchBookEdit = async (date, building, from_Time, to_Time) => {
+    try {
+     
+
+      const occupiedRoomsArray = [];
+      const dates = new Date(date);
+      const formattedDate = moment(dates).format('YYYY-MM-DDT00:00:00[Z]');
+      const fromTimeSplit = from_Time.split('+')[0];
+      const toTimeSplit = to_Time.split('+')[0];
+      const datess = formattedDate.split('T')[0];
+      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+      const utcOffset = 4;
+      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+      const fromTimes = moment(`${datess}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+      const toTimes = moment(`${datess}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+
+      if (fromTimes && toTimes) {
+        const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
+        const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
+
+        const payload = {
+          space: building,
+          date: formattedDate,
+          FromTime: formattedFromTime,
+          ToTime: formattedToTime,
+        };
+
+        const response = await axios.post('/api/pmApi/getBooking', payload);
+        
+        const data = response.data.data;
+       
+        if (response.data.success === true) {
+          // Collect occupied rooms
+          data.forEach(item => {
+            occupiedRoomsArray.push(item.rooms);
+          });
+
+
+          // Set state to store occupied rooms
+          setOccupiedRooms(occupiedRoomsArray);
+          // Set state to store remaining rooms
+          const remainingRoomsArray = allrooms.filter(room =>
+
+            !occupiedRoomsArray.includes(room)
+
+          );
+
+
+          setRemainingRooms(remainingRoomsArray);
+     
+        } else {
+          // If data.data.success is not true, set all rooms as remaining
+
+          setRemainingRooms(allrooms);
+        }
+      } else {
+        console.error('fromTimes or toTimes is null or undefined');
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  };
 
   const areDatesEqual = (date1, date2) => {
     return date1.getTime() === date2.getTime();
@@ -263,11 +544,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     if (
       !(
         (new Date(ev.date).getFullYear(),
-        new Date(ev.date).getMonth(),
-        new Date(ev.date).getDate()) ==
+          new Date(ev.date).getMonth(),
+          new Date(ev.date).getDate()) ==
         (new Date(dragDateRef.current.date).getFullYear(),
-        new Date(dragDateRef.current.date).getMonth(),
-        new Date(dragDateRef.current.date).getDate())
+          new Date(dragDateRef.current.date).getMonth(),
+          new Date(dragDateRef.current.date).getDate())
       )
     ) {
       handlePlace(ev.room_name);
@@ -290,6 +571,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           });
 
           if (data.success) {
+            await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
             setStudent([]);
             getData();
           }
@@ -309,15 +591,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
     // setPlace(selectedValue)
+    
+    setRoomName(selectedValue)
 
     setPlace(
       selectedValue.length > 0 &&
-        allroomName.filter((room) => room.room_name === selectedValue)[0]
-          .room_id
+      allroomName.filter((room) => room.room_name === selectedValue)[0]
+        .room_id
     );
   };
 
   const handleFrom = (e) => {
+    setFromTimeEditSharePoint(e.target.value)
     setFromTime(e.target.value);
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
@@ -327,6 +612,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const handleTo = (e) => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
+    setToTimeEditSharePoint(e.target.value)
     setToTime(e.target.value);
   };
 
@@ -344,18 +630,23 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     event.preventDefault();
     setShowForm(true);
     if (!event.target.classList.contains('StyledEvent')) {
+      getRoomBooking()
       date.setHours(0);
       date.setSeconds(0);
       date.setMilliseconds(0);
-      // console.log("date.setHours(0) === > >", date.setHours(0));
-      // console.log("date.setSeconds(0) === > >", date.setSeconds(0));
-      // console.log("date.setMilliseconds(0) === > >", date.setMilliseconds(0));
-      // console.log("date===>", date);
       setTheDate(date);
     }
   };
-
+  const deleteTable = async () => {
+    try {
+      await axios.post('/api/pmApi/deleteBooking')
+    } catch (error) {
+      return error
+    }
+  }
   const handleClose = () => {
+    deleteTable()
+    setRemainingRooms([])
     setShowForm(false);
   };
 
@@ -408,8 +699,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           } catch (error) {
             let major_id = majorId;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
-            // let promotion = promotionName
-            // console.log("promotion", promotions);
+
             const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
               promotion,
@@ -594,7 +884,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               toTime: ev.to,
               room: place,
             };
-
             const data = await axios.post(
               '/api/pmApi/createAttendanceReport',
               payload
@@ -629,12 +918,23 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   // getDarkColor() is a function to get a random color
   const handleSave = async (e) => {
+
     e.preventDefault();
 
     try {
       setIsClick(true);
-      const attendanceData = await handleCreateAttendance();
+      // console.log('roomName' , roomName)
+      // console.log('date' , theDate)
+      // const CheckRooms = await CheckRoomISharePoint(roomName , theDate )
+      // console.log('room' , CheckRooms)
+      // if (CheckRooms.ok && CheckRooms.result.d.results.length >0) {
+      // Room is not available, stop the process
+      // setConfirmOccupied(true);
+      // setMessage("Room not available");
+      // return; // Stop the process
+      // }else if(CheckRooms.ok && CheckRooms.result.d.results.length <= 0){
 
+      const attendanceData = await handleCreateAttendance();
       let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
         classID: classes,
         day: theDate,
@@ -645,13 +945,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         attendanceId: attendanceData.data.data,
       });
 
+
       // console.log("axios data ==>  ", place);
       if (data.success) {
+        await handleSharePointBookingRoom(theDate, attendanceData.data.data)
+        deleteTable()
         setShowForm(false);
         setIsClick(false);
         setStudent([]);
+        setRemainingRooms([])
         getData();
-      }
+      } setPortalData
+      // }
+
     } catch (error) {
       return error;
     }
@@ -660,7 +966,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   const handleOnClickEvent = (event) => {
-    console.log(event);
+ 
+    getRoomBooking()
     setConfirmOpenMessage(true);
     // setShowPortal(true);
     setPortalData(event);
@@ -668,6 +975,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const handlePotalClose = () => {
     // setShowPortal(false)
+    deleteTable()
     setConfirmOpenMessage(false);
   };
 
@@ -676,7 +984,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     //   prevEvents.filter((ev) => ev.date !== portalData.date)
     // );
     // handlePotalClose();
+    // console.log("portalData", portalData)
     try {
+     
       const payload = {
         table: 'attendance',
         colName: 'attendance_id',
@@ -700,9 +1010,12 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       });
 
       await axios.post('/api/pmApi/delete', payload2);
+      // Delete from SharePoint booking room
+      const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
 
       // console.log("deleted:  ==> ", data);
-      if (data.rowCount > 0) {
+      if (data.rowCount > 0 && success) {
+        await deleteTable()
         handlePotalClose();
         getData();
       }
@@ -712,12 +1025,109 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
     // // console.log(id)
   };
-  console.log(confirmOccupied);
+
+
+  // Your client-side code
+  const getSharePointToken = async () => {
+    try {
+      const response = await fetch('/api/pmApi/getsharePointToken', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose',
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.access_token) {
+        throw new Error('Access token not obtained');
+      }
+
+      return data.access_token;
+    } catch (error) {
+      console.error('Error obtaining SharePoint access token:', error.message);
+      throw error;
+    }
+  };
+
+  const deleteFromSharePointBookingRoom = async (sharepointId) => {
+
+    try {
+      const accessToken = await getSharePointToken();
+
+      const apiUrl =
+        `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
+
+
+      const response = await fetch(apiUrl, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json;odata=verbose",
+          "Content-Type": "application/json;odata=verbose",
+          Authorization: `Bearer ${accessToken}`,
+          'If-Match': '*'
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return { success: true }
+      }
+    } catch (error) {
+      console.error("Error submitting booking to SharePoint:", error.message);
+      return { success: false }
+
+    }
+  };
+
+
+
+
   const handleCloseEdit = () => {
+    setRemainingRooms([])
+    setAllrooms([])
+    deleteTable()
     setShowFormEdit(false);
   };
 
+
+  const handleEdit = async (e, event, date) => {
+    // searchBook()
+
+
+    handleStages(event.room_building)
+
+    e.preventDefault();
+
+    await getRoomBooking()
+    setShowFormEdit(true);
+    setIsEdit(true)
+
+    searchBookEdit(date, event.room_building, event.from, event.to)
+    setSharePointId(event.sharepointId)
+    setFromTimeEditSharePoint(event.from)
+    setToTimeEditSharePoint(event.to)
+
+    // console.log(event);
+
+
+    setFromTime(formatTime(event.from));
+    setToTime(formatTime(event.to));
+    setClasses(event.courseID);
+    setRoomBuilding(event.room_building);
+    setRoomName(event.room_name);
+    setTheDate(date);
+    setTmpscheduleID(event.tmpschedule_id);
+  };
+
+
+
+
+
   const handleSaveEdit = async (e) => {
+
     e.preventDefault();
     setIsClickEdit(true);
     // setShowFormEdit(false)
@@ -745,7 +1155,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       classID:
         typeof classes === 'string'
           ? allClasses.filter((clas) => clas.course_id === classes)[0]
-              .tmpclass_id
+            .tmpclass_id
           : classes,
       day: theDate,
       fromTime: fromTime,
@@ -763,6 +1173,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       schedData
     );
     if (data.success) {
+      await UpdateFromSharePointBookingRoom(sharepointId, theDate)
       getData();
       setIsClickEdit(false);
       setShowFormEdit(false);
@@ -770,18 +1181,203 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // console.log("the update change:  ", data);
   };
 
-  const handleEdit = (e, event, date) => {
-    e.preventDefault();
-    // console.log(event);
-    setShowFormEdit(true);
-    setFromTime(formatTime(event.from));
-    setToTime(formatTime(event.to));
-    setClasses(event.courseID);
-    setRoomBuilding(event.room_building);
-    setRoomName(event.room_name);
-    setTheDate(date);
-    setTmpscheduleID(event.tmpschedule_id);
+
+  const UpdateFromSharePointBookingRoom = async (sharepointId, date) => {
+
+    try {
+      const accessToken = await getSharePointToken();
+      const dates = new Date(date);
+      const bookingDay = new Date()
+      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+
+      const formattedDate = moment(dates).format('YYYY-MM-DD');
+      const fromTimeSplit = fromSharePoint.split('+')[0];
+      const toTimeSplit = toSharePoint.split('+')[0];
+
+      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+
+      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+
+      const apiUrl =
+        `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
+
+
+      const response = await fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json;odata=verbose",
+          "Content-Type": "application/json;odata=verbose",
+          Authorization: `Bearer ${accessToken}`,
+          'If-Match': '*'
+        },
+        body: JSON.stringify({
+          __metadata: {
+            type: "SP.Data.BookingRoomListItem",
+          },
+          Title: `${roomName}`,
+          Space: `${building}`,
+          BookedBy: `${session.user?.name}`,
+          BookingDate: date, // Use the current date in the iteration
+          BookingDay:`${formattedBookingDay}`,
+          FromTime: fromTimes,
+          ToTime: toTimes,
+        }),
+      });
+
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return { success: true }
+      }
+    } catch (error) {
+      console.error("Error submitting booking to SharePoint:", error.message);
+      return { success: false }
+
+    }
   };
+
+
+  const handleSharePointBookingRoom = async (date, attendance_id) => {
+    try {
+      const accessToken = await getSharePointToken();
+      const dates = new Date(date);
+      const bookingDay = new Date()
+      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+
+      const formattedDate = moment(dates).format('YYYY-MM-DD');
+      const fromTimeSplit = fromSharePoint.split('+')[0];
+      const toTimeSplit = toSharePoint.split('+')[0];
+
+      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+
+      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+
+      const apiUrl =
+        "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json;odata=verbose",
+          "Content-Type": "application/json;odata=verbose",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          __metadata: {
+            type: "SP.Data.BookingRoomListItem",
+          },
+          Title: `${roomName}`,
+          Space: `${building}`,
+          BookedBy: `${session.user?.name}`,
+          BookingDate: dates, // Use the current date in the iteration
+          BookingDay:`${formattedBookingDay}`,
+          FromTime: fromTimes,
+          ToTime: toTimes,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+
+      // Log the ID of the newly added item
+      if (data && data.d && data.d.Id) {
+        // Update the SharePoint ID in the schedule
+    await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+          sharepointId: data.d.Id,
+          attendanceId: attendance_id,
+        });
+       
+      }
+    } catch (error) {
+      console.error("Error submitting booking to SharePoint:", error.message);
+    }
+  };
+
+  const handleDragRoomBooking = async (date, from, to ,attendance_id) => {
+    try {
+
+      const payload = {
+        table: 'rooms',
+        Where: 'room_name',
+        id: roomName,
+      };
+      const dataaa  = await axios.post('/api/pmApi/getAllCourses', payload);
+      
+    
+      const accessToken = await getSharePointToken();
+      const dates = new Date(date);
+      const bookingDay = new Date()
+      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+
+      const formattedDate = moment(dates).format('YYYY-MM-DD');
+      const fromTimeSplit = from.split('+')[0];
+      const toTimeSplit = to.split('+')[0];
+
+      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+
+      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+
+      const apiUrl =
+        "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json;odata=verbose",
+          "Content-Type": "application/json;odata=verbose",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          __metadata: {
+            type: "SP.Data.BookingRoomListItem",
+          },
+          Title: `${roomName}`,
+          Space: `${dataaa.data.data[0].room_building}`,
+          BookedBy: `${session.user?.name}`,
+          BookingDate: date, // Use the current date in the iteration
+          BookingDay:`${formattedBookingDay}`,
+          FromTime: fromTimes,
+          ToTime: toTimes,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+     
+
+      // Log the ID of the newly added item
+      if (data && data.d && data.d.Id) {
+        // Update the SharePoint ID in the schedule
+        await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+          sharepointId: data.d.Id,
+          attendanceId: attendance_id,
+        });
+        
+      }
+    } catch (error) {
+      console.error("Error submitting booking to SharePoint:", error.message);
+    }
+  };
+
+
+
 
   return (
     <>
@@ -844,21 +1440,20 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                   )
                 }
                 onDragOver={(e) => e.preventDefault()}
-                // onDragEnd={(e)=>drop(e)}
+              // onDragEnd={(e)=>drop(e)}
               >
                 <span
-                  className={`nonDRAG ${
-                    datesAreOnSameDay(
-                      new Date(),
-                      new Date(
-                        currentDate.getFullYear(),
-                        currentDate.getMonth(),
-                        day
-                      )
+                  className={`nonDRAG ${datesAreOnSameDay(
+                    new Date(),
+                    new Date(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth(),
+                      day
                     )
-                      ? 'active'
-                      : ''
-                  }`}
+                  )
+                    ? 'active'
+                    : ''
+                    }`}
                 >
                   {day}
                 </span>
@@ -938,9 +1533,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                           onDragStart={(e) => drag(index, e)}
                           draggable
                           id={`${ev.color} ${ev.title}`}
-                          key={`${ev.title} ${
-                            Math.floor(Math.random() * (100 - 1 + 1)) + 1
-                          }`}
+                          key={`${ev.title} ${Math.floor(Math.random() * (100 - 1 + 1)) + 1
+                            }`}
                           bgColor={ev.color}
                           onDragOver={(e) => e.preventDefault()}
                           onDragEnd={(e) => drop(ev, e)}
@@ -979,6 +1573,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                                     day
                                   )
                                 )
+
+
+
                               }
                             >
                               edit
@@ -998,6 +1595,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                   <PlusCircleIcon
                     className="h-10 w-10 cursor-pointer"
                     onClick={(e) =>
+
                       addEvent(
                         new Date(
                           currentDate.getFullYear(),
@@ -1030,9 +1628,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             <AddSchedules
               handleClose={handleClose}
               click={click}
+              remainingRooms={remainingRooms}
+              allroomsRef={allroomsRef}
+              allStages={allStages}
+              handleStages={handleStages}
               handleOpenNotificatonMessages={handleOpenMessages}
               handleCloseNotificatonMessages={handleCloseMessages}
               messages={messages}
+              building={building}
+              allrooms={allrooms}
               confirmOccupied={confirmOccupied}
               allClasses={allClasses}
               handleClass={handleClass}
@@ -1060,8 +1664,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
           {showFormEdit && (
             <AddSchedule
+            searchBookEdit={searchBookEdit}
+              remainingRooms={remainingRooms}
               handleClose={handleCloseEdit}
+              handleStages={handleStages}
+              allrooms={allrooms}
+              allStages={allStages}
+              allroomsRef={allroomsRef}
               allClasses={allClasses}
+              UpdateFromSharePointBookingRoom={UpdateFromSharePointBookingRoom}
               handleClass={handleClass}
               clickEdit={clickEdit}
               handleFrom={handleFrom}
@@ -1074,7 +1685,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               theclass={classes}
               theroombuilding={roomBuilding}
               theroomname={roomName}
-              isEdit={true}
+              isEdit={isEdit}
             />
           )}
         </Wrapper>
@@ -1107,55 +1718,30 @@ const formatTimeForInput = (time) => {
 };
 
 const AddSchedule = ({
+  remainingRooms,
   handlePlace,
   handleFrom,
+  building,
   handleTo,
   allClasses,
   handleClass,
   handleClose,
   handleSave,
-  theroom,
+  // theroom,
   thefrom,
   theto,
   theclass,
+  allrooms,
+  handleStages,
+  allroomsRef,
   clickEdit,
   theroombuilding,
   theroomname,
-  isEdit,
+  allStages,
+  // isEdit,
 }) => {
-  let classNames = allClasses.map((clss) => clss.course_id);
-
-  const [allrooms, setAllrooms] = useState([]);
-  let allStages = [];
-
-  const [building, setBuilding] = useState('');
-  const handleStages = (selectedValue) => {
-    setBuilding(selectedValue);
-    setAllrooms([]);
-    // console.log("allrooms1 :: ==> ", allrooms);
-    theroom.forEach((room) => {
-      room.room_building === selectedValue &&
-        setAllrooms((prev) => [...prev, room.room_name]);
-    });
-    // console.log("allrooms2 :: ==> ", allrooms);
-  };
-
-  const allroomsRef = useRef([]);
-  const handleStages1 = (selectedValue) => {
-    theroom.forEach((room) => {
-      if (room.room_building === selectedValue) {
-        allroomsRef.current.push(room.room_name);
-      }
-    });
-  };
-
-  isEdit && handleStages1(theroombuilding);
-
-  theroom.forEach((room) => {
-    if (!allStages.includes(room.room_building)) {
-      allStages.push(room.room_building);
-    }
-  });
+  let classNames = allClasses.map((clss) => clss.course_id)
+  // console.log(allrooms , 'allrooms')
 
   return (
     <>
@@ -1242,26 +1828,26 @@ const AddSchedule = ({
                   <div className="flex flex-col">
                     {(theroombuilding?.length > 0 ||
                       (building.length > 0 && allrooms.length > 0)) && (
-                      <label className="text-gray-700 mr-20 ">
-                        Location :
-                        {
-                          <CustomSelectBox
-                            options={
-                              allrooms.length > 0
-                                ? allrooms
-                                : allroomsRef.current
-                            }
-                            placeholder="Select Location"
-                            onSelect={handlePlace}
-                            styled={
-                              'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                            }
-                            enable={false}
-                            oldvalue={theroomname}
-                          />
-                        }
-                      </label>
-                    )}
+                        <label className="text-gray-700 mr-20 ">
+                          Location :
+                          {
+                            <CustomSelectBox
+                              options={
+                                remainingRooms.length > 0
+                                  ? remainingRooms
+                                  : allroomsRef.current
+                              }
+                              placeholder="Select Location"
+                              onSelect={handlePlace}
+                              styled={
+                                'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
+                              }
+                              enable={false}
+                              oldvalue={theroomname}
+                            />
+                          }
+                        </label>
+                      )}
                   </div>
                 </div>
               </div>
@@ -1322,8 +1908,9 @@ const AddSchedules = ({
   handleClass,
   handleClose,
   handleSave,
-  theroom,
+  // theroom,
   click,
+  allrooms,
   handleCloseNotificatonMessages,
   handleOpenNotificatonMessages,
   messages,
@@ -1332,42 +1919,16 @@ const AddSchedules = ({
   // theto,
   // theclass,
   theroombuilding,
+  handleStages,
+  allStages,
+  building,
+  allroomsRef,
+  remainingRooms,
   // theroomname,
-  isEdit,
+  // isEdit,
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id);
 
-  const [allrooms, setAllrooms] = useState([]);
-  let allStages = [];
-
-  const [building, setBuilding] = useState('');
-  const handleStages = (selectedValue) => {
-    setBuilding(selectedValue);
-    setAllrooms([]);
-    // console.log("allrooms1 :: ==> ", allrooms);
-    theroom.forEach((room) => {
-      room.room_building === selectedValue &&
-        setAllrooms((prev) => [...prev, room.room_name]);
-    });
-    // console.log("allrooms2 :: ==> ", allrooms);
-  };
-
-  const allroomsRef = useRef([]);
-  const handleStages1 = (selectedValue) => {
-    theroom.forEach((room) => {
-      if (room.room_building === selectedValue) {
-        allroomsRef.current.push(room.room_name);
-      }
-    });
-  };
-
-  isEdit && handleStages1(theroombuilding);
-
-  theroom.forEach((room) => {
-    if (!allStages.includes(room.room_building)) {
-      allStages.push(room.room_building);
-    }
-  });
 
   return (
     <>
@@ -1523,25 +2084,25 @@ const AddSchedules = ({
                       <div className="flex flex-col">
                         {(theroombuilding?.length > 0 ||
                           (building.length > 0 && allrooms.length > 0)) && (
-                          <label className="text-gray-700 mr-20 ">
-                            Location :
-                            {
-                              <CustomSelectBox
-                                options={
-                                  allrooms.length > 0
-                                    ? allrooms
-                                    : allroomsRef.current
-                                }
-                                placeholder="Select Location"
-                                onSelect={handlePlace}
-                                styled={
-                                  'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                                }
-                                enable={false}
-                              />
-                            }
-                          </label>
-                        )}
+                            <label className="text-gray-700 mr-20 ">
+                              Location :
+                              {
+                                <CustomSelectBox
+                                  options={
+                                    remainingRooms.length > 0
+                                      ? remainingRooms
+                                      : allroomsRef.current
+                                  }
+                                  placeholder="Select Location"
+                                  onSelect={handlePlace}
+                                  styled={
+                                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
+                                  }
+                                  enable={false}
+                                />
+                              }
+                            </label>
+                          )}
                       </div>
                     </div>
                   </div>

@@ -56,9 +56,9 @@ const StudentRequests = () => {
       setPm_lastname(res.data.rows[0].pm_lastname);
       setPm_email(res.data.rows[0].pm_email);
       setPm_id(res.data.rows[0].pm_id);
-      console.log('asdfwq', res.data.rows[0]);
+      
     } catch (error) {
-      console.log(error);
+     
       setIsLoading(false);
     }
   };
@@ -119,9 +119,9 @@ const StudentRequests = () => {
           pm_lastname,
           pm_email,
         };
-        console.log(sendData);
+        
         let res = await axios.post('/api/admin/adminApi/sendReqToPM', sendData);
-        console.log(res);
+       
         let sendToPm = {
           pm_id,
           student_id: session?.user.userid,
@@ -130,8 +130,8 @@ const StudentRequests = () => {
           promotion: session?.user.promotion,
           gpa: gpa,
         };
-        let response = await axios.post('/api/pmApi/addRequestForPm', sendToPm);
-        console.log('this response', response);
+         await axios.post('/api/pmApi/addRequestForPm', sendToPm);
+        
         setMessage('Request Sent !');
         setMessageClass('text-green-500');
         setReason(''), setSemester(''), setAcademicYear('');
@@ -141,7 +141,7 @@ const StudentRequests = () => {
         if (res) {
           setIsLoading(false);
         }
-        console.log(res);
+      
       } catch (error) {
         console.log(error);
       }

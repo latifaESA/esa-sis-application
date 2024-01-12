@@ -106,12 +106,7 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        // console.log('=================================')
-        // console.log('the connection success result : ', connection.success)
-        // console.log('=================================')
-        // console.log('the connection result : ', connection._connected)
-        if (connection._connected) {
-          console.log('connection to DB succes nextauth signin');
+        if (connection.success) {
 
           // get the user info
           const user = await findData(
@@ -150,11 +145,11 @@ export const authOptions = {
                   }
                 );
                 if (data.blocked) {
-                  const status = await updateStatusBlue(
+                   await updateStatusBlue(
                     connection,
                     user.rows[0].userid
                   );
-                  console.log('status blue', status);
+                  // console.log('status blue', status);
 
                   const WeeklyLogs = await getStudentFromBlueForLogs(
                     connection,
@@ -166,7 +161,7 @@ export const authOptions = {
                     const lastLoginDate =
                       WeeklyLogs.rows[WeeklyLogs.rows.length - 1];
 
-                    console.log(lastLoginDate.date_time);
+                    // console.log(lastLoginDate.date_time);
 
                     // get the date from db
                     const dateToday = lastLoginDate.date_time;
@@ -209,9 +204,9 @@ export const authOptions = {
                     if (
                       formattedOneWeekLater < formattedCurrentDate.slice(0, 10)
                     ) {
-                      console.log('ana jouet l if date format');
+                      // console.log('ana jouet l if date format');
                       // eslint-disable-next-line no-unused-vars
-                      const insertToLogs = await addStudentActivityToLogs(
+                      await addStudentActivityToLogs(
                         connection,
                         data.userid,
                         'status',
@@ -241,7 +236,7 @@ export const authOptions = {
                     const currentDate = new Date();
                     const formattedCurrentDate = formatDate(currentDate);
 
-                    const insertToLogs = await addStudentActivityToLogs(
+                    await addStudentActivityToLogs(
                       connection,
                       data.userid,
                       'status',
@@ -250,7 +245,7 @@ export const authOptions = {
                       'Blue',
                       formattedCurrentDate
                     );
-                    console.log(insertToLogs);
+                    // console.log(insertToLogs);
                   }
                   if (user.rows[0].role === 1) {
 
@@ -427,7 +422,7 @@ export const authOptions = {
                     }
                     // console.log('user.rows[0].role==', user.rows[0].role);
                     // console.log(user.rows[0]);
-                    console.log('userinfo.rows[0]==', userinfo.rows[0]);
+                    // console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
@@ -464,7 +459,7 @@ export const authOptions = {
                     PM.rows[0].pm_id
                   )
                   const isExtra = extra.rowCount
-                  console.log(isExtra >0)
+                  // console.log(isExtra >0)
                   // console.log(user.rows[0].userid);
                   // console.log(PM);
                   // if the program_manager exists then send the data to frontend
@@ -698,7 +693,7 @@ export const authOptions = {
 
         } //(!connection.success)
         else {
-          console.log('connection to DB unsucces nextauth signin');
+          // console.log('connection to DB unsucces nextauth signin');
           message = connection.message;
           sis_app_logger.error(
             `${new Date()}=From nextauth signin,connection unsuccess=---=${req.body.email

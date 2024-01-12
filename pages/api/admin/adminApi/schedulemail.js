@@ -13,7 +13,7 @@ async function handler(req, res) {
   try {
     const { emails, content, day, month } = req.body;
     const cronSchedule = `0 0 15 ${day} ${month} *`;
-    console.log(cronSchedule);
+   
     if (!cronSchedule) {
       return res.status(400).json({
         success: false,
@@ -25,9 +25,9 @@ async function handler(req, res) {
     cron.schedule(cronSchedule, async () => {
       try {
         const connection = await connect();
-        console.log(emails, content);
+        
         // Call the SendEmailTo function
-        const resp = await SendEmailTo(emails, content);
+       await SendEmailTo(emails, content);
 
         disconnect(connection);
         console.log("Email sent successfully.");

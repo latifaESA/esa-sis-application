@@ -54,7 +54,7 @@ async function handler(req, res) {
     disconnect(connection)
     return res.status("200").send(data);
   } catch (error) {
-    console.log("the error is: ", error);
+    // console.log("the error is: ", error);
     return res.status("401").send(error);
     // return error;
   }

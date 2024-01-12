@@ -225,7 +225,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                 major_id: majorId
             };
             const response = await axios.post('/api/pmApi/studentEmail', payload);
-            console.log('data',response.data.data)
+            
             const unsortedStudentData = response.data.data;
 
             // Sort the student data by student_id in increasing order
@@ -272,7 +272,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
                 if (rows.length < 2) {
-                    console.log(rows)
+                    
                     setConfirmOpenMessage(true);
                     setMessages("Error: File is empty!");
                     return;
@@ -413,7 +413,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
     };
 
     const handleAddEXED = async () => {
-        console.log('wsll')
+        
         try {
             setIsClick(true);
     
@@ -484,7 +484,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
     };
     
     const handleAddRTF = async () => {
-        console.log('wsll')
+       
         try {
             setIsClick(true);
     

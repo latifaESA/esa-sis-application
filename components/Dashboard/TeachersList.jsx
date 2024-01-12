@@ -43,137 +43,6 @@ const TeachersList = ({ users, setUsers }) => {
   // const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
 
-  // console.log('===============')
-  // console.log('=this is users=======')
-  // console.log(users)
-  // // console.log('====this is setUsers====')
-  // // console.log(users.data[0].major_id)
-  // console.log('===============')
-  // console.log('===============')
-
-  //incomplete modal
-  // const handleConfirmIncomplete = (user) => {
-  //   setSelectedUser(user);
-  //   setConfirmOpenIncomplete(true);
-  // };
-
-  //obsolete modal
-  // const handleConfirmObsolote = (user) => {
-  //   setSelectedUser(user);
-  //   setConfirmOpenObsolote(true);
-  // };
-
-  //cancle incomplete
-  // const handleCancleIncomplete = (user) => {
-  //   setSelectedUser(user);
-  //   setCancleIncomplete(true);
-  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // // console.log("prevStatus",prevStatus)
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((u) =>
-  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
-  //     )
-  //   );
-  // };
-
-  // const handleConfirmClose = (user) => {
-  //   setConfirmOpenIncomplete(false);
-  //   setConfirmOpenObsolote(false);
-  //   setCancleIncomplete(false);
-  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-  //   // // console.log("prevStatus",prevStatus)
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((u) =>
-  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
-  //     )
-  //   );
-  // };
-
-  // const handleSave = (user) => {
-  //   axios
-  //     .put('/api/admin/listusers/status', {
-  //       data: encrypt(
-  //         JSON.stringify({
-  //           ID: user.ID,
-  //           status: user.status,
-  //         })
-  //       ),
-  //     })
-  //     .then((response) => {
-  //       // Handle success
-  //       // console.log(response.data);
-  //       setMessage('User Status Changed Succesfully!');
-
-  //       //Update the user's status and major in the table
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((u) =>
-  //           u.ID === user.ID ? { ...u, status: user.status } : u
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       // console.log(error);
-  //     });
-  // };
-
-  // const handleConfirm = () => {
-  //   handleSave(selectedUser);
-  //   setConfirmOpenIncomplete(false);
-  //   setConfirmOpenObsolote(false);
-  //   setCancleIncomplete(false);
-  //   };
-  //  const handleChangeMajor =  async(user) => {
-  //   const targetPromotion = major_code.find(
-  //     (major) => major.major === user.major
-  //   )?.promotion;
-  //   await axios
-  //     .put(`/api/admin/listusers/major`, {
-  //       data: encrypt(
-  //         JSON.stringify({
-  //           ID: user.ID,
-  //           major: user.major,
-  //           promotion: targetPromotion,
-  //         })
-  //       ),
-  //     })
-  //     .then(async (response) => {
-  //       // Handle success
-  //       // console.log(response.data);
-  //       //// console.log(response.data.defaultpassword)
-  //       //// console.log(response.data.newID)
-  //       setMessage('User Major Changed Succesfully!');
-  //         await EmailAfterChangMajor({
-  //          lname:response.data.lastname ,
-  //          fname:response.data.firstname,
-  //          newID:response.data.newID,
-  //          email:response.data.email,
-  //          defaultpassword:response.data.defaultpassword,
-  //          oldmajor:response.data.oldmajor,
-  //          newmajor:response.data.newmajor,
-  //        });
-
-  //       setMajorEnable(null);
-  //       //Update the user's major in the table);
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((u) =>
-  //           u.ID === user.ID
-  //             ? {
-  //                 ...u,
-  //                 major: user.major,
-  //                 promotion: targetPromotion,
-  //                 status: 'incomplete',
-  //               }
-  //             : u
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       // Handle error
-  //       // console.log(error.response.data);
-  //     });
-  // };
-
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
@@ -471,8 +340,7 @@ const TeachersList = ({ users, setUsers }) => {
         const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          // console.log('response', response);
-          // console.log('incomingData', incomingData);
+
           await exportSelect(selectedRows, incomingData, session);
         } else {
           setUsers([]);
@@ -490,8 +358,7 @@ const TeachersList = ({ users, setUsers }) => {
         const response = await axios.get("/api/admin/listusers/listexport");
         const incomingData = JSON.parse(decrypt(response.data.data));
         if (response.status === 200) {
-          // console.log('response', response);
-          // console.log('incomingData', incomingData);
+
           await exportAll(incomingData, session);
         } else {
           setUsers([]);

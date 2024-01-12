@@ -45,7 +45,7 @@ export default function GradesById() {
           return error
       }
     }
-    console.log('major' , majors)
+   
     useEffect(()=>{
         handleMajorName()
         

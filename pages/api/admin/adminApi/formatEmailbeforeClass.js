@@ -17,7 +17,7 @@ const SendEmailTo = async (
   building
 ) => {
   try {
-    console.log(email, className, startdate);
+    
 
     const emailBody =
       "<!DOCTYPE html>" +

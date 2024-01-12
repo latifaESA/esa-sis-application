@@ -30,10 +30,10 @@ import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 
 const RequestList = ({ users, setUsers }) => {
-  console.log(users);
+  
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState('');
+  // const [status, setStatus] = useState('');
   //   const statusData = selection_data.application_status_inList;
   //   const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
@@ -66,9 +66,7 @@ const RequestList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log('=============');
-        console.log(response.data);
-        console.log('=============');
+        console.log(response)
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -255,8 +253,8 @@ const RequestList = ({ users, setUsers }) => {
             className="primary-button hover:text-white"
             onClick={(e) => {
               e.preventDefault();
-              setStatus(params.row.status);
-              console.log('asdasdafqwe', status);
+              
+             
               handleSave(params.row);
             }}
             type="button"
