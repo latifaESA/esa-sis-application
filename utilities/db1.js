@@ -55,7 +55,7 @@ async function connect() {
       });
     });
     // console.log('Connection To DB Established');
-    connection.success = true;
+    connection._connected = true;
     connected = true;
     connection.message = "Connection To DB Established";
     return connection;

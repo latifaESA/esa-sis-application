@@ -50,6 +50,10 @@ a {
   @apply rounded bg-primary text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 ;
 }
 
+.cancel-button {
+  @apply rounded bg-gray-500 text-white py-2 px-4 shadow outline-none hover:bg-gray-400 hover:font-bold active:bg-gray-900 disabled:bg-gray-400 ;
+}
+
 .primary-bg{
   @apply bg-white;
 }

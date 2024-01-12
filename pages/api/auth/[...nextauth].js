@@ -106,23 +106,12 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        if (connection.success) {
+        // console.log('=================================')
+        // console.log('the connection success result : ', connection.success)
+        // console.log('=================================')
+        // console.log('the connection result : ', connection._connected)
+        if (connection._connected) {
           console.log('connection to DB succes nextauth signin');
-
-          // try {
-          //   const results = await new Promise((resolve, reject) => {
-          //     connection.query(`SELECT * from users WHERE userid = ${credentials.email}`, (err, res) => {
-          //       if (err) {
-          //         reject(err);
-          //       } else {
-          //         resolve(res.rows);
-          //       }
-          //     });
-          //   });
-          //   console.log(results);
-          // } catch (err) {
-          //   console.error(err);
-          // }
 
           // get the user info
           const user = await findData(
@@ -131,24 +120,9 @@ export const authOptions = {
             'userid',
             credentials.userid
           );
-         
-          // const users = await findData(
-          //   connection,
-          //   'user_document',
-          //   'userid',
-          //   credentials.email,
-          // );
-
-          // const users = await findData(
-          //   connection,
-          //   'user_document',
-          //   'profileurl',
-          //   credentials.userid,
-          // );
           const userinfo = await Userinfo(connection, credentials.userid); //email from req body
           // console.log(userinfo.rows[0].profileurl)
           // console.log("---------------------------------")
-
           //  check if there is user with the given id
           if (user.rowCount > 0) {
             // check if the password is correct
@@ -208,8 +182,8 @@ export const authOptions = {
                       .getDate()
                       .toString()
                       .padStart(2, '0')}-${(oneWeekLater.getMonth() + 1)
-                      .toString()
-                      .padStart(2, '0')}-${oneWeekLater.getFullYear()}`;
+                        .toString()
+                        .padStart(2, '0')}-${oneWeekLater.getFullYear()}`;
 
                     // console.log("Original Date:", formattedDate); // Output: "14-09-2023"
 
@@ -316,10 +290,10 @@ export const authOptions = {
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
                           image: userinfo.rows[0].profileurl,
-                          accessToken :`${user.rows[0].access_token}`,
+                          accessToken: `${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
-                          majorName:ST_major.rows[0].major_name
+                          majorName: ST_major.rows[0].major_name
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -329,7 +303,6 @@ export const authOptions = {
                   }
                 } else {
                   if (user.rows[0].role === 1) {
-
                     // get the student data
                     const ST = await findData(
                       connection,
@@ -343,6 +316,7 @@ export const authOptions = {
                       'major_id',
                       ST.rows[0].major_id
                     )
+
 
                     if (ST.rows[0].status === 'limited') {
                       await updateStatusPreBlue(
@@ -366,14 +340,24 @@ export const authOptions = {
                           }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
-
+                        // console.log('name', `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                        //                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
+                        //                           'role', user.rows[0].role.toString(),
+                        //                           'status', `${data.blocked ? 'limited' : 'active'}`,
+                        //                           'userid', `${user.rows[0].userid}`,
+                        //                           'accessToken' ,`${user.rows[0].access_token}`,
+                        //                           'image', userinfo.rows[0].profileurl,
+                        //                           'majorid', ST.rows[0].major_id,
+                        //                           'majorName', ST_major.rows[0].major_name,
+                        //                           'promotion', ST.rows[0].promotion
+                        //                           )
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           role: user.rows[0].role.toString(),
                           status: `${data.blocked ? 'limited' : 'active'}`,
                           userid: `${user.rows[0].userid}`,
-                          accessToken :`${user.rows[0].access_token}`,
+                          accessToken: `${user.rows[0].access_token}`,
                           image: userinfo.rows[0].profileurl,
                           majorid: ST.rows[0].major_id,
                           majorName: ST_major.rows[0].major_name,
@@ -418,37 +402,6 @@ export const authOptions = {
                 //     );
                 //     if(ST.rows){
 
-                //       await disconnect(connection);
-                //       // Write to logger
-                //       if (req) {
-                //         // Log user information
-                //         // userinfo.role ==='1'?
-                //         sis_app_logger.info(
-                //           `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
-                //             userAgentinfo.os.family
-                //           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-                //             userAgentinfo.source
-                //           }=${userAgentinfo.device.family}`
-                //         );
-                //       }
-
-                //       return {
-                //                 name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                //                 message: message,
-                //                 email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                //                 role: (user.rows[0].role).toString(),
-                //               };
-                //       }
-
-                //   }catch (error) {
-                //     console.log('the error is: ', error)
-                //     message = JSON.stringify(error);
-
-                // }
-
-                // }
-                // else
-                // {
                 // check if the user is admin
                 if (user.rows[0].role === 0) {
                   // get the admin data
@@ -489,22 +442,6 @@ export const authOptions = {
                     message = 'Admin does not exists';
                   }
                 }
-                // if the program_manager exists then send the data to frontend
-                // if(PM.rows){
-
-                //                    }
-                //                    return {
-                //                    name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                //                      // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                //                     role: user.rows[0].role.toString(),
-                //                    status: `${data.blocked ? 'limited' : 'active'}`,
-                //                    userid: `${user.rows[0].userid}`,
-                //                    image: userinfo.rows[0].profileurl,
-                //                  };
-                //               } else {
-                //                // if the student is not exists then send this message to frontend
-                //               message = 'Student does not exists';
-                //            }
 
                 else if (user.rows[0].role === 2) {
                   // get the program_manager data
@@ -657,6 +594,44 @@ export const authOptions = {
                   //                   // if the program manager is not exists then send this message to frontend
                   //                   message = 'Program manager does not exists';
                   // />>>>>>> main
+                } else if (user.rows[0].role === 4) {
+                  // get the admin data
+                  const admin = await findData(
+                    connection,
+                    'admin',
+                    'adminid',
+                    user.rows[0].userid
+                  );
+                  // if the admin exists then send the data to frontend
+                  if (admin.rows) {
+                    await disconnect(connection);
+                    // Write to logger
+                    if (req) {
+                      // Log user information
+                      // userinfo.role ==='1'?
+                      sis_app_logger.info(
+                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        }=${userAgentinfo.os.family}=${userAgentinfo.os.major
+                        }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
+                        }`
+                      );
+                    }
+                    // console.log('user.rows[0].role==', user.rows[0].role);
+                    // console.log(user.rows[0]);
+                    console.log('userinfo.rows[0]==', userinfo.rows[0]);
+
+                    return {
+                      name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
+                      email: admin.rows[0].adminemail,
+                      status: admin.rows[0].admin_status,
+                      role: user.rows[0].role.toString(),
+                      userid: `${user.rows[0].userid}`,
+                      image: userinfo.rows[0].profileurl,
+                    };
+                  } else {
+                    // if the admin is not exists then send this message to frontend
+                    message = 'Super Admin does not exists';
+                  }
                 }
                 // } else if (user.rows[0].role === 3) {
                 //   // get the program_manager_assistance data
@@ -721,146 +696,6 @@ export const authOptions = {
             message = 'user does not exist';
           }
 
-          // connection.end();
-
-          // const user = await findData(
-          //   connection,
-          //   'email',
-          //   'user_profile',
-          //   credentials.email
-          // ); //email from req body
-
-          // const userinfo = await Userinfo(connection, credentials.email); //email from req body
-          // // console.log(user);
-          // // console.log('User In Auth=', user);
-          // if (user.result) {
-          //   // console.log('User=', user);
-          //   /* Checking if the user is verified and if the user is not obsolete. */
-          //   if (
-          //     bcryptjs.compareSync(
-          //       credentials.password.trim(),
-          //       userinfo.password
-          //     ) &&
-          //     userinfo.status !== 'obsolete' &&
-          //     userinfo.isVerified
-          //   ) {
-          //     if (userinfo) {
-          //       const program = await findmajor_name(
-          //         connection,
-          //         userinfo.user_id
-          //       );
-          //       const programid = await findmajor_id(
-          //         connection,
-          //         program.program
-          //       );
-          //       const current_app_promotion = await current_applicant_promotion(
-          //         programid.major_id,
-          //         userinfo.user_id,
-          //         connection
-          //       );
-
-          //       //console.log('User', userinfo)
-          //       //console.log(program.program)
-          //       await disconnect(connection);
-          //       // Write to logger
-          //       if (req) {
-          //         // Log user information
-          //         // userinfo.role ==='1'?
-          //         sis_app_logger.info(
-          //           `${new Date()}=${userinfo.role}=login=${req.body.email}=${
-          //             userAgentinfo.os.family
-          //           }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-          //             userAgentinfo.source
-          //           }=${userAgentinfo.device.family}`
-          //         );
-          //       }
-
-          //       return {
-          //         _id: userinfo.user_id,
-          //         ID: userinfo.user_id,
-          //         name: userinfo.firstname + ' ' + userinfo.lastname,
-          //         email: userinfo.email,
-          //         major: program.program,
-          //         status: userinfo.status,
-          //         appisSaved: userinfo.appisSaved,
-          //         application_Language: userinfo.application_Language,
-          //         mobileNumber: userinfo.mobile_number,
-          //         role: userinfo.role,
-          //         profileUrl: userinfo.profileUrl,
-          //         promotion: current_app_promotion.current_applicants_promotion,
-          //       };
-          //     }
-          //   } else {
-          //     /* Checking if the password is correct. */
-          //     if (
-          //       !bcryptjs.compareSync(credentials.password, userinfo.password)
-          //     ) {
-          //       message = 'Invalid Password';
-          //       sis_app_logger.error(
-          //         `${new Date()}=From nextauth signin=---=${
-          //           req.body.email
-          //         }=${message}=${userAgentinfo.os.family}=${
-          //           userAgentinfo.os.major
-          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
-          //           userAgentinfo.device.family
-          //         }`
-          //       );
-          //     }
-          //     /* Checking if the user is obsolete. */
-          //     if (userinfo.status === 'obsolete') {
-          //       message =
-          //         'Your application has been created a year ago and thus you need to submit a new application ';
-          //       sis_app_logger.error(
-          //         `${new Date()}=From nextauth signin=---=${
-          //           req.body.email
-          //         }=${message}=${userAgentinfo.os.family}=${
-          //           userAgentinfo.os.major
-          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
-          //           userAgentinfo.device.family
-          //         }`
-          //       );
-          //     }
-          //     /* Checking if the user student is verified or not. */
-          //     if (!userinfo.isVerified && userinfo.role === '1') {
-          //       message =
-          //         'Account Not Activated, Please Check Your Email Indox!';
-          //       sis_app_logger.error(
-          //         `${new Date()}=From nextauth signin=---=${
-          //           req.body.email
-          //         }=${message}=${userAgentinfo.os.family}=${
-          //           userAgentinfo.os.major
-          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
-          //           userAgentinfo.device.family
-          //         }`
-          //       );
-          //     }
-          //     // case where admin account was locked by the super admin
-          //     if (!userinfo.isVerified && userinfo.role !== '1') {
-          //       message = 'Account Is Locked Contact The Admin!';
-          //       sis_app_logger.error(
-          //         `${new Date()}=From nextauth signin=---=${
-          //           req.body.email
-          //         }=${message}=${userAgentinfo.os.family}=${
-          //           userAgentinfo.os.major
-          //         }=${userAgentinfo.family}=${userAgentinfo.source}=${
-          //           userAgentinfo.device.family
-          //         }`
-          //       );
-          //     }
-          //   }
-          // } else {
-          //   message =
-          //     'Invalid Email:the account is not found, submit a new application';
-          //   sis_app_logger.error(
-          //     `${new Date()}=From nextauth signin=---=${
-          //       req.body.email
-          //     }=${message}=${userAgentinfo.os.family}=${
-          //       userAgentinfo.os.major
-          //     }=${userAgentinfo.family}=${userAgentinfo.source}=${
-          //       userAgentinfo.device.family
-          //     }`
-          //   );
-          // }
         } //(!connection.success)
         else {
           console.log('connection to DB unsucces nextauth signin');

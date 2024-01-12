@@ -35,7 +35,7 @@ async function handler(req, res) {
   const userAgentinfo = useragent.parse(userAgent);
 
   const connection = await connect();
-  if (connection && !connection.success) {
+  if (connection && !connection._connected) {
     return res.status(500).send({ message: connection.message });
   }
   /* Setting the default values for the query parameters. */

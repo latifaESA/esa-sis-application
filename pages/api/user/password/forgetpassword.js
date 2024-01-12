@@ -38,7 +38,7 @@ async function handler(req, res) {
   const userAgentinfo = useragent.parse(userAgent);
 
   const connection = await connect();
-  if (!connection.success) {
+  if (!connection._connected) {
     const message = connection.message;
     sis_app_logger.error(
       `${new Date()}=From forgetpassword page,connection unsuccess=1=${email}=${message}=${
