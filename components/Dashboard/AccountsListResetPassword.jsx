@@ -10,18 +10,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import selection_data from '../../utilities/selection_data';
-import generatePasswod from '../../utilities/generatePassword';
-import bcryptjs from 'bcryptjs';
+// import generatePasswod from '../../utilities/generatePassword';
+// import bcryptjs from 'bcryptjs';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 import ResetPassComponent from '../ResetPassComponent';
 
-const AccountsListResetPassword = ({ users, setUsers }) => {
+const AccountsListResetPassword = ({ users }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
-  const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
+  // const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  // const [selectedUser, setSelectedUser] = useState(null);
   const [openChangePass, setOpenChangePass] = useState(false);
   const [newPass, setNewPass] = useState('');
   const [id, setId] = useState(null);
@@ -32,14 +32,14 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
   const [isSuccess, setIsSuccess] = useState(true);
 
   //incomplete modal
-  const handleConfirmIncomplete = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenIncomplete(true);
-  };
-  const handleConfirmDel = (user) => {
-    setSelectedUser(user);
-    setConfirmOpenDelete(true);
-  };
+  // const handleConfirmIncomplete = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenIncomplete(true);
+  // };
+  // const handleConfirmDel = (user) => {
+  //   setSelectedUser(user);
+  //   setConfirmOpenDelete(true);
+  // };
 
   const handleChangePass = async () => {
     // alert('the password changed successfully')
@@ -67,119 +67,119 @@ const AccountsListResetPassword = ({ users, setUsers }) => {
     setSuccess('');
     setNewPass('');
   };
-  const handleConfirmClose = (user) => {
-    setConfirmOpenIncomplete(false);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-    const prevStatus = users.find((u) => u.ID === user.ID)?.status;
-    // console.log("prevStatus",prevStatus)
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.ID === user.ID ? { ...u, status: prevStatus } : u
-      )
-    );
-  };
+  // const handleConfirmClose = (user) => {
+  //   setConfirmOpenIncomplete(false);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  //   const prevStatus = users.find((u) => u.ID === user.ID)?.status;
+  //   // console.log("prevStatus",prevStatus)
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((u) =>
+  //       u.ID === user.ID ? { ...u, status: prevStatus } : u
+  //     )
+  //   );
+  // };
 
-  const handleEnable = async (event) => {
-    try {
-      console.log(event, 'events');
-      let genPassword = generatePasswod(8);
-      const salt = await bcryptjs.genSalt(8);
-      const genPass = await bcryptjs.hash(genPassword, salt);
+  // const handleEnable = async (event) => {
+  //   try {
+  //     console.log(event, 'events');
+  //     let genPassword = generatePasswod(8);
+  //     const salt = await bcryptjs.genSalt(8);
+  //     const genPass = await bcryptjs.hash(genPassword, salt);
 
-      let sendData = {
-        pm_id: event.pm_id,
-        userpassword: genPass,
-        password: genPassword,
-        pm_first_name: event.pm_firstname,
-        email: event.pm_email,
-        role: 'Program Manager',
-      };
+  //     let sendData = {
+  //       pm_id: event.pm_id,
+  //       userpassword: genPass,
+  //       password: genPassword,
+  //       pm_first_name: event.pm_firstname,
+  //       email: event.pm_email,
+  //       role: 'Program Manager',
+  //     };
 
-      await axios.post('/api/admin/adminApi/enablepm', sendData);
+  //     await axios.post('/api/admin/adminApi/enablepm', sendData);
 
-      setMessage('User Status Changed Successfully!');
+  //     setMessage('User Status Changed Successfully!');
 
-      //Update the user's status and major in the table
-      setUsers((prevUsers) =>
-        prevUsers.map((u) =>
-          u.pm_id === event.pm_id
-            ? {
-                ...u,
-                pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
-                note: `the current password is: ${genPassword}`,
-              }
-            : u
-        )
-      );
-      setTimeout(() => {
-        setUsers((prevUsers) =>
-          prevUsers.filter((u) => u.pm_status === 'inactive')
-        );
-      }, 10000); // 10000 milliseconds = 10 seconds
-    } catch (error) {
-      return error;
-    }
-  };
-  const handleSave = async (event) => {
-    try {
-      const payload = {
-        pm_id: event.pm_id,
-        pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
-      };
+  //     //Update the user's status and major in the table
+  //     setUsers((prevUsers) =>
+  //       prevUsers.map((u) =>
+  //         u.pm_id === event.pm_id
+  //           ? {
+  //               ...u,
+  //               pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
+  //               note: `the current password is: ${genPassword}`,
+  //             }
+  //           : u
+  //       )
+  //     );
+  //     setTimeout(() => {
+  //       setUsers((prevUsers) =>
+  //         prevUsers.filter((u) => u.pm_status === 'inactive')
+  //       );
+  //     }, 10000); // 10000 milliseconds = 10 seconds
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
+  // const handleSave = async (event) => {
+  //   try {
+  //     const payload = {
+  //       pm_id: event.pm_id,
+  //       pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
+  //     };
 
-      await axios.post('/api/admin/adminApi/updatePm', payload);
-      //Update the user's status and major in the table
-      setUsers((prevUsers) =>
-        prevUsers.map((u) =>
-          u.pm_id === event.pm_id
-            ? {
-                ...u,
-                pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
-              }
-            : u
-        )
-      );
-    } catch (error) {
-      return error;
-    }
-  };
-  const handleDelete = async (event) => {
-    try {
-      const payload = {
-        pm_id: event.pm_id,
-      };
-      await axios.post('/api/admin/adminApi/deletePm', payload);
+  //     await axios.post('/api/admin/adminApi/updatePm', payload);
+  //     //Update the user's status and major in the table
+  //     setUsers((prevUsers) =>
+  //       prevUsers.map((u) =>
+  //         u.pm_id === event.pm_id
+  //           ? {
+  //               ...u,
+  //               pm_status: event.pm_status == 'active' ? 'inactive' : 'active',
+  //             }
+  //           : u
+  //       )
+  //     );
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
+  // const handleDelete = async (event) => {
+  //   try {
+  //     const payload = {
+  //       pm_id: event.pm_id,
+  //     };
+  //     await axios.post('/api/admin/adminApi/deletePm', payload);
 
-      setTimeout(() => {
-        setUsers((prevUsers) =>
-          prevUsers.filter((u) => u.pm_status === 'active')
-        );
-      }, 1000); // 10000 milliseconds = 10 seconds
+  //     setTimeout(() => {
+  //       setUsers((prevUsers) =>
+  //         prevUsers.filter((u) => u.pm_status === 'active')
+  //       );
+  //     }, 1000); // 10000 milliseconds = 10 seconds
 
-      // Handle success
-      // console.log(response.data);
-      setMessage('User deleted successfully!');
-    } catch (error) {
-      return error;
-    }
-  };
+  //     // Handle success
+  //     // console.log(response.data);
+  //     setMessage('User deleted successfully!');
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
-  const handleConfirm = () => {
-    handleEnable(selectedUser);
-    handleSave(selectedUser);
-    setConfirmOpenIncomplete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-  };
-  const handleConfirmDelete = () => {
-    handleDelete(selectedUser);
-    handleSave(selectedUser);
-    setConfirmOpenDelete(false);
-    // setConfirmOpenObsolote(false);
-    // setCancleIncomplete(false);
-  };
+  // const handleConfirm = () => {
+  //   handleEnable(selectedUser);
+  //   handleSave(selectedUser);
+  //   setConfirmOpenIncomplete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
+  // const handleConfirmDelete = () => {
+  //   handleDelete(selectedUser);
+  //   handleSave(selectedUser);
+  //   setConfirmOpenDelete(false);
+  //   // setConfirmOpenObsolote(false);
+  //   // setCancleIncomplete(false);
+  // };
 
   setTimeout(() => {
     setMessage('');

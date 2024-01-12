@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import AddClass from '../../components/addClass';
-
-import CopyClass from '../../components/copyClass';
 import ClassListById from '../../components/Dashboard/ClassListById';
+import CopyClass from '../../components/copyClass';
 // import moment from 'moment';
 // import Link from 'next/link';
 
@@ -297,11 +296,12 @@ export default function ClassByMajor() {
  
 
   const router = useRouter();
-  const { majorId } = router.query;
 
   const redirect = () => {
     router.push('/AccessDenied');
   };
+
+  const {majorId}= router.query;
 
   useEffect(() => {
     fetchClass();
@@ -675,8 +675,7 @@ export default function ClassByMajor() {
                 </button>
               </div>
             </div>
-            <ClassListById users={users} setUsers={setUsers} />
-            
+           <ClassListById users={users} setUsers={setUsers} />
           </form>
         </>
       ) : (

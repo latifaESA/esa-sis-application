@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import { useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { appIsWaiting } from '../../redux/slices/appSlice';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import TabsComponent from '../../components/tabs/TabsComponent';
-import axios from 'axios';
+// import axios from 'axios';
 import Items from './items';
 // import Link from 'next/link';
 
