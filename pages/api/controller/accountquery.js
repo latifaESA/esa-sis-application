@@ -252,7 +252,6 @@ async function Userinfo(connection, userid) {
       connection,
       `select * from user_document where userid = '${userid}'`
     );
-    console.log(UserData);
     return UserData;
   } catch (err) {
     return err;

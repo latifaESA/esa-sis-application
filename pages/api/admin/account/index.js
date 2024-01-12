@@ -96,7 +96,7 @@ async function handler(req, res) {
 
   const connection = await connect();
 
-  if (!connection.success) {
+  if (!connection._connected) {
     const message = "Database connection Error";
     res.status(422).json({
       message: message,

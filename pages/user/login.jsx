@@ -150,6 +150,8 @@ export default function LoginScreen() {
       }
       else if (session?.user.role === "0") {
         router.push(redirect || "/admin/Accounts");
+      } else if (session?.user.role === "4") {
+        router.push(redirect || "/superAdmin/ResetPassword");
       } else if (
         session?.user.role === "2" &&
         session?.user.status == "inactive"
@@ -186,7 +188,6 @@ export default function LoginScreen() {
         userid,
         password,
       });
-      // // console.log('this line: ', result);
       // temporary commented
       if (!result?.error) {
         const userSession = await getSession();

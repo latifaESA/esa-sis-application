@@ -21,6 +21,7 @@ import AdminView from "./DashboardComps/AdminView";
 // import { useRouter } from 'next/router';
 // import selection_data from '../../utilities/selection_data';
 import { useSession } from "next-auth/react";
+import SuperAdminView from "./DashboardComps/SuperAdminView";
 // import { useSelector } from 'react-redux';
 // import esaLogo from '../../public/images/esa.png';
 // import Image from 'next/image';
@@ -52,6 +53,7 @@ const DashboardSideBar = forwardRef(({ showNav }, ref) => {
           </Link>
         </div>
         {session?.user.role === "0" && <AdminView />}
+        {session?.user.role === "4" && <SuperAdminView />}
 
         {session?.user.role === "1" && <StudentView />}
 

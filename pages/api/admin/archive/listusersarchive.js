@@ -37,7 +37,7 @@ async function handler(req, res) {
 
   const connection = await connect();
 
-  if (connection && !connection.success) {
+  if (connection && !connection._connected) {
     return res.status(500).send({ message: connection.message });
   }
 
