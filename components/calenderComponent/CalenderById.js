@@ -84,7 +84,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [sharepointId, setSharePointId] = useState('')
   const [fromSharePoint, setFromTimeEditSharePoint] = useState('')
   const [toSharePoint, setToTimeEditSharePoint] = useState('')
-
+  const [isOnline, setIsOnline] = useState()
   const [confirmOpenMessageNotification, setConfirmOpenMessageNotification] =
     useState(false);
   const [isEdit, setIsEdit] = useState(false)
@@ -151,11 +151,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   // }, []);
   const [allrooms, setAllrooms] = useState([]);
 
-  
 
-useEffect(() => {
- 
-}, [allrooms]); 
+
+  useEffect(() => {
+
+  }, [allrooms]);
 
 
 
@@ -172,7 +172,7 @@ useEffect(() => {
         setAllrooms((prevAllRooms) => [...prevAllRooms, room.room_name]);
       }
     });
-     
+
     return allrooms
   };
 
@@ -216,6 +216,7 @@ useEffect(() => {
         room_name: sched.room_name,
         attendanceId: sched.attendance_id,
         sharepointId: sched.sharepoint_id,
+        is_online: sched.is_online,
         color: '#00CED1',
       });
     });
@@ -302,7 +303,7 @@ useEffect(() => {
 
             // Set state to store occupied rooms
             setOccupiedRooms(occupiedRoomsArray);
-           
+
             // Set state to store remaining rooms
             const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
 
@@ -324,55 +325,55 @@ useEffect(() => {
   };
   useEffect(() => {
     searchBook();
-  
+
     const parseTimeString = (timeString) => {
       const [fromTimeString, toTimeString] = timeString.split(' to ');
-  
+
       // Assuming fromTimeString and toTimeString are dynamic values
       const fromTimes = convertToDesiredFormat(fromTimeString);
       const toTimes = convertToDesiredFormat(toTimeString);
-  
+
       return [fromTimes, toTimes];
     };
-  
+
     const convertToDesiredFormat = (timeString) => {
       const date = new Date(`2000-01-01 ${timeString}`);
-      
+
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      
+
       const formattedTime = `${hours}:${minutes}:00+02`;
-  
+
       return formattedTime;
     };
-  
+
     // Replace these with the actual dynamic time values you have
     const dynamicFromTime = fromTime;
     const dynamicToTime = toTime;
-  
+
     const dynamicTimeString = `${dynamicFromTime} to ${dynamicToTime}`;
     const [fromTimes, toTimes] = parseTimeString(dynamicTimeString);
-  
+
     // Now you can use fromTime and toTime in your searchBookEdit function
     searchBookEdit(theDate, building, fromTimes, toTimes);
   }, [building, fromTime, toTime]);
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   useEffect(() => {
 
     // This will be triggered when occupiedRooms or allrooms changes
     const remainingRoomsArray = allrooms.filter((room) => !occupiedRooms.includes(room));
     setRemainingRooms(remainingRoomsArray);
 
-  }, [occupiedRooms, allrooms , building]);
+  }, [occupiedRooms, allrooms, building]);
 
   const searchBookEdit = async (date, building, from_Time, to_Time) => {
     try {
-     
+
 
       const occupiedRoomsArray = [];
       const dates = new Date(date);
@@ -398,9 +399,9 @@ useEffect(() => {
         };
 
         const response = await axios.post('/api/pmApi/getBooking', payload);
-        
+
         const data = response.data.data;
-       
+
         if (response.data.success === true) {
           // Collect occupied rooms
           data.forEach(item => {
@@ -419,7 +420,7 @@ useEffect(() => {
 
 
           setRemainingRooms(remainingRoomsArray);
-     
+
         } else {
           // If data.data.success is not true, set all rooms as remaining
 
@@ -482,6 +483,7 @@ useEffect(() => {
   };
   const handleCloseNotificatonMessages = () => {
     setConfirmOpenMessageNotification(false);
+    setIsOnline('')
   };
   const handleOpenMessages = () => {
     setConfirmOccupied(true);
@@ -568,13 +570,24 @@ useEffect(() => {
             room_id: place,
             pm_id: session.user.userid,
             attendanceId: attendanceData.data.data,
+            is_online : ev.is_online
           });
+           if(ev.is_online === false){
+            if (data.success) {
+              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
+              setStudent([]);
+              setIsOnline('')
+              getData();
+            }
 
-          if (data.success) {
-            await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
-            setStudent([]);
-            getData();
-          }
+           }else{
+            if (data.success) {
+              setStudent([]);
+              getData();
+              setIsOnline('')
+            }
+           }
+
         } else {
           setConfirmOpenMessageNotification(true);
           setMessage(attendanceData.data.message);
@@ -591,7 +604,7 @@ useEffect(() => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
     // setPlace(selectedValue)
-    
+
     setRoomName(selectedValue)
 
     setPlace(
@@ -646,6 +659,7 @@ useEffect(() => {
   }
   const handleClose = () => {
     deleteTable()
+    setIsOnline('')
     setRemainingRooms([])
     setShowForm(false);
   };
@@ -935,27 +949,53 @@ useEffect(() => {
       // }else if(CheckRooms.ok && CheckRooms.result.d.results.length <= 0){
 
       const attendanceData = await handleCreateAttendance();
-      let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
-        classID: classes,
-        day: theDate,
-        fromTime: fromTime,
-        toTime: toTime,
-        room_id: place,
-        pm_id: session.user.userid,
-        attendanceId: attendanceData.data.data,
-      });
+      if (isOnline === 'true') {
+        let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+          classID: classes,
+          day: theDate,
+          fromTime: fromTime,
+          toTime: toTime,
+          room_id: '1',
+          pm_id: session.user.userid,
+          attendanceId: attendanceData.data.data,
+          is_online: isOnline
+        });
+        // console.log("axios data ==>  ", place);
+        if (data.success) {
+          deleteTable()
+          setShowForm(false);
+          setIsClick(false);
+          setStudent([]);
+          setRemainingRooms([])
+          getData();
+        } setPortalData
+
+      } else {
+        let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+          classID: classes,
+          day: theDate,
+          fromTime: fromTime,
+          toTime: toTime,
+          room_id: place,
+          pm_id: session.user.userid,
+          attendanceId: attendanceData.data.data,
+          is_online: isOnline
+        });
+        // console.log("axios data ==>  ", place);
+        if (data.success) {
+          await handleSharePointBookingRoom(theDate, attendanceData.data.data)
+          deleteTable()
+          setShowForm(false);
+          setIsClick(false);
+          setStudent([]);
+          setRemainingRooms([])
+          getData();
+        } setPortalData
+      }
 
 
-      // console.log("axios data ==>  ", place);
-      if (data.success) {
-        await handleSharePointBookingRoom(theDate, attendanceData.data.data)
-        deleteTable()
-        setShowForm(false);
-        setIsClick(false);
-        setStudent([]);
-        setRemainingRooms([])
-        getData();
-      } setPortalData
+
+
       // }
 
     } catch (error) {
@@ -965,8 +1005,9 @@ useEffect(() => {
     // setShowForm(false)
   };
 
+
   const handleOnClickEvent = (event) => {
- 
+
     getRoomBooking()
     setConfirmOpenMessage(true);
     // setShowPortal(true);
@@ -986,46 +1027,84 @@ useEffect(() => {
     // handlePotalClose();
     // console.log("portalData", portalData)
     try {
-     
-      const payload = {
-        table: 'attendance',
-        colName: 'attendance_id',
-        id: portalData.attendanceId,
-      };
-      const payload2 = {
-        table: 'attendance_report',
-        colName: 'attendance_id',
-        id: portalData.attendanceId,
-      };
-      await axios.post('/api/pmApi/delete', payload);
-      // console.log(data1)
+      if(portalData.is_online === true){
+        const payload = {
+          table: 'attendance',
+          colName: 'attendance_id',
+          id: portalData.attendanceId,
+        };
+        const payload2 = {
+          table: 'attendance_report',
+          colName: 'attendance_id',
+          id: portalData.attendanceId,
+        };
+        await axios.post('/api/pmApi/delete', payload);
+        // console.log(data1)
+  
+        let table = 'tmpschedule';
+        let colName = 'tmpschedule_id';
+        let id = portalData.tmpschedule_id;
+        let { data } = await axios.post('/api/pmApi/delete', {
+          table,
+          colName,
+          id,
+        });
+  
+        await axios.post('/api/pmApi/delete', payload2);
+        // Delete from SharePoint booking room
+        
+  
+          if (data.rowCount > 0) {
+  
+            await deleteTable()
+            handlePotalClose();
+            getData();
+          }
 
-      let table = 'tmpschedule';
-      let colName = 'tmpschedule_id';
-      let id = portalData.tmpschedule_id;
-      let { data } = await axios.post('/api/pmApi/delete', {
-        table,
-        colName,
-        id,
-      });
-
-      await axios.post('/api/pmApi/delete', payload2);
-      // Delete from SharePoint booking room
-      const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
-
-      // console.log("deleted:  ==> ", data);
-      if (data.rowCount > 0 && success) {
-        await deleteTable()
-        handlePotalClose();
-        getData();
+      }else{
+        const payload = {
+          table: 'attendance',
+          colName: 'attendance_id',
+          id: portalData.attendanceId,
+        };
+        const payload2 = {
+          table: 'attendance_report',
+          colName: 'attendance_id',
+          id: portalData.attendanceId,
+        };
+        await axios.post('/api/pmApi/delete', payload);
+        // console.log(data1)
+  
+        let table = 'tmpschedule';
+        let colName = 'tmpschedule_id';
+        let id = portalData.tmpschedule_id;
+        let { data } = await axios.post('/api/pmApi/delete', {
+          table,
+          colName,
+          id,
+        });
+  
+        await axios.post('/api/pmApi/delete', payload2);
+        // Delete from SharePoint booking room
+        const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
+  
+          if (data.rowCount > 0 && success) {
+  
+            await deleteTable()
+            handlePotalClose();
+            getData();
+          }
       }
+
+
+
+
     } catch (error) {
       return error;
     }
 
     // // console.log(id)
   };
-
 
   // Your client-side code
   const getSharePointToken = async () => {
@@ -1089,6 +1168,7 @@ useEffect(() => {
     setRemainingRooms([])
     setAllrooms([])
     deleteTable()
+    setIsOnline('')
     setShowFormEdit(false);
   };
 
@@ -1111,7 +1191,7 @@ useEffect(() => {
     setToTimeEditSharePoint(event.to)
 
     // console.log(event);
-
+    setIsOnline(event.is_online)
 
     setFromTime(formatTime(event.from));
     setToTime(formatTime(event.to));
@@ -1221,7 +1301,7 @@ useEffect(() => {
           Space: `${building}`,
           BookedBy: `${session.user?.name}`,
           BookingDate: date, // Use the current date in the iteration
-          BookingDay:`${formattedBookingDay}`,
+          BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
         }),
@@ -1277,7 +1357,7 @@ useEffect(() => {
           Space: `${building}`,
           BookedBy: `${session.user?.name}`,
           BookingDate: dates, // Use the current date in the iteration
-          BookingDay:`${formattedBookingDay}`,
+          BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
         }),
@@ -1288,23 +1368,23 @@ useEffect(() => {
       }
 
       const data = await response.json();
-      
+
 
       // Log the ID of the newly added item
       if (data && data.d && data.d.Id) {
         // Update the SharePoint ID in the schedule
-    await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+        await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
           sharepointId: data.d.Id,
           attendanceId: attendance_id,
         });
-       
+
       }
     } catch (error) {
       console.error("Error submitting booking to SharePoint:", error.message);
     }
   };
 
-  const handleDragRoomBooking = async (date, from, to ,attendance_id) => {
+  const handleDragRoomBooking = async (date, from, to, attendance_id) => {
     try {
 
       const payload = {
@@ -1312,9 +1392,9 @@ useEffect(() => {
         Where: 'room_name',
         id: roomName,
       };
-      const dataaa  = await axios.post('/api/pmApi/getAllCourses', payload);
-      
-    
+      const dataaa = await axios.post('/api/pmApi/getAllCourses', payload);
+
+
       const accessToken = await getSharePointToken();
       const dates = new Date(date);
       const bookingDay = new Date()
@@ -1349,7 +1429,7 @@ useEffect(() => {
           Space: `${dataaa.data.data[0].room_building}`,
           BookedBy: `${session.user?.name}`,
           BookingDate: date, // Use the current date in the iteration
-          BookingDay:`${formattedBookingDay}`,
+          BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
         }),
@@ -1360,7 +1440,7 @@ useEffect(() => {
       }
 
       const data = await response.json();
-     
+
 
       // Log the ID of the newly added item
       if (data && data.d && data.d.Id) {
@@ -1369,7 +1449,7 @@ useEffect(() => {
           sharepointId: data.d.Id,
           attendanceId: attendance_id,
         });
-        
+
       }
     } catch (error) {
       console.error("Error submitting booking to SharePoint:", error.message);
@@ -1558,8 +1638,13 @@ useEffect(() => {
                           <div>{ev.teacher}</div>
                           <div>{formatTime(ev.from)}</div>
                           <div>{formatTime(ev.to)}</div>
-                          <div>{ev.room_building}</div>
-                          <div>{ev.room_name}</div>
+                          {ev.is_online === false ?
+                            <>
+                              <div>{ev.room_building}</div>
+                              <div>{ev.room_name}</div>
+                            </>
+                            : <><div>Online</div></>}
+
                           <div name="actors">
                             <span
                               name="edit"
@@ -1627,6 +1712,8 @@ useEffect(() => {
           {showForm && (
             <AddSchedules
               handleClose={handleClose}
+              isOnline={isOnline}
+              setIsOnline={setIsOnline}
               click={click}
               remainingRooms={remainingRooms}
               allroomsRef={allroomsRef}
@@ -1664,7 +1751,9 @@ useEffect(() => {
 
           {showFormEdit && (
             <AddSchedule
-            searchBookEdit={searchBookEdit}
+              isOnline={isOnline}
+              setIsOnline={setIsOnline}
+              searchBookEdit={searchBookEdit}
               remainingRooms={remainingRooms}
               handleClose={handleCloseEdit}
               handleStages={handleStages}
@@ -1718,6 +1807,8 @@ const formatTimeForInput = (time) => {
 };
 
 const AddSchedule = ({
+  isOnline,
+  setIsOnline,
   remainingRooms,
   handlePlace,
   handleFrom,
@@ -1807,49 +1898,73 @@ const AddSchedule = ({
                     </label>
                   </div>
                 </div>
-                <div className="flex flex-row  mb-4">
-                  <div className="flex flex-col">
-                    <label className="text-gray-700 mr-20 ">
-                      Building :
-                      {
-                        <CustomSelectBox
-                          options={allStages}
-                          placeholder="Select Location"
-                          onSelect={handleStages}
-                          styled={
-                            'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                          }
-                          enable={false}
-                          oldvalue={theroombuilding}
-                        />
-                      }
-                    </label>
-                  </div>
-                  <div className="flex flex-col">
-                    {(theroombuilding?.length > 0 ||
-                      (building.length > 0 && allrooms.length > 0)) && (
+                <div className="flex flex-col">
+                  <label className="text-gray-700 mr-20 ">
+                    type:
+                    <select
+                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                      onChange={(e) => setIsOnline(e.target.value)}
+                      value={isOnline}
+                    // disabled={role == "0" ? true : false}
+                    >
+                      {/* <option value="">Choose Value..</option> */}
+                      <option value="true">Online</option>
+                      <option value="false">Onsite</option>
+                    </select>
+                  </label>
+
+                </div>
+
+                {isOnline === false ?
+                  <>
+                    <div className="flex flex-row  mb-4">
+                      <div className="flex flex-col">
                         <label className="text-gray-700 mr-20 ">
-                          Location :
+                          Building :
                           {
                             <CustomSelectBox
-                              options={
-                                remainingRooms.length > 0
-                                  ? remainingRooms
-                                  : allroomsRef.current
-                              }
+                              options={allStages}
                               placeholder="Select Location"
-                              onSelect={handlePlace}
+                              onSelect={handleStages}
                               styled={
                                 'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
                               }
                               enable={false}
-                              oldvalue={theroomname}
+                              oldvalue={theroombuilding}
                             />
                           }
                         </label>
-                      )}
-                  </div>
-                </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        {(theroombuilding?.length > 0 ||
+                          (building.length > 0 && allrooms.length > 0)) && (
+                            <label className="text-gray-700 mr-20 ">
+                              Location :
+                              {
+                                <CustomSelectBox
+                                  options={
+                                    remainingRooms.length > 0
+                                      ? remainingRooms
+                                      : allroomsRef.current
+                                  }
+                                  placeholder="Select Location"
+                                  onSelect={handlePlace}
+                                  styled={
+                                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
+                                  }
+                                  enable={false}
+                                  oldvalue={theroomname}
+                                />
+                              }
+                            </label>
+                          )}
+                      </div>
+                    </div>
+
+                  </>
+                  : <></>}
+
               </div>
             </div>
             {/*footer*/}
@@ -1901,6 +2016,8 @@ const AddSchedule = ({
 };
 
 const AddSchedules = ({
+  isOnline,
+  setIsOnline,
   handlePlace,
   handleFrom,
   handleTo,
@@ -2064,37 +2181,34 @@ const AddSchedules = ({
                         </label>
                       </div>
                     </div>
-                    <div className="flex flex-row  mb-4">
-                      <div className="flex flex-col">
-                        <label className="text-gray-700 mr-20 ">
-                          Building :
-                          {
-                            <CustomSelectBox
-                              options={allStages}
-                              placeholder="Select Location"
-                              onSelect={handleStages}
-                              styled={
-                                'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                              }
-                              enable={false}
-                            />
-                          }
-                        </label>
-                      </div>
-                      <div className="flex flex-col">
-                        {(theroombuilding?.length > 0 ||
-                          (building.length > 0 && allrooms.length > 0)) && (
+                    <div className="flex flex-col">
+                      <label className="text-gray-700 mr-20 ">
+                        type:
+                        <select
+                          className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                          onChange={(e) => setIsOnline(e.target.value)}
+                          value={isOnline}
+                        // disabled={role == "0" ? true : false}
+                        >
+                          {/* <option value="">Choose Value..</option> */}
+                          <option value="">Choose Value..</option>
+                          <option value="true">Online</option>
+                          <option value="false">Onsite</option>
+                        </select>
+                      </label>
+
+                    </div>
+                    {isOnline === 'false'?
+                      <>
+                        <div className="flex flex-row  mb-4">
+                          <div className="flex flex-col">
                             <label className="text-gray-700 mr-20 ">
-                              Location :
+                              Building :
                               {
                                 <CustomSelectBox
-                                  options={
-                                    remainingRooms.length > 0
-                                      ? remainingRooms
-                                      : allroomsRef.current
-                                  }
+                                  options={allStages}
                                   placeholder="Select Location"
-                                  onSelect={handlePlace}
+                                  onSelect={handleStages}
                                   styled={
                                     'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
                                   }
@@ -2102,9 +2216,34 @@ const AddSchedules = ({
                                 />
                               }
                             </label>
-                          )}
-                      </div>
-                    </div>
+                          </div>
+                          <div className="flex flex-col">
+                            {(theroombuilding?.length > 0 ||
+                              (building.length > 0 && allrooms.length > 0)) && (
+                                <label className="text-gray-700 mr-20 ">
+                                  Location :
+                                  {
+                                    <CustomSelectBox
+                                      options={
+                                        remainingRooms.length > 0
+                                          ? remainingRooms
+                                          : allroomsRef.current
+                                      }
+                                      placeholder="Select Location"
+                                      onSelect={handlePlace}
+                                      styled={
+                                        'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
+                                      }
+                                      enable={false}
+                                    />
+                                  }
+                                </label>
+                              )}
+                          </div>
+                        </div>
+                      </>
+                      : <></>}
+
                   </div>
                 </div>
                 {/*footer*/}
@@ -2133,3 +2272,4 @@ const AddSchedules = ({
     </>
   );
 };
+

@@ -10,6 +10,8 @@ import { NotificatonMessage } from "./Dashboard/WarningMessage";
 
 export default function AddSchedule({
   handleFrom,
+  setIsOnLine,
+  isOnline,
   handleTo,
   handleLocation,
   handleSelect,
@@ -49,8 +51,8 @@ export default function AddSchedule({
   allrooms,
   building
 }) {
- 
 
+ console.log('isOnline' , isOnline)
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [remainingRooms, setRemainingRooms] = useState([]);
 
@@ -81,9 +83,9 @@ export default function AddSchedule({
               FromTime: formattedFromTime,
               ToTime: formattedToTime,
             };
-            
+
             const response = await axios.post('/api/pmApi/getBooking', payload);
-            
+
             const data = response.data.data;
             if (response.data.success === true) {
               // Collect occupied rooms
@@ -95,15 +97,15 @@ export default function AddSchedule({
               // // Set state to store occupied rooms
               // setOccupiedRooms(occupiedRoomsArray);
               // console.log(occupiedRoomsArray)
-              
+
 
               // Set state to store remaining rooms
               const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
               setRemainingRooms(remainingRoomsArray);
-              
+
             } else {
               // If data.data.success is not true, set all rooms as remaining
-         
+
               setRemainingRooms(allrooms);
             }
           } else {
@@ -112,7 +114,7 @@ export default function AddSchedule({
         }
       }
     } catch (error) {
-     
+
       return error;
     }
   };
@@ -120,7 +122,7 @@ export default function AddSchedule({
 
   useEffect(() => {
     searchBook();
-  }, [building , fromTime , toTime]);
+  }, [building, fromTime, toTime]);
 
   const handleSaveAll = async () => {
     try {
@@ -142,7 +144,7 @@ export default function AddSchedule({
   };
 
 
-  const deleteTable = async()=>{
+  const deleteTable = async () => {
     try {
       await axios.post('/api/pmApi/deleteBooking')
     } catch (error) {
@@ -331,12 +333,29 @@ export default function AddSchedule({
                               className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]" />
                           </label>
                         </div>
-
-
-
-
                       </div>
-                      <div className="flex flex-row  mb-4">
+                      <div className="flex flex-col">
+                          <label className="text-gray-700 mr-20 ">
+                            type:
+                            <select
+                              className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                              onChange={(e) => setIsOnLine(e.target.value)}
+                              value={isOnline}
+                            // disabled={role == "0" ? true : false}
+                            >
+                              {/* <option value="">Choose Value..</option> */}
+                              <option value="">Choose Value..</option>
+                              <option value="true">Online</option>
+                              <option value="false">Onsite</option>
+                            </select>
+                          </label>
+
+                        </div>
+                        {isOnline === 'true' || isOnline === ''? 
+                        <>
+                        </>:
+                        <>
+                                              <div className="flex flex-row  mb-4">
                         <div className="flex flex-col">
                           <label className="text-gray-700 mr-20 ">
                             Building :
@@ -354,7 +373,7 @@ export default function AddSchedule({
                           </label>
                         </div>
                         <div className="flex flex-col">
-                          {building.length > 0  && (
+                          {building.length > 0 && (
                             <label className="text-gray-700">
                               Location:
                               <CustomSelectBox
@@ -370,6 +389,9 @@ export default function AddSchedule({
 
 
                       </div>
+                        </>}
+
+
                     </div>
                   </div>
                   {/*footer*/}

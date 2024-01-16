@@ -7,11 +7,11 @@ async function handler(req, res) {
     try {
         const connection = await connect();
         const {
-            classId, days, fromTime, toTime, room, pmID, attendanceId
+            classId, days, fromTime, toTime, room, pmID, attendanceId , is_online
         } = req.body;
    
       
-            const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId);
+            const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
 
             await disconnect(connection)
             if (response.rowCount > 0) {

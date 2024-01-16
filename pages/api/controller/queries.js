@@ -224,15 +224,16 @@ async function createSchedule(
   toTime,
   room,
   pmID,
-  attendanceId
+  attendanceId,
+  isOnline
 ) {
   try {
     let res = null;
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
       const query = `
-        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id)
-        VALUES ($1, $2, $3, $4, $5, $6 , $7)
+        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id ,is_online)
+        VALUES ($1, $2, $3, $4, $5, $6 , $7 , $8)
       `;
       res = await connection.query(query, [
         classId,
@@ -242,6 +243,7 @@ async function createSchedule(
         room,
         pmID,
         attendanceId,
+        isOnline
       ]);
     }
     return res;
@@ -518,13 +520,14 @@ async function addSchedule(
   toTime,
   room_id,
   pm_id,
-  attendanceId
+  attendanceId,
+  isOnline
 ) {
   try {
     // classID, day, fromTime, toTime, room_id, pm_id
     const result = connection.query(
-      `INSERT INTO tmpschedule (day, from_time, to_time, room, pm_id,class_id , attendance_id) VALUES 
-      ('${day}','${fromTime}','${toTime}', ${room_id}, '${pm_id}' , ${classID} , '${attendanceId}')`
+      `INSERT INTO tmpschedule (day, from_time, to_time, room, pm_id,class_id , attendance_id , is_online) VALUES 
+      ('${day}','${fromTime}','${toTime}', ${room_id}, '${pm_id}' , ${classID} , '${attendanceId}' , '${isOnline}')`
     );
     return result;
   } catch (error) {
