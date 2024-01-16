@@ -78,18 +78,16 @@ const ClassList = ({ users }) => {
   const [messages, setMessages] = useState("");
   const [timeResult , setTimeResult] = useState([])
   // const router = useRouter();
+  const [isOnline , setIsOnLine] = useState('')
  
 
   const [roomName , setRoomName] = useState('')
-
-
 
   const [allrooms, setAllrooms] = useState([]);
 
   let allStages = [];
 
   const [building, setBuilding] = useState("");
-
 
   
   const getAllRooms = async () => {
@@ -207,6 +205,7 @@ const ClassList = ({ users }) => {
 const handleCloseNotificatonMessages = () => {
     setConfirmOccupied(false);
     setIsClicked(false)
+    setIsOnLine('')
 };
 
 
@@ -316,10 +315,10 @@ const handleCloseNotificatonMessages = () => {
 
 
     if (
-      selectedValues.length == 0 ||
+      selectedValues.length == 0 
       // fromTime.va == 0 ||
       // toTime.length == 0 ||
-      location.length == 0
+      // location.length == 0
     ) {
 
       alert("Please fill all the data");
@@ -396,39 +395,78 @@ const handleCloseNotificatonMessages = () => {
       
             // Continue with creating the schedule only if room is available and attendance record is created
             const attendance_id = createdAttendanceIds[i];
-      
-            const scheduleData = {
-              classId: classID,
-              days: [attendance_date],
-              fromTime: fromTime,
-              toTime: toTime,
-              room: location,
-              pmID: session.user.userid,
-              attendanceId: attendance_id,
-            };
-      
-            try {
-              if (attendance_id.length !== 0) {
-                const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-      
-                if (data.success) {
-                  await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
-                  deleteTable()
-                  
-                  schedulesCreated++;
-      
-                  if (schedulesCreated === totalSchedules) {
-                    setIsClicked(false);
-                    setIsAddSchedule(false);
-                    setSelectedValues([]);
+    
+            if(isOnline === 'true'){
+              let scheduleData = {
+                classId: classID,
+                days: [attendance_date],
+                fromTime: fromTime,
+                toTime: toTime,
+                room: '1',
+                pmID: session.user.userid,
+                attendanceId: attendance_id,
+                is_online:isOnline
+              };
+              try {
+                if (attendance_id.length !== 0) {
+                  const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
+        
+                  if (data.success) {
+                    deleteTable()
+                    
+                    schedulesCreated++;
+        
+                    if (schedulesCreated === totalSchedules) {
+                      setIsClicked(false);
+                      setIsAddSchedule(false);
+                      setSelectedValues([]);
+                      setIsOnLine('')
+                    }
                   }
+                } else {
+                  console.log("error");
                 }
-              } else {
-                console.log("error");
+              } catch (error) {
+                return error;
               }
-            } catch (error) {
-              return error;
+
+            }else{
+              let scheduleData = {
+                classId: classID,
+                days: [attendance_date],
+                fromTime: fromTime,
+                toTime: toTime,
+                room: location,
+                pmID: session.user.userid,
+                attendanceId: attendance_id,
+                is_online:isOnline
+              };
+              try {
+                if (attendance_id.length !== 0) {
+                  const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
+        
+                  if (data.success) {
+                    await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
+                    deleteTable()
+                    
+                    schedulesCreated++;
+        
+                    if (schedulesCreated === totalSchedules) {
+                      setIsClicked(false);
+                      setIsAddSchedule(false);
+                      setSelectedValues([]);
+                      
+                    }
+                  }
+                } else {
+                  console.log("error");
+                }
+              } catch (error) {
+                return error;
+              }
             }
+      
+
           }
         } catch (error) {
           return error;
@@ -803,6 +841,8 @@ const handleShowAll = async (tmpclass_id) => {
       {isAddSchedule && (
         <AddSchedule
         setTheRoom={setTheRoom}
+        setIsOnLine={setIsOnLine}
+        isOnline={isOnline}
         
         timeResult={timeResult}
         handleOpenNotificatonMessages={handleOpenNotificatonMessages}

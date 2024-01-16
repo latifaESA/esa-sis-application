@@ -4,7 +4,7 @@ const { addSchedule } = require("../controller/queries");
 async function handler(req, res) {
   try {
     const connection = await connect();
-    const { classID, day, fromTime, toTime, room_id, pm_id , attendanceId } = req.body;
+    const { classID, day, fromTime, toTime, room_id, pm_id , attendanceId , is_online } = req.body;
 
     // // console.log(classID, day, fromTime, toTime, room_id, pm_id)
     const response = await addSchedule(
@@ -15,11 +15,12 @@ async function handler(req, res) {
       toTime,
       room_id,
       pm_id,
-      attendanceId
+      attendanceId,
+      is_online
     );
     await disconnect(connection);
 
-    // // console.log(response)
+    console.log(response)
 
     if (response.rowCount > 0) {
       return res.status(201).json({

@@ -394,6 +394,7 @@ async function handler(req, res) {
       message: `Student Uploaded Successfully! ${countSaved} Student saved.`,
     });
   } catch (error) {
+    console.log(error.message)
     return res.status(500).json({
       success: false,
       code: 500,
