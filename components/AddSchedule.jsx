@@ -52,7 +52,7 @@ export default function AddSchedule({
   building
 }) {
 
- console.log('isOnline' , isOnline)
+
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [remainingRooms, setRemainingRooms] = useState([]);
 
@@ -412,6 +412,7 @@ export default function AddSchedule({
                           handleCancelSchedule();
                           setStudent([]);
                           setDetails([]);
+                          setIsOnLine('')
                           // setCourseType("");
                           setCourseValue("");
                           setPromotions("");

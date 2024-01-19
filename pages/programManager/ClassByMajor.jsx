@@ -301,7 +301,7 @@ export default function ClassByMajor() {
     router.push('/AccessDenied');
   };
 
-  const {majorId}= router.query;
+  const {majorId }= router.query;
 
   useEffect(() => {
     fetchClass();

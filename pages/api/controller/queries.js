@@ -559,11 +559,12 @@ async function updateSchedule(
   toTime,
   room_id,
   pm_id,
-  tmpscheduleID
+  tmpscheduleID,
+  is_online
 ) {
   try {
     const query =
-      "UPDATE tmpschedule SET class_id = $1, day = $2, from_time = $3, to_time = $4, room = $5, pm_id = $6 WHERE tmpschedule_id = $7";
+      "UPDATE tmpschedule SET class_id = $1, day = $2, from_time = $3, to_time = $4, room = $5, pm_id = $6 ,is_online=$7 WHERE tmpschedule_id = $8";
     const values = [
       classID,
       day,
@@ -571,8 +572,11 @@ async function updateSchedule(
       toTime,
       room_id,
       pm_id,
-      tmpscheduleID,
+      is_online,
+      tmpscheduleID
+    
     ];
+    console.log('query' , query , values)
     const res = await connection.query(query, values);
     return res;
   } catch (error) {
@@ -1255,6 +1259,7 @@ async function getScheduleToStudents(connection, major_id, promotion) {
      INNER JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id
      WHERE tmpclass.major_id = '${major_id}' AND (trim(tmpclass.promotion)) = '${promotion}'`;
     const result = await connection.query(query);
+  
     return result;
   } catch (error) {
     return error;
@@ -3415,6 +3420,19 @@ async function getRoom(connection ){
     return error
   }
 }
+async function deleteSharepointId(connection  , attendance_id){
+  try {
+    const query = `UPDATE tmpschedule
+    SET sharepoint_id = NULL
+    WHERE attendance_id = '${attendance_id}';
+    `
+    const res = await connection.query(query)
+    return res
+    
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
@@ -3581,5 +3599,6 @@ module.exports = {
   updateEmailForEditProfile,
 
   updateScheduleSharepointID,
-  createBooking
+  createBooking,
+  deleteSharepointId
 };
