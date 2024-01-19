@@ -17,7 +17,7 @@ export default function Schedule() {
   const redirect = () => {
     router.push('/AccessDenied');
   };
-  const {majorId} = router.query
+  const {majorId } = router.query
   useEffect(() => {
     const getMajor = async () => {
       let table = 'major';

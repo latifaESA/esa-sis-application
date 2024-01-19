@@ -79,7 +79,7 @@ const ClassListById = ({ users }) => {
   const [messages, setMessages] = useState("");
   const [timeResult , setTimeResult] = useState([])
   const router = useRouter();
-  const {majorId} = router.query
+  const {majorId } = router.query
  
 
   const [roomName , setRoomName] = useState('')

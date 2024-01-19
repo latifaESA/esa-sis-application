@@ -89,6 +89,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     useState(false);
   const [isEdit, setIsEdit] = useState(false)
   const [confirmOccupied, setConfirmOccupied] = useState(false);
+  const [attendanceId, setAttendanceId] = useState()
+  const [editOnline, setEditOnline] = useState()
 
   const getAllRooms = async () => {
     try {
@@ -217,6 +219,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         attendanceId: sched.attendance_id,
         sharepointId: sched.sharepoint_id,
         is_online: sched.is_online,
+        attendance_id: sched.attendance_id,
         color: '#00CED1',
       });
     });
@@ -570,9 +573,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             room_id: place,
             pm_id: session.user.userid,
             attendanceId: attendanceData.data.data,
-            is_online : ev.is_online
+            is_online: ev.is_online
           });
-           if(ev.is_online === false){
+          if (ev.is_online === false) {
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
               setStudent([]);
@@ -580,13 +583,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               getData();
             }
 
-           }else{
+          } else {
             if (data.success) {
               setStudent([]);
               getData();
               setIsOnline('')
             }
-           }
+          }
 
         } else {
           setConfirmOpenMessageNotification(true);
@@ -1027,7 +1030,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // handlePotalClose();
     // console.log("portalData", portalData)
     try {
-      if(portalData.is_online === true){
+      if (portalData.is_online === true) {
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1040,7 +1043,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-  
+
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1049,19 +1052,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-  
+
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
-        
-  
-          if (data.rowCount > 0) {
-  
-            await deleteTable()
-            handlePotalClose();
-            getData();
-          }
 
-      }else{
+
+        if (data.rowCount > 0) {
+
+          await deleteTable()
+          handlePotalClose();
+          getData();
+        }
+
+      } else {
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1074,7 +1077,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-  
+
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1083,17 +1086,17 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-  
+
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
         const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
-  
-          if (data.rowCount > 0 && success) {
-  
-            await deleteTable()
-            handlePotalClose();
-            getData();
-          }
+
+        if (data.rowCount > 0 && success) {
+
+          await deleteTable()
+          handlePotalClose();
+          getData();
+        }
       }
 
 
@@ -1174,8 +1177,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
 
   const handleEdit = async (e, event, date) => {
-    // searchBook()
 
+    // searchBook()
+    setAttendanceId(event.attendance_id)
+    setSharePointId(event.sharepoint_id)
+    setEditOnline(event.is_online)
 
     handleStages(event.room_building)
 
@@ -1201,9 +1207,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setTheDate(date);
     setTmpscheduleID(event.tmpschedule_id);
   };
-
-
-
 
 
   const handleSaveEdit = async (e) => {
@@ -1245,19 +1248,81 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           ? place
           : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
       pm_id: session.user.userid,
+      is_online: isOnline,
     };
-    // console.log("schedData  :", schedData);
+    if (editOnline === isOnline) {
+      if (editOnline === true) {
+        let { data } = await axios.post(
+          '/api/pmApi/updateSingleSchedule',
+          schedData
+        );
 
-    let { data } = await axios.post(
-      '/api/pmApi/updateSingleSchedule',
-      schedData
-    );
-    if (data.success) {
-      await UpdateFromSharePointBookingRoom(sharepointId, theDate)
-      getData();
-      setIsClickEdit(false);
-      setShowFormEdit(false);
+        if (data.success) {
+          getData();
+          setIsClickEdit(false);
+          setShowFormEdit(false);
+        }
+
+      } else {
+        let { data } = await axios.post(
+          '/api/pmApi/updateSingleSchedule',
+          schedData
+        );
+        if (data.success) {
+
+          await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+          getData();
+          setIsClickEdit(false);
+          setShowFormEdit(false);
+
+        }
+
+      }
+
+    }else{
+      if (isOnline === "true" ) {
+        let { data } = await axios.post(
+          '/api/pmApi/updateSingleSchedule',
+          schedData
+        );
+  
+        if (data.success) {
+          await deleteFromSharePointBookingRoom(sharepointId);
+          await axios.post('/api/pmApi/deleteSharePointId', {
+            attendance_id: attendanceId
+          })
+          getData();
+          setIsClickEdit(false);
+          setShowFormEdit(false);
+        }
+  
+      } else {
+        let { data } = await axios.post(
+          '/api/pmApi/updateSingleSchedule',
+          schedData
+        );
+        if (data.success) {
+          await handleSharePointBookingRoom(theDate, attendanceId)
+          getData();
+          setIsClickEdit(false);
+          setShowFormEdit(false);
+          if (isOnline === false) {
+            await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+            getData();
+            setIsClickEdit(false);
+            setShowFormEdit(false);
+  
+          }
+  
+  
+        }
+  
+      }
+
     }
+    // console.log("schedData  :", schedData);
+    
+
     // console.log("the update change:  ", data);
   };
 
@@ -1915,7 +1980,7 @@ const AddSchedule = ({
 
                 </div>
 
-                {isOnline === false ?
+                {isOnline === false || isOnline === 'false' ?
                   <>
                     <div className="flex flex-row  mb-4">
                       <div className="flex flex-col">
@@ -2198,7 +2263,7 @@ const AddSchedules = ({
                       </label>
 
                     </div>
-                    {isOnline === 'false'?
+                    {isOnline === 'false' ?
                       <>
                         <div className="flex flex-row  mb-4">
                           <div className="flex flex-col">
