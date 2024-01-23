@@ -619,7 +619,7 @@ async function updateSchedule(
       tmpscheduleID
     
     ];
-    console.log('query' , query , values)
+    // console.log('query' , query , values)
     const res = await connection.query(query, values);
     return res;
   } catch (error) {
@@ -3476,6 +3476,32 @@ async function deleteSharepointId(connection  , attendance_id){
     return error
   }
 }
+
+async function updateOnlineSchedule(connection ,zoom_id , zoom_url , attendance_id){
+  try {
+    const query =`UPDATE tmpschedule SET zoom_meeting_id = '${zoom_id}' , zoom_url='${zoom_url}' WHERE attendance_id ='${attendance_id}'`
+    
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+async function deleteZoomId(connection  , attendance_id){
+  try {
+    const query = `UPDATE tmpschedule
+    SET zoom_meeting_id = NULL,
+    zoom_url=NULL
+    WHERE attendance_id = '${attendance_id}';
+    `
+    const res = await connection.query(query)
+    return res
+    
+  } catch (error) {
+    return error
+  }
+}
 /* End Postegresql */
 
 module.exports = {
@@ -3640,8 +3666,9 @@ module.exports = {
   getLocationInfo,
   getStudentEmailsForEmailClass,
   updateEmailForEditProfile,
-
   updateScheduleSharepointID,
   createBooking,
-  deleteSharepointId
+  deleteSharepointId,
+  updateOnlineSchedule,
+  deleteZoomId
 };
