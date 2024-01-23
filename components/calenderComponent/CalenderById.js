@@ -275,7 +275,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         zoomId : zoom_id,
         accessToken :access_token
       }
-      const response = await axios.post('/api/zoom_api/DeleteZoom' , payload)
+      await axios.post('/api/zoom_api/DeleteZoom' , payload)
     } catch (error) {
       return error
     }
