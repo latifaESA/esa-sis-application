@@ -43,9 +43,9 @@ export default function AdminTopBar({ showNav, setShowNav }) {
         );
         countNum.data > 0
           ? // setNotCount(countNum.data)
-            dispatch(appNotification(countNum.data))
+          dispatch(appNotification(countNum.data))
           : // setNotCount(null)
-            dispatch(appNotification(null));
+          dispatch(appNotification(null));
       } catch (error) {
         console.log(error);
       }
@@ -157,9 +157,8 @@ export default function AdminTopBar({ showNav, setShowNav }) {
   return (
     <>
       <div
-        className={`fixed w-full h-16 flex justify-between items-center transition-all z-10 bg-white shadow-sm duration-[400ms] ${
-          showNav ? "pl-56" : ""
-        }`}
+        className={`fixed w-full h-16 flex justify-between items-center transition-all z-10 bg-white shadow-sm duration-[400ms] ${showNav ? "pl-56" : ""
+          }`}
       >
         <div className="pl-2 md:pl-5">
           <Bars3CenterLeftIcon
@@ -333,11 +332,12 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                 </div>
               )}
             </button>
-            {session?.user.role == "1" && (
-              <Link href="https://moodle.esa.edu.lb/">
+            {session?.user.role === "1" || session.user?.role === '2' || session.user?.role === '3' ? (
+              <a href="https://moodle.esa.edu.lb/" target="_blank" rel="noopener noreferrer">
                 <MoodleSvg />
-              </Link>
-            )}
+              </a>
+            ) : null}
+
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center">
@@ -350,10 +350,10 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                       height={70}
                       src={
                         userState.user.profileUrl &&
-                        userState.user.profileUrl !== " "
+                          userState.user.profileUrl !== " "
                           ? userState.user.profileUrl
                           : // : selection_data.user_Avatar
-                            "/images/default.jpg"
+                          "/images/default.jpg"
                       }
                     ></Image>
                   </picture>

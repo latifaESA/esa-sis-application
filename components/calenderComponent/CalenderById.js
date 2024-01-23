@@ -84,13 +84,20 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [sharepointId, setSharePointId] = useState('')
   const [fromSharePoint, setFromTimeEditSharePoint] = useState('')
   const [toSharePoint, setToTimeEditSharePoint] = useState('')
-  const [isOnline, setIsOnline] = useState()
+  const [attendanceId, setAttendanceId] = useState()
+  const [editOnline, setEditOnline] = useState()
   const [confirmOpenMessageNotification, setConfirmOpenMessageNotification] =
     useState(false);
   const [isEdit, setIsEdit] = useState(false)
+  const [isOnline, setIsOnline] = useState()
   const [confirmOccupied, setConfirmOccupied] = useState(false);
-  const [attendanceId, setAttendanceId] = useState()
-  const [editOnline, setEditOnline] = useState()
+  const [zoomUserId , setZoomUserId]= useState()
+  const [zoom_id , setZoomID] = useState()
+ 
+  const [courseName , setCourseName] = useState('')
+
+  const [allCourses, setAllCourses] = useState([]);
+  
 
   const getAllRooms = async () => {
     try {
@@ -101,8 +108,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       // console.log(error);
     }
   };
-
-
 
   const getRoomBooking = async () => {
     try {
@@ -123,6 +128,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       if (data.d.results.length > 0) {
         for (const booking of data.d.results) {
           // Format the date to 'YYYY-MM-DDT00:00:00Z'
+
           const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
 
           // Make the API call
@@ -142,11 +148,170 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return { ok: true, result: data };
 
     } catch (error) {
-      // console.error('Error checking room availability in SharePoint:', error.message);
+
       // Assuming an error means the room is not available
       return { ok: false, result: false };
     }
   };
+
+  const getZoomToken = async () => {
+    try {
+      const response = await fetch('/api/zoom_api/getZoomAccessToken', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose',
+        },
+      });
+
+      const data = await response.json();
+
+      if (!data.access_token) {
+        throw new Error('Access token not obtained');
+      }
+
+      return data.access_token;
+    } catch (error) {
+      console.error('Error obtaining SharePoint access token:', error.message);
+      throw error;
+    }
+  };
+
+  const getZoomUser = async()=>{
+    try {
+      const access_token = await getZoomToken()
+     const payload = {
+        email:session.user?.email,
+        accessToken:access_token
+      }
+      const response = await axios.post(`/api/zoom_api/getZoomUser`,payload)
+      setZoomUserId(response.data.data.id)
+     
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleCreateZoomMeeting = async (class_id, day, fromTime) => {
+    try {
+      
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      const access_token = await getZoomToken();
+
+  
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}`;
+      
+      // Convert the local time to UTC
+      const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+  
+      const payload = {
+        classId: `${class_id}`,
+        date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
+        accessToken: access_token,
+        userId: zoomUserId,
+        createAt: utcDateTime,  // You might want to choose either date or createAt
+      };
+  
+      const response = await axios.post('/api/zoom_api/createZoom', payload);
+  
+      return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
+    } catch (error) {
+      return error;
+    }
+  };
+
+
+  const handleCreateZoomMeetingEdit = async (courseName, day, fromTime) => {
+    try {
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      const access_token = await getZoomToken();
+
+  
+      // Combine the date and time
+      const localDateTime = `${formattedDate} ${fromTime}`;
+  
+      // Parse the local time
+      const parsedDateTime = moment.tz(localDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
+  
+      // Convert the local time to UTC
+      const utcDateTime = parsedDateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+  
+      const payload = {
+        classId: `${courseName}`,
+        date: utcDateTime,
+        accessToken: access_token,
+        userId: zoomUserId,
+        createAt: utcDateTime,
+      };
+  
+      const response = await axios.post('/api/zoom_api/createZoom', payload);
+  
+      return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
+    } catch (error) {
+      return error;
+    }
+  };
+  
+
+  const handleUpdateZoomOnlineSchedule = async(zoomId , zoomUrl , attendanceID )=>{
+    try {
+      
+    await axios.post(`/api/pmApi/updateScheduleMeet` ,{
+        zoom_id:zoomId , 
+        zoom_url:zoomUrl,
+        attendance_id:attendanceID
+      })
+      
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleDeleteZoom =async(zoom_id)=>{
+    try {
+      const access_token = await getZoomToken()
+      const payload ={
+        zoomId : zoom_id,
+        accessToken :access_token
+      }
+      const response = await axios.post('/api/zoom_api/DeleteZoom' , payload)
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleUpdateZoom = async(zoom_id , scheduleDate , title , fromTime )=>{
+    try {
+        
+    
+      const formattedDate = moment(scheduleDate).format('YYYY-MM-DD');
+ 
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}`;
+      
+      // Convert the local time to UTC
+      const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+   
+      const access_token = await getZoomToken()
+      const payload = {
+        zoomId :zoom_id ,
+        accessToken : access_token ,
+        date : utcDateTime,
+        classId:title
+      }
+      console.log('testtime' , payload)
+      await axios.post('/api/zoom_api/updateZoom' , payload)
+    } catch (error) {
+      return error
+    }
+  }
+
+  useEffect(()=>{
+    getZoomUser()
+  },[])
+
+ 
 
   // useEffect(() => {
   //   getRoomBooking();
@@ -156,7 +321,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
 
   useEffect(() => {
-
+    // console.log('allroom', allrooms);
   }, [allrooms]);
 
 
@@ -220,12 +385,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         sharepointId: sched.sharepoint_id,
         is_online: sched.is_online,
         attendance_id: sched.attendance_id,
+        zoom_meeting_id:sched.zoom_meeting_id,
         color: '#00CED1',
       });
     });
 
     setScheduleDate(datesArray);
-
+    console.log(schedule)
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -237,6 +403,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     } catch (error) {
       return error;
     }
+  };
+
+  const getCourse = async () => {
+    let { data } = await axios.post('/api/pmApi/getAll',{
+      table :"courses"
+    });
+    // console.log("all classes:  ==> ", data.rows);
+
+    // setAllClasses(data.rows.map(clas => clas.course_id))
+    setAllCourses(data.rows);
   };
 
   const getClass = async () => {
@@ -257,7 +433,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   useEffect(() => {
     getSchedule();
     getClass();
-
+    getCourse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schedule]);
   useEffect(() => {
@@ -308,7 +484,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             setOccupiedRooms(occupiedRoomsArray);
 
             // Set state to store remaining rooms
-            const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
+            const remainingRoomsArray = allrooms.filter(room => !occupiedRooms.includes(room));
 
             setRemainingRooms(remainingRoomsArray);
           } else {
@@ -322,7 +498,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
       }
     } catch (error) {
-      console.error(error);
+
       return error;
     }
   };
@@ -389,7 +565,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${datess}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
       const toTimes = moment(`${datess}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-
       if (fromTimes && toTimes) {
         const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
         const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
@@ -417,7 +592,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           // Set state to store remaining rooms
           const remainingRoomsArray = allrooms.filter(room =>
 
-            !occupiedRoomsArray.includes(room)
+            !occupiedRooms.includes(room)
 
           );
 
@@ -575,32 +750,36 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             attendanceId: attendanceData.data.data,
             is_online: ev.is_online
           });
-          if (ev.is_online === false) {
+
+          if(ev.is_online === true){
+            if (data.success) {
+              const response = await handleCreateZoomMeeting(ev.title , new Date(dragDateRef.current.date),ev.from)
+              await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceData.data.data)
+              setStudent([]);
+              getData();
+            }
+          }else{
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
               setStudent([]);
-              setIsOnline('')
               getData();
             }
 
-          } else {
-            if (data.success) {
-              setStudent([]);
-              getData();
-              setIsOnline('')
-            }
           }
 
+     
         } else {
           setConfirmOpenMessageNotification(true);
           setMessage(attendanceData.data.message);
         }
       } else {
         setConfirmOpenMessageNotification(true);
-        setMessage('missing data');
+        setMessage('missing data , please try again!');
       }
     }
   };
+
+
 
   const handlePlace = (selectedValue) => {
     // handlePlace
@@ -633,6 +812,23 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   const handleClass = (selectedValue) => {
+
+    const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue)
+    
+  // Now, you can access the tmpclass_id outside the loop if needed
+  if (foundCourse) {
+    const courseName = foundCourse.course_name;
+    console.log(courseName)
+    // Use courseName as needed
+   
+    setCourseName(courseName)
+
+ 
+  } else {
+    console.log("Course not found in allCourses");
+  }
+  
+
     // Do something with the selected value
     setSelect(true);
     selectedValue.length > 0 &&
@@ -650,6 +846,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       date.setHours(0);
       date.setSeconds(0);
       date.setMilliseconds(0);
+      // console.log("date.setHours(0) === > >", date.setHours(0));
+      // console.log("date.setSeconds(0) === > >", date.setSeconds(0));
+      // console.log("date.setMilliseconds(0) === > >", date.setMilliseconds(0));
+      // console.log("date===>", date);
       setTheDate(date);
     }
   };
@@ -662,8 +862,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   }
   const handleClose = () => {
     deleteTable()
-    setIsOnline('')
     setRemainingRooms([])
+    setIsOnline('')
+    setZoomID()
+    
+
     setShowForm(false);
   };
 
@@ -716,7 +919,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           } catch (error) {
             let major_id = majorId;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
-
+            // let promotion = promotionName
+            // console.log("promotion", promotions);
             const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
               promotion,
@@ -958,11 +1162,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           day: theDate,
           fromTime: fromTime,
           toTime: toTime,
-          room_id: '1',
+          room_id: '75',
           pm_id: session.user.userid,
           attendanceId: attendanceData.data.data,
           is_online: isOnline
         });
+        const response = await handleCreateZoomMeeting(courseName,theDate , fromTime)
+        
+         
+         await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceData.data.data)
+
         // console.log("axios data ==>  ", place);
         if (data.success) {
           deleteTable()
@@ -971,6 +1180,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           setStudent([]);
           setRemainingRooms([])
           getData();
+          setIsOnline('')
+          setZoomID('')
+          
         } setPortalData
 
       } else {
@@ -993,6 +1205,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           setStudent([]);
           setRemainingRooms([])
           getData();
+          setIsOnline('')
         } setPortalData
       }
 
@@ -1007,7 +1220,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
     // setShowForm(false)
   };
-
 
   const handleOnClickEvent = (event) => {
 
@@ -1030,7 +1242,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // handlePotalClose();
     // console.log("portalData", portalData)
     try {
-      if (portalData.is_online === true) {
+      if(portalData.is_online === true){
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1043,7 +1255,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-
+  
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1052,19 +1264,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-
+  
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
+        
+  
+          if (data.rowCount > 0) {
+            await handleDeleteZoom(portalData.zoom_meeting_id)
+            await deleteTable()
+            handlePotalClose();
+            getData();
+          }
 
-
-        if (data.rowCount > 0) {
-
-          await deleteTable()
-          handlePotalClose();
-          getData();
-        }
-
-      } else {
+      }else{
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1077,7 +1289,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-
+  
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1086,17 +1298,17 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-
+  
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
         const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
-
-        if (data.rowCount > 0 && success) {
-
-          await deleteTable()
-          handlePotalClose();
-          getData();
-        }
+  
+          if (data.rowCount > 0 && success) {
+  
+            await deleteTable()
+            handlePotalClose();
+            getData();
+          }
       }
 
 
@@ -1158,15 +1370,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         return { success: true }
       }
     } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
+
       return { success: false }
 
     }
   };
-
-
-
-
   const handleCloseEdit = () => {
     setRemainingRooms([])
     setAllrooms([])
@@ -1174,13 +1382,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setIsOnline('')
     setShowFormEdit(false);
   };
-
-
   const handleEdit = async (e, event, date) => {
 
     // searchBook()
+    setCourseName(event.title)
     setAttendanceId(event.attendance_id)
     setSharePointId(event.sharepoint_id)
+    setZoomID(event.zoom_meeting_id)
     setEditOnline(event.is_online)
 
     handleStages(event.room_building)
@@ -1248,7 +1456,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           ? place
           : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
       pm_id: session.user.userid,
-      is_online: isOnline,
+      is_online: isOnline
     };
     if (editOnline === isOnline) {
       if (editOnline === true) {
@@ -1258,7 +1466,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         );
 
         if (data.success) {
+          await handleUpdateZoom(zoom_id,theDate,courseName , fromTime)
           getData();
+          setIsOnline('')
           setIsClickEdit(false);
           setShowFormEdit(false);
         }
@@ -1272,6 +1482,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
           await UpdateFromSharePointBookingRoom(sharepointId, theDate)
           getData();
+          setIsOnline('')
           setIsClickEdit(false);
           setShowFormEdit(false);
 
@@ -1288,12 +1499,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
+          const response = await handleCreateZoomMeetingEdit(courseName , theDate , fromTime)
+          await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceId)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
           })
+          
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
+          setIsOnline('')
         }
   
       } else {
@@ -1303,14 +1518,20 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         );
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceId)
+          await handleDeleteZoom(zoom_id)
+          await axios.post('/api/pmApi/deleteZoomSchedule' , {
+            attendance_id : attendanceId
+          })
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
+          setIsOnline('')
           if (isOnline === false) {
             await UpdateFromSharePointBookingRoom(sharepointId, theDate)
             getData();
             setIsClickEdit(false);
             setShowFormEdit(false);
+            setIsOnline('')
   
           }
   
@@ -1366,7 +1587,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           Space: `${building}`,
           BookedBy: `${session.user?.name}`,
           BookingDate: date, // Use the current date in the iteration
-          BookingDay: `${formattedBookingDay}`,
+          BookingDay: formattedBookingDay,
           FromTime: fromTimes,
           ToTime: toTimes,
         }),
@@ -1379,7 +1600,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         return { success: true }
       }
     } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
+
       return { success: false }
 
     }
@@ -1415,13 +1636,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
+
           __metadata: {
             type: "SP.Data.BookingRoomListItem",
           },
           Title: `${roomName}`,
           Space: `${building}`,
           BookedBy: `${session.user?.name}`,
-          BookingDate: dates, // Use the current date in the iteration
+          BookingDate: dates,
           BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
@@ -1517,9 +1739,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
       }
     } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
+      return error
     }
   };
+
 
 
 
@@ -1703,12 +1926,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                           <div>{ev.teacher}</div>
                           <div>{formatTime(ev.from)}</div>
                           <div>{formatTime(ev.to)}</div>
-                          {ev.is_online === false ?
+                          {!ev.is_online ?
                             <>
                               <div>{ev.room_building}</div>
                               <div>{ev.room_name}</div>
-                            </>
-                            : <><div>Online</div></>}
+                            </> : <>
+
+                              <div>Online</div>
+                            </>}
 
                           <div name="actors">
                             <span
@@ -2256,14 +2481,14 @@ const AddSchedules = ({
                         // disabled={role == "0" ? true : false}
                         >
                           {/* <option value="">Choose Value..</option> */}
-                          <option value="">Choose Value..</option>
+                          <option value=" ">Choose Value..</option>
                           <option value="true">Online</option>
                           <option value="false">Onsite</option>
                         </select>
                       </label>
 
                     </div>
-                    {isOnline === 'false' ?
+                    {isOnline === 'false'  ?
                       <>
                         <div className="flex flex-row  mb-4">
                           <div className="flex flex-col">
@@ -2337,4 +2562,3 @@ const AddSchedules = ({
     </>
   );
 };
-

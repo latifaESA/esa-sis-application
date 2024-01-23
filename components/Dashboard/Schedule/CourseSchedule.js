@@ -75,25 +75,27 @@ const CourseSchedule = () => {
             `${event.day.split('T')[0]} ${event.to_time}`
           );
           endDateTime.setDate(endDateTime.getDate());
-
-          const title = [
-            `C-${event.course_name}`,
-            `T-${event.teacher_fullname}`,
-            `B-${event.room_building}`,
-            `R-${event.room_name}`,
-          ].map((line) => line + '\n');
-
+          let title = [];
+          let url = '';
+  
+          if (event.is_online === true) {
+            title = [`C-${event.course_name}`, `T-${event.teacher_fullname}`,`join to meeting`];
+            url = event.zoom_url;
+          } else {
+            title = [
+              `C-${event.course_name}`,
+              `T-${event.teacher_fullname}`,
+              `B-${event.room_building}`,
+              `R-${event.room_name}`,
+            ];
+          }
+  
           return {
             title: title.join(','),
             start: startDateTime,
             end: endDateTime,
-            // <<<<<<< batoul
-            //             background: '#002857',
-            // =======
-            //             // background: 'red',
-            //             // color: 'green'
-            //             className: styles.custom-event,
-            // >>>>>>> main
+            // Add the Zoom link to the event
+            url: url,
           };
         });
 

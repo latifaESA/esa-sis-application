@@ -37,7 +37,7 @@ export default async function handler(req, res) {
             if (!response.data.access_token) {
                 throw new Error('Access token not obtained');
             }
-            console.log('accessToken' , response.data.access_token)
+            
         
             res.json({ access_token: response.data.access_token });
         } catch (error) {
