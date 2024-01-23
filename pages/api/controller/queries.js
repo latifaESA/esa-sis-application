@@ -216,6 +216,43 @@ async function getClassDetails(connection, tmpclass_id) {
     return error;
   }
 }
+// async function createSchedule(
+//   connection,
+//   classId,
+//   days,
+//   fromTime,
+//   toTime,
+//   room,
+//   pmID,
+//   attendanceId,
+//   isOnline
+// ) {
+//   try {
+//     let res = null;
+//     for (let i = 0; i < days.length; i++) {
+//       const day = days[i];
+//       const query = `
+//         INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id ,is_online)
+//         VALUES ($1, $2, $3, $4, $5, $6 , $7 , $8)
+//       `;
+//       res = await connection.query(query, [
+//         classId,
+//         day,
+//         fromTime,
+//         toTime,
+//         room,
+//         pmID,
+//         attendanceId,
+//         isOnline
+//       ]);
+//     }
+//     return res;
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+// GET course based on course_id and major_name
 async function createSchedule(
   connection,
   classId,
@@ -228,14 +265,15 @@ async function createSchedule(
   isOnline
 ) {
   try {
-    let res = null;
+    let createdRowIds = [];
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
       const query = `
-        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id ,is_online)
-        VALUES ($1, $2, $3, $4, $5, $6 , $7 , $8)
+        INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id, attendance_id, is_online)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING tmpschedule_id;
       `;
-      res = await connection.query(query, [
+      const result = await connection.query(query, [
         classId,
         day,
         fromTime,
@@ -243,16 +281,21 @@ async function createSchedule(
         room,
         pmID,
         attendanceId,
-        isOnline
+        isOnline,
       ]);
+      // console.log('in the result')
+      // console.log(result)
+      // Extract the ID from the result and add it to the array
+      createdRowIds.push(result.rows[0].tmpschedule_id);
     }
-    return res;
+
+    // Return the array of created IDs
+    return createdRowIds;
   } catch (error) {
     return error;
   }
 }
 
-// GET course based on course_id and major_name
 async function filterCourseMajor(connection, course_id, major_name) {
   try {
     let query = `
