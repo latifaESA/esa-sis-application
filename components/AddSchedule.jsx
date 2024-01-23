@@ -334,61 +334,68 @@ export default function AddSchedule({
                           </label>
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                          <label className="text-gray-700 mr-20 ">
-                            type:
-                            <select
-                              className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                              onChange={(e) => setIsOnLine(e.target.value)}
-                              value={isOnline}
-                            // disabled={role == "0" ? true : false}
-                            >
-                              {/* <option value="">Choose Value..</option> */}
-                              <option value="">Choose Value..</option>
-                              <option value="true">Online</option>
-                              <option value="false">Onsite</option>
-                            </select>
-                          </label>
-
-                        </div>
-                        {isOnline === 'true' || isOnline === ''? 
-                        <>
-                        </>:
-                        <>
-                                              <div className="flex flex-row  mb-4">
-                        <div className="flex flex-col">
-                          <label className="text-gray-700 mr-20 ">
-                            Building :
-                            {
-                              <CustomSelectBox
-                                options={allStages}
-                                placeholder="Select Location"
-                                onSelect={handleStages}
-                                styled={
-                                  "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                                }
-                                enable={false}
-                              />
-                            }
-                          </label>
-                        </div>
-                        <div className="flex flex-col">
-                          {building.length > 0 && (
-                            <label className="text-gray-700">
-                              Location:
-                              <CustomSelectBox
-                                options={remainingRooms}
-                                placeholder="Select Location"
-                                onSelect={handleLocation}
-                                styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                                enable={false}
-                              />
-                            </label>
-                          )}
-                        </div>
-
-
+                      <div className="flex flex">
+                        <label className="text-gray-700 mr-20 ">
+                          type:
+                          <select
+                            className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                            onChange={(e) => setIsOnLine(e.target.value)}
+                            value={isOnline}
+                          // disabled={role == "0" ? true : false}
+                          >
+                            {/* <option value="">Choose Value..</option> */}
+                            <option value="">Choose Value..</option>
+                            <option value="true">Online</option>
+                            <option value="false">Onsite</option>
+                          </select>
+                        </label>
+                        {/* {isOnline === 'true' &&
+                          <>
+                              <label className="text-gray-700 mr-20 ">
+                                Topic :
+                                <div>
+                                  <input type="text" />
+                                </div>
+                              </label>
+                          </>
+                        } */}
                       </div>
+                      {isOnline === 'false' &&
+                        <>
+                          <div className="flex flex-row  mb-4">
+                            <div className="flex flex-col">
+                              <label className="text-gray-700 mr-20 ">
+                                Building :
+                                {
+                                  <CustomSelectBox
+                                    options={allStages}
+                                    placeholder="Select Location"
+                                    onSelect={handleStages}
+                                    styled={
+                                      "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                                    }
+                                    enable={false}
+                                  />
+                                }
+                              </label>
+                            </div>
+                            <div className="flex flex-col">
+                              {building.length > 0 && (
+                                <label className="text-gray-700">
+                                  Location:
+                                  <CustomSelectBox
+                                    options={remainingRooms}
+                                    placeholder="Select Location"
+                                    onSelect={handleLocation}
+                                    styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
+                                    enable={false}
+                                  />
+                                </label>
+                              )}
+                            </div>
+
+
+                          </div>
                         </>}
 
 

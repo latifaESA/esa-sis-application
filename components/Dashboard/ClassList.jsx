@@ -6,7 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
@@ -76,20 +76,22 @@ const ClassList = ({ users }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [messages, setMessages] = useState("");
-  const [timeResult , setTimeResult] = useState([])
+  const [timeResult, setTimeResult] = useState([])
   // const router = useRouter();
-  const [isOnline , setIsOnLine] = useState('')
- 
+  const [isOnline, setIsOnLine] = useState(false)
 
-  const [roomName , setRoomName] = useState('')
+
+  const [roomName, setRoomName] = useState('')
 
   const [allrooms, setAllrooms] = useState([]);
 
   let allStages = [];
 
   const [building, setBuilding] = useState("");
+  const [zoomUserId, setZoomUserId] = useState()
+  const [zoomAccessToken, setZoomAccessToken] = useState("")
 
-  
+
   const getAllRooms = async () => {
     try {
       let table = "rooms";
@@ -114,24 +116,23 @@ const ClassList = ({ users }) => {
   //   setToTime(selectedValue);
   // };
 
-
-  const handleFrom = (e)=>{
+  const handleFrom = (e) => {
     setFromTime(e.target.value)
-    
+
   };
-  const handleTo = async(e)=>{
+  const handleTo = async (e) => {
     setToTime(e.target.value)
-   
-    
+
+
   }
- 
-  const handleLocation = async(selectedValue) => {
-   
-   setRoomName(selectedValue)
+
+  const handleLocation = async (selectedValue) => {
+
+    setRoomName(selectedValue)
 
     setLocation(
       selectedValue.length > 0 &&
-        theRoom.filter((room) => room.room_name === selectedValue)[0].room_id
+      theRoom.filter((room) => room.room_name === selectedValue)[0].room_id
     );
 
 
@@ -152,7 +153,7 @@ const ClassList = ({ users }) => {
       allStages.push(room.room_building);
     }
   });
-  const deleteTable = async()=>{
+  const deleteTable = async () => {
     try {
       await axios.post('/api/pmApi/deleteBooking')
     } catch (error) {
@@ -160,12 +161,12 @@ const ClassList = ({ users }) => {
     }
   }
 
-  const handleSelect = async(value) => {
-   
-  
+  const handleSelect = async (value) => {
+
+
     const isSelected = selectedValues.includes(value);
     if (isSelected) {
-  
+
       setSelectedValues(selectedValues.filter((val) => val !== value));
 
 
@@ -182,7 +183,7 @@ const ClassList = ({ users }) => {
       setSelectedValues([...selectedValues, value]);
 
 
-    
+
       // console.log([...selectedValues, value]);
       // console.log(selectedValues.length);
     }
@@ -201,12 +202,12 @@ const ClassList = ({ users }) => {
   };
   const handleOpenNotificatonMessages = () => {
     setConfirmOccupied(true);
-};
-const handleCloseNotificatonMessages = () => {
+  };
+  const handleCloseNotificatonMessages = () => {
     setConfirmOccupied(false);
     setIsClicked(false)
     setIsOnLine('')
-};
+  };
 
 
 
@@ -260,7 +261,7 @@ const handleCloseNotificatonMessages = () => {
     setToTime("");
     setLocation("");
     setSelectedValues([]);
-  }; 
+  };
   // const getWeekDays = async (startDate, endDate, weekdays) => {
   //   const result = [];
   //   const currentDate = new Date(startDate);
@@ -271,7 +272,7 @@ const handleCloseNotificatonMessages = () => {
   //     }
   //     currentDate.setDate(currentDate.getDate() + 1);
   //   }
-     
+
   //   return result;
   // };
   // const startDate = new Date(fromDate);
@@ -281,10 +282,10 @@ const handleCloseNotificatonMessages = () => {
   const getWeekDays = async (startDate, endDate, weekdays) => {
     const result = [];
     const currentDate = new Date(startDate);
- 
+
     while (currentDate <= endDate) {
       if (weekdays.includes(currentDate.getDay())) {
-      
+
         result.push(currentDate.toISOString());
       }
       currentDate.setDate(currentDate.getDate() + 1);
@@ -295,27 +296,77 @@ const handleCloseNotificatonMessages = () => {
   const startDate = new Date(fromDate);
   const endDate = new Date(toDate);
 
+  useEffect(() => {
+    getUser()
+  }, [])
+  const getZoomAccessToken = async () => {
+    try {
+      const { data } = await axios.get('/api/pmApi/getZoomAccessToken')
+      setZoomAccessToken(data.access_token)
+      return data.access_token;
+    } catch (error) {
+      console.log('error access token : ', error)
+      return
+    }
+  }
 
+  const getUser = async () => {
+    try {
+      const theZoomToke = await getZoomAccessToken()
+      let payload = {
+        email: session?.user?.email,
+        accessToken: theZoomToke
+      }
+      const { data } = await axios.post(`/api/pmApi/getZoomUser`, payload)
+      setZoomUserId(data.data.id)
+      return;
+    } catch (error) {
+      console.log('error get user : ', error)
+      return
+    }
+  }
 
   const handleSaveSchedule = async () => {
-  
-    // e.preventDefault();
-    // console.log("save");
 
-    // Usage example:
-  
-
-
-  
 
     const weekDays = await getWeekDays(startDate, endDate, selectedValues);
-
+    // Usage example:
+    // if (isOnline) {
+    //   try {
+    //     console.log('online')
+    //     console.log('classId ', classID,
+    //       'days ', selectedValues,
+    //       'fromTime ', fromTime,
+    //       'toTime ', toTime,
+    //       'room ', '1',
+    //       'pmID ', session.user.userid,
+    //       // 'attendanceId ', attendance_id,
+    //       'is_online ', isOnline
+    //     )
+    //     const weekDays = selectedValues.map(item => item + 1);
+    //     const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
+    //     const combinedToDateTime = `${toDate}T${toTime}:00Z`;
+    //     console.log(' from data : ', fromDate)
+    //     console.log(' to data : ', toDate)
+    //     console.log(' weekDays : ', weekDays.join(','))
+    //     console.log("combinedFromDateTime : ", combinedFromDateTime)
+    //     console.log("combinedToDateTime : ", combinedToDateTime)
+    //     // const getUsers = await axios.get(`/api/pmApi/getZoomDetails?apiUrl=users&token=${data.access_token}`);
+    //     // const getUser = await axios.post(`/api/pmApi/getZoomUser`, {email :  session?.user?.email, accessToken : data.access_token})
+    //     // let targetedID = getUsers.data.data.users.filter(arr => arr.email === session?.user?.email)[0].id;
+    //     // console.log('the targeted id : ', getUser)
+    //     return;
+    //   } catch (error) {
+    //     console.log('the errror : ', error)
+    //   }
+    // }
+    // return
     // console.log("weekDays :: ", weekDays);
     // console.log("weekDays :: ", selectedValues);
 
 
     if (
-      selectedValues.length == 0 
+      selectedValues.length == 0
       // fromTime.va == 0 ||
       // toTime.length == 0 ||
       // location.length == 0
@@ -327,7 +378,7 @@ const handleCloseNotificatonMessages = () => {
       // console.log("weekDays inside: ", weekDays);
       // console.log("weekDays inside: ", selectedValues);
       setIsClicked(true);
-      
+
       let createTheSchedule = async () => {
         const formattedDates = weekDays.map((date) =>
           new Date(date).toISOString()
@@ -335,7 +386,7 @@ const handleCloseNotificatonMessages = () => {
         // console.log("date", formattedDates);
         setWeekDays(formattedDates);
 
-     
+
         setIsClicked(true);
         let schedulesCreated = 0; // Initialize a counter for created schedules
         const totalSchedules = weekDays.length; // Calculate the total number of schedules
@@ -347,20 +398,20 @@ const handleCloseNotificatonMessages = () => {
           fromTime: fromTime,
           toTime: toTime,
           room: location,
-          rooms:building
+          rooms: building
         };
 
         try {
           const createdAttendanceIds = [];
-      
+
           for (let i = 0; i < weekDays.length; i++) {
             const attendance_date = weekDays[i];
             const payload2 = { ...payload, attendance_date };
-      
+
             try {
               // Perform room availability check
               // const roomAvailabilityResponse = await CheckRoomISharePoint(roomName, weekDays, i);
-           
+
               // if (roomAvailabilityResponse.ok && roomAvailabilityResponse.result.d.results.length >0) {
 
               //   // Room is not available, stop the process
@@ -368,22 +419,22 @@ const handleCloseNotificatonMessages = () => {
               //   setMessages("Room not available");
               //   return; // Stop the process
               // } else if (roomAvailabilityResponse.ok && roomAvailabilityResponse.result.d.results.length <= 0) {
-                // Room is available, continue with creating attendance record
-                
-                const data3 = await axios.post("/api/pmApi/createAttendanceReport", payload2);
-      
-                const attendance_id = data3.data.data;
-                createdAttendanceIds.push(attendance_id);
-      
-                if (data3.data.code === 201) {
-                  for (let j = 0; j < student.length; j++) {
-                    const student_id = student[j].student_id;
-                    await axios.post("/api/pmApi/createAttendanceStudent", {
-                      attendance_id,
-                      student_id,
-                    });
-                  }
+              // Room is available, continue with creating attendance record
+
+              const data3 = await axios.post("/api/pmApi/createAttendanceReport", payload2);
+
+              const attendance_id = data3.data.data;
+              createdAttendanceIds.push(attendance_id);
+
+              if (data3.data.code === 201) {
+                for (let j = 0; j < student.length; j++) {
+                  const student_id = student[j].student_id;
+                  await axios.post("/api/pmApi/createAttendanceStudent", {
+                    attendance_id,
+                    student_id,
+                  });
                 }
+              }
               // }
             } catch (error) {
               if (error.response && error.response.data.success === false) {
@@ -392,11 +443,11 @@ const handleCloseNotificatonMessages = () => {
                 return; // Stop the process
               }
             }
-      
+
             // Continue with creating the schedule only if room is available and attendance record is created
             const attendance_id = createdAttendanceIds[i];
-    
-            if(isOnline === 'true'){
+
+            if (isOnline === 'true') {
               let scheduleData = {
                 classId: classID,
                 days: [attendance_date],
@@ -405,18 +456,54 @@ const handleCloseNotificatonMessages = () => {
                 room: '1',
                 pmID: session.user.userid,
                 attendanceId: attendance_id,
-                is_online:isOnline
+                is_online: isOnline
               };
               try {
                 if (attendance_id.length !== 0) {
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-        
+                  console.log('the data of create schedule : ', data)
+
                   if (data.success) {
                     deleteTable()
-                    
+
                     schedulesCreated++;
-        
+
                     if (schedulesCreated === totalSchedules) {
+
+                      const weekDaysNumbers = selectedValues.map(item => item + 1);
+                      const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
+                      const combinedToDateTime = `${toDate}T${toTime}:00Z`;
+                      
+
+                      console.log('the user access token : ', zoomAccessToken)
+                      console.log('the user id : ', zoomUserId)
+                      let payload = {
+                        accessToken : zoomAccessToken, 
+                        userId : zoomUserId,
+                        requestBody : {
+                          topic: `${classID}`,
+                          type: 3,
+                          start_time: combinedFromDateTime,
+                          recurrence: {
+                            type: 2,
+                            repeat_interval: 1,
+                            weekly_days: weekDaysNumbers.join(','),  // 1 represents Monday, 4 represents Thursday
+                            end_date_time: combinedToDateTime
+                          },
+                          settings: {
+                            join_before_host: true,
+                            auto_recording: "local",
+                            mute_upon_entry: true,
+                            waiting_room: false,
+                            registrants_email_notification: true,
+                          },
+                        }
+                      }
+
+                      const data = await axios.post("/api/pmApi/createZoomMeet", payload)
+                      console.log('the data of creating a meeting : ', data)
+                      // create zoom
+                      // update the schedule
                       setIsClicked(false);
                       setIsAddSchedule(false);
                       setSelectedValues([]);
@@ -430,7 +517,7 @@ const handleCloseNotificatonMessages = () => {
                 return error;
               }
 
-            }else{
+            } else {
               let scheduleData = {
                 classId: classID,
                 days: [attendance_date],
@@ -439,23 +526,23 @@ const handleCloseNotificatonMessages = () => {
                 room: location,
                 pmID: session.user.userid,
                 attendanceId: attendance_id,
-                is_online:isOnline
+                is_online: isOnline
               };
               try {
                 if (attendance_id.length !== 0) {
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-        
+
                   if (data.success) {
                     await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
                     deleteTable()
-                    
+
                     schedulesCreated++;
-        
+
                     if (schedulesCreated === totalSchedules) {
                       setIsClicked(false);
                       setIsAddSchedule(false);
                       setSelectedValues([]);
-                      
+
                     }
                   }
                 } else {
@@ -465,70 +552,70 @@ const handleCloseNotificatonMessages = () => {
                 return error;
               }
             }
-      
+
 
           }
         } catch (error) {
           return error;
         }
-        
+
       };
       createTheSchedule();
     }
   };
 
 
-  
 
 
-// Your client-side code
-const getSharePointToken = async () => {
-  try {
-    const response = await fetch('/api/pmApi/getsharePointToken', {
-      method: 'GET',
-      headers: {
-        'Accept':'application/json;odata=verbose',
-        'Content-Type':'application/json;odata=verbose',
+
+  // Your client-side code
+  const getSharePointToken = async () => {
+    try {
+      const response = await fetch('/api/pmApi/getsharePointToken', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json;odata=verbose',
+          'Content-Type': 'application/json;odata=verbose',
+        }
+      });
+
+      const data = await response.json();
+
+      if (!data.access_token) {
+        throw new Error('Access token not obtained');
       }
-    });
 
-    const data = await response.json();
-
-    if (!data.access_token) {
-      throw new Error('Access token not obtained');
+      return data.access_token;
+    } catch (error) {
+      console.error('Error obtaining SharePoint access token:', error.message);
+      throw error;
     }
+  };
 
-    return data.access_token;
-  } catch (error) {
-    console.error('Error obtaining SharePoint access token:', error.message);
-    throw error;
-  }
-};
-  
   const handleSharePointBookingRoom = async (week, attendance_id, currentIndex) => {
     try {
       const accessToken = await getSharePointToken();
- 
+
       if (currentIndex < week.length) {
         const bookingDay = new Date()
         const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-      const dates = new Date(week[currentIndex]);
-  
-      const formattedDate = moment(dates).format('YYYY-MM-DD');
-      const fromTimeSplit = fromTime.split('+')[0];
-      const toTimeSplit = toTime.split('+')[0];
-  
-      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 4; // Change this value if daylight saving time is not in effect
-  
-      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-  
+        const dates = new Date(week[currentIndex]);
+
+        const formattedDate = moment(dates).format('YYYY-MM-DD');
+        const fromTimeSplit = fromTime.split('+')[0];
+        const toTimeSplit = toTime.split('+')[0];
+
+        // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+        const utcOffset = 4; // Change this value if daylight saving time is not in effect
+
+        // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+        const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+        const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+
         const apiUrl =
           "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-  
-        
+
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -537,38 +624,38 @@ const getSharePointToken = async () => {
             Authorization: `Bearer ${accessToken}`
           },
           body: JSON.stringify({
-            
+
             __metadata: {
               type: "SP.Data.BookingRoomListItem",
             },
             Title: `${roomName}`,
             Space: `${building}`,
             BookedBy: `${session.user?.name}`,
-            BookingDate: week[currentIndex], 
-            BookingDay:`${formattedBookingDay}`,
-            FromTime:fromTimes,
-            ToTime:toTimes,
+            BookingDate: week[currentIndex],
+            BookingDay: `${formattedBookingDay}`,
+            FromTime: fromTimes,
+            ToTime: toTimes,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
+
         const data = await response.json();
         // console.log("Booking submitted to SharePoint:", data);
-  
+
         // Log the ID of the newly added item
         if (data && data.d && data.d.Id) {
-       
-  
+
+
           // Update the SharePoint ID in the schedule
-           await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+          await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
             sharepointId: data.d.Id,
             attendanceId: attendance_id,
           });
           // console.log('Update SharePoint ID response:', updateResponse);
-  
+
           // Continue to the next date in the array
           handleSharePointBookingRoom(week, attendance_id, currentIndex + 1);
         }
@@ -578,8 +665,8 @@ const getSharePointToken = async () => {
     }
   };
 
-const handleShowAll = async (tmpclass_id) => {
-    console.log( tmpclass_id);
+  const handleShowAll = async (tmpclass_id) => {
+    console.log(tmpclass_id);
   };
   setTimeout(() => {
     setMessage("");
@@ -590,9 +677,9 @@ const handleShowAll = async (tmpclass_id) => {
   const getRoomBooking = async () => {
     try {
       const accessToken = await getSharePointToken();
-  
+
       const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
-  
+
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -601,17 +688,17 @@ const handleShowAll = async (tmpclass_id) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       const data = await response.json();
       if (data.d.results.length > 0) {
         const start = new Date().getMilliseconds()
         for (const booking of data.d.results) {
           // Format the date to 'YYYY-MM-DDT00:00:00Z'
-         
-          
+
+
           const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-        
-  
+
+
           // Make the API call
           await axios.post('/api/pmApi/createBooking', {
             bookingId: booking.ID,
@@ -625,18 +712,18 @@ const handleShowAll = async (tmpclass_id) => {
           // console.log(result);
         }
         const end = new Date().getMilliseconds() - start
-        console.log('end' , end)
+        console.log('end', end)
       }
-  
+
       return { ok: true, result: data };
-  
+
     } catch (error) {
       console.error('Error checking room availability in SharePoint:', error.message);
       // Assuming an error means the room is not available
       return { ok: false, result: false };
     }
   };
-  
+
   // useEffect(() => {
   //   getRoomBooking();
   // }, []);
@@ -723,7 +810,7 @@ const handleShowAll = async (tmpclass_id) => {
     {
       field: "action",
       headerName: "Action",
-      width: `${(session.user.role === "2" || session.user.role === "3" )? 300 : 150}`,
+      width: `${(session.user.role === "2" || session.user.role === "3") ? 300 : 150}`,
       headerAlign: "center",
       align: "center",
       sortable: false,
@@ -742,7 +829,7 @@ const handleShowAll = async (tmpclass_id) => {
                 setClassID(params.row.tmpclass_id),
                 setToDate(params.row.enddate),
                 setFromDate(params.row.startdate),
-                
+
                 getAllRooms();
             }}
             // disabled={params.id !== presentEnable}
@@ -840,19 +927,19 @@ const handleShowAll = async (tmpclass_id) => {
       </div> */}
       {isAddSchedule && (
         <AddSchedule
-        setTheRoom={setTheRoom}
-        setIsOnLine={setIsOnLine}
-        isOnline={isOnline}
-        
-        timeResult={timeResult}
-        handleOpenNotificatonMessages={handleOpenNotificatonMessages}
-        handleCloseNotificatonMessages={handleCloseNotificatonMessages}
-        messages={messages}
-        allrooms={allrooms}
-        allStages={allStages}
-        handleStages={handleStages}
-        building={building}
-        confirmOccupied={confirmOccupied}
+          setTheRoom={setTheRoom}
+          setIsOnLine={setIsOnLine}
+          isOnline={isOnline}
+
+          timeResult={timeResult}
+          handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+          handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+          messages={messages}
+          allrooms={allrooms}
+          allStages={allStages}
+          handleStages={handleStages}
+          building={building}
+          confirmOccupied={confirmOccupied}
           handleFrom={handleFrom}
           handleTo={handleTo}
           setIsClicked={setIsClicked}

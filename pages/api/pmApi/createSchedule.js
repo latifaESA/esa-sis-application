@@ -13,6 +13,7 @@ async function handler(req, res) {
       
             const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
 
+            console.log('the response : ', response)
             await disconnect(connection)
             if (response.rowCount > 0) {
                 return res.status(201).json({

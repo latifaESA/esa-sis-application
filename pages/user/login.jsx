@@ -125,7 +125,7 @@ export default function LoginScreen() {
   useEffect(() => {
     // // console.log('this is session');
     // // console.log(session?.user.status);
-
+console.log('session?.user  : ', session?.user)
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === "1") {
         router.push(redirect || "/student/main");
@@ -189,8 +189,10 @@ export default function LoginScreen() {
         password,
       });
       // temporary commented
+      console.log('the result : ', result)
       if (!result?.error) {
         const userSession = await getSession();
+        console.log('userSession : ', userSession)
         // // console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
