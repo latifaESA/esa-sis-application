@@ -302,7 +302,7 @@ const ClassList = ({ users }) => {
   }, [])
   const getZoomAccessToken = async () => {
     try {
-      const { data } = await axios.get('/api/pmApi/getZoomAccessToken')
+      const { data } = await axios.get('/api/zoom_api/getZoomAccessToken')
       setZoomAccessToken(data.access_token)
       return data.access_token;
     } catch (error) {
@@ -318,7 +318,7 @@ const ClassList = ({ users }) => {
         email: session?.user?.email,
         accessToken: theZoomToke
       }
-      const { data } = await axios.post(`/api/pmApi/getZoomUser`, payload)
+      const { data } = await axios.post(`/api/zoom_api/getZoomUser`, payload)
       setZoomUserId(data.data.id)
       return;
     } catch (error) {
@@ -468,7 +468,6 @@ const ClassList = ({ users }) => {
                     schedulesCreated++;
                     
                     if (schedulesCreated === totalSchedules) {
-                      
                       const weekDaysNumbers = selectedValues.map(item => item + 1);
                       const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
                       const combinedToDateTime = `${toDate}T${toTime}:00Z`;
@@ -495,14 +494,13 @@ const ClassList = ({ users }) => {
                           },
                         }
                       }
-
-                      const {data} = await axios.post("/api/pmApi/createZoomMeet", payload)
+                      const {data} = await axios.post("/api/zoom_api/createZoomMeet", payload)
                       let payload1 = {
                         tmpscheduleIds : allID,
                         meetingIds : data.data.id,
                         zoomUrls : data.data.start_url
                       }
-                      await axios.post("/api/pmApi/updateScheduleZoom", payload1)
+                      await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
                       // create zoom
                       // update the schedule
                       setIsClicked(false);
