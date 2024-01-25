@@ -1,5 +1,5 @@
 const { connect, disconnect } = require("../../../utilities/db");
-const { createSchedule } = require('../controller/queries');
+const { updateZoomInfo } = require('../controller/queries');
 
 
 async function handler(req, res) {
@@ -7,11 +7,11 @@ async function handler(req, res) {
     try {
         const connection = await connect();
         const {
-            classId, days, fromTime, toTime, room, pmID, attendanceId , is_online
+            tmpscheduleIds, meetingIds, zoomUrls
         } = req.body;
    
       
-            const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
+            const response = await updateZoomInfo(connection,tmpscheduleIds, meetingIds, zoomUrls);
 
             await disconnect(connection)
             if (response.rowCount > 0) {

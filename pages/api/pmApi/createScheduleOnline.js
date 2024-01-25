@@ -1,5 +1,5 @@
 const { connect, disconnect } = require("../../../utilities/db");
-const { createSchedule } = require('../controller/queries');
+const { createScheduleOnline } = require('../controller/queries');
 
 
 async function handler(req, res) {
@@ -9,16 +9,16 @@ async function handler(req, res) {
         const {
             classId, days, fromTime, toTime, room, pmID, attendanceId , is_online
         } = req.body;
-   
       
-            const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
-
+            const response = await createScheduleOnline(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
             await disconnect(connection)
-            if (response.rowCount > 0) {
+            // if (response.rowCount > 0) {
+                if(response.length > 0){
                 return res.status(201).json({
                     success: true,
                     code: 201,
                     message: 'Schedule created successfully',
+                    scheduleId: response
                 })
             } else {
                 return res.status(201).json({

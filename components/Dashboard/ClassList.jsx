@@ -86,6 +86,7 @@ const ClassList = ({ users }) => {
   const [allrooms, setAllrooms] = useState([]);
 
   let allStages = [];
+  let allID = []
 
   const [building, setBuilding] = useState("");
   const [zoomUserId, setZoomUserId] = useState()
@@ -460,23 +461,18 @@ const ClassList = ({ users }) => {
               };
               try {
                 if (attendance_id.length !== 0) {
-                  const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-                  console.log('the data of create schedule : ', data)
-
+                  const { data } = await axios.post("/api/pmApi/createScheduleOnline", scheduleData);
                   if (data.success) {
                     deleteTable()
-
+                    allID.push(...data.scheduleId)
                     schedulesCreated++;
-
+                    
                     if (schedulesCreated === totalSchedules) {
-
+                      
                       const weekDaysNumbers = selectedValues.map(item => item + 1);
                       const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
                       const combinedToDateTime = `${toDate}T${toTime}:00Z`;
                       
-
-                      console.log('the user access token : ', zoomAccessToken)
-                      console.log('the user id : ', zoomUserId)
                       let payload = {
                         accessToken : zoomAccessToken, 
                         userId : zoomUserId,
@@ -492,16 +488,21 @@ const ClassList = ({ users }) => {
                           },
                           settings: {
                             join_before_host: true,
-                            auto_recording: "local",
+                            auto_recording: "cloud",
                             mute_upon_entry: true,
-                            waiting_room: false,
+                            waiting_room: true,
                             registrants_email_notification: true,
                           },
                         }
                       }
 
-                      const data = await axios.post("/api/pmApi/createZoomMeet", payload)
-                      console.log('the data of creating a meeting : ', data)
+                      const {data} = await axios.post("/api/pmApi/createZoomMeet", payload)
+                      let payload1 = {
+                        tmpscheduleIds : allID,
+                        meetingIds : data.data.id,
+                        zoomUrls : data.data.start_url
+                      }
+                      await axios.post("/api/pmApi/updateScheduleZoom", payload1)
                       // create zoom
                       // update the schedule
                       setIsClicked(false);
@@ -535,7 +536,6 @@ const ClassList = ({ users }) => {
                   if (data.success) {
                     await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
                     deleteTable()
-
                     schedulesCreated++;
 
                     if (schedulesCreated === totalSchedules) {
