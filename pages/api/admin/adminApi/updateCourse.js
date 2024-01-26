@@ -7,6 +7,7 @@ async function handler(req, res) {
     const connection = await connect();
     // // console.log(course_id, major_name)
     const data = await updateCourse(connection, course_id, major_name);
+    
     // // console.log('the dta is: ',data)
     return res.status("200").send(data);
   } catch (error) {

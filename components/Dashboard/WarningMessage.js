@@ -56,7 +56,7 @@ function WarningConfirmChangeEmail({
     >
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
         <p className="text-gray-700 mb-4">
-          Are you sure you want to Change this Users Email ?
+          Are you sure you want to Change?
         </p>
         <div className="flex justify-end">
           <button

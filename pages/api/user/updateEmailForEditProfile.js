@@ -5,10 +5,10 @@ async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const { email, user_id } = req.body;
+    const { email, status, mobile_number, user_id } = req.body;
 
-    console.log(email, user_id);
-    const data = await updateEmailForEditProfile(connection, email, user_id);
+   
+    const data = await updateEmailForEditProfile(connection, email, status, mobile_number,user_id);
     // console.log(data);
 
     await disconnect(connection);

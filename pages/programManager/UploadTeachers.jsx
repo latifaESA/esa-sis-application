@@ -41,7 +41,7 @@ export default function UploadTeachers({setOpenUpload}) {
     setConfirmOpenMessage(false);
   };
   const validateColumnHeaders = (columnA) => {
-    const templateFields = ["FirstName", "LastName", "Email"]; // Replace with your actual template fields
+    const templateFields = ["FirstName", "LastName", "Email" , "MobileNumber"]; // Replace with your actual template fields
 
     // Check if all template fields exist in columnA
     const missingFields = templateFields.filter(
@@ -158,18 +158,21 @@ export default function UploadTeachers({setOpenUpload}) {
           for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
             const record = records[rowIndex];
             const teacher_id = generateID(5);
+           
 
             const teacherData = {
               teacher_id,
               firstName: record[0], // Assuming FirstName is in the first column
               lastName: record[1], // Assuming LastName is in the second column
               email: record[2], // Assuming Email is in the third column
+              mobile:record[3]
               // ... (other data)
             };
 
+
             teacherDataArray.push(teacherData);
           }
-
+          
           if (isValidHeaders) {
             // Proceed with uploading and other actions
             try {
@@ -184,7 +187,7 @@ export default function UploadTeachers({setOpenUpload}) {
                 const record = records[rowIndex];
                
                 if (record[0] === '' || record[1] === '' || record[2] === '' ||
-                  record[0] === undefined || record[1] === undefined || record[2] === undefined) {
+                  record[0] === undefined || record[1] === undefined || record[2] === undefined ) {
                   setIsClick(false);
                   setConfirmOpenMessage(true);
                   setMessages("No data was uploaded due to missing required information.");

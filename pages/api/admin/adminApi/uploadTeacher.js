@@ -160,11 +160,13 @@ async function handler(req, res) {
       try {
         // const teacherId = fields[0].teacher_id
           const teacherArray = Object.values(fields);
+          console.log('admin' , teacherArray)
 
         const uploadPromises = teacherArray.map(async (teacher) => {
           const exist = await teacherExist(connection ,
             teacher.email
             )
+            console.log('teacher' , teacher)
           
             if(exist){
               return res.status(200).json({
@@ -179,7 +181,7 @@ async function handler(req, res) {
             teacher.email === undefined ||
             teacher.firstName === '' ||
             teacher.lastName === '' ||
-            teacher.email === ''
+            teacher.email === ''   
           ) {
             return res.status(400).json({
               success: false,
@@ -193,6 +195,7 @@ async function handler(req, res) {
             teacher_firstname: teacher.firstName,
             teacher_mail: teacher.email,
             teacher_lastname: teacher.lastName,
+            teacher_mobile:teacher.mobile
           });
 
 

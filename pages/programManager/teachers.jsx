@@ -30,7 +30,7 @@ export default function Students() {
   const redirect = () => {
     router.push("/AccessDenied");
   };
-  const headerTeacher = [['FirstName' , 'LastName' , 'Email']];
+  const headerTeacher = [['FirstName' , 'LastName' , 'Email' , 'MobileNumber']];
   
        // Function to extract the first word before a hyphen "-"
        const getFirstWordBeforeHyphen = (text) => {
@@ -226,10 +226,10 @@ export default function Students() {
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
-              <label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 Course ID:
                 <input
-                  className="ml-3 w-40 max-[850px]:ml-2"
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="number"
                   name="course-id"
                   placeholder="Enter Course ID"

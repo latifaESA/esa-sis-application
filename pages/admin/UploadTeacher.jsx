@@ -41,7 +41,7 @@ export default function UploadTeacher() {
     setConfirmOpenMessage(false);
   };
   const validateColumnHeaders = (columnA) => {
-    const templateFields = ["FirstName", "LastName", "Email"]; // Replace with your actual template fields
+    const templateFields = ["FirstName", "LastName", "Email" , 'MobileNumber']; // Replace with your actual template fields
 
     // Check if all template fields exist in columnA
     const missingFields = templateFields.filter(
@@ -164,6 +164,7 @@ export default function UploadTeacher() {
               firstName: record[0], // Assuming FirstName is in the first column
               lastName: record[1], // Assuming LastName is in the second column
               email: record[2], // Assuming Email is in the third column
+              mobile:record[3]
               // ... (other data)
             };
 

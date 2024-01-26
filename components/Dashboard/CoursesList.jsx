@@ -46,6 +46,10 @@ const CoursesList = ({
   const [majorNameChanges, setMajorNameChanges] = useState({});
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const[courseName , setCourseName] = useState('');
+  const [courseCredit , setCourseCredit] = useState(null)
+  const [courseType , setCourseType] = useState('')
+  const [courseTypes, setCourseTypes] = useState([]);
   // const [confirmOpenDelete, setConfirmOpenDelete] = useState(false);
 
   const handleConfirmClose = () =>
@@ -64,17 +68,22 @@ const CoursesList = ({
       // );
     };
   const handleEnable = async (user) => {
+   
+ 
     let sendData = {
       course_id: user.course_id,
       major_name: user.major_name,
+
     };
+   
     axios
       .post('/api/admin/adminApi/updateCourse', sendData)
       .then(() =>
         // response
         {
           // Handle success
-          setMessage('Course Major Changed Succesfully!');
+          setMessage('Course Changed Successfully!');
+     
 
           //Update the user's status and major in the table
           // setUsers((prevUsers) =>
@@ -94,8 +103,25 @@ const CoursesList = ({
         console.log(error);
       });
   };
+  const handleConfirmCourseType= async (selectedUser) => {
+    try {
+      const payload = {
+        course_id:selectedUser.course_id,
+        course_name:courseName,
+        course_credit:courseCredit,
+        course_type:courseType
+
+
+      };
+
+     await axios.post("/api/admin/adminApi/upadateCourseType", payload);
+    } catch (error) {
+      console.error("Error updating grade:", error);
+    }
+  };
   const handleConfirm = () => {
     handleEnable(selectedUser);
+    handleConfirmCourseType(selectedUser)
     // handleSave(selectedUser);
     setConfirmOpenIncomplete(false);
     // setConfirmOpenObsolote(false);
@@ -136,6 +162,20 @@ const CoursesList = ({
   //   console.log('the value is==>> ',value)
   //   // Handle any other logic, such as updating the data source or performing other actions
   // };
+  const handleEditCellChange = (params) => {
+    const { field, value } = params;
+
+    // Check if the edited field is "grade" and update the edited grade value
+    if (field === "course_name") {
+      setCourseName(value);
+    }
+    if(field === "course_credit"){
+      setCourseCredit(value)
+    }
+    if(field === "course_type"){
+      setCourseType(value)
+    }
+  };
 
   const handleMajorChange = (event, params) => {
     const { value } = event.target;
@@ -170,9 +210,21 @@ const CoursesList = ({
     setTheMajor();
 
     handleShowAll();
+    handleShowAllType()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  const handleShowAllType = async () => {
+    try {
+      let table = 'course_type';
+      let { data } = await axios.post('/api/pmApi/getAll', { table });
+      setCourseTypes(data.rows);
+    } catch (error) {
+      return error
+    }
 
+  };
+  
   const handleShowAll = async () => {
     let table = 'major';
     let { data } = await axios.post('/api/pmApi/getAll', { table });
@@ -190,6 +242,7 @@ const CoursesList = ({
     setMessage('');
   }, selection_data.message_disapear_timing);
 
+
   const columns = [
     {
       field: 'course_id',
@@ -205,6 +258,7 @@ const CoursesList = ({
       headerAlign: 'center',
       align: 'center',
       width: 150,
+      editable:true,
       //   renderCell: (params) =>
       //     `${params.row.pm_firstname || ''} ${params.row.pm_lastname || ''}`,
     },
@@ -214,8 +268,22 @@ const CoursesList = ({
       headerAlign: 'center',
       align: 'center',
       width: 300,
-      type: 'singleSelect',
+      editable:true,
     },
+    {
+      field: 'course_type',
+      headerName: 'Course Type',
+      headerAlign: 'center',
+      align: 'center',
+      width: 300,
+      editable:true, 
+      type: 'singleSelect',
+      valueOptions: courseTypes.map((type) => ({
+        value: type.course_type, 
+        label: type.course_type,
+      })),
+    },
+    
     // {
     //   field: 'major_id',
     //   headerName: 'Major',
@@ -326,7 +394,12 @@ const CoursesList = ({
             className="primary-button hover:text-white"
             onClick={() => {
               // handleSave(params.row)
+              setCourseCredit(params.row.course_credit)
+              setCourseName(params.row.course_name)
+              setCourseType(params.row.course_type)
               handleConfirmIncomplete(params.row);
+
+       
             }}
             type="button"
           >
@@ -366,7 +439,10 @@ const CoursesList = ({
               <div className="grid h-[100%] place-items-center">No Data</div>
             ),
             Pagination: CustomPagination,
+           
+            
           }}
+          onCellEditCommit={handleEditCellChange} // Use the handleEditCellChange function
         />
       </Box>
     </>

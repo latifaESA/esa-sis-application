@@ -128,7 +128,7 @@ async function newpassword(connection, email, newPassword) {
 async function getCourseMajor(connection) {
   try {
     let result =
-      connection.query(`SELECT courses.course_id, courses.course_name, courses.course_credit, COALESCE(major.major_name, '') AS major_name
+      connection.query(`SELECT courses.course_id, courses.course_name, courses.course_credit, course_type,COALESCE(major.major_name, '') AS major_name
     FROM courses
     LEFT JOIN major ON courses.major_id = major.major_id;`);
     return result;
@@ -144,7 +144,7 @@ async function updateCourse(connection, course_id, major_name) {
       SELECT major_id
       FROM major
       WHERE major_name = '${major_name}'
-    )
+    ) 
     WHERE course_id = '${course_id}'`);
     return result;
   } catch (error) {
@@ -729,11 +729,12 @@ async function filterStudent(
       query += ` AND promotion = '${promotion}'`;
     }
     if (status.trim() != "") {
-      query += ` AND status = '${status}'`;
+      query += ` AND student.status = '${status}'`;
     }
     // if (phoneNumber.trim() != '') {
     //   query += ` AND user_contact.mobile_number = '${phoneNumber}'`;
     // }
+    console.log(query)
 
     const result = await connection.query(query);
     return result;
@@ -1836,13 +1837,15 @@ async function createTeacher(
   teacher_id,
   teacher_firstname,
   teacher_mail,
-  teacher_lastname
+  teacher_lastname,
+  teacher_mobile
 ) {
   try {
-    const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
+    const query = `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname , mobile_number) VALUES (
       ${teacher_id},
-      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}') RETURNING teacher_id , teacher_firstname , teacher_lastname , teacher_mail`;
+      '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}' , '${teacher_mobile}') RETURNING teacher_id , teacher_firstname , teacher_lastname , teacher_mail , mobile_number`;
     const res = await connection.query(query);
+    console.log('quary' , query)
     return res;
   } catch (error) {
     return error;
@@ -1851,16 +1854,17 @@ async function createTeacher(
 
 async function uploadTeacher(
   connection,
-  { teacher_id, teacher_firstname, teacher_mail, teacher_lastname }
+  { teacher_id, teacher_firstname, teacher_mail, teacher_lastname , teacher_mobile}
 ) {
   try {
     const query = {
-      text: `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname) VALUES (
+      text: `INSERT INTO teachers (teacher_id ,teacher_firstname , teacher_mail , teacher_lastname , mobile_number) VALUES (
       $1,
       $2, 
       $3,
-      $4)`,
-      values: [teacher_id, teacher_firstname, teacher_mail, teacher_lastname],
+      $4,
+      $5)`,
+      values: [teacher_id, teacher_firstname, teacher_mail, teacher_lastname , teacher_mobile],
     };
     const res = await connection.query(query);
     return res;
@@ -2252,22 +2256,22 @@ async function filterStudentAdmin(
       INNER JOIN major ON student.major_id = major.major_id
       WHERE 1=1`;
     if (status.trim() != "") {
-      query += ` AND lower(trim(status)) LIKE lower(trim('%${status}%'))`;
+      query += ` AND lower(trim(student.status)) LIKE lower(trim('%${status}%'))`;
     }
     if (student_id.trim() != "") {
-      query += ` AND lower(trim(student_id)) LIKE lower(trim('%${student_id}%'))`;
+      query += ` AND lower(trim(student.student_id)) LIKE lower(trim('%${student_id}%'))`;
     }
 
     if (promotion.trim() != "") {
       query += ` AND lower(trim(promotion)) LIKE lower(trim('%${promotion}%'))`;
     }
     if (student_firstname.trim() != "") {
-      query += ` AND lower(trim(student_firstname)) LIKE lower(trim('%${student_firstname}%'))`;
+      query += ` AND lower(trim(student.student_firstname)) LIKE lower(trim('%${student_firstname}%'))`;
     }
     if (student_lastname != "") {
-      query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
+      query += ` AND lower(trim(student.student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
     }
-
+      
     const result = await connection.query(query);
     return result;
   } catch (err) {
@@ -2402,6 +2406,8 @@ async function updateStudentStatus(
     return error;
   }
 }
+
+
 async function profileStudent(connection, user_id) {
   try {
     let query = `SELECT student.* , major.major_name , user_contact.mobile_number , 
@@ -3319,11 +3325,12 @@ async function getStudentEmailsForEmailClass(connection, promo) {
   }
 }
 // <<<<<<< Hassan
-async function updateEmailForEditProfile(connection, email, user_id) {
+async function updateEmailForEditProfile(connection, email, status ,mobile_number,user_id) {
   try {
     const query = ` UPDATE user_contact
-    SET email = '${email}'
-    WHERE userid = '${user_id}'; `;
+    SET email = '${email}' , mobile_number ='${mobile_number}'
+    WHERE userid = '${user_id}';
+    UPDATE student SET status ='${status}' WHERE student_id='${user_id}' `;
     const res = await connection.query(query);
     
     return res;
@@ -3535,9 +3542,39 @@ async function deleteZoomId(connection  , attendance_id){
     return error
   }
 }
+
+async function updateCourseType(connection, course_id, course_credit , course_name , course_type) {
+  try {
+    let result = connection.query(`UPDATE courses
+    SET course_name ='${course_name}',
+    course_credit = '${course_credit}',
+    course_type='${course_type}'
+    WHERE course_id = '${course_id}'`);
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function AddStudentAlumni(
+  connection,
+  { status, graduated_year, student_id }
+) {
+  try {
+    const query = `INSERT INTO student (student_id , status , graduated_year) 
+    VALUES ('${student_id}' , '${status}' , '${graduated_year}')` ;
+
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
 /* End Postegresql */
 
 module.exports = {
+  AddStudentAlumni,
+  updateCourseType,
   getRoom,
   AddRoomFromSharePoint,
   SearchBooking,

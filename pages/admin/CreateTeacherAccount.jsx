@@ -30,6 +30,7 @@ export default function CreateTeacher() {
   const [teacher_firstname, setTeacherFirstname] = useState("");
   const [teacher_lastname, setTeacherLastname] = useState("");
   const [teacher_mail, setTeacherMail] = useState("");
+  const [teacher_mobile, setTeacherMobile] = useState("");
   const [teachers, setTeachers] = useState([])
 
   const redirect = () => {
@@ -47,6 +48,9 @@ export default function CreateTeacher() {
     if (teacher_mail.trim() === "") {
       errors.teacher_mail = "Email is required."
     }
+    if (teacher_mobile.trim() === "") {
+      errors.teacher_mobile = "Mobile is required."
+    }
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -60,6 +64,7 @@ export default function CreateTeacher() {
       teacher_firstname: teacher_firstname,
       teacher_lastname: teacher_lastname,
       teacher_mail: teacher_mail,
+      teacher_mobile:teacher_mobile
     };
     // console.log(payload);
     try {
@@ -67,6 +72,7 @@ export default function CreateTeacher() {
         "/api/admin/adminApi/createTeacher",
         payload
       );
+      console.log('data' , data)
       setTeachers((prevTeachers) => [
         ...data.data.data.rows,
         ...prevTeachers
@@ -75,6 +81,7 @@ export default function CreateTeacher() {
       setTeacherFirstname('')
       setTeacherLastname("")
       setTeacherMail("")
+      setTeacherMobile("")
       // console.log(data.data.message);
       setConfirmOpenMessage(true);
       setMessages(data.data.message);
@@ -221,6 +228,22 @@ export default function CreateTeacher() {
                 {formErrors.teacher_mail && (
                   <div className="text-center text-red-500 font-bold ">
                     {formErrors.teacher_mail}
+                  </div>
+                )}
+              </label>
+              <label>
+                Mobile:
+                <input
+                  className="ml-10  w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  type="mobile"
+                  name="mobile"
+                  placeholder="Mobile Number"
+                  value={teacher_mobile}
+                  onChange={(e) => setTeacherMobile(e.target.value)}
+                ></input>
+                {formErrors.teacher_mobile && (
+                  <div className="text-center text-red-500 font-bold ">
+                    {formErrors.teacher_mobile}
                   </div>
                 )}
               </label>
