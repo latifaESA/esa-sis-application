@@ -12,9 +12,10 @@ async function handler(req, res) {
         teacher_id,
         teacher_firstname ,
         teacher_mail,
-        teacher_lastname
+        teacher_lastname,
+        teacher_mobile
      } = req.body;
-     if(teacher_firstname === '' || teacher_mail === '' || teacher_lastname === ''){
+     if(teacher_firstname === '' || teacher_mail === '' || teacher_lastname === '' || teacher_mobile === ''){
       return res.status(400).json({
         success:false,
         code:400,
@@ -34,7 +35,8 @@ async function handler(req, res) {
       teacher_id,
       teacher_firstname ,
         teacher_mail,
-        teacher_lastname
+        teacher_lastname,
+        teacher_mobile
     );
     await disconnect(connection)
     return res.status(201).json({

@@ -330,6 +330,15 @@ const TeachersList = ({ users, setUsers }) => {
     //     </div>
     //   ),
     // },
+    {
+      field: "mobile_number",
+      headerName: "Mobile Number",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+      // renderCell: (params) =>
+      //   `${params.row.teacher_firstname || ''} ${params.row.teacher_lastname || ''}`,
+    },
   ];
 
   // export select to excel

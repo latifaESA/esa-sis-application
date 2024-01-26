@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import { useState } from "react";
+import { useState  , useEffect} from "react";
 // import Link from 'next/link';
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
@@ -29,7 +29,7 @@ const StudentsList = ({ users, setUsers }) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
-  const statusData = selection_data.application_status_inList;
+  // const statusData = selection_data.application_status_inList;
   const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -37,18 +37,53 @@ const StudentsList = ({ users, setUsers }) => {
   // const [confirmOpenObsolote, setConfirmOpenObsolote] = useState(false);
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [status , setStatus] = useState([])
+  const [statusEdit , setStatusEdit] = useState('')
+  const [Email , setEmail] = useState('')
+  const [mobileNumber , setMobileNumber] = useState(null)
   const { data: session } = useSession();
 
   const handleConfirmClose = () => {
     setConfirmOpenIncomplete(false);
+  };
+  useEffect(()=>{
+    handleShowAllType()
+  },[])
+
+  const handleShowAllType = async () => {
+    try {
+      let table = 'status';
+      let { data } = await axios.post('/api/pmApi/getAll', { table });
+      setStatus(data.rows);
+    } catch (error) {
+      return error
+    }
+
+  };
+  const handleEditCellChange = (params) => {
+    const { field, value } = params;
+
+    // Check if the edited field is "grade" and update the edited grade value
+    if (field === "status") {
+      setStatusEdit(value);
+    }
+    if(field === 'mobile_number'){
+      setMobileNumber(value)
+    }
+    if (field === "email") {
+      setEmail(value);
+    }
   };
 
   const handleConfirm = async () => {
 
     if (selectedUser.email != null) {
       let sendData = {
-        email: selectedUser.email,
+        email: Email,
+        status:statusEdit ,
+        mobile_number:mobileNumber,
         user_id: selectedUser.student_id,
+
       };
       const res = await axios.post(
         "/api/user/updateEmailForEditProfile",
@@ -56,7 +91,7 @@ const StudentsList = ({ users, setUsers }) => {
       );
       
       if (res.status === 200) {
-        setMessage("User's Email Changed Successfully!!!");
+        setMessage("Update Successfully!!!");
         setTimeout(() => {
           setMessage("");
         }, 2000);
@@ -197,7 +232,7 @@ const StudentsList = ({ users, setUsers }) => {
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
-  const excludedStatuses = ["", "active", "hold", "limit"];
+  const excludedStatuses = ["", "active", "hold", "limited" , "inactive"];
 
   // Check if the "status" is not in the excluded statuses list
   const shouldIncludeGraduatedYear = (user) => {
@@ -319,19 +354,24 @@ const StudentsList = ({ users, setUsers }) => {
       headerAlign: "center",
       align: "center",
       width: 100,
-
-      cellClassName: (params) =>
-        params.row.status === "active"
-          ? "text-green-600 font-bold"
-          : params.row.status === "limited"
-          ? "text-red-600 font-bold"
-          : "" || params.row.status === "Inactive"
-          ? "text-blue-600 font-bold"
-          : "" || params.row.status === "Alumni"
-          ? "text-green-600 font-bold"
-          : "",
       type: "singleSelect",
-      valueOptions: statusData,
+      cellClassName: (params) =>
+      params.row.status === "active"
+        ? "text-green-600 font-bold"
+        : params.row.status === "inactive"
+        ? "text-red-600 font-bold"
+        : "" || params.row.status === "limited"
+        ? "text-blue-600 font-bold"
+        : "" || params.row.status === "hold"
+        ? "text-orange-600 font-bold"
+        : "" || params.row.status === "Alumni"
+        ? "text-green-600 font-bold"
+        :"",
+      editable:true,
+       valueOptions: status.map((type) => ({
+        value: type.status_name, 
+        label: type.status_name,
+      })),
     },
     {
       field: "email",
@@ -347,6 +387,7 @@ const StudentsList = ({ users, setUsers }) => {
       headerAlign: "center",
       align: "center",
       width: 150,
+      editable:true
     },
     {
       field: "action",
@@ -361,6 +402,9 @@ const StudentsList = ({ users, setUsers }) => {
             className="primary-button hover:text-white"
             onClick={() => {
               // console.log(params.row);
+              setStatusEdit(params.row.status)
+              setMobileNumber(params.row.mobile_number)
+              setEmail(params.row.email)
               sendDataToModal(params.row);
             }}
             type="button"
@@ -480,6 +524,7 @@ const StudentsList = ({ users, setUsers }) => {
             ),
             Pagination: CustomPagination,
           }}
+          onCellEditCommit={handleEditCellChange} // Use the handleEditCellChange function
         />
       </Box>
 

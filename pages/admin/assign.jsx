@@ -42,7 +42,7 @@ export default function Create() {
 
   const handleShowAll = async () => {
     let { data } = await axios.post("/api/admin/adminApi/courses");
-
+    console.log('data' , data)
     setUsers(data.rows);
 
     const datesArray = [];

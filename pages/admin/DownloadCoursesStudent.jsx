@@ -11,7 +11,9 @@ import Select from 'react-select';
 export default function DownloadCourseStudent() {
   const { data: session } = useSession();
   const [Data, setData] = useState([]);
+  const [DataCourseType, setDataCourseType] = useState([]);
   const [majors, setMajors] = useState([]);
+  const [courseType, setCourseType] = useState([]);
   const [isSelected, setSelected] = useState(false);
   const router = useRouter();
 
@@ -39,7 +41,7 @@ export default function DownloadCourseStudent() {
 
 ];
 
-  const headerTeacher = [['FirstName' , 'LastName' , 'Email']];
+  const headerTeacher = [['FirstName' , 'LastName' , 'Email' , 'MobileNumber']];
   const headerAluminStudent = [['StudentID' , 'Status' , 'GraduatedYear']];
   const redirect = () => {
     router.push("/AccessDenied");
@@ -56,6 +58,16 @@ export default function DownloadCourseStudent() {
       }
     };
     fetchData();
+    const fetchCourseType= async () => {
+      try {
+        const table = 'course_type';
+        const data = await axios.post('/api/pmApi/getAll', { table });
+        setDataCourseType(data.data.rows);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchCourseType();
   }, []);
 
   const calculateColumnWidths = (data) => {
@@ -77,10 +89,16 @@ export default function DownloadCourseStudent() {
     setMajors([selectedName]);
     setSelected(true);
   };
+  const handleCourseType = (selectedOption) => {
+    const selectedName = selectedOption.label;
+    setCourseType([selectedName]);
+    setSelected(true);
+  };
+
 
   const createExcelTemplateCourse = () => {
     const data = headerCourse.concat([
-      ['', '', '', '', majors], // MajorName data
+      ['', '', '',courseType ,majors], // MajorName data
     ])
   
     const columnWidths = calculateColumnWidths(data);
@@ -195,6 +213,20 @@ export default function DownloadCourseStudent() {
                             options={Data.map((major) => ({ value: major.major_id, label: major.major_name })).sort((a, b) => a.label.localeCompare(b.label))}
                             placeholder="Select a Major"
                             onChange={handleMajor}
+                            className='place-items-center'
+                        />
+
+
+
+                    </div>
+                    
+                    <div className="my-4 text-slate-500 text-lg leading-relaxed">
+                        <p className="pt-5 mb-10 font-bold">Select Course Type</p>
+                        <Select
+                            isMulti={false}
+                            options={DataCourseType.map((course) => ({ value: course.course_type_id, label: course.course_type })).sort((a, b) => a.label.localeCompare(b.label))}
+                            placeholder="Select a Course Type"
+                            onChange={handleCourseType}
                             className='place-items-center'
                         />
 

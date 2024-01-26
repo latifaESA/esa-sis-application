@@ -109,7 +109,7 @@ export default function ReportById({
   };
   return (
     <>
-      {/* <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Report</p> */}
+      <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Report</p>
       <form>
         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
           <label className="w-[350px]">
