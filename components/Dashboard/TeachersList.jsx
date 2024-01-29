@@ -10,6 +10,7 @@ import React from "react";
 import { useState } from "react";
 // import Link from 'next/link';
 import { DataGrid } from "@mui/x-data-grid";
+import * as XLSX from "xlsx";
 import Box from "@mui/material/Box";
 // import moment from 'moment';
 import axios from "axios";
@@ -28,6 +29,8 @@ import exportAll from "../../utilities/ExcelExport/exportAll";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
+import { ExportButtons } from "./ExportButtons";
+import moment from "moment";
 // import { Pagination, Stack } from '@mui/material';
 
 const TeachersList = ({ users, setUsers }) => {
@@ -335,16 +338,26 @@ const TeachersList = ({ users, setUsers }) => {
   // export select to excel
 
   const exportButton = async () => {
-    if (users.length > 0) {
+    if (selectedRows.length > 0) {
       try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
+        let selected = new Set(selectedRows)
+        const filteredTeachers = users.filter(teacher => selected.has(teacher.teacher_id));
+      // Modify the data
+      const modifiedData = filteredTeachers.map((item) => ({
+        ID: item.teacher_id,
+        FirstName: item.teacher_firstname,
+        LastName: item.teacher_lastname,
+        Email: item.teacher_mail,
+      }));
 
-          await exportSelect(selectedRows, incomingData, session);
-        } else {
-          setUsers([]);
-        }
+      // Convert modified data to XLSX format
+      const ws = XLSX.utils.json_to_sheet(modifiedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Teacher Report");
+
+      // const attendanceDate = formatDate(data[0].attendance_date);
+      const fileName = `Teachers-${session.user.majorName}-${Date.now()}.xlsx`;
+      XLSX.writeFile(wb, fileName);
       } catch (error) {
         console.error(error);
       }
@@ -355,33 +368,26 @@ const TeachersList = ({ users, setUsers }) => {
   const exportAllButton = async () => {
     if (users.length > 0) {
       try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
+      // Modify the data
+      const modifiedData = users.map((item) => ({
+        ID: item.teacher_id,
+        FirstName: item.teacher_firstname,
+        LastName: item.teacher_lastname,
+        Email: item.teacher_mail,
+      }));
 
-          await exportAll(incomingData, session);
-        } else {
-          setUsers([]);
-        }
+      // Convert modified data to XLSX format
+      const ws = XLSX.utils.json_to_sheet(modifiedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Teacher Report");
+
+      // const attendanceDate = formatDate(data[0].attendance_date);
+      const fileName = `Teachers-${session.user.majorName}-${Date.now()}.xlsx`;
+      XLSX.writeFile(wb, fileName);
       } catch (error) {
         console.error(error);
       }
     }
-  };
-  const handlePrintSelected = () => {
-    const selectedIDs = selectedRows;
-    // console.log('selectedIDs', selectedIDs);
-    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
-    // console.log('selectedUsersbefore', selectedUsers);
-    selectedUsers.forEach((user) => {
-      if (user.reportURL) {
-        window.open(user.reportURL);
-      } else {
-        setMessage("Please select a user with a report");
-      }
-    });
-
-    // console.log('selectedUsers', selectedUsers);
   };
 
   return (
@@ -433,12 +439,17 @@ const TeachersList = ({ users, setUsers }) => {
       </Box>
 
       <div className="grid lg:grid-cols-1 p-5 shadow-sm">
-        <LowerButtons
+        {/* <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
           exportAllButton={exportAllButton}
           handlePrintSelected={handlePrintSelected}
           session={session}
+        /> */}
+        <ExportButtons
+          exportButton={exportButton}
+          selectedRows={selectedRows}
+          exportAllButton={exportAllButton}
         />
       </div>
     </>

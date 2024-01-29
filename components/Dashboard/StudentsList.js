@@ -12,6 +12,7 @@ import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 // import moment from 'moment';
+import * as XLSX from "xlsx";
 import axios from "axios";
 import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
@@ -24,6 +25,7 @@ import { WarningConfirmChangeEmail } from "./WarningMessage";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
+import { ExportButtons } from "./ExportButtons";
 
 const StudentsList = ({ users, setUsers }) => {
 
@@ -389,15 +391,28 @@ const StudentsList = ({ users, setUsers }) => {
   // Now the "columns" array will only include "graduated_year" for users with valid statuses
 
   const exportButton = async () => {
-    if (users.length > 0) {
+    if (selectedRows.length > 0) {
       try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-          await exportSelect(selectedRows, incomingData, session);
-        } else {
-          setUsers([]);
-        }
+        let selected = new Set(selectedRows)
+        const filteredStudents = users.filter(student => selected.has(student.student_id));
+      // Modify the data
+      const modifiedData = filteredStudents.map((item) => ({
+        ID: item.student_id,
+        FirstName: item.student_firstname,
+        LastName: item.student_lastname,
+        Major: item.major_name,
+        Promotion: item.promotion,
+        Status: item.status,
+        Email: item.email,
+        'Mobile Number': item.mobile_number
+      }));
+
+      // Convert modified data to XLSX format
+      const ws = XLSX.utils.json_to_sheet(modifiedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Student Report");
+      const fileName = `Students-${session.user.majorName}-${Date.now()}.xlsx`;
+      XLSX.writeFile(wb, fileName);
       } catch (error) {
         console.error(error);
       }
@@ -406,15 +421,29 @@ const StudentsList = ({ users, setUsers }) => {
 
   // export all to excel
   const exportAllButton = async () => {
+    console.log('the users : ', users)
     if (users.length > 0) {
       try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-          await exportAll(incomingData, session);
-        } else {
-          setUsers([]);
-        }
+      // Modify the data
+      const modifiedData = users.map((item) => ({
+        ID: item.student_id,
+        FirstName: item.student_firstname,
+        LastName: item.student_lastname,
+        Major: item.major_name,
+        Promotion: item.promotion,
+        Status: item.status,
+        Email: item.email,
+        'Mobile Number': item.mobile_number
+      }));
+
+      // Convert modified data to XLSX format
+      const ws = XLSX.utils.json_to_sheet(modifiedData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Student Report");
+
+      // const attendanceDate = formatDate(data[0].attendance_date);
+      const fileName = `Students-${session.user.majorName}-${Date.now()}.xlsx`;
+      XLSX.writeFile(wb, fileName);
       } catch (error) {
         console.error(error);
       }
@@ -484,12 +513,17 @@ const StudentsList = ({ users, setUsers }) => {
       </Box>
 
       <div className="grid lg:grid-cols-1 p-5 shadow-sm">
-        <LowerButtons
+        {/* <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
           exportAllButton={exportAllButton}
           handlePrintSelected={handlePrintSelected}
           session={session}
+        /> */}
+        <ExportButtons
+          exportButton={exportButton}
+          selectedRows={selectedRows}
+          exportAllButton={exportAllButton}
         />
       </div>
     </>
