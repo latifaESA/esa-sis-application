@@ -498,7 +498,7 @@ const ClassList = ({ users }) => {
                       let payload1 = {
                         tmpscheduleIds : allID,
                         meetingIds : data.data.id,
-                        zoomUrls : data.data.start_url
+                        zoomUrls : data.data.join_url
                       }
                       await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
                       // create zoom
