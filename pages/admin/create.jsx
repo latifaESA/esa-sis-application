@@ -149,7 +149,9 @@ export default function Create() {
         '/api/admin/adminApi/filterAdmin',
         sendDataAdmin
       );
-      setAdminList(data.rows);
+      const admins = data.rows.filter((superAdmin)=> superAdmin.adminid !== 'AS9164')
+      setAdminList(admins);
+      
     } catch (error) {
       return error;
     }
@@ -187,7 +189,8 @@ export default function Create() {
         '/api/admin/adminApi/filterAdmin',
         sendDataAdmin
       );
-      setAdminList(data.rows);
+      const admins = data.rows.filter((superAdmin)=> {console.log('admins' , superAdmin)})
+      setAdminList(admins);
     } else {
       let sendpmData = {
         pm_id: idvalue.trim(),
