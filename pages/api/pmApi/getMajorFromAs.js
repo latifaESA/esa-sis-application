@@ -1,30 +1,27 @@
 const { connect, disconnect } = require("../../../utilities/db");
-const { getMajorPMExtra } = require('../controller/queries')
+const { getMajorFromAS } = require('../controller/queries')
 
 async function handler(req, res) {
 
     try {
         const connection = await connect();
         const {
-            pm_id , 
-            table , 
-            pmID
+
+            pm_ass_id
 
         } = req.body;
-        console.log('body' , table)
-        const response = await getMajorPMExtra(connection,
-            pm_id , 
-            table , 
-            pmID
+        const response = await getMajorFromAS(connection,
+
+            pm_ass_id
         );
-        console.log(response)
+        console.log('response' , response)
        
         await disconnect(connection);
         if (response.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 code: 404,
-                message: "student Not found"
+                message: "major Not found"
             })
         } else {
             return res.status(200).json({

@@ -17,17 +17,17 @@ import axios from "axios";
 import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from "./LowerButtons";
-import exportSelect from "../../utilities/ExcelExport/exportSelect";
-import exportAll from "../../utilities/ExcelExport/exportAll";
+// import { LowerButtons } from "./LowerButtons";
+// import exportSelect from "../../utilities/ExcelExport/exportSelect";
+// import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import { WarningConfirmChangeEmail } from "./WarningMessage";
-import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+// import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 import { ExportButtons } from "./ExportButtons";
 
-const StudentsList = ({ users, setUsers }) => {
+const StudentsList = ({ users }) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
@@ -493,19 +493,19 @@ const StudentsList = ({ users, setUsers }) => {
       }
     }
   };
-  const handlePrintSelected = () => {
-    const selectedIDs = selectedRows;
+  // const handlePrintSelected = () => {
+  //   const selectedIDs = selectedRows;
 
-    const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
+  //   const selectedUsers = users.filter((user) => selectedIDs.includes(user.ID));
 
-    selectedUsers.forEach((user) => {
-      if (user.reportURL) {
-        window.open(user.reportURL);
-      } else {
-        setMessage("Please select a user with a report");
-      }
-    });
-  };
+  //   selectedUsers.forEach((user) => {
+  //     if (user.reportURL) {
+  //       window.open(user.reportURL);
+  //     } else {
+  //       setMessage("Please select a user with a report");
+  //     }
+  //   });
+  // };
 
   return (
     <>

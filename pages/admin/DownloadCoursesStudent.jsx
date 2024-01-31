@@ -42,7 +42,7 @@ export default function DownloadCourseStudent() {
 ];
 
   const headerTeacher = [['FirstName' , 'LastName' , 'Email' , 'MobileNumber']];
-  const headerAluminStudent = [['StudentID' , 'Status' , 'GraduatedYear']];
+  const headerAluminStudent = [['StudentID' ,'FirstName', 'LastName','Promotion', 'AcademicYear','Major','Status' , 'GraduatedYear' , 'Email' , 'PhoneNumber']];
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -156,7 +156,7 @@ export default function DownloadCourseStudent() {
   };
   const createExcelTemplateAlumni = () => {
     const data= headerAluminStudent.concat([
-      ['', 'Alumni', ''], // MajorName data
+      ['' ,'', '','', '',majors,'Alumni' , '' , '' , ''], // MajorName data
   ])
     const columnWidths = calculateColumnWidths(data);
      const worksheet = XLSX.utils.aoa_to_sheet(data);

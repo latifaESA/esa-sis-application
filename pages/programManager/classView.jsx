@@ -18,9 +18,23 @@ export default function ClassView() {
     useEffect(() => {
       const handleMajor = async () => {
         try {
-          const response = await axios.post('/api/pmApi/getMajorPMExtra', {
-            pm_id: session.user?.userid
-          });
+          let payload;
+          if(session.user?.role === '3'){
+             payload = {
+              pm_id : session.user?.userid , 
+              table :'program_manager_assistance_extra_major', 
+              pmID:'pm_ass_id'
+            }
+          }else if(session.user?.role === '2'){
+            payload = {
+              pm_id : session.user?.userid , 
+              table :'program_manager_extra_major', 
+              pmID:'pm_id'
+            }
+
+          }
+
+          const response = await axios.post('/api/pmApi/getMajorPMExtra', payload);
   
           setIsMultiMajor(response.data.data);
   

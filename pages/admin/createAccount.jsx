@@ -88,7 +88,7 @@ export default function Create() {
         for (let i = 1; i < majorValue.length; i++) {
           let dataExtra = {
             pm_id: gen.trim(),
-            major_id: majorValue[i],
+            major_id: majorValue[i]
           };
 
           await axios.post("/api/admin/adminApi/createExtra", dataExtra);
@@ -127,7 +127,7 @@ export default function Create() {
         pm_ass_email: email.trim(),
         pm_ass_status: status.trim(),
         userpassword: genPass,
-        major_id: majorValue.trim(),
+        major_id: majorValue[0],
         password: generatedPass,
         role: 'Program Manager Assistance'
       };
@@ -137,6 +137,16 @@ export default function Create() {
         "/api/admin/adminApi/createASAccount",
         sendASData
       );
+      if (majorValue.length > 1) {
+        for (let i = 1; i < majorValue.length; i++) {
+          let dataExtra = {
+            pm_id: gen.trim(),
+            major_id: majorValue[i],
+          };
+
+          await axios.post("/api/admin/adminApi/createExtraAS", dataExtra);
+        }
+      }
       if (data === true) {
         setConfirmOpenMessage(true);
         setMessages(`Account Program Manager Assistance Already Exist`);

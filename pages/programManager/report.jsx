@@ -20,12 +20,19 @@ export default function Report() {
   const [selectMajor, setSelectMajor] = useState(false)
   const handleMajors = async () => {
     try {
-      const data = await axios.post('/api/pmApi/getMajorFromMajor', {
-        pm_id: session.user?.userid
-      })
-    
-
-      setMajors(data.data.data)
+      if(session.user?.role === '3'){
+        const data = await axios.post('/api/pmApi/getMajorFromAs', {
+          pm_ass_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }else if(session.user?.role === '2'){
+        const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+          pm_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }
 
     } catch (error) {
       console.error(error);
