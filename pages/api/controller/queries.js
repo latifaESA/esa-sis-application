@@ -1677,9 +1677,10 @@ async function createPMAccount(
   }
 }
 
-async function createExtra(connection, pm_id, major_id) {
+async function createExtra(connection, pm_id, major_id ) {
   try {
-    const query = `INSERT INTO program_manager_extra_major(pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
+    const query = `INSERT INTO program_manager_extra_major (pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
+    
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3266,13 +3267,14 @@ async function filterEXEDGrade(
 //   }
 // }
 
-async function getMajorPMExtra(connection, pm_id) {
+async function getMajorPMExtra(connection, pm_id , table , pmID) {
   try {
-    const query = `SELECT program_manager_extra_major.* , major.major_name , major.status
-    FROM program_manager_extra_major 
-	INNER JOIN major ON program_manager_extra_major.major_id = major.major_id
-    WHERE pm_id ='${pm_id}'
+    const query = `SELECT ${table}.* , major.major_name , major.status
+    FROM ${table} 
+	INNER JOIN major ON ${table}.major_id = major.major_id
+    WHERE ${pmID} ='${pm_id}'
     `;
+    console.log('getmajor' , query)
     const res = await connection.query(query);
 
     return res;
@@ -3558,21 +3560,79 @@ async function updateCourseType(connection, course_id, course_credit , course_na
 
 async function AddStudentAlumni(
   connection,
-  { status, graduated_year, student_id }
+  { status, graduated_year, student_id, promotion, major_id, firstname, lastname, academic_year  , email , mobile_number}
 ) {
   try {
-    const query = `INSERT INTO student (student_id , status , graduated_year) 
-    VALUES ('${student_id}' , '${status}' , '${graduated_year}')` ;
 
+    // Insert into the "student" table
+    const query = `
+    INSERT INTO users (userid, role)
+    VALUES ('${student_id}', '1');
+    INSERT INTO user_contact (userid, email , mobile_number)
+    VALUES ('${student_id}', '${email}' , '${mobile_number}');
+      INSERT INTO student (student_id, status, promotion, academic_year, student_firstname, student_lastname, major_id, graduated_year)
+      VALUES ('${student_id}', '${status}','${promotion}', '${academic_year}' ,'${firstname}','${lastname}', '${major_id}', '${graduated_year}')
+    `;
     const res = await connection.query(query);
     return res;
   } catch (error) {
     return error;
   }
 }
+async function createExtraAS(connection, pm_id, major_id ) {
+  try {
+    const query = `INSERT INTO program_manager_assistance_extra_major (pm_ass_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
+    
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function getMajorFromAS(connection, pm_ass_id) {
+  try {
+    const query = `
+    SELECT
+        pm.pm_ass_id,
+        pm.pm_ass_firstname AS name,
+        pm.major_id AS major_id,
+        m.major_name AS major_name
+    FROM
+      program_manager_assistance pm
+    LEFT JOIN
+        major m ON pm.major_id = m.major_id
+    WHERE
+        pm.pm_ass_id = '${pm_ass_id}'
+    
+    UNION
+    
+    SELECT
+        pmem.pm_ass_id,
+        pmem.pm_ass_id AS name,
+        pmem.major_id AS major_id,
+        m.major_name AS major_name
+    FROM
+      program_manager_assistance_extra_major pmem
+    JOIN
+        major m ON pmem.major_id = m.major_id
+    WHERE
+        pmem.pm_ass_id = '${pm_ass_id}';
+    `;
+
+    const res = await connection.query(query);
+    console.log('res' , query , res)
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
+
 /* End Postegresql */
 
 module.exports = {
+  getMajorFromAS,
   AddStudentAlumni,
   updateCourseType,
   getRoom,
@@ -3742,5 +3802,6 @@ module.exports = {
   createScheduleOnline,
   updateZoomInfo,
   updateOnlineSchedule,
-  deleteZoomId
+  deleteZoomId,
+  createExtraAS
 };

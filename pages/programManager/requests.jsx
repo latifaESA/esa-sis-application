@@ -29,16 +29,26 @@ export default function Requests() {
   const { data: session } = useSession();
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
+  const [pmId , setPMID]=useState()
   const redirect = () => {
     router.push('/AccessDenied');
   };
   const handleMajors = async () => {
     try {
-      const data = await axios.post('/api/pmApi/getMajorFromMajor', {
-        pm_id: session.user?.userid
-      })
+      if(session.user?.role === '3'){
+        const data = await axios.post('/api/pmApi/getMajorFromAs', {
+          pm_ass_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }else if(session.user?.role === '2'){
+        const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+          pm_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }
 
-      setMajors(data.data.data)
 
     } catch (error) {
       return error;
@@ -47,46 +57,107 @@ export default function Requests() {
 
   useEffect(() => {
     handleMajors()
+    if(session.user?.hasMultiMajor === 'true' && session.user?.role ==='3'){
+      program_manager()
+    }
 
   }, [])
+  const program_manager = async()=>{
+    try {
+      const payload = {
+        table :'program_manager',
+        Where:'major_id', 
+        id:session.user?.majorid
+      }
+      const response = await axios.post('/api/pmApi/getAllCourses' , payload)
+      setPMID(response.data.data[0].pm_id)
+    } catch (error) {
+      return error
+    }
+  }
   const handleSearch = async () => {
     try {
-      let sendData = {
-        pm_id: session?.user.userid,
-        req_id: reqId,
-        student_id: stId.trim(),
-        student_email: stMail.trim(),
-        status: status.trim(),
-        type: type.trim(),
-        major_id: majorValue
-      };
-      let data = await axios.post('/api/pmApi/getRequests', sendData);
+      let sendData ;
+      if(session.user?.role === '3'){
+        sendData = {
+          pm_id: pmId,
+          req_id: reqId,
+          student_id: stId.trim(),
+          student_email: stMail.trim(),
+          status: status.trim(),
+          type: type.trim(),
+          major_id: majorValue
+        };
+        console.log('data',sendData)
+        let data = await axios.post('/api/pmApi/getRequests', sendData);
+        setUsers(data.data.rows);
 
-      setUsers(data.data.rows);
+      }else if(session.user?.role ==='2'){
+         sendData = {
+          pm_id: session?.user.userid,
+          req_id: reqId,
+          student_id: stId.trim(),
+          student_email: stMail.trim(),
+          status: status.trim(),
+          type: type.trim(),
+          major_id: majorValue
+        };
+        let data = await axios.post('/api/pmApi/getRequests', sendData);
+
+        setUsers(data.data.rows);
+
+      }
+
     } catch (err) {
       return err
     }
   };
   const handleShowAll = async () => {
     try {
-      let sendData = {
-        pm_id: session?.user.userid,
-        req_id: '',
-        student_id: '',
-        student_email: '',
-        status: '',
-        type: '',
-        major_id: ''
-      };
-      setReqId('');
-      setStid('');
-      setMail('');
-      setStatus('');
-      setType('');
-      setMajorValue('')
-      let res = await axios.post('/api/pmApi/getRequests', sendData);
-      
-      setUsers(res.data.rows);
+      let sendData;
+
+      if(session.user?.role === '3'){
+         sendData = {
+          pm_id: pmId,
+          req_id: '',
+          student_id: '',
+          student_email: '',
+          status: '',
+          type: '',
+          major_id: ''
+        };
+
+        let res = await axios.post('/api/pmApi/getRequests', sendData);
+        setReqId('');
+        setStid('');
+        setMail('');
+        setStatus('');
+        setType('');
+        setMajorValue('')
+        
+        setUsers(res.data.rows);
+      }else if(session.user?.role ==='2'){
+         sendData = {
+          pm_id: session?.user.userid,
+          req_id: '',
+          student_id: '',
+          student_email: '',
+          status: '',
+          type: '',
+          major_id: ''
+        };
+        setReqId('');
+        setStid('');
+        setMail('');
+        setStatus('');
+        setType('');
+        setMajorValue('')
+        let res = await axios.post('/api/pmApi/getRequests', sendData);
+        
+        setUsers(res.data.rows);
+       
+
+      }
     } catch (err) {
       return err
     }
@@ -94,8 +165,12 @@ export default function Requests() {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    if(session.user?.hasMultiMajor === 'true' && session.user?.role ==='3'){
+      program_manager()
+    }
     handleShowAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
   return (
     <>

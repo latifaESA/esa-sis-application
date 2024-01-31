@@ -13,27 +13,27 @@ import { DataGrid } from "@mui/x-data-grid";
 import * as XLSX from "xlsx";
 import Box from "@mui/material/Box";
 // import moment from 'moment';
-import axios from "axios";
+// import axios from "axios";
 import selection_data from "../../utilities/selection_data";
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from "./LowerButtons";
-import exportSelect from "../../utilities/ExcelExport/exportSelect";
-import exportAll from "../../utilities/ExcelExport/exportAll";
+// import { LowerButtons } from "./LowerButtons";
+// import exportSelect from "../../utilities/ExcelExport/exportSelect";
+// import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 // import {
 //   WarningMessageCancleIncomplete,
 //   WarningMessageIncomplete,
 //   WarningMessageObsolote,
 // } from './WarningMessage';
-import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+// import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 import { ExportButtons } from "./ExportButtons";
-import moment from "moment";
+// import moment from "moment";
 // import { Pagination, Stack } from '@mui/material';
 
-const TeachersList = ({ users, setUsers }) => {
+const TeachersList = ({ users }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;

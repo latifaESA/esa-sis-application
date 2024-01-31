@@ -548,6 +548,14 @@ export const authOptions = {
                     'major_id',
                     AS.rows[0].major_id
                   )
+
+                  const extra = await findData(
+                    connection,
+                    'program_manager_assistance_extra_major',
+                    'pm_ass_id',
+                    AS.rows[0].pm_ass_id
+                  )
+                  const isExtra = extra.rowCount
                   // console.log(user.rows[0].userid);
                   // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
@@ -574,6 +582,8 @@ export const authOptions = {
                       majorid: AS.rows[0].major_id,
                       majorName: pm_major.rows[0].major_name,
                       image: userinfo.rows[0].profileurl,
+                      hasMultiMajor:`${isExtra > 0 ? true : false}` ,
+
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend

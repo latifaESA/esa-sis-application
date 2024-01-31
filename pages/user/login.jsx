@@ -144,10 +144,18 @@ console.log('session?.user  : ', session?.user)
       } 
       else if (
         session?.user.role === "3" &&
-        session?.user.status == "active"
+        session?.user.status == "active" &&
+        session?.user.hasMultiMajor === 'false'
       ) {
         router.push(redirect || "/programManager/students");
       }
+      else if (
+        session?.user.role === "3" &&
+        session?.user.status == "active" &&
+        session?.user.hasMultiMajor === 'true'
+      ) {
+        router.push(redirect || "/programManager/studentView");
+      } 
       else if (session?.user.role === "0") {
         router.push(redirect || "/admin/Accounts");
       } else if (session?.user.role === "4") {

@@ -5,7 +5,8 @@ import path from "path";
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../../utilities/db");
 const {
-    updateStudentStatus
+    AddStudentAlumni,
+    getMajor
 
 } = require("../../controller/queries");
 
@@ -170,17 +171,29 @@ async function handler(req, res) {
     for (const row of data) {
       
       try {
-         const response = await updateStudentStatus(
+           
+      const major = await getMajor(connection, row.Major);
+      
+      const majorid = major.rows[0].major_id;
+         const response = await AddStudentAlumni(
             connection,
             {
+            
                 status : row.Status,
                 graduated_year: row.GraduatedYear,
-                student_id : row.StudentID
-
+                student_id : row.StudentID,
+                promotion : row.Promotion , 
+                major_id: majorid, 
+                firstname: row.FirstName , 
+                lastname: row.LastName , 
+                academic_year: row.AcademicYear , 
+                email : row.Email,
+                mobile_number : row.PhoneNumber
 
             }
            
          )
+        
        
         
         if (response) {

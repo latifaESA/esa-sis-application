@@ -33,10 +33,23 @@ export default function Certificate() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let payload;
+        if(session.user?.role === '3'){
+           payload = {
+            pm_id : session.user?.userid , 
+            table :'program_manager_assistance_extra_major', 
+            pmID:'pm_ass_id'
+          }
+        }else if(session.user?.role === '2'){
+          payload = {
+            pm_id : session.user?.userid , 
+            table :'program_manager_extra_major', 
+            pmID:'pm_id'
+          }
+
+        }
         if (session.user?.hasMultiMajor === 'true') {
-          const majorsResponse = await axios.post('/api/pmApi/getMajorPMExtra', {
-            pm_id: session.user?.userid
-          });
+          const majorsResponse = await axios.post('/api/pmApi/getMajorPMExtra', payload);
   
           const coursesResponse = await axios.post('/api/pmApi/getAllCourses', {
             table: 'major',
