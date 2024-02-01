@@ -54,10 +54,8 @@ const executeQuery = (client, query, arraParms) => {
       resolve(result);
     } catch (err) {
       reject(err);
-    } finally{
-      client.release()
     }
-  });
+  })
 }
 
 module.exports = { executeQuery, connect, disconnect };
