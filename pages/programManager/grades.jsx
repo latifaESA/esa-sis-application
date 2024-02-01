@@ -142,6 +142,7 @@ export default function Grades() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -190,6 +191,7 @@ export default function Grades() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -219,6 +221,7 @@ export default function Grades() {
             setPromotion("")
             setTaskName("")
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -241,6 +244,7 @@ export default function Grades() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -268,6 +272,7 @@ export default function Grades() {
             setPromotion("")
             setTaskName("")
         } catch (error) {
+
             return error
         }
     }
@@ -289,7 +294,8 @@ export default function Grades() {
 
             setUser(response.data.data)
         } catch (error) {
-            return error
+            setUser([])
+           return error
         }
     }
 

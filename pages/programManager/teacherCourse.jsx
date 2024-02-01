@@ -73,6 +73,7 @@ export default function TeacherCourse() {
       setTeacherFirstName('');
       setTeacherLastName('');
     } catch (error) {
+
       return error;
     }
   };
@@ -93,6 +94,7 @@ export default function TeacherCourse() {
       );
       setUsers(result.data.data);
     } catch (error) {
+      setUsers([])
       return error;
     }
   };

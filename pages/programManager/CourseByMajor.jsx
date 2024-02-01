@@ -61,20 +61,26 @@ export default function CourseByMajor() {
     setType(typeCourse.data.rows);
   };
   const handleCourses = async () => {
+    try {
+      let sendData = {
+        course_id: courseid.trim(),
+        course_name: courseName,
+        course_credit: courseCredit,
+        major_id: majorId,
+        course_type: courseType,
+      };
+  
+      // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
+  
+  
+      setUsers(data.data);
+    } catch (error) {
+      setUsers([])
+      return error
+    }
     
-    let sendData = {
-      course_id: courseid.trim(),
-      course_name: courseName,
-      course_credit: courseCredit,
-      major_id: majorId,
-      course_type: courseType,
-    };
 
-    // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
-
-
-    setUsers(data.data);
   };
   useEffect(() => {
     handleShowAll();

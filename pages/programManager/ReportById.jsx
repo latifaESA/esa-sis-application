@@ -67,6 +67,7 @@ export default function ReportById({
       const data = await axios.post("/api/pmApi/exportAttendanceData", payload);
       setData(data.data.data);
     } catch (error) {
+      setData([])
       return error;
     }
   };

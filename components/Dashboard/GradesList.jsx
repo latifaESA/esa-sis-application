@@ -20,6 +20,7 @@ import { WarningMessageGrade } from "./WarningMessage";
 
 const GradeList = ({ users, setUser }) => {
 
+
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const { data: session } = useSession();
@@ -84,8 +85,10 @@ const GradeList = ({ users, setUser }) => {
       const payload = {
         grade: editedGrade, // Use the edited grade value
         student_id: selectedUser.student_id,
-        course_id: selectedUser.courseid,
+        course_id: selectedUser.course_id,
+        taskName:selectedUser.task_name
       };
+     
 
       const response = await axios.post("/api/pmApi/updateGrade", payload);
 
@@ -212,7 +215,7 @@ const GradeList = ({ users, setUser }) => {
             }}
 
           >
-            Edit
+            Save
           </button>
         </div>
       ),

@@ -136,6 +136,7 @@ export default function AttendanceById() {
 
       setUsers(result.data.data);
     } catch (error) {
+      setUsers([])
       return error;
     }
   };

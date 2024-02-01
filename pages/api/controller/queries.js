@@ -2638,12 +2638,15 @@ async function updateGrades(
   GPA,
   Rank,
   student_id,
-  course_id
+  course_id,
+  taskName
 ) {
   try {
     const query = `UPDATE student_grades SET grade = '${grade}' , gpa='${GPA}' , rank='${Rank}' 
-      WHERE student_id='${student_id}' AND courseid='${course_id}'`;
+      WHERE student_id='${student_id}' AND course_id='${course_id}' AND task_name = '${taskName}'`;
+      console.log('query' , query)
     const res = await connection.query(query);
+    console.log('res' , res)
     return res;
   } catch (error) {
     return error;

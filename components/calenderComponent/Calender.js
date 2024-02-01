@@ -46,6 +46,15 @@ const formatTime = (timeWithTimeZone) => {
   const period = parseInt(hours) < 12 ? 'AM' : 'PM';
   return `${formattedHours}:${minutes} ${period}`;
 };
+function modifyDate(dateString) {
+  // Create a new Date object from the provided dateString
+  let modifiedDate = new Date(dateString);
+
+  // Add one day to the date
+  modifiedDate.setDate(modifiedDate.getDate() + 1);
+  const formattedDate = modifiedDate.toISOString().split('T')[0] + "T00:00:00.000Z";
+  return formattedDate;
+}
 
 
 
@@ -91,10 +100,10 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [isEdit, setIsEdit] = useState(false)
   const [isOnline, setIsOnline] = useState()
   const [confirmOccupied, setConfirmOccupied] = useState(false);
-  const [zoomUserId , setZoomUserId]= useState()
-  const [zoom_id , setZoomID] = useState()
- 
-  const [courseName , setCourseName] = useState('')
+  const [zoomUserId, setZoomUserId] = useState()
+  const [zoom_id, setZoomID] = useState()
+
+  const [courseName, setCourseName] = useState('')
 
   const [allCourses, setAllCourses] = useState([]);
 
@@ -176,16 +185,16 @@ export const Calender = ({ schedule, setSchedule }) => {
     }
   };
 
-  const getZoomUser = async()=>{
+  const getZoomUser = async () => {
     try {
       const access_token = await getZoomToken()
-     const payload = {
-        email:session.user?.email,
-        accessToken:access_token
+      const payload = {
+        email: session.user?.email,
+        accessToken: access_token
       }
-      const response = await axios.post(`/api/zoom_api/getZoomUser`,payload)
+      const response = await axios.post(`/api/zoom_api/getZoomUser`, payload)
       setZoomUserId(response.data.data.id)
-     
+
     } catch (error) {
       return error
     }
@@ -193,17 +202,17 @@ export const Calender = ({ schedule, setSchedule }) => {
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime) => {
     try {
-      
+
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
-  
+
       // Combine the date and time and format it as a full ISO string
       const localDateTime = `${formattedDate}T${fromTime}`;
-      
+
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
-  
+
       const payload = {
         classId: `${class_id}`,
         date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
@@ -211,9 +220,9 @@ export const Calender = ({ schedule, setSchedule }) => {
         userId: zoomUserId,
         createAt: utcDateTime,  // You might want to choose either date or createAt
       };
-  
+
       const response = await axios.post('/api/zoom_api/createZoom', payload);
-  
+
       return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
     } catch (error) {
       return error;
@@ -226,16 +235,16 @@ export const Calender = ({ schedule, setSchedule }) => {
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
-  
+
       // Combine the date and time
       const localDateTime = `${formattedDate} ${fromTime}`;
-  
+
       // Parse the local time
       const parsedDateTime = moment.tz(localDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
-  
+
       // Convert the local time to UTC
       const utcDateTime = parsedDateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
-  
+
       const payload = {
         classId: `${courseName}`,
         date: utcDateTime,
@@ -243,74 +252,74 @@ export const Calender = ({ schedule, setSchedule }) => {
         userId: zoomUserId,
         createAt: utcDateTime,
       };
-  
+
       const response = await axios.post('/api/zoom_api/createZoom', payload);
-  
+
       return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
     } catch (error) {
       return error;
     }
   };
-  
 
-  const handleUpdateZoomOnlineSchedule = async(zoomId , zoomUrl , attendanceID )=>{
+
+  const handleUpdateZoomOnlineSchedule = async (zoomId, zoomUrl, attendanceID) => {
     try {
-      
-    await axios.post(`/api/pmApi/updateScheduleMeet` ,{
-        zoom_id:zoomId , 
-        zoom_url:zoomUrl,
-        attendance_id:attendanceID
+
+      await axios.post(`/api/pmApi/updateScheduleMeet`, {
+        zoom_id: zoomId,
+        zoom_url: zoomUrl,
+        attendance_id: attendanceID
       })
-      
+
     } catch (error) {
       return error
     }
   }
 
-  const handleDeleteZoom =async(zoom_id)=>{
+  const handleDeleteZoom = async (zoom_id) => {
     try {
-      const access_token = await getZoomToken()
-      const payload ={
-        zoomId : zoom_id,
-        accessToken :access_token
-      }
-       await axios.post('/api/zoom_api/DeleteZoom' , payload)
-    } catch (error) {
-      return error
-    }
-  }
-
-  const handleUpdateZoom = async(zoom_id , scheduleDate , title , fromTime )=>{
-    try {
-        
-    
-      const formattedDate = moment(scheduleDate).format('YYYY-MM-DD');
- 
-      // Combine the date and time and format it as a full ISO string
-      const localDateTime = `${formattedDate}T${fromTime}`;
-      
-      // Convert the local time to UTC
-      const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
-   
       const access_token = await getZoomToken()
       const payload = {
-        zoomId :zoom_id ,
-        accessToken : access_token ,
-        date : utcDateTime,
-        classId:title
+        zoomId: zoom_id,
+        accessToken: access_token
       }
-      console.log('testtime' , payload)
-      await axios.post('/api/zoom_api/updateZoom' , payload)
+      await axios.post('/api/zoom_api/DeleteZoom', payload)
     } catch (error) {
       return error
     }
   }
 
-  useEffect(()=>{
-    getZoomUser()
-  },[])
+  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime) => {
+    try {
 
- 
+
+      const formattedDate = moment(scheduleDate).format('YYYY-MM-DD');
+
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}`;
+
+      // Convert the local time to UTC
+      const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+      const access_token = await getZoomToken()
+      const payload = {
+        zoomId: zoom_id,
+        accessToken: access_token,
+        date: utcDateTime,
+        classId: title
+      }
+
+      await axios.post('/api/zoom_api/updateZoom', payload)
+    } catch (error) {
+      return error
+    }
+  }
+
+  useEffect(() => {
+    getZoomUser()
+  }, [])
+
+
 
   // useEffect(() => {
   //   getRoomBooking();
@@ -384,7 +393,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         sharepointId: sched.sharepoint_id,
         is_online: sched.is_online,
         attendance_id: sched.attendance_id,
-        zoom_meeting_id:sched.zoom_meeting_id,
+        zoom_meeting_id: sched.zoom_meeting_id,
         color: '#00CED1',
       });
     });
@@ -405,8 +414,8 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
   const getCourse = async () => {
-    let { data } = await axios.post('/api/pmApi/getAll',{
-      table :"courses"
+    let { data } = await axios.post('/api/pmApi/getAll', {
+      table: "courses"
     });
     // console.log("all classes:  ==> ", data.rows);
 
@@ -734,30 +743,31 @@ export const Calender = ({ schedule, setSchedule }) => {
       if (place != '') {
         const attendanceData = await handleCreateAttendanceDragDrop(
           ev,
-          dragDateRef.current.date,
+          modifyDate(dragDateRef.current.date),
           place
         );
 
         if (attendanceData.data.code != 200) {
-          let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+          const payload ={
             classID: ev.class_id,
-            day: new Date(dragDateRef.current.date),
+            day: modifyDate(dragDateRef.current.date),
             fromTime: ev.from,
             toTime: ev.to,
             room_id: place,
             pm_id: session.user.userid,
             attendanceId: attendanceData.data.data,
             is_online: ev.is_online
-          });
+          }
+          let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
 
-          if(ev.is_online === true){
+          if (ev.is_online === true) {
             if (data.success) {
-              const response = await handleCreateZoomMeeting(ev.title , new Date(dragDateRef.current.date),ev.from)
-              await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceData.data.data)
+              const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from)
+              await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
               setStudent([]);
               getData();
             }
-          }else{
+          } else {
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
               setStudent([]);
@@ -766,7 +776,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
           }
 
-     
+
         } else {
           setConfirmOpenMessageNotification(true);
           setMessage(attendanceData.data.message);
@@ -813,19 +823,19 @@ export const Calender = ({ schedule, setSchedule }) => {
   const handleClass = (selectedValue) => {
 
     const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue)
-    
-  // Now, you can access the tmpclass_id outside the loop if needed
-  if (foundCourse) {
-    const courseName = foundCourse.course_name;
-    // Use courseName as needed
-   
-    setCourseName(courseName)
 
- 
-  } else {
-    console.log("Course not found in allCourses");
-  }
-  
+    // Now, you can access the tmpclass_id outside the loop if needed
+    if (foundCourse) {
+      const courseName = foundCourse.course_name;
+      // Use courseName as needed
+
+      setCourseName(courseName)
+
+
+    } else {
+      console.log("Course not found in allCourses");
+    }
+
 
     // Do something with the selected value
     setSelect(true);
@@ -863,7 +873,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     setRemainingRooms([])
     setIsOnline('')
     setZoomID()
-    
+
 
     setShowForm(false);
   };
@@ -946,11 +956,10 @@ export const Calender = ({ schedule, setSchedule }) => {
           .then((response1) => {
             const teacher_id = response1.data.data[0].teacher_id;
             const course_id = response1.data.data[0].course_id;
-
             const payload = {
               teacher_id,
               course_id,
-              attendance_date: theDate,
+              attendance_date:modifyDate(theDate) ,
               major_id: session.user?.majorid,
               fromTime: fromTime,
               toTime: toTime,
@@ -1155,20 +1164,23 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       const attendanceData = await handleCreateAttendance();
       if (isOnline === 'true') {
-        let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+        const payload = {
           classID: classes,
-          day: theDate,
+          day: modifyDate(theDate), // Call a function to modify the date
           fromTime: fromTime,
           toTime: toTime,
           room_id: '75',
           pm_id: session.user.userid,
           attendanceId: attendanceData.data.data,
           is_online: isOnline
-        });
-        const response = await handleCreateZoomMeeting(courseName,theDate , fromTime)
-        
-         
-         await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceData.data.data)
+        };
+
+        // The rest of your code remains unchanged
+        let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
+        const response = await handleCreateZoomMeeting(courseName, theDate, fromTime)
+
+
+        await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
@@ -1180,20 +1192,26 @@ export const Calender = ({ schedule, setSchedule }) => {
           getData();
           setIsOnline('')
           setZoomID('')
-          
+
         } setPortalData
 
       } else {
-        let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+        const payload = {
           classID: classes,
-          day: theDate,
+          day: modifyDate(theDate), // Call a function to modify the date
           fromTime: fromTime,
           toTime: toTime,
           room_id: place,
           pm_id: session.user.userid,
           attendanceId: attendanceData.data.data,
           is_online: isOnline
-        });
+        };
+
+
+
+        // The rest of your code remains unchanged
+        let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
+
         // console.log("axios data ==>  ", place);
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceData.data.data)
@@ -1240,7 +1258,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     // handlePotalClose();
     // console.log("portalData", portalData)
     try {
-      if(portalData.is_online === true){
+      if (portalData.is_online === true) {
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1253,7 +1271,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-  
+
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1262,19 +1280,19 @@ export const Calender = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-  
+
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
-        
-  
-          if (data.rowCount > 0) {
-            await handleDeleteZoom(portalData.zoom_meeting_id)
-            await deleteTable()
-            handlePotalClose();
-            getData();
-          }
 
-      }else{
+
+        if (data.rowCount > 0) {
+          await handleDeleteZoom(portalData.zoom_meeting_id)
+          await deleteTable()
+          handlePotalClose();
+          getData();
+        }
+
+      } else {
         const payload = {
           table: 'attendance',
           colName: 'attendance_id',
@@ -1287,7 +1305,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         };
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
-  
+
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
         let id = portalData.tmpschedule_id;
@@ -1296,17 +1314,17 @@ export const Calender = ({ schedule, setSchedule }) => {
           colName,
           id,
         });
-  
+
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
         const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
-  
-          if (data.rowCount > 0 && success) {
-  
-            await deleteTable()
-            handlePotalClose();
-            getData();
-          }
+
+        if (data.rowCount > 0 && success) {
+
+          await deleteTable()
+          handlePotalClose();
+          getData();
+        }
       }
 
 
@@ -1464,7 +1482,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         );
 
         if (data.success) {
-          await handleUpdateZoom(zoom_id,theDate,courseName , fromTime)
+          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime)
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1488,27 +1506,27 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       }
 
-    }else{
-      if (isOnline === "true" ) {
+    } else {
+      if (isOnline === "true") {
         let { data } = await axios.post(
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
-  
+
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
-          const response = await handleCreateZoomMeetingEdit(courseName , theDate , fromTime)
-          await handleUpdateZoomOnlineSchedule(response.zoom_id , response.zoom_url, attendanceId)
+          const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime)
+          await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
           })
-          
+
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
           setIsOnline('')
         }
-  
+
       } else {
         let { data } = await axios.post(
           '/api/pmApi/updateSingleSchedule',
@@ -1517,8 +1535,8 @@ export const Calender = ({ schedule, setSchedule }) => {
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceId)
           await handleDeleteZoom(zoom_id)
-          await axios.post('/api/pmApi/deleteZoomSchedule' , {
-            attendance_id : attendanceId
+          await axios.post('/api/pmApi/deleteZoomSchedule', {
+            attendance_id: attendanceId
           })
           getData();
           setIsClickEdit(false);
@@ -1530,17 +1548,17 @@ export const Calender = ({ schedule, setSchedule }) => {
             setIsClickEdit(false);
             setShowFormEdit(false);
             setIsOnline('')
-  
+
           }
-  
-  
+
+
         }
-  
+
       }
 
     }
     // console.log("schedData  :", schedData);
-    
+
 
     // console.log("the update change:  ", data);
   };
@@ -2486,7 +2504,7 @@ const AddSchedules = ({
                       </label>
 
                     </div>
-                    {isOnline === 'false'  ?
+                    {isOnline === 'false' ?
                       <>
                         <div className="flex flex-row  mb-4">
                           <div className="flex flex-col">

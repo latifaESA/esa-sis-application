@@ -97,6 +97,7 @@ export default function Attendance() {
       );
       setUsers(result.data.data);
     } catch (error) {
+      setUsers([])
       return error;
     }
   };
