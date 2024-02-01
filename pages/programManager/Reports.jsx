@@ -46,6 +46,7 @@ export default function Reports() {
       setStudentFirstName("");
       setStudentLatName("");
     } catch (error) {
+      
       return error;
     }
   };
@@ -64,6 +65,7 @@ export default function Reports() {
       const data = await axios.post("/api/pmApi/exportAttendanceData", payload);
       setData(data.data.data);
     } catch (error) {
+      setData([])
       return error;
     }
   };

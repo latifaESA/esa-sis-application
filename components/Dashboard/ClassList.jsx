@@ -78,7 +78,7 @@ const ClassList = ({ users }) => {
   const [messages, setMessages] = useState("");
   const [timeResult, setTimeResult] = useState([])
   // const router = useRouter();
-  const [isOnline, setIsOnLine] = useState(false)
+  const [isOnline, setIsOnLine] = useState('')
 
 
   const [roomName, setRoomName] = useState('')
@@ -454,7 +454,7 @@ const ClassList = ({ users }) => {
                 days: [attendance_date],
                 fromTime: fromTime,
                 toTime: toTime,
-                room: '1',
+                room: '75',
                 pmID: session.user.userid,
                 attendanceId: attendance_id,
                 is_online: isOnline

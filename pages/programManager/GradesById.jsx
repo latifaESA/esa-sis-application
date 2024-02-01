@@ -163,6 +163,7 @@ export default function GradesById() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -211,6 +212,7 @@ export default function GradesById() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -262,6 +264,7 @@ export default function GradesById() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }
@@ -310,6 +313,7 @@ export default function GradesById() {
 
             setUser(response.data.data)
         } catch (error) {
+            setUser([])
             return error
         }
     }

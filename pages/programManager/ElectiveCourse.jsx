@@ -41,6 +41,7 @@ export default function ElectiveCourse() {
 
         setUsers(result.data.data);
       } catch (error) {
+        setUsers([])
         return error;
       }
     };

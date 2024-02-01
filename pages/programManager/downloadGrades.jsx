@@ -70,9 +70,17 @@ export default function DownloadGrades({ setClickDownload }) {
 
 
   } else {
-    header = [
-      ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
-    ]
+     if(session.user?.majorName === 'BBA (Bachelor in Business Administration)'){
+      header = [
+        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester','Academic_year'],
+      ]
+     }else{
+      header = [
+        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Academic_year'],
+      ]
+
+     }
+
 
   }
 
@@ -226,24 +234,40 @@ export default function DownloadGrades({ setClickDownload }) {
             ''
           ]))
 
-      }
-  
-  
+        }
   
     } else {
-       data = header.concat(
-        student.map((studentData) => [
-          studentData.student_id,
-          studentData.student_firstname,
-          studentData.student_lastname,
-          courses,
-          taskName,
-          '',
-          semester,
-          academic_year,
-          ''
-        ])
-      );
+      if(session.user?.majorName === 'BBA (Bachelor in Business Administration)'){
+        data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_firstname,
+            studentData.student_lastname,
+            courses,
+            taskName,
+            '',
+            semester,
+            academic_year,
+            ''
+          ])
+        );
+
+      }else{
+       
+          data = header.concat(
+            student.map((studentData) => [
+              studentData.student_id,
+              studentData.student_lastname,
+              studentData.student_firstname,
+              courses,
+              taskName,
+              '',
+              academic_year,
+              '',
+              ''
+            ]))
+      }
+
   
     
     }

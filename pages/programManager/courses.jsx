@@ -43,20 +43,27 @@ export default function Courses() {
   };
   const handleCourses = async () => {
     // console.log(courseid, courseName, courseCredit, majorid)
-    let sendData = {
-      course_id: courseid.trim(),
-      course_name: courseName,
-      course_credit: courseCredit,
-      major_id: session.user.majorid,
-      course_type: courseType,
-    };
-    // console.log(sendData)
-    // console.log(JSON.stringify(sendData))
-    // id,firstname,lastname,major,promotion,status
-    let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
+    try {
+      
+      let sendData = {
+        course_id: courseid.trim(),
+        course_name: courseName,
+        course_credit: courseCredit,
+        major_id: session.user.majorid,
+        course_type: courseType,
+      };
+      // console.log(sendData)
+      // console.log(JSON.stringify(sendData))
+      // id,firstname,lastname,major,promotion,status
+      let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
+  
+     
+      setUsers(data.data);
+    } catch (error) {
+      setUsers([])
+      return error
+    }
 
-   
-    setUsers(data.data);
   };
   useEffect(() => {
     handleShowAll();

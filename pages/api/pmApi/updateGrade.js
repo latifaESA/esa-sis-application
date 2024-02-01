@@ -9,7 +9,8 @@ async function handler(req, res) {
     const { 
         grade,
         student_id,
-        course_id
+        course_id,
+        taskName
     } =
       req.body;
       const data = await gpaToGrades(grade)
@@ -21,7 +22,8 @@ async function handler(req, res) {
       GPA,
       Rank,
       student_id,
-      course_id
+      course_id,
+      taskName
     );
   
     await disconnect(connection)   
