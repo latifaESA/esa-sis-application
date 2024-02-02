@@ -1464,7 +1464,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           ? allClasses.filter((clas) => clas.course_id === classes)[0]
             .tmpclass_id
           : classes,
-      day: theDate,
+      day: modifyDate(theDate),
       fromTime: fromTime,
       toTime: toTime,
       room_id:
