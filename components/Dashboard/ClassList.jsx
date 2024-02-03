@@ -540,6 +540,7 @@ const ClassList = ({ users }) => {
                       setIsClicked(false);
                       setIsAddSchedule(false);
                       setSelectedValues([]);
+                      setIsOnLine('')
 
                     }
                   }

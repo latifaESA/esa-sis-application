@@ -11,7 +11,8 @@ async function handler(req, res) {
         grade_over_20 ,
         grade_over_30 , 
         student_id , 
-        course_id
+        course_id , 
+        task_name
      
     } =
       req.body;
@@ -22,7 +23,8 @@ async function handler(req, res) {
       grade_over_20 ,
       grade_over_30 , 
       student_id , 
-      course_id
+      course_id ,
+      task_name
    
     );
  

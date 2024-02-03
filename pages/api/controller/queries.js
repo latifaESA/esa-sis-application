@@ -1874,13 +1874,13 @@ async function uploadTeacher(
   }
 }
 //get promotion
-async function getSchedulePromotion(connection, major_id, attendance_date) {
+async function getSchedulePromotion(connection, major_id, attendance_id) {
   try {
     const query = `select tmpschedule .* , tmpclass.promotion , tmpclass.major_id
     from tmpschedule 
     inner join tmpclass on tmpschedule.class_id = tmpclass.tmpclass_id 
     
-    WHERE tmpschedule.day = '${attendance_date}' AND tmpclass.major_id = '${major_id}'`;
+    WHERE tmpschedule.attendance_id = '${attendance_id}' AND tmpclass.major_id = '${major_id}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2977,10 +2977,11 @@ async function updateGradesExED(
   table,
   grades,
   student_id,
-  course_id
+  course_id,
+  task_name
 ) {
   try {
-    const query = `UPDATE ${table} SET grades = '${grades}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`;
+    const query = `UPDATE ${table} SET grades = '${grades}' WHERE student_id = '${student_id}' AND course_id='${course_id}' AND task_name='${task_name}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3106,10 +3107,11 @@ async function updateGradesRTF(
   grade_over_20,
   grade_over_30,
   student_id,
-  course_id
+  course_id ,
+  task_name
 ) {
   try {
-    const query = `UPDATE ${table} SET grade_over_20 = '${grade_over_20}' , grade_over_30 ='${grade_over_30}' WHERE student_id = '${student_id}' AND course_id='${course_id}'`;
+    const query = `UPDATE ${table} SET grade_over_20 = '${grade_over_20}' , grade_over_30 ='${grade_over_30}' WHERE student_id = '${student_id}' AND course_id='${course_id}' AND task_name='${task_name}'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3330,12 +3332,11 @@ async function getStudentEmailsForEmailClass(connection, promo) {
   }
 }
 // <<<<<<< Hassan
-async function updateEmailForEditProfile(connection, email, status ,mobile_number,user_id) {
+async function updateEmailForEditProfile(connection, email,user_id) {
   try {
     const query = ` UPDATE user_contact
-    SET email = '${email}' , mobile_number ='${mobile_number}'
-    WHERE userid = '${user_id}';
-    UPDATE student SET status ='${status}' WHERE student_id='${user_id}' `;
+    SET email = '${email}' 
+    WHERE userid = '${user_id}'`;
     const res = await connection.query(query);
     
     return res;
@@ -3630,11 +3631,25 @@ async function getMajorFromAS(connection, pm_ass_id) {
     return error;
   }
 }
+async function updateEmailForEditProfilePM(connection, email, status ,mobile_number,user_id) {
+  try {
+    const query = ` UPDATE user_contact
+    SET email = '${email}' , mobile_number ='${mobile_number}'
+    WHERE userid = '${user_id}';
+    UPDATE student SET status ='${status}' WHERE student_id='${user_id}' `;
+    const res = await connection.query(query);
+    
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
 
 
 /* End Postegresql */
 
 module.exports = {
+  updateEmailForEditProfilePM,
   getMajorFromAS,
   AddStudentAlumni,
   updateCourseType,

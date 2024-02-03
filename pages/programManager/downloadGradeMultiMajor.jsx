@@ -56,7 +56,7 @@ export default function DownloadGradeMultiMajor({ setClickDownload , majorId , m
       header = [
         ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
       ]
-    }else if(secondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services' ){
+    }else if(secondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services' || majors==='Digital Transformation' || secondMajorWord === 'Digital Transformation'){
       header = [
         ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20'],
       ]

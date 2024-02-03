@@ -4,11 +4,11 @@ const { getSchedulePromotion } = require("../controller/queries");
 async function handler(req, res) {
   try {
     const connection = await connect();
-    const { major_id, attendance_date } = req.body;
+    const { major_id, attendance_id} = req.body;
     const response = await getSchedulePromotion(
       connection,
       major_id,
-      attendance_date
+      attendance_id
     );
     // console.log(response)
     await disconnect(connection);

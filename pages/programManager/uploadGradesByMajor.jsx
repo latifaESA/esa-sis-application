@@ -65,7 +65,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
             showAll();
         } else if (isExeMajor &&SecondMajorWord==='GMP' || majors === 'EXED-GMP') {
             showAllGMP();
-        } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services') {
+        } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services' || majors === 'Digital Transformation' || SecondMajorWord === 'Digital Transformation') {
             showAllRTF()
         }else if (isExeMajor){
             showAllEXED()
@@ -125,7 +125,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                 // Some template fields are missing
                 return false;
             }
-        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || majors === 'Digital Transformation in Financial Services') {
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || majors === 'Digital Transformation in Financial Services' || majors === 'Digital Transformation' || SecondMajorWord === 'Digital Transformation') {
            
             const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
@@ -191,7 +191,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                     return true; // All required fields are present and not empty
                 }
             }
-        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' ||  majors === 'Digital Transformation in Financial Services') {
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' ||  majors === 'Digital Transformation in Financial Services' || majors === 'Digital Transformation' || SecondMajorWord === 'Digital Transformation') {
             const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
             for (const field of requiredFields) {
@@ -623,7 +623,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                                                         onClick={
                                                             isExeMajor && SecondMajorWord === 'GMP' || majors==='EXED-GMP'?
                                                                 handleAddGMP :
-                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ||  majors === 'Digital Transformation in Financial Services' ?
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ||  majors === 'Digital Transformation in Financial Services' || majors==='Digital Transformation' || SecondMajorWord==='Digital Transformation' ?
                                                                     handleAddRTF
                                                                     : isExeMajor?handleAddEXED : handleAdd
                                                         }

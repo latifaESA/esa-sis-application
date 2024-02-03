@@ -88,7 +88,7 @@ const StudentsList = ({ users }) => {
 
       };
       const res = await axios.post(
-        "/api/user/updateEmailForEditProfile",
+        "/api/pmApi/updateStudentInfo",
         sendData
       );
       

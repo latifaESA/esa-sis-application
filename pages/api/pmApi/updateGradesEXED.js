@@ -10,7 +10,8 @@ async function handler(req, res) {
         table ,
         grades , 
         student_id ,
-        course_id
+        course_id,
+        task_name
     } =
       req.body;
 
@@ -19,7 +20,8 @@ async function handler(req, res) {
       table ,
       grades , 
       student_id , 
-      course_id
+      course_id,
+      task_name
     );
  
   

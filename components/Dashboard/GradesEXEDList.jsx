@@ -86,7 +86,7 @@ const GradesEXEDList = ({ users, setUser }) => {
         grades: editedGrade, // Use the edited grade value
         student_id: selectedUser.student_id,
         course_id: selectedUser.course_id,
-        // task_name :selectedUser.task_name
+        task_name :selectedUser.task_name
       };
 
      await axios.post("/api/pmApi/updateGradesEXED", payload);
@@ -203,7 +203,7 @@ const GradesEXEDList = ({ users, setUser }) => {
               }}
 
             >
-              Edit
+              Save
             </button>
           </div>
         ),

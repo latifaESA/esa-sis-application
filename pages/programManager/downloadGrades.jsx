@@ -21,6 +21,10 @@ export default function DownloadGrades({ setClickDownload }) {
   const [taskName, setTaskValue] = useState('')
   const [semester, setSemester] = useState('')
   const [academic_year, setAcademicYear] = useState('')
+  const [taskNameError, setTaskNameError] = useState('');
+  const [academicYearError, setAcademicYearError] = useState('');
+  const [courseError, setCourseError] = useState('');
+
 
   const semesterOptions = [
     { value: 'summer', label: 'Summer' },
@@ -49,37 +53,37 @@ export default function DownloadGrades({ setClickDownload }) {
   };
   const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
   const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
- 
+
   const isExeMajor = firstMajorWord === "EXED";
   let header = []
   if (isExeMajor) {
     if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
       ]
-    }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+    } else if (secondMajorWord === 'Digital Transformation in Financial Services') {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'GradeOver30', 'GradeOver20'],
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20'],
       ]
-    }else{
+    } else {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName','Year', 'Grade', 'Comments'],
+        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
       ]
     }
 
 
 
   } else {
-     if(session.user?.majorName === 'BBA (Bachelor in Business Administration)'){
+    if (session.user?.majorName === 'BBA (Bachelor in Business Administration)') {
       header = [
-        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester','Academic_year'],
+        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
       ]
-     }else{
+    } else {
       header = [
         ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Academic_year'],
       ]
 
-     }
+    }
 
 
   }
@@ -184,8 +188,26 @@ export default function DownloadGrades({ setClickDownload }) {
 
   const createExcelTemplateCourse = () => {
     if (!isSelected || courses.length === 0) {
-      // Handle the case when no course is selected
+      setCourseError("Please select a course.");
       return;
+    } else {
+      setCourseError('');
+    }
+
+    // Check if taskName is selected
+    if (!taskName) {
+      setTaskNameError("Task name is required.");
+      return;
+    } else {
+      setTaskNameError('');
+    }
+
+    // Check if academic_year is selected
+    if (!academic_year) {
+      setAcademicYearError("Academic year is required.");
+      return;
+    } else {
+      setAcademicYearError('');
     }
 
 
@@ -194,7 +216,7 @@ export default function DownloadGrades({ setClickDownload }) {
     let data = []
     if (isExeMajor) {
       if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
-         data = header.concat(
+        data = header.concat(
           student.map((studentData) => [
             studentData.student_id,
             studentData.student_lastname,
@@ -206,8 +228,8 @@ export default function DownloadGrades({ setClickDownload }) {
             ''
           ])
         );
-      
-      }else if(secondMajorWord === 'Digital Transformation in Financial Services'){
+
+      } else if (secondMajorWord === 'Digital Transformation in Financial Services') {
         data = header.concat(
           student.map((studentData) => [
             studentData.student_id,
@@ -218,10 +240,10 @@ export default function DownloadGrades({ setClickDownload }) {
             academic_year,
             '',
             '',
-            
+
           ])
-        ); 
-      }else{
+        );
+      } else {
         data = header.concat(
           student.map((studentData) => [
             studentData.student_id,
@@ -234,10 +256,10 @@ export default function DownloadGrades({ setClickDownload }) {
             ''
           ]))
 
-        }
-  
+      }
+
     } else {
-      if(session.user?.majorName === 'BBA (Bachelor in Business Administration)'){
+      if (session.user?.majorName === 'BBA (Bachelor in Business Administration)') {
         data = header.concat(
           student.map((studentData) => [
             studentData.student_id,
@@ -252,24 +274,24 @@ export default function DownloadGrades({ setClickDownload }) {
           ])
         );
 
-      }else{
-       
-          data = header.concat(
-            student.map((studentData) => [
-              studentData.student_id,
-              studentData.student_lastname,
-              studentData.student_firstname,
-              courses,
-              taskName,
-              '',
-              academic_year,
-              '',
-              ''
-            ]))
+      } else {
+
+        data = header.concat(
+          student.map((studentData) => [
+            studentData.student_id,
+            studentData.student_lastname,
+            studentData.student_firstname,
+            courses,
+            taskName,
+            '',
+            academic_year,
+            '',
+            ''
+          ]))
       }
 
-  
-    
+
+
     }
 
     const columnWidths = calculateColumnWidths(data);
@@ -356,7 +378,11 @@ export default function DownloadGrades({ setClickDownload }) {
                               placeholder="Select a Course"
                               onChange={handleCourse}
                               className='place-items-center w-96'
+                              required
                             />
+                            {courseError && (
+                              <p className="text-red-500">{courseError}</p>
+                            )}
 
                           </div>
                           <div className="m-5 text-slate-500 text-lg leading-relaxed flex flex-col">
@@ -376,6 +402,9 @@ export default function DownloadGrades({ setClickDownload }) {
                                 <input type='radio' value={'project'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Project
                               </div>
                             </div>
+                            {taskNameError && (
+                              <p className="text-red-500">{taskNameError}</p>
+                            )}
                           </div>
                           {session.user?.majorName === 'BBA (Bachelor in Business Administration)' ?
                             <>
@@ -388,6 +417,7 @@ export default function DownloadGrades({ setClickDownload }) {
                                   value={semesterOptions.find(option => option.value === semester)} // Set the selected option
                                   onChange={handleSemester}
                                   className='place-items-center w-96'
+                                  required
                                 />
 
                               </div>
@@ -395,7 +425,10 @@ export default function DownloadGrades({ setClickDownload }) {
                             : <></>}
                           <div className='m-5 text-slate-500 text-lg leading-relaxed '>
                             <p className=" font-bold">Academic year </p>
-                            <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} />
+                            <input type="text" placeholder='academic year' value={academic_year} onChange={(e) => setAcademicYear(e.target.value)} required />
+                            {academicYearError && (
+                              <p className="text-red-500">{academicYearError}</p>
+                            )}
                           </div>
 
 
