@@ -459,7 +459,7 @@ const handleCloseNotificatonMessages = () => {
                       setIsClicked(false);
                       setIsAddSchedule(false);
                       setSelectedValues([]);
-                      
+                      setIsOnLine('')
                     }
                   }
                 } else {

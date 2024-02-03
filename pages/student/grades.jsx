@@ -103,7 +103,7 @@ export default function Grades() {
       getGrade();
     }else if(isExeMajor && secondMajorWord === 'GMP'){
       getGradesGMP();
-    }else if(isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'){
+    }else if(isExeMajor && (secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation')){
 
       getGradesRTF();
       
@@ -124,7 +124,7 @@ export default function Grades() {
             <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold text-primary'>Grades</p>
             {!isExeMajor ?
             <StudentGrades studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
-             : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'? 
+             : isExeMajor && (secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord==='Digital Transformation')? 
              <StudentGradesRTF studentGrades={studentGrades} setStudentGrades={setStudentGrades} />
              :isExeMajor && secondMajorWord === 'GMP'?
               <StudentGradesGMP  studentGrades={studentGrades} setStudentGrades={setStudentGrades} />

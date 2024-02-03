@@ -328,7 +328,7 @@ export default function GradesById() {
             fetchPromotion()
             showAllGMP()
             searchGMP()
-        } else if (isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services') {
+        } else if (isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation') {
             fetchPromotion()
             showAllRTF()
             searchRTF()
@@ -545,7 +545,7 @@ export default function GradesById() {
                                 onClick={!isExeMajor ? search :
                                     (secondMajorWord === 'GMP' || majors==='EXED-GMP'?
                                         searchGMP :
-                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                             ? searchRTF : isExeMajor ? searchEXED :<></>)
                                 }
                             >
@@ -557,7 +557,7 @@ export default function GradesById() {
                                 onClick={!isExeMajor ? showAll :
                                     (secondMajorWord === 'GMP' || majors==='EXED-GMP'?
                                         showAllGMP :
-                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                             ? showAllRTF : isExeMajor ? showAllEXED :<></>)
                                 }
                             >
@@ -584,7 +584,7 @@ export default function GradesById() {
                         {
                             !isExeMajor ? <GradeList users={users} setUser={setUser} />
                                 : isExeMajor && majors === 'EXED-GMP' ? <GradeListGMP users={users} setUser={setUser} />
-                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' ?
+                                    : isExeMajor && (secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation')?
                                         <GradeListRTF users={users} setUser={setUser} />
                                         : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} />:<></>
 

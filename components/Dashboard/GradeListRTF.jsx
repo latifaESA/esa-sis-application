@@ -78,6 +78,13 @@ const GradeListRTF = ({ users, setUser }) => {
       setEditedGrade(value);
       setEditedGradeOver30(value)
     
+    }else if(field === "grade_over_20"){
+      setEditedGrade(value)
+  
+    }else if(field === 'grade_over_30'){
+      
+      setEditedGradeOver30(value)
+
     }
   };
 
@@ -90,8 +97,9 @@ const GradeListRTF = ({ users, setUser }) => {
         grade_over_30:editedGradeOver30,
         student_id: selectedUser.student_id,
         course_id: selectedUser.course_id,
-        // task_name :selectedUser.task_name
+        task_name :selectedUser.task_name
       };
+    
 
      await axios.post("/api/pmApi/updateRTF", payload);
 
@@ -217,7 +225,7 @@ const GradeListRTF = ({ users, setUser }) => {
               }}
 
             >
-              Edit
+              Save
             </button>
           </div>
         ),
