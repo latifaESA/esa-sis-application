@@ -94,7 +94,7 @@ const GradeListGMP = ({ users, setUser }) => {
 
       setUser((prevState) => {
         const updatedAttendance = prevState.map((row) => {
-          if (row.student_id === selectedUser.student_id) {
+          if (row.grade_id === selectedUser.grade_id) {
             return {
               ...row,
               grades: editedGrade, // Update grade with the edited value

@@ -13,9 +13,9 @@ export default function AttendanceById() {
   const [users, setUsers] = useState([]);
 
   const router = useRouter();
-  
+
   const { majorId } = router.query;
-  
+
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -31,11 +31,45 @@ export default function AttendanceById() {
   const [teacher_firstName, setTeacherFirstName] = useState('');
   const [teacher_lastName, setTeacherLastName] = useState('');
   const [attendance_date, setAttendanceDate] = useState('');
-  // const [major_name, setMajorName] = useState('')
-  // // const [allmajor, setallMajor] = useState([])
-  // const [majorValue, setMajorValue] = useState([])
-  // const [test, setTest] = useState()
 
+  const [major, setMajors] = useState([])
+
+  const handleMajors = async () => {
+    try {
+      if (session.user?.role === '3') {
+        const data = await axios.post('/api/pmApi/getMajorFromAs', {
+          pm_ass_id: session.user?.userid
+        })
+
+        setMajors(data.data.data)
+      } else if (session.user?.role === '2') {
+        const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+          pm_id: session.user?.userid
+        })
+
+        setMajors(data.data.data)
+      }
+
+
+    } catch (error) {
+      return error;
+    }
+  };
+  useEffect(() => {
+    handleMajors()
+
+
+  }, [majorId])
+
+  const handleMajor = (selectedValue) => {
+    // Do something with the selected value
+    if (selectedValue) {
+      // Redirect to the new page with the selected major's ID
+      const newPageURL = `/programManager/AttendanceById?majorId=${selectedValue}`;
+      router.push(newPageURL);
+    }
+
+  };
   useEffect(() => {
     const getMajor = async () => {
       let table = 'major';
@@ -52,7 +86,7 @@ export default function AttendanceById() {
       });
 
       // setMajor(datesArray);
-      
+
     };
     getMajor();
 
@@ -70,7 +104,7 @@ export default function AttendanceById() {
           teacher_lastname: '',
           major_name: '',
         };
-        
+
         const result = await axios.post('/api/pmApi/filterAttendance', payload);
         // console.log("data", result.data.data)
 
@@ -81,7 +115,7 @@ export default function AttendanceById() {
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [majorId]);
   // console.log(majorId)
 
   const handleShowAll = async () => {
@@ -161,6 +195,7 @@ export default function AttendanceById() {
   // }
   // };
 
+
   return (
     <>
       <Head>
@@ -239,8 +274,8 @@ export default function AttendanceById() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -275,16 +310,65 @@ export default function AttendanceById() {
                 ></input>
               </label>
 
+
+
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 To:
                 <input
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+
+              {session.user?.hasMultiMajor === 'true' ?
+                <label className=''>
+                  Major:
+                  <select
+                    onChange={(e) => handleMajor(e.target.value)}
+                    value={majorId}
+                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+
+                  >
+                    <option key={"uu2isdvf"} value="">
+                      Choose a Major
+                    </option>
+                    {major &&
+                      major.map((major) => (
+                        <>
+                          <option key={major.major_id} value={major.major_id}>
+                            {major.major_name}
+                          </option>
+                        </>
+                      ))}
+                  </select>
+                </label>
+
+
+                : <></>}
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"

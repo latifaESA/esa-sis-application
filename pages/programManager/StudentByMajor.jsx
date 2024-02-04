@@ -32,6 +32,7 @@ export default function StudentByMajor() {
   const [promotionsName , setPromotionName] = useState('')
   const [openUpload , setOpenUpload] = useState(false)
   const [majors , setMajorName]= useState('')
+  const [major, setMajors] = useState([])
 
 
   const { majorId } = router.query;
@@ -47,6 +48,35 @@ export default function StudentByMajor() {
         return error
     }
   }
+
+
+  const handleMajors = async () => {
+    try {
+      if(session.user?.role === '3'){
+        const data = await axios.post('/api/pmApi/getMajorFromAs', {
+          pm_ass_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }else if(session.user?.role === '2'){
+        const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+          pm_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }
+
+
+    } catch (error) {
+      return error;
+    }
+  };
+  useEffect(() => {
+    handleMajors()
+
+
+  }, [])
+
   
   const handlePromotions = async()=>{
     try {
@@ -65,7 +95,7 @@ export default function StudentByMajor() {
   useEffect(()=>{
     handleMajorName()
     handlePromotions()
-  },[])
+  },[majorId])
   
 
      // Function to extract the first word before a hyphen "-"
@@ -220,7 +250,7 @@ export default function StudentByMajor() {
     getPromotion();
    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [majorId]);
 
 
 
@@ -231,7 +261,7 @@ export default function StudentByMajor() {
   useEffect(() => {
     renderValues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [promotionValue]);
+  }, [promotionValue , majorId]);
 
   const renderValues = async () => {
     let sendData = {
@@ -283,12 +313,18 @@ export default function StudentByMajor() {
       allMajor.filter(
         (major) => major.major_name === selectedValue
       );
+      if (selectedValue) {
+        // Redirect to the new page with the selected major's ID
+        const newPageURL = `/programManager/StudentByMajor?majorId=${selectedValue}`;
+        router.push(newPageURL);
+      }
       
       // setMajorValue(majorID[0].major_id);
     } else {
       // setMajorValue('');
     }
   };
+
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
 
@@ -443,6 +479,31 @@ export default function StudentByMajor() {
                   />
                 }
               </label>
+              {session.user?.hasMultiMajor === 'true' ?
+                <label className=''>
+                  Major:
+                  <select
+                    onChange={(e) => handleMajor(e.target.value)}
+                    value={majorId}
+                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+
+                  >
+                    <option key={"uu2isdvf"} value="">
+                      Choose a Major
+                    </option>
+                    {major &&
+                      major.map((major) => (
+                        <>
+                          <option key={major.major_id} value={major.major_id}>
+                            {major.major_name}
+                          </option>
+                        </>
+                      ))}
+                  </select>
+                </label>
+
+
+                : <></>}
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"

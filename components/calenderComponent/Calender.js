@@ -79,6 +79,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [place, setPlace] = useState('');
   // const [isSave, setIsSave] = useState(false);
   const [theDate, setTheDate] = useState('');
+  const [hasFetched , setHasFetched] = useState(false)
   const [scheduleDate, setScheduleDate] = useState([]);
   // const [allRoomBuilding, setAllRoomBuilding] = useState([]);
   const [allroomName, setAllRoomName] = useState([]);
@@ -873,8 +874,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     setRemainingRooms([])
     setIsOnline('')
     setZoomID()
-
-
+    setHasFetched(false)
     setShowForm(false);
   };
 
@@ -885,7 +885,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   }, [student, select]);
 
   const getStudentSchedule = async () => {
-    if (select) {
+    if (select && !hasFetched) {
       try {
         const payload1 = {
           table: 'tmpclass',
@@ -912,6 +912,7 @@ export const Calender = ({ schedule, setSchedule }) => {
             promotion,
           });
           setStudent(data.data);
+          setHasFetched(true);
         } else {
           const payload = {
             major_id: session.user?.majorid,
@@ -934,6 +935,7 @@ export const Calender = ({ schedule, setSchedule }) => {
               promotion,
             });
             setStudent(data.data);
+            setHasFetched(true);
           }
         }
       } catch (error) {
@@ -1048,6 +1050,7 @@ export const Calender = ({ schedule, setSchedule }) => {
                     }
                   );
                   resolve(data.data);
+                  setHasFetched(true);
                 } else {
                   const payload = {
                     major_id: session.user?.majorid,
@@ -1075,6 +1078,7 @@ export const Calender = ({ schedule, setSchedule }) => {
                       }
                     );
                     resolve(data.data);
+                    setHasFetched(true);
                   }
                 }
               } catch (error) {

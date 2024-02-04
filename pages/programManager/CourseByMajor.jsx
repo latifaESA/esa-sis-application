@@ -24,6 +24,8 @@ export default function CourseByMajor() {
   const [type, setType] = useState([]);
   const [openUpload , setOpenUpload] = useState(false)
   const [majors , setMajorName]= useState('')
+  const [major, setMajors] = useState([])
+  
   const { majorId } = router.query;
   const handleMajorName = async()=>{
     try {
@@ -37,12 +39,48 @@ export default function CourseByMajor() {
         return error
     }
   }
-  
+
   useEffect(()=>{
     handleMajorName()
     
-  },[])
+  },[majorId])
 
+  const handleMajors = async () => {
+    try {
+      if(session.user?.role === '3'){
+        const data = await axios.post('/api/pmApi/getMajorFromAs', {
+          pm_ass_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }else if(session.user?.role === '2'){
+        const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+          pm_id: session.user?.userid
+        })
+  
+        setMajors(data.data.data)
+      }
+
+
+    } catch (error) {
+      return error;
+    }
+  };
+  useEffect(() => {
+    handleMajors()
+
+
+  }, [majorId])
+
+  const handleMajor = (selectedValue) => {
+    // Do something with the selected value
+      if (selectedValue) {
+        // Redirect to the new page with the selected major's ID
+        const newPageURL = `/programManager/CourseByMajor?majorId=${selectedValue}`;
+        router.push(newPageURL);
+      }
+ 
+  };
   const headerCourse = [
     ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
   ];
@@ -86,7 +124,7 @@ export default function CourseByMajor() {
     handleShowAll();
     getAllType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [majorId]);
 
   const handleShowAll = async () => {
     let sendData = {
@@ -103,6 +141,7 @@ export default function CourseByMajor() {
     setUsers(data.data);
     // setMajorid('')
     setCourseid('');
+  
     setcourseName('');
     setcourseCredit('');
     setcourseType('');
@@ -267,19 +306,31 @@ export default function CourseByMajor() {
                 </select>
               </label>
 
-              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-                Presence:
-                <select
-                  className="ml-5 w-40 max-[850px]:ml-[52px] invisible max-[850px]:visible max-[850px]:hidden"
-                  name="status"
-                  // value={formData.status}
-                  // onChange={(e) => {setPresence(e.target.value)}}
-                >
-                  <option value={''}>Choose Value...</option>
-                  <option value={true}>Present</option>
-                  <option value={false}>Absent</option>
-                </select>
-              </label>
+              {session.user?.hasMultiMajor === 'true' ?
+                <label className=''>
+                  Major:
+                  <select
+                    onChange={(e) => handleMajor(e.target.value)}
+                    value={majorId}
+                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+
+                  >
+                    <option key={"uu2isdvf"} value="">
+                      Choose a Major
+                    </option>
+                    {major &&
+                      major.map((major) => (
+                        <>
+                          <option key={major.major_id} value={major.major_id}>
+                            {major.major_name}
+                          </option>
+                        </>
+                      ))}
+                  </select>
+                </label>
+
+
+                : <></>}
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"

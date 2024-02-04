@@ -48,8 +48,8 @@ export default function ClassView() {
       }
     }, [session.user?.pm_id]);
 
-    const handleButtonClick = (majorId, majorName) => {
-      router.push(`/programManager/ClassByMajor?majorId=${majorId}&majorName=${majorName}`);
+    const handleButtonClick = (majorId) => {
+      router.push(`/programManager/ClassByMajor?majorId=${majorId}`);
   };
   
     return (
@@ -78,7 +78,7 @@ export default function ClassView() {
                       <button
                         className="primary-button hover:text-white hover:font-bold justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700 rounded uppercase"
                         type="button"
-                        onClick={() => handleButtonClick(session.user?.majorid , session.user?.majorName)}
+                        onClick={() => handleButtonClick(session.user?.majorid)}
                       >
                         {session.user?.majorName.replace("EXED-", "")}
                       </button>

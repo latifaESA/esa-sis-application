@@ -77,6 +77,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
   const [place, setPlace] = useState('');
+  const [hasFetched , setHasFetched] = useState(false)
   // const [isSave, setIsSave] = useState(false);
   const [theDate, setTheDate] = useState('');
   const [scheduleDate, setScheduleDate] = useState([]);
@@ -98,7 +99,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [confirmOpenMessageNotification, setConfirmOpenMessageNotification] =
     useState(false);
   const [isEdit, setIsEdit] = useState(false)
-  const [isOnline, setIsOnline] = useState()
+  const [isOnline, setIsOnline] = useState('')
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [zoomUserId, setZoomUserId] = useState()
   const [zoom_id, setZoomID] = useState()
@@ -120,41 +121,44 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const getRoomBooking = async () => {
     try {
-      const accessToken = await getSharePointToken();
 
-      const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
+        const accessToken = await getSharePointToken();
 
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json;odata=verbose',
-          'Content-Type': 'application/json;odata=verbose',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const data = await response.json();
-      if (data.d.results.length > 0) {
-        for (const booking of data.d.results) {
-          // Format the date to 'YYYY-MM-DDT00:00:00Z'
-
-          const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-
-          // Make the API call
-          await axios.post('/api/pmApi/createBooking', {
-            bookingId: booking.ID,
-            room: booking.Title,
-            space: booking.Space,
-            bookingBy: booking.BookedBy,
-            date: formattedDate,
-            fromTime: booking.FromTime,
-            toTime: booking.ToTime,
-          });
-
+        const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
+  
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json;odata=verbose',
+            'Content-Type': 'application/json;odata=verbose',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+  
+        const data = await response.json();
+        if (data.d.results.length > 0) {
+          for (const booking of data.d.results) {
+            // Format the date to 'YYYY-MM-DDT00:00:00Z'
+  
+            const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+  
+            // Make the API call
+            await axios.post('/api/pmApi/createBooking', {
+              bookingId: booking.ID,
+              room: booking.Title,
+              space: booking.Space,
+              bookingBy: booking.BookedBy,
+              date: formattedDate,
+              fromTime: booking.FromTime,
+              toTime: booking.ToTime,
+            });
+  
+          }
         }
-      }
+  
+        return { ok: true, result: data };
+      
 
-      return { ok: true, result: data };
 
     } catch (error) {
 
@@ -309,7 +313,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         date: utcDateTime,
         classId: title
       }
-      console.log('testtime', payload)
+    
       await axios.post('/api/zoom_api/updateZoom', payload)
     } catch (error) {
       return error
@@ -317,7 +321,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   }
 
   useEffect(() => {
-    getZoomUser()
+    if(isOnline === 'true'){
+      console.log('isonline' , isOnline)
+      getZoomUser()
+    }
+
   }, [])
 
 
@@ -400,7 +408,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     });
 
     setScheduleDate(datesArray);
-    console.log(schedule)
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -426,8 +433,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const getClass = async () => {
     let table = 'tmpclass';
-    let colName = 'pm_id';
-    let val = session.user.userid;
+    let colName = 'major_id';
+    let val = majorId;
     let { data } = await axios.post('/api/pmApi/getAllCondition', {
       table,
       colName,
@@ -439,117 +446,103 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // setAllClasses(data.rows.map(clas => clas.course_id))
     setAllClasses(data.rows);
   };
+  useEffect(()=>{
+    const fetchData = async()=>{
+      await getAllRooms();
+      await getCourse()
+    }
+     fetchData()
+
+  },[])
   useEffect(() => {
     getSchedule();
     getClass();
-    getCourse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schedule]);
   useEffect(() => {
-    getAllRooms();
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const searchBook = async () => {
-
     try {
+      // Check if all required fields are filled
       if (building !== '' && fromTime !== '' && toTime !== '') {
         const occupiedRoomsArray = [];
-
-
         const dates = new Date(theDate);
         const formattedDate = moment(dates).format('YYYY-MM-DDT00:00:00[Z]');
-
         const fromTimeSplit = fromTime;
         const toTimeSplit = toTime;
         const datess = formattedDate.split('T')[0];
-
         const offset = 2;
         const fromTimes = moment(`${datess}T${fromTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
         const toTimes = moment(`${datess}T${toTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
-
-        if (fromTimes && toTimes) {
+  
+        if (fromTimes && toTimes && building && isOnline === 'false') {
           const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
           const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
-
+  
           const payload = {
             space: building,
             date: formattedDate,
             FromTime: formattedFromTime,
             ToTime: formattedToTime,
           };
-
+  
           const response = await axios.post('/api/pmApi/getBooking', payload);
-
+  
           const data = response.data.data;
           if (response.data.success === true) {
-            // Collect occupied rooms
             data.forEach(item => {
               occupiedRoomsArray.push(item.rooms);
             });
-
-            // Set state to store occupied rooms
+  
             setOccupiedRooms(occupiedRoomsArray);
-
-            // Set state to store remaining rooms
+  
             const remainingRoomsArray = allrooms.filter(room => !occupiedRooms.includes(room));
-
             setRemainingRooms(remainingRoomsArray);
           } else {
-            // If data.data.success is not true, set all rooms as remaining
-
             setRemainingRooms(allrooms);
           }
         } else {
           console.error('fromTimes or toTimes is null or undefined');
         }
-
       }
     } catch (error) {
-
       return error;
     }
   };
+  
   useEffect(() => {
-    searchBook();
-
     const parseTimeString = (timeString) => {
       const [fromTimeString, toTimeString] = timeString.split(' to ');
-
-      // Assuming fromTimeString and toTimeString are dynamic values
       const fromTimes = convertToDesiredFormat(fromTimeString);
       const toTimes = convertToDesiredFormat(toTimeString);
-
       return [fromTimes, toTimes];
     };
-
+  
     const convertToDesiredFormat = (timeString) => {
       const date = new Date(`2000-01-01 ${timeString}`);
-
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-
       const formattedTime = `${hours}:${minutes}:00+02`;
-
       return formattedTime;
     };
-
-    // Replace these with the actual dynamic time values you have
+  
     const dynamicFromTime = fromTime;
     const dynamicToTime = toTime;
-
     const dynamicTimeString = `${dynamicFromTime} to ${dynamicToTime}`;
     const [fromTimes, toTimes] = parseTimeString(dynamicTimeString);
-
-    // Now you can use fromTime and toTime in your searchBookEdit function
+  
     searchBookEdit(theDate, building, fromTimes, toTimes);
   }, [building, fromTime, toTime]);
-
-
-
-
-
+  
+  useEffect(() => {
+    if (!hasFetched ){
+      searchBook();
+    }
+  }, [building, fromTime, toTime, hasFetched ]);
+  
 
   useEffect(() => {
 
@@ -876,19 +869,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setRemainingRooms([])
     setIsOnline('')
     setZoomID()
-
-
+    setSelect(false)
     setShowForm(false);
+    setHasFetched(false)
   };
 
   useEffect(() => {
     getStudentSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [student, select]);
+  }, [student , select , classes]);
 
   const getStudentSchedule = async () => {
-    if (select) {
+    if (select && !hasFetched) {
       try {
         const payload1 = {
           table: 'tmpclass',
@@ -915,6 +908,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             promotion,
           });
           setStudent(data.data);
+          setHasFetched(true);
         } else {
           const payload = {
             major_id: majorId,
@@ -927,6 +921,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               payload
             );
             setStudent(data.data.data);
+            setHasFetched(true);
           } catch (error) {
             let major_id = majorId;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
@@ -937,6 +932,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               promotion,
             });
             setStudent(data.data);
+            setHasFetched(true);
           }
         }
       } catch (error) {
@@ -986,6 +982,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                   Promise.all(createAttendanceStudentPromises)
                     .then(() => {
                       resolve(response2);
+                      setSelect(false)
+                      setHasFetched(false)
                     })
                     .catch((error) => {
                       reject(error);
