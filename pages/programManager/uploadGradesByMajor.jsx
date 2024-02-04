@@ -7,12 +7,13 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGMP, showAllRTF , showAllEXED , majorId , majors }) {
+export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGMP, showAllRTF , showAllEXED , majorId , majors , clickUpload}) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
     const [isClick, setIsClick] = useState(false);
     const [student, setStudentData] = useState([]);
+    const [hasFetched , setHasFetched] = useState(false)
     const router = useRouter();
 
     const redirect = () => {
@@ -61,32 +62,22 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
     }, [student])
 
     useEffect(() => {
-        if (!isExeMajor) {
-            showAll();
-        } else if (isExeMajor &&SecondMajorWord==='GMP' || majors === 'EXED-GMP') {
-            showAllGMP();
-        } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services' || majors === 'Digital Transformation' || SecondMajorWord === 'Digital Transformation') {
-            showAllRTF()
-        }else if (isExeMajor){
-            showAllEXED()
-        }
-
         // Auto-refresh the page 
-        const interval = setInterval(() => {
+        // const interval = setInterval(() => {
             if (!isExeMajor) {
                 showAll();
             } else if (isExeMajor && majors==='EXED-GMP') {
                 showAllGMP();
-            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services') {
+            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || majors==='Digital Transformation in Financial Services' || majors === 'Digital Transformation' || SecondMajorWord === 'Digital Transformation') {
                 showAllRTF()
             }else if (isExeMajor){
                 showAllEXED()
             }
-        }, 2000);
+        // }, 2000);
 
-        // Clear the interval when the component unmounts
-        return () => clearInterval(interval);
-    }, []);
+        // // Clear the interval when the component unmounts
+        // return () => clearInterval(interval);
+    }, [isClick]);
 
     const validateColumnHeaders = (columnA) => {
         if (!isExeMajor) {
@@ -224,25 +215,30 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
             const payload = {
                 major_id: majorId
             };
-            const response = await axios.post('/api/pmApi/studentEmail', payload);
+            if(clickUpload && !hasFetched){
+                const response = await axios.post('/api/pmApi/studentEmail', payload);
             
-            const unsortedStudentData = response.data.data;
+                const unsortedStudentData = response.data.data;
+    
+                // Sort the student data by student_id in increasing order
+                const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
+                    a.student_id - b.student_id
+                );
+                // Extract the required information (first name, last name, and email)
+                const studentInfo = sortedStudentData.map(student => ({
+                    studentID :student.student_id,
+                    firstName: student.student_firstname,
+                    lastName: student.student_lastname,
+                    email: student.email,
+                    pm_id : session.user?.userid
+                }));
+            
+                // Set the student data in your state or wherever you need it
+                setStudentData(studentInfo);
+                setHasFetched(true)
 
-            // Sort the student data by student_id in increasing order
-            const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
-                a.student_id - b.student_id
-            );
-            // Extract the required information (first name, last name, and email)
-            const studentInfo = sortedStudentData.map(student => ({
-                studentID :student.student_id,
-                firstName: student.student_firstname,
-                lastName: student.student_lastname,
-                email: student.email,
-                pm_id : session.user?.userid
-            }));
+            }
         
-            // Set the student data in your state or wherever you need it
-            setStudentData(studentInfo);
         } catch (error) {
             return error;
         }

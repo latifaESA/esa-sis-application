@@ -30,26 +30,66 @@ export default function GradesById() {
     const [users, setUser] = useState([])
     const [taskName, setTaskName] = useState("")
     const [data, setData] = useState([])
-    const [majors , setMajorName]= useState('')
+    const [majors, setMajorName] = useState('')
+    const [major, setMajors] = useState([])
     const router = useRouter();
     const { majorId } = router.query;
-    const handleMajorName = async()=>{
-      try {
-          const response = await axios.post('/api/pmApi/getAllCourses' , {
-              table:'major',
-              Where:'major_id',
-              id:majorId
-          })
-          setMajorName(response.data.data[0].major_name)
-      } catch (error) {
-          return error
-      }
+
+
+    const handleMajorName = async () => {
+        try {
+            const response = await axios.post('/api/pmApi/getAllCourses', {
+                table: 'major',
+                Where: 'major_id',
+                id: majorId
+            })
+            setMajorName(response.data.data[0].major_name)
+        } catch (error) {
+            return error
+        }
     }
-   
-    useEffect(()=>{
+
+    const handleMajors = async () => {
+        try {
+            if (session.user?.role === '3') {
+                const data = await axios.post('/api/pmApi/getMajorFromAs', {
+                    pm_ass_id: session.user?.userid
+                })
+
+                setMajors(data.data.data)
+            } else if (session.user?.role === '2') {
+                const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+                    pm_id: session.user?.userid
+                })
+
+                setMajors(data.data.data)
+            }
+
+
+        } catch (error) {
+            return error;
+        }
+    };
+    useEffect(() => {
+        handleMajors()
+
+
+    }, [])
+
+    useEffect(() => {
         handleMajorName()
-        
-      },[])
+
+    }, [majorId])
+
+      const handleMajor = (selectedValue) => {
+        // Do something with the selected value
+          if (selectedValue) {
+            // Redirect to the new page with the selected major's ID
+            const newPageURL = `/programManager/GradesById?majorId=${selectedValue}`;
+            router.push(newPageURL);
+          }
+     
+      };
 
     const redirect = () => {
         router.push("/AccessDenied");
@@ -272,14 +312,14 @@ export default function GradesById() {
     const showAllEXED = async () => {
         try {
             const payload = {
-                student_id:'',
-                first_name:'',
-                last_name:'',
-                promotion:'',
-                major_id:majorId ,
-                course_id:'',
-                task_name:'',
-                grades:''
+                student_id: '',
+                first_name: '',
+                last_name: '',
+                promotion: '',
+                major_id: majorId,
+                course_id: '',
+                task_name: '',
+                grades: ''
             }
             const response = await axios.post('/api/pmApi/filterGradesEXED', payload)
 
@@ -299,14 +339,14 @@ export default function GradesById() {
     const searchEXED = async () => {
         try {
             const payload = {
-                student_id:studentId,
-                first_name:studentFirstName,
-                last_name:studentLastName,
-                promotion:promotions,
-                major_id:majorId,
-                course_id:courseId,
-                task_name:taskName,
-                grades:grade
+                student_id: studentId,
+                first_name: studentFirstName,
+                last_name: studentLastName,
+                promotion: promotions,
+                major_id: majorId,
+                course_id: courseId,
+                task_name: taskName,
+                grades: grade
             }
 
             const response = await axios.post('/api/pmApi/filterGradesEXED', payload)
@@ -332,13 +372,13 @@ export default function GradesById() {
             fetchPromotion()
             showAllRTF()
             searchRTF()
-        }else if(isExeMajor){
+        } else if (isExeMajor) {
             fetchPromotion()
             showAllEXED()
             searchEXED()
         }
 
-    }, [])
+    }, [majorId])
 
     return (
         <>
@@ -351,10 +391,10 @@ export default function GradesById() {
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Grades</p>
                     <form>
 
-                       
-                        {clickDownload &&  <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
-                        {clickUpload && <UploadGradesByMajor setClickUpload={setClickUpload} showAll={showAll}
-                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED}  majorId={majorId} majors={majors}/>}
+
+                        {clickDownload && <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
+                        {clickUpload && <UploadGradesByMajor setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
+                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} majorId={majorId} majors={majors} />}
 
                         <div className="mb-4 md:mb-12 p-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -525,6 +565,31 @@ export default function GradesById() {
                                     </select>
                                 </div>
                             </div>
+                            {session.user?.hasMultiMajor === 'true' ?
+                                <label className=''>
+                                    Major:
+                                    <select
+                                        onChange={(e) => handleMajor(e.target.value)}
+                                        value={majorId}
+                                        className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+
+                                    >
+                                        <option key={"uu2isdvf"} value="">
+                                            Choose a Major
+                                        </option>
+                                        {major &&
+                                            major.map((major) => (
+                                                <>
+                                                    <option key={major.major_id} value={major.major_id}>
+                                                        {major.major_name}
+                                                    </option>
+                                                </>
+                                            ))}
+                                    </select>
+                                </label>
+
+
+                                : <></>}
 
 
 
@@ -543,10 +608,10 @@ export default function GradesById() {
                                 className="primary-button rounded btnCol text-white hover:text-white hover:font-bold"
                                 type="button"
                                 onClick={!isExeMajor ? search :
-                                    (secondMajorWord === 'GMP' || majors==='EXED-GMP'?
+                                    (secondMajorWord === 'GMP' || majors === 'EXED-GMP' ?
                                         searchGMP :
                                         isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
-                                            ? searchRTF : isExeMajor ? searchEXED :<></>)
+                                            ? searchRTF : isExeMajor ? searchEXED : <></>)
                                 }
                             >
                                 Search
@@ -555,10 +620,10 @@ export default function GradesById() {
                                 className="primary-button rounded btnCol text-white hover:text-white hover:font-bold"
                                 type="button"
                                 onClick={!isExeMajor ? showAll :
-                                    (secondMajorWord === 'GMP' || majors==='EXED-GMP'?
+                                    (secondMajorWord === 'GMP' || majors === 'EXED-GMP' ?
                                         showAllGMP :
                                         isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
-                                            ? showAllRTF : isExeMajor ? showAllEXED :<></>)
+                                            ? showAllRTF : isExeMajor ? showAllEXED : <></>)
                                 }
                             >
                                 Show All
@@ -584,9 +649,9 @@ export default function GradesById() {
                         {
                             !isExeMajor ? <GradeList users={users} setUser={setUser} />
                                 : isExeMajor && majors === 'EXED-GMP' ? <GradeListGMP users={users} setUser={setUser} />
-                                    : isExeMajor && (secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation')?
+                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ?
                                         <GradeListRTF users={users} setUser={setUser} />
-                                        : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} />:<></>
+                                        : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} /> : <></>
 
                         }
 

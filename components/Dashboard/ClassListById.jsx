@@ -186,7 +186,7 @@ const ClassListById = ({ users }) => {
   };
 useEffect(()=>{  
 handleSelect()
-},[selectedValues])
+},[])
   
   
   const getDetails = async (event) => {

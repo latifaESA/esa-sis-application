@@ -332,7 +332,7 @@ export default function Grades() {
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Grades</p>
                     <form>
                         {clickDownload && <DownloadGrades setClickDownload={setClickDownload} />}
-                        {clickUpload && <UploadGrades setClickUpload={setClickUpload} showAll={showAll}
+                        {clickUpload && <UploadGrades setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
                             showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} />}
 
                         <div className="mb-4 md:mb-12 p-6">
@@ -563,7 +563,7 @@ export default function Grades() {
                         {
                             !isExeMajor ? <GradeList users={users} setUser={setUser} />
                                 : isExeMajor && secondMajorWord === 'GMP' ? <GradeListGMP users={users} setUser={setUser} />
-                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' ?
+                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ?
                                         <GradeListRTF users={users} setUser={setUser} />
                                         : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} />:<></>
 
