@@ -46,6 +46,7 @@ import AddSchedule from "../AddSchedule";
 const ClassList = ({ users , allCourse}) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
+  const [courseName, setCourseName] = useState("")
   // const statusData = selection_data.application_status_inList;
   // const presence = selection_data.presence;
   // const [presentEnable, setPesentEnable] = useState(null);
@@ -59,7 +60,7 @@ const ClassList = ({ users , allCourse}) => {
   const [toTime, setToTime] = useState("");
   const [location, setLocation] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
-  const [classID, setClassID] = useState("");
+  const [classID, setClassID] = useState(null);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [theRoom, setTheRoom] = useState([]);
@@ -463,9 +464,7 @@ const ClassList = ({ users , allCourse}) => {
                 if (attendance_id.length !== 0) {
 
                   const { data } = await axios.post("/api/pmApi/createScheduleOnline", scheduleData);
-                  console.log('in schedule : ', classID)
                   if (data.success) {
-                  console.log('in schedule successs ss : ', classID.length)
 
                     deleteTable()
                     allID.push(...data.scheduleId)
@@ -478,9 +477,8 @@ const ClassList = ({ users , allCourse}) => {
                     // Convert the local time to UTC
                     const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
               
-                    console.log(classID)
                     const payload = {
-                      classId: `${classID}`,
+                      classId: `${courseName}`,
                       date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
                       accessToken: zoomAccessToken,
                       userId: zoomUserId,
@@ -856,7 +854,7 @@ const ClassList = ({ users , allCourse}) => {
           <button
             className="primary-button hover:text-white"
             onClick={() => {
-              setClassID(allCourse.filter(
+              setCourseName(allCourse.filter(
                       (course) => course.course_id === params.row.course_id
                     )[0].course_name
               );
@@ -867,7 +865,7 @@ const ClassList = ({ users , allCourse}) => {
               // , setEditModal(true)
               handleShowAll(params.row.tmpclass_id),
                 setIsAddSchedule(true),
-                // setClassID(params.row.tmpclass_id),
+                setClassID(params.row.tmpclass_id),
                 setToDate(params.row.enddate),
                 setFromDate(params.row.startdate),
 
