@@ -738,7 +738,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         const attendanceData = await handleCreateAttendanceDragDrop(
           ev,
-          modifyDate(dragDateRef.current.date),
+          dragDateRef.current.date,
           place
         );
 
