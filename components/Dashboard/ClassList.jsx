@@ -461,53 +461,87 @@ const ClassList = ({ users }) => {
               };
               try {
                 if (attendance_id.length !== 0) {
+
                   const { data } = await axios.post("/api/pmApi/createScheduleOnline", scheduleData);
                   if (data.success) {
                     deleteTable()
                     allID.push(...data.scheduleId)
                     schedulesCreated++;
-                    
-                    if (schedulesCreated === totalSchedules) {
-                      const weekDaysNumbers = selectedValues.map(item => item + 1);
-                      const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
-                      const combinedToDateTime = `${toDate}T${toTime}:00Z`;
-                      
-                      let payload = {
-                        accessToken : zoomAccessToken, 
-                        userId : zoomUserId,
-                        requestBody : {
-                          topic: `${classID}`,
-                          type: 3,
-                          start_time: combinedFromDateTime,
-                          recurrence: {
-                            type: 2,
-                            repeat_interval: 1,
-                            weekly_days: weekDaysNumbers.join(','),  // 1 represents Monday, 4 represents Thursday
-                            end_date_time: combinedToDateTime
-                          },
-                          settings: {
-                            join_before_host: true,
-                            auto_recording: "cloud",
-                            mute_upon_entry: true,
-                            waiting_room: true,
-                            registrants_email_notification: true,
-                          },
-                        }
-                      }
-                      const {data} = await axios.post("/api/zoom_api/createZoomMeet", payload)
+                    const formattedDate = moment(attendance_date).format('YYYY-MM-DD');
+                  
+                    // Combine the date and time and format it as a full ISO string
+                    const localDateTime = `${formattedDate}T${fromTime}`;
+              
+                    // Convert the local time to UTC
+                    const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+              
+                    const payload = {
+                      classId: `${classID}`,
+                      date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
+                      accessToken: zoomAccessToken,
+                      userId: zoomUserId,
+                      createAt: utcDateTime,  // You might want to choose either date or createAt
+                    };
+              
+                    const response = await axios.post('/api/zoom_api/createZoom', payload);
+              
                       let payload1 = {
-                        tmpscheduleIds : allID,
-                        meetingIds : data.data.id,
-                        zoomUrls : data.data.join_url
+                        tmpscheduleIds : data.scheduleId,
+                        meetingIds : response.data.data.id,
+                        zoomUrls : response.data.data.join_url
                       }
-                      await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
-                      // create zoom
+                      let result = await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
+                      if (schedulesCreated === totalSchedules && result.status === 201) {
                       // update the schedule
-                      setIsClicked(false);
-                      setIsAddSchedule(false);
-                      setSelectedValues([]);
-                      setIsOnLine('')
-                    }
+                        setIsClicked(false);
+                        setIsAddSchedule(false);
+                        setSelectedValues([]);
+                        setIsOnLine('')
+                      }
+                    // if (schedulesCreated === totalSchedules) {
+                    //   const weekDaysNumbers = selectedValues.map(item => item + 1);
+                    //   const combinedFromDateTime = `${fromDate}T${fromTime}:00Z`;
+                    //   const combinedToDateTime = `${toDate}T${toTime}:00Z`;
+                      
+                    //   let payload = {
+                    //     accessToken : zoomAccessToken, 
+                    //     userId : zoomUserId,
+                    //     requestBody : {
+                    //       topic: `${classID}`,
+                    //       type: 3,
+                    //       start_time: combinedFromDateTime,
+                    //       recurrence: {
+                    //         type: 2,
+                    //         repeat_interval: 1,
+                    //         weekly_days: weekDaysNumbers.join(','),  // 1 represents Monday, 4 represents Thursday
+                    //         end_date_time: combinedToDateTime
+                    //       },
+                    //       settings: {
+                    //         join_before_host: true,
+                    //         auto_recording: "cloud",
+                    //         mute_upon_entry: true,
+                    //         waiting_room: true,
+                    //         registrants_email_notification: true,
+                    //       },
+                    //     }
+                    //   }
+                    //   const {data} = await axios.post("/api/zoom_api/createZoomMeet", payload)
+
+                    //       // return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
+                      
+                    //   let payload1 = {
+                    //     tmpscheduleIds : allID,
+                    //     meetingIds : data.data.id,
+                    //     zoomUrls : data.data.join_url
+                    //   }
+                    //   await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
+                    //   // create zoom
+                    //   // update the schedule
+                    //   setIsClicked(false);
+                    //   setIsAddSchedule(false);
+                    //   setSelectedValues([]);
+                    //   setIsOnLine('')
+                    // }
                   }
                 } else {
                   console.log("error");
