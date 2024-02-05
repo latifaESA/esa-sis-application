@@ -43,7 +43,7 @@ import AddSchedule from "../AddSchedule";
 // };
 
 
-const ClassList = ({ users }) => {
+const ClassList = ({ users , allCourse}) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   // const statusData = selection_data.application_status_inList;
@@ -59,7 +59,7 @@ const ClassList = ({ users }) => {
   const [toTime, setToTime] = useState("");
   const [location, setLocation] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
-  const [classID, setClassID] = useState(null);
+  const [classID, setClassID] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [theRoom, setTheRoom] = useState([]);
@@ -463,7 +463,10 @@ const ClassList = ({ users }) => {
                 if (attendance_id.length !== 0) {
 
                   const { data } = await axios.post("/api/pmApi/createScheduleOnline", scheduleData);
+                  console.log('in schedule : ', classID)
                   if (data.success) {
+                  console.log('in schedule successs ss : ', classID.length)
+
                     deleteTable()
                     allID.push(...data.scheduleId)
                     schedulesCreated++;
@@ -475,6 +478,7 @@ const ClassList = ({ users }) => {
                     // Convert the local time to UTC
                     const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
               
+                    console.log(classID)
                     const payload = {
                       classId: `${classID}`,
                       date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
@@ -852,6 +856,10 @@ const ClassList = ({ users }) => {
           <button
             className="primary-button hover:text-white"
             onClick={() => {
+              setClassID(allCourse.filter(
+                      (course) => course.course_id === params.row.course_id
+                    )[0].course_name
+              );
               getRoomBooking()
               getDetails(params.row);
               // handlcourseType(params.row),
@@ -859,7 +867,7 @@ const ClassList = ({ users }) => {
               // , setEditModal(true)
               handleShowAll(params.row.tmpclass_id),
                 setIsAddSchedule(true),
-                setClassID(params.row.tmpclass_id),
+                // setClassID(params.row.tmpclass_id),
                 setToDate(params.row.enddate),
                 setFromDate(params.row.startdate),
 
