@@ -11,13 +11,11 @@ async function handler(req, res) {
             pmID
 
         } = req.body;
-        console.log('body' , table)
         const response = await getMajorPMExtra(connection,
             pm_id , 
             table , 
             pmID
         );
-        console.log(response)
        
         await disconnect(connection);
         if (response.rows.length === 0) {

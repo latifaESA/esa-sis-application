@@ -11,7 +11,6 @@ async function handler(req, res) {
             id
         } = req.body;
         const response = await getCourse(connection, table, Where, id);
-        await disconnect(connection);
 
         if (response.rows.length === 0) {
             return res.status(404).json({
@@ -35,7 +34,7 @@ async function handler(req, res) {
         })
     } finally {
         if (connection) {
-            disconnect(connection); // Release the connection if it exists
+            await disconnect(connection); // Release the connection if it exists
         }
     }
 }
