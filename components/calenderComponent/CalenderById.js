@@ -257,7 +257,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         userId: zoomUserId,
         createAt: utcDateTime,
       };
-
       const response = await axios.post('/api/zoom_api/createZoom', payload);
 
       return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
@@ -321,11 +320,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   }
 
   useEffect(() => {
-    if(isOnline === 'true'){
-      console.log('isonline' , isOnline)
       getZoomUser()
-    }
-
   }, [])
 
 
