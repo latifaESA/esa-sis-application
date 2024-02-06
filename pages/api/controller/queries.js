@@ -3279,7 +3279,6 @@ async function getMajorPMExtra(connection, pm_id , table , pmID) {
 	INNER JOIN major ON ${table}.major_id = major.major_id
     WHERE ${pmID} ='${pm_id}'
     `;
-    console.log('getmajor' , query)
     const res = await connection.query(query);
 
     return res;
@@ -3625,7 +3624,6 @@ async function getMajorFromAS(connection, pm_ass_id) {
     `;
 
     const res = await connection.query(query);
-    console.log('res' , query , res)
     return res;
   } catch (error) {
     return error;
