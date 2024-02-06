@@ -675,7 +675,7 @@ export default function ClassByMajor() {
                 </button>
               </div>
             </div>
-           <ClassListById users={users} setUsers={setUsers} />
+           <ClassListById users={users} setUsers={setUsers} allCourse={allCourse}/>
           </form>
         </>
       ) : (

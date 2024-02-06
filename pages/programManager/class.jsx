@@ -441,6 +441,7 @@ export default function Class() {
         // console.log('dataaaaaaaaaaaaa', data.data);
         // console.log('allCourse', allCourse);
         setAllCourse(data.data);
+
         // console.log('allCourse', allCourse);
         const datesArray = [];
         data.data.forEach((course) => {
@@ -673,7 +674,7 @@ export default function Class() {
                 </button>
               </div>
             </div>
-            <ClassList users={users} setUsers={setUsers} />
+            <ClassList users={users} setUsers={setUsers} allCourse={allCourse}/>
           </form>
         </>
       ) : (

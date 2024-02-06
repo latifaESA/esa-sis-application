@@ -43,7 +43,7 @@ import AddSchedule from "../AddSchedule";
 // };
 
 
-const ClassListById = ({ users }) => {
+const ClassListById = ({ users, allCourse }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const [isOnline , setIsOnLine] = useState('')
@@ -54,6 +54,7 @@ const ClassListById = ({ users }) => {
   const { data: session } = useSession();
   // const [isModal, setisModal] = useState(false)
   // const [editModal, setEditModal] = useState(false)
+  const [courseName, setCourseName] = useState("")
   const [attendance, setAttendance] = useState(false);
   const [isAddSchedule, setIsAddSchedule] = useState(false);
   const [fromTime, setFromTime] = useState("");
@@ -77,7 +78,10 @@ const ClassListById = ({ users }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [messages, setMessages] = useState("");
-  const [timeResult , setTimeResult] = useState([])
+  const [timeResult , setTimeResult] = useState([]);
+  const [zoomAccessToken, setZoomAccessToken] = useState("");
+  const [zoomUserId, setZoomUserId] = useState()
+
   const router = useRouter();
   const {majorId } = router.query
  
@@ -91,7 +95,35 @@ const ClassListById = ({ users }) => {
   let allStages = [];
 
   const [building, setBuilding] = useState("");
+  useEffect(() => {
+    getUser()
+  }, [])
+  const getZoomAccessToken = async () => {
+    try {
+      const { data } = await axios.get('/api/zoom_api/getZoomAccessToken')
+      setZoomAccessToken(data.access_token)
+      return data.access_token;
+    } catch (error) {
+      console.log('error access token : ', error)
+      return
+    }
+  }
 
+  const getUser = async () => {
+    try {
+      const theZoomToke = await getZoomAccessToken()
+      let payload = {
+        email: session?.user?.email,
+        accessToken: theZoomToke
+      }
+      const { data } = await axios.post(`/api/zoom_api/getZoomUser`, payload)
+      setZoomUserId(data.data.id)
+      return;
+    } catch (error) {
+      console.log('error get user : ', error)
+      return
+    }
+  }
 
   
   const getAllRooms = async () => {
@@ -406,7 +438,7 @@ const handleCloseNotificatonMessages = () => {
                 days: [attendance_date],
                 fromTime: fromTime,
                 toTime: toTime,
-                room: '1',
+                room: '75',
                 pmID: session.user.userid,
                 attendanceId: attendance_id,
                 is_online:isOnline
@@ -414,13 +446,39 @@ const handleCloseNotificatonMessages = () => {
               try {
                 if (attendance_id.length !== 0) {
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
-        
+       
                   if (data.success) {
                     deleteTable()
                     
                     schedulesCreated++;
-        
-                    if (schedulesCreated === totalSchedules) {
+
+                    const formattedDate = moment(attendance_date).format('YYYY-MM-DD');
+
+                    // Combine the date and time and format it as a full ISO string
+                    const localDateTime = `${formattedDate}T${fromTime}`;
+
+                    // Convert the local time to UTC
+                    const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+                    const payload = {
+                      classId: `${courseName}`,
+                      date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
+                      accessToken: zoomAccessToken,
+                      userId: zoomUserId,
+                      createAt: utcDateTime,  // You might want to choose either date or createAt
+                    };
+                    console.log('the payload : ', payload)
+              
+                    const response = await axios.post('/api/zoom_api/createZoom', payload);
+              console.log('the response: ', response.data.data)
+                      let payload1 = {
+                        tmpscheduleIds : data.scheduleId,
+                        meetingIds : response.data.data.id,
+                        zoomUrls : response.data.data.join_url
+                      }
+                      let result = await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
+
+                    if (schedulesCreated === totalSchedules && result.status === 201) {
                       setIsClicked(false);
                       setIsAddSchedule(false);
                       setSelectedValues([]);
@@ -732,6 +790,10 @@ const handleShowAll = async (tmpclass_id) => {
           <button
             className="primary-button hover:text-white"
             onClick={() => {
+              setCourseName(allCourse.filter(
+                (course) => course.course_id === params.row.course_id
+              )[0].course_name
+              );
               getDetails(params.row);
               // handlcourseType(params.row),
               getStudent(params.row);
