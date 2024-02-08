@@ -465,22 +465,7 @@ export default function StudentByMajor() {
 
 
                 : <></>}
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
-                <button
-                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-                  type="submit"
-                  onClick={handleStudents}
-                >
-                  Search
-                </button>
-                <button
-                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                  type="reset"
-                  onClick={handleShowAll}
-                >
-                  Show All
-                </button>
-              </div>
+
               {isExeMajor ? <>
                 <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
@@ -499,6 +484,22 @@ export default function StudentByMajor() {
                 </button>
               </div>
               </>:<></>}
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3">
+                <button
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="submit"
+                  onClick={handleStudents}
+                >
+                  Search
+                </button>
+                <button
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="reset"
+                  onClick={handleShowAll}
+                >
+                  Show All
+                </button>
+              </div>
 
             </div>
             <StudentsList users={users} setUsers={setUsers} />
