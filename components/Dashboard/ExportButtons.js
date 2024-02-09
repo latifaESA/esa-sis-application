@@ -8,18 +8,17 @@ export const ExportButtons = ({
 }) => {
   return (
     <>
-      <div className="grid lg:grid-cols-4 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4">
+      <div className="grid lg:grid-cols-2 lg:col-end-4 min-[200px]:col-auto mt-5 gap-4">
             <button
-              className="primary-button btnCol text-white hover:text-white"
+              className="primary-button"
               type="button"
               onClick={exportAllButton}
-              // hidden={session.user.role === '2'?true:false}
             >
               Export All
             </button>
 
         <button
-          className='primary-button hover:text-white'
+          className='primary-button'
           type='button'
           disabled={selectedRows.length < 1}
           onClick={

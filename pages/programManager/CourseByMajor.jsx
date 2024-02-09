@@ -250,42 +250,6 @@ export default function CourseByMajor() {
                   }}
                 ></input>
               </label>
-              {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-                Major Name:
-                <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
-                  type="number"
-                  name="major_id"
-                  placeholder="Major Name"
-                  // value={formData.ID}
-                  // onChange={(e) => {setMajorid(e.target.value)}}
-                ></input>
-              </label>
-              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-                Date:
-                <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden  w-40 max-[850px]:ml-20"
-                  type="date"
-                  name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
-                ></input>
-              </label>
-
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
-              </label>
-              {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
               <label className="">
                 Type:
