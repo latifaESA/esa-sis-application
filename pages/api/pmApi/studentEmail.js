@@ -8,10 +8,12 @@ async function handler(req, res) {
     const connection = await connect();
 
     const {
-      major_id 
+      major_id ,
+      promotion_name
     } = req.body;
 
-     const response = await searchEmailStudent(connection, major_id)
+
+     const response = await searchEmailStudent(connection, major_id , promotion_name)
     
     await disconnect(connection);
     return res.status(200).json({

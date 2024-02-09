@@ -68,7 +68,7 @@ export default function Modal({
     const nameB = `${b.student_firstname} ${b.student_lastname}`.toLowerCase();
     return nameA.localeCompare(nameB);
   }).map((row, index) => ({ ...row, count: index + 1 }));
-  
+
 
   const handleAll = async () => {
     try {
@@ -117,20 +117,20 @@ export default function Modal({
   };
 
   const columns = [
-  
-   
-      {
-        field: 'count',
-        headerName: 'No.',
-        headerAlign: 'center',
-        align: 'center',
-        width: 100,
-        renderCell: (params) => params.row.count,
 
-      },
-    
-    
-    
+
+    {
+      field: 'count',
+      headerName: 'No.',
+      headerAlign: 'center',
+      align: 'center',
+      width: 100,
+      renderCell: (params) => params.row.count,
+
+    },
+
+
+
     {
       field: 'id', // Add the id field
       headerName: 'ID',
@@ -144,16 +144,16 @@ export default function Modal({
       align: 'center',
       width: 150,
       cellClassName: (params) =>
-      params.row.student_firstname !== ''
-        ? 'text-gray-700 text-medium'
-        : params.student_lastname !== ''
-          ? 'text-green-600 font-bold'
-          : '',
+        params.row.student_firstname !== ''
+          ? 'text-gray-700 text-medium'
+          : params.student_lastname !== ''
+            ? 'text-green-600 font-bold'
+            : '',
 
       renderCell: (params) =>
         `${params.row.student_firstname || ''} ${params.row.student_lastname || ''
         }`,
-        
+
     },
     {
       field: 'present',
@@ -216,8 +216,21 @@ export default function Modal({
             {/*content*/}
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               {/*header*/}
-              <div 
-              className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t"
+              <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                <h3 className="text-3xl font-semibold">
+                  Attendance
+                </h3>
+                <button
+                  className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                  onClick={() => setShowModal(false)}
+                >
+                  <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                    ×
+                  </span>
+                </button>
+              </div>
+              {/* <div
+                className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t"
               >
                 <h3 className="text-gray-700 text-3xl font-bold">
                   Attendance
@@ -226,17 +239,17 @@ export default function Modal({
                   className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                   onClick={() => {
                     setEditModal(false), setAttendance([]), setTeacherFirstName(''),
-                    setTeacherlastname(''), setDate(''), setCourseName(''), setDetails([]);
+                      setTeacherlastname(''), setDate(''), setCourseName(''), setDetails([]);
                   }}
                 >
-                  <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                  <span className="bg-transparent text-black  h-4 w-4 text-2xl block outline-none focus:outline-none">
                     <BsX className=" text-gray-700 font-bold" />
                   </span>
                 </button>
-              </div>
+              </div> */}
               {/*body*/}
               <div className="relative p-6 flex-auto">
-                <div className="text-slate-500 ">
+                <div className="text-slate-500">
 
                   <div className="pr-3 pl-3">
                     <div className='flex'>
@@ -302,13 +315,24 @@ export default function Modal({
 
               </div>
               {/*footer*/}
-              <div className="flex items-center justify-center p-6  rounded-b">
-              <button
-                  className="primary-button btnCol text-white  w-40 hover:text-white hover:font-bold mr-5"
+              <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+
+                <button
+                  className="primary-button  text-white  mr-4"
                   type="button"
                   onClick={() => handleAll()}
                 >
                   Save ALL
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                  type="button"
+                  onClick={() => {
+                    setEditModal(false), setAttendance([]), setTeacherFirstName(''),
+                      setTeacherlastname(''), setDate(''), setCourseName(''), setDetails([]);
+                  }}
+                >
+                  Close
                 </button>
               </div>
             </div>

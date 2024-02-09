@@ -59,15 +59,15 @@ export default function DownloadGrades({ setClickDownload }) {
   if (isExeMajor) {
     if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
+        ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
       ]
     } else if (secondMajorWord === 'Digital Transformation in Financial Services') {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20'],
+        ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20'],
       ]
     } else {
       header = [
-        ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
+        ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
       ]
     }
 
@@ -76,11 +76,11 @@ export default function DownloadGrades({ setClickDownload }) {
   } else {
     if (session.user?.majorName === 'BBA (Bachelor in Business Administration)') {
       header = [
-        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
+        ['StudentID', 'StudentFirstName', 'StudentLastName', 'Promotion', 'CourseID', 'TaskName', 'Grade', 'Semester', 'Academic_year'],
       ]
     } else {
       header = [
-        ['StudentID', 'StudentFirstName', 'StudentLastName', 'CourseID', 'TaskName', 'Grade', 'Academic_year'],
+        ['StudentID', 'StudentFirstName', 'StudentLastName', 'Promotion', 'CourseID', 'TaskName', 'Grade', 'Academic_year'],
       ]
 
     }
@@ -221,6 +221,7 @@ export default function DownloadGrades({ setClickDownload }) {
             studentData.student_id,
             studentData.student_lastname,
             studentData.student_firstname,
+            promotionName,
             courses,
             taskName,
             academic_year,
@@ -235,6 +236,7 @@ export default function DownloadGrades({ setClickDownload }) {
             studentData.student_id,
             studentData.student_lastname,
             studentData.student_firstname,
+            promotionName,
             courses,
             taskName,
             academic_year,
@@ -249,6 +251,8 @@ export default function DownloadGrades({ setClickDownload }) {
             studentData.student_id,
             studentData.student_lastname,
             studentData.student_firstname,
+
+            promotionName,
             courses,
             taskName,
             academic_year,
@@ -265,8 +269,10 @@ export default function DownloadGrades({ setClickDownload }) {
             studentData.student_id,
             studentData.student_firstname,
             studentData.student_lastname,
+            promotionName,
             courses,
             taskName,
+
             '',
             semester,
             academic_year,
@@ -281,6 +287,7 @@ export default function DownloadGrades({ setClickDownload }) {
             studentData.student_id,
             studentData.student_lastname,
             studentData.student_firstname,
+            promotionName,
             courses,
             taskName,
             '',
@@ -320,12 +327,10 @@ export default function DownloadGrades({ setClickDownload }) {
       <Head>
         <title>SIS Program Manager - Download</title>
       </Head>
-      {session?.user.role === "2" ? (
+      {session?.user.role === '2' ? (
         <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
-            <div className="relative w-3/4  my-6 mx-auto max-w-3xl">
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-3/4 my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
@@ -334,12 +339,13 @@ export default function DownloadGrades({ setClickDownload }) {
                     Download Template
                   </h3>
                   <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => { setClickDownload(false), setStudentData([]) }}
+                    className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => {
+                      setClickDownload(false);
+                      setStudentData([]);
+                    }}
                   >
-                    <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
+                    <span className="bg-transparent text-black h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
                   </button>
                 </div>
                 {/*body*/}
@@ -377,8 +383,7 @@ export default function DownloadGrades({ setClickDownload }) {
                               options={Data.map((course) => ({ value: course.course_id, label: course.course_name })).sort((a, b) => a.label.localeCompare(b.label))}
                               placeholder="Select a Course"
                               onChange={handleCourse}
-                              className='place-items-center w-96'
-                              required
+                              className='place-items-center w-full'
                             />
                             {courseError && (
                               <p className="text-red-500">{courseError}</p>
@@ -395,7 +400,7 @@ export default function DownloadGrades({ setClickDownload }) {
 
                                 <input type='radio' value={'assignment'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Assignment
                               </div>
-                              <div>
+                              <div className='mr-5'>
                                 <input type='radio' value={'exam'} onChange={(e) => setTaskValue(e.target.value)} name='task' />Exam
                               </div>
                               <div>
@@ -417,7 +422,6 @@ export default function DownloadGrades({ setClickDownload }) {
                                   value={semesterOptions.find(option => option.value === semester)} // Set the selected option
                                   onChange={handleSemester}
                                   className='place-items-center w-96'
-                                  required
                                 />
 
                               </div>
@@ -457,7 +461,7 @@ export default function DownloadGrades({ setClickDownload }) {
                             options={promotion.map((promotion) => ({ value: promotion.promotion_name, label: promotion.promotion_name }))}
                             placeholder="Select a Promotion"
                             onChange={handlePromotion}
-                            className='place-items-center w-96'
+                            className="place-items-center w-full"
                           />
                           <p className="pt-5 font-bold">please Select promotion </p>
 
