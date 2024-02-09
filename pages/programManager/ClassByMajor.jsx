@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import AddClass from '../../components/addClass';
 import ClassListById from '../../components/Dashboard/ClassListById';
-import CopyClass from '../../components/copyClass';
+import CopyClass from '../../components/CopyClass';
 // import moment from 'moment';
 // import Link from 'next/link';
 
@@ -59,7 +59,7 @@ export default function ClassByMajor() {
   // const clientSecret = '5LXGHVnrQYtOVdJV5yt9lpv20TgYYxQ3KVVgCYdkDGE=';
   // const tenantId = 'f64c300e-4a43-49ab-8bc9-471ab9b9544e';
   // const resource = 'https://esalb.sharepoint.com'; // SharePoint API endpoint
-  
+
   // // Your client-side code
   // const getSharePointToken = async () => {
   //   try {
@@ -76,13 +76,13 @@ export default function ClassByMajor() {
   //         resource: `${resource}`,
   //       }),
   //     });
-  
+
   //     const data = await response.json();
-  
+
   //     if (!data.access_token) {
   //       throw new Error('Access token not obtained');
   //     }
-  
+
   //     return data.access_token;
   //   } catch (error) {
   //     console.error('Error obtaining SharePoint access token:', error.message);
@@ -95,9 +95,9 @@ export default function ClassByMajor() {
   // const getRoomBooking = async () => {
   //   try {
   //     const accessToken = await getSharePointToken();
-  
+
   //     const apiUrl = `https://esalb.sharepoint.com/sites/test2/_api/web/lists/getbytitle('BookingRoom')/items`;
-  
+
   //     const response = await fetch(apiUrl, {
   //       method: 'GET',
   //       headers: {
@@ -106,13 +106,13 @@ export default function ClassByMajor() {
   //         Authorization: `Bearer ${accessToken}`,
   //       },
   //     });
-  
+
   //     const data = await response.json();
   //     if (data.d.results.length > 0) {
   //       for (const booking of data.d.results) {
   //         // Format the date to 'YYYY-MM-DDT00:00:00Z'
   //         const formattedDate = moment(booking.Date).format('YYYY-MM-DDT00:00:00[Z]');
-  
+
   //         // Make the API call
   //         const result = await axios.post('/api/pmApi/createBooking', {
   //           bookingId: booking.ID,
@@ -126,22 +126,22 @@ export default function ClassByMajor() {
   //         console.log(result);
   //       }
   //     }
-  
+
   //     return { ok: true, result: data };
-  
+
   //   } catch (error) {
   //     console.error('Error checking room availability in SharePoint:', error.message);
   //     // Assuming an error means the room is not available
   //     return { ok: false, result: false };
   //   }
   // };
-  
+
   // useEffect(() => {
   //   getRoomBooking();
   // }, []);
-  
-  
- 
+
+
+
   // useEffect(()=>{
   //   getRoomBooking()
   // },[])
@@ -247,10 +247,10 @@ export default function ClassByMajor() {
     courseValue.length === 0
       ? setError('Please choose course')
       : teacherValue.length === 0
-      ? setError('Please choose teacher')
-      : promotionValueClass.length === 0
-      ? setError('Please choose promotion')
-      : (setError(''), createClass());
+        ? setError('Please choose teacher')
+        : promotionValueClass.length === 0
+          ? setError('Please choose promotion')
+          : (setError(''), createClass());
   };
 
   const handleDateFromChange = (event) => {
@@ -293,7 +293,7 @@ export default function ClassByMajor() {
       return error;
     }
   };
- 
+
 
   const router = useRouter();
 
@@ -301,7 +301,7 @@ export default function ClassByMajor() {
     router.push('/AccessDenied');
   };
 
-  const {majorId }= router.query;
+  const { majorId } = router.query;
 
   useEffect(() => {
     fetchClass();
@@ -329,15 +329,15 @@ export default function ClassByMajor() {
       setCourseValue(
         selectedValue.length > 0
           ? allCourse.filter(
-              (course) => course.course_name === selectedValue
-            )[0].course_id
+            (course) => course.course_name === selectedValue
+          )[0].course_id
           : ''
       );
     }
     setMajorValue(
       selectedValue.length > 0
         ? allCourse.filter((course) => course.course_name === selectedValue)[0]
-            .major_id
+          .major_id
         : ''
     );
   };
@@ -540,20 +540,14 @@ export default function ClassByMajor() {
           )}
           <form>
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-              <label className="w-[350px]">
-                Course:
-                {/* <input
-                  type="text"
-                  placeholder="type course id"
-                  className="ml-4"
-                  onChange={(e) => setSearchCourse(e.target.value)}
-                /> */}
+              <label>
+                Class:
                 <select
                   className="ml-9 w-40"
                   value={searchCourse}
                   onChange={(e) => setSearchCourse(e.target.value)}
                 >
-                  <option value=" ">courses</option>
+                  <option value=" ">class</option>
                   <>
                     <>
                       {classes.length > 0 ? (
@@ -568,27 +562,19 @@ export default function ClassByMajor() {
                     </>
                   </>
                 </select>
-                {/* {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Course"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            } */}
               </label>
 
-              {/* <label className='w-[350px]'>
-            Promotion:
-            {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Promotion"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            }
-          </label> */}
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                From:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="date"
+                  name="from"
+                // value={formData.from}
+                // onChange={handleChange}
+                ></input>
+              </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 To:
@@ -596,67 +582,50 @@ export default function ClassByMajor() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+              {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+
 
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
-                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
-                  type="submit"
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
                   onClick={handleSearch}
                 >
                   Search
                 </button>
                 <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
-                  type="reset"
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="button"
                   onClick={handleShowAll}
                 >
                   Show All
                 </button>
               </div>
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                Course:
-                {/* <input
-                  type="text"
-                  placeholder="type course id"
-                  className=" invisible max-[850px]:visible max-[850px]:hidden "
-                  onChange={(e) => setSearchCourse(e.target.value)}
-                /> */}
-                {/* {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Course"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            } */}
-              </label>
-
-              {/* <label className='w-[350px]'>
-            Promotion:
-            {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Promotion"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            }
-          </label> */}
-
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
-              </label>
               <div className="flex flex-col  min-[850px]:flex-row gap-4">
                 <button
                   className="py-1 px-2 primary-button hover:text-white w-60 bg-green-600  hover:font-bold"
@@ -674,8 +643,10 @@ export default function ClassByMajor() {
                   Copy Schedule
                 </button>
               </div>
+
+
             </div>
-           <ClassListById users={users} setUsers={setUsers} allCourse={allCourse}/>
+            <ClassListById users={users} setUsers={setUsers} allCourse={allCourse} />
           </form>
         </>
       ) : (

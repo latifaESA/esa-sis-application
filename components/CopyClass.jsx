@@ -25,55 +25,55 @@ export default function CopyClass({
 
   const [errorCourse, setErrorCourse] = useState("");
 
-  const handleSaveCopy =async () => {
+  const handleSaveCopy = async () => {
     if (courseValue.length === 0) {
       setErrorCourse("Please choose course")
     }
-      // Create a new Date object with the desired date
-      const fromDate = new Date(dateFrom);
-      const toDate = new Date(dateTo);
+    // Create a new Date object with the desired date
+    const fromDate = new Date(dateFrom);
+    const toDate = new Date(dateTo);
 
-      // Increment one year
-      fromDate.setFullYear(fromDate.getFullYear() + 1);
-      toDate.setFullYear(toDate.getFullYear() + 1);
+    // Increment one year
+    fromDate.setFullYear(fromDate.getFullYear() + 1);
+    toDate.setFullYear(toDate.getFullYear() + 1);
 
-      try {
-        let classValue = {
-          class_id: classID,
-          course_id: courseValue,
-          teacher_id: teacherValue,
-          promotion: promotionValueClass,
-          startdate: fromDate,
-          enddate: toDate,
-          pm_id: session.user.userid,
-          major_id: majorValue,
-        };
-        if(errorCourse === ''){
-          let { data } = await axios.post("/api/pmApi/copyClass", classValue);
-          // console.log(data);
-          if (data.success) {
-            setOpenCopy(false);
-            setClassID("");
-            setCourseValue("");
-            setMajorValue("");
-            setTeacherValue("");
-            setDateFrom("");
-            setDateTo("");
-            getClasses();
-          } else {
-            alert("Error copying class");
-          }
+    try {
+      let classValue = {
+        class_id: classID,
+        course_id: courseValue,
+        teacher_id: teacherValue,
+        promotion: promotionValueClass,
+        startdate: fromDate,
+        enddate: toDate,
+        pm_id: session.user.userid,
+        major_id: majorValue,
+      };
+      if (errorCourse === '') {
+        let { data } = await axios.post("/api/pmApi/copyClass", classValue);
+        // console.log(data);
+        if (data.success) {
+          setOpenCopy(false);
+          setClassID("");
+          setCourseValue("");
+          setMajorValue("");
+          setTeacherValue("");
+          setDateFrom("");
+          setDateTo("");
+          getClasses();
+        } else {
+          alert("Error copying class");
         }
-        
-        // setOpen(false)
-      } catch (err) {
-        return err
-        // console.log(err);
       }
-    
+
+      // setOpen(false)
+    } catch (err) {
+      return err
+      // console.log(err);
+    }
 
 
-   
+
+
 
 
   };
@@ -173,118 +173,90 @@ export default function CopyClass({
 
   return (
     <>
-
-      <>
-        <div
-          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-        >
-          <div className="relative w-1/2 my-6 mx-auto max-w-3xl">
-            {/*content*/}
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              {/*header*/}
-              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                <h3 className="text-gray-700 text-3xl font-bold">
-                  Copy Class
-                </h3>
-                <button
-                  className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                 
-                >
-                  <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                    ×
-                  </span>
-                </button>
-              </div>
-              {/*body*/}
-              <div className="relative p-6 flex-auto  justify-center overflow-y-auto">
-                <div className="flex flex-col">
-                  <label className="text-gray-700 mb-20 items-center">
-                    Course:
-                    {
-
-                      <CustomSelectBox
-                        options={courses}
-                        placeholder="Select Course"
-                        onSelect={handleCourseCopy}
-                        styled={
-                          "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                        }
-                        enable={false}
-                      />
-                    }
-                    <div className="text-red-500 self-center">{errorCourse}</div>
-
-                  </label>
-
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
+        <div className="relative w-full max-w-4xl mx-auto my-6">
+          {/* Modal content */}
+          <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+            {/* Modal header */}
+            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
+              <h3 className="text-lg lg:text-xl text-gray-800 font-semibold">Copy Class</h3>
+              <button
+                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={handleCancelCopy}
+              >
+                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
+              </button>
+            </div>
+            {/* Modal body */}
+            <div className="p-6 flex-auto">
+              {/* Form fields */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm lg:text-base text-gray-700 font-semibold mb-2 block">Course:</label>
+                  <CustomSelectBox
+                    options={courses}
+                    placeholder="Select Course"
+                    onSelect={handleCourseCopy}
+                    styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"
+                    enable={false}
+                  />
+                  <div className="text-red-500 mt-1">{errorCourse}</div>
                 </div>
-
-
-                <div className="flex flex-row ">
+                <div>
                   {teacherValue.length > 0 && (
-                    <label className="mb-3 mr-6">
-                      Teacher:
-                      {
-                        <CustomSelectBox
-                          options={teachers}
-                          placeholder="Select Teacher"
-                          onSelect={handleTeacher}
-                          styled={
-                            "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                          }
-                          enable={false}
-                          oldvalue={oldteach}
-                        />
-                      }
+                    <>                    <label className="text-sm lg:text-base text-gray-700 font-semibold mb-2 block">Teacher:</label>
+                      <CustomSelectBox
+                        options={teachers}
+                        placeholder="Select Teacher"
+                        onSelect={handleTeacher}
+                        styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"
+                        enable={false}
+                        oldvalue={oldteach}
+                      /></>
 
-                    </label>
                   )}
+                </div>
+                <div>
+                 
                   {promotionValueClass.length > 0 && (
-                    <label className="mb-3">
-                      Promotion:
-                      {
-                        <CustomSelectBox
-                          options={promotion}
-                          placeholder="Select Promotion"
-                          onSelect={handlePromotionClass}
-                          styled={
-                            "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                          }
-                          enable={false}
-                          oldvalue={promotionValueClass}
-                        />
-                      }
-
-
-                    </label>
+                     <>
+                    <label className="text-sm lg:text-base text-gray-700 font-semibold mb-2 block">Promotion:</label>
+                    <CustomSelectBox
+                      options={promotion}
+                      placeholder="Select Promotion"
+                      onSelect={handlePromotionClass}
+                      styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"
+                      enable={false}
+                      oldvalue={promotionValueClass}
+                    />
+                    </>
                   )}
+                  
 
                 </div>
               </div>
-              {/*footer*/}
-              <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                <button
-                  className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
-                  type="button"
-                  onClick={handleSaveCopy}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded mr-4"
-                  type="button"
-                  onClick={handleCancelCopy}
-                >
-                  Close
-                </button>
-
-
-              </div>
+            </div>
+            {/* Modal footer */}
+            <div className="flex items-center justify-end p-4 border-t border-solid border-gray-300 rounded-b">
+              <button
+                className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
+                type="button"
+                onClick={handleSaveCopy}
+              >
+                Changes
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                type="button"
+                onClick={handleCancelCopy}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
-        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-      </>
-
+      </div>
     </>
   );
+
 }

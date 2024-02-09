@@ -108,7 +108,7 @@ const CertificateList = ({
 
     const columns = [
         {
-            field: "major_name",
+            field: "modified_major_name",
             headerName: "Certificate Name",
             headerAlign: "center",
             align: "center",

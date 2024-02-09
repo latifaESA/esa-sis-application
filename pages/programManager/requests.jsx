@@ -187,7 +187,7 @@ export default function Requests() {
               <label>
                 ID:
                 <input
-                  className="ml-16 w-40"
+                  className="ml-16 w-40 max-[850px]:ml-16"
                   type="number"
                   name="ID"
                   onChange={(e) => setReqId(e.target.value)}
@@ -200,7 +200,7 @@ export default function Requests() {
               <label>
                 Student ID:
                 <input
-                  className="ml-2 w-40 max-[850px]:ml-1"
+                  className="ml-2 w-40 max-[850px]:ml-2"
                   type="text"
                   name="Fname"
                   onChange={(e) => setStid(e.target.value)}
@@ -213,7 +213,7 @@ export default function Requests() {
               <label>
                 Email:
                 <input
-                  className="ml-1 w-40 max-[850px]:ml-1"
+                  className="ml-1 w-40 max-[850px]:ml-12"
                   type="text"
                   name="Lname"
                   onChange={(e) => setMail(e.target.value)}
@@ -291,13 +291,14 @@ export default function Requests() {
                 <select
                   onChange={(e) => setType(e.target.value)}
                   //   value={majorValue}
-                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  className="ml-8 mt-3 w-40 max-[850px]:ml-4 max-[850px]:mt-1"
                 >
                   <option value="">Choose a type</option>
                   <option value="transcript">transcript</option>
                   <option value="visa">visa</option>
                 </select>
               </label>
+              
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"

@@ -18,7 +18,7 @@ export default function ReportById({
   const [studentId, setStudentId] = useState("");
   const [courseId, setCourseId] = useState("");
   const [courseName, setCourseName] = useState("");
-  const [presents, setPresent] = useState("");
+  const [presents, setPresent] = useState(" ");
   const [attendance_Date, setAttendanceDate] = useState("");
   const [data, setData] = useState([]);
 
@@ -39,19 +39,21 @@ export default function ReportById({
         present: "",
       };
       const data = await axios.post("/api/pmApi/exportAttendanceData", payload);
-     
+
       setData(data.data.data);
       setStudentId("");
       setCourseId("");
-      setPresent("");
+      setPresent(" ");
       setCourseName("");
       setAttendanceDate("");
       setStudentFirstName("");
       setStudentLatName("");
     } catch (error) {
+      setData([])
       return error;
     }
   };
+  console.log('presents' , presents)
   const search = async () => {
     try {
       const payload = {
@@ -86,7 +88,7 @@ export default function ReportById({
         Date: formatDate(item.attendance_date), // Assuming formatDate is a function to update the date format
         Status: item.attendance_status,
       }));
-     
+
 
       // Convert modified data to XLSX format
       const ws = XLSX.utils.json_to_sheet(modifiedData);
@@ -113,10 +115,10 @@ export default function ReportById({
       <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Report</p>
       <form>
         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-          <label className="w-[350px]">
-            Student ID:
+          <label>
+            ID:
             <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-16 w-40"
               type="number"
               name="ID"
               onChange={(e) => setStudentId(e.target.value)}
@@ -126,88 +128,92 @@ export default function ReportById({
             ></input>
           </label>
 
-          <label className="w-[350px]">
+          <label>
             First Name:
             <input
-              className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-2 w-40 max-[850px]:ml-1"
               type="text"
               name="Fname"
               onChange={(e) => setStudentFirstName(e.target.value)}
               placeholder="Select Name"
-            value={studentFirstName}
-            // onChange={handleChange}
+              value={studentFirstName}
             ></input>
           </label>
 
-          <label className="w-[350px]">
+          <label>
             Last Name:
             <input
-              className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-1 w-40 max-[850px]:ml-1"
               type="text"
-              name="Lname"
               onChange={(e) => setStudentLatName(e.target.value)}
               placeholder="Select surname"
-            value={studentLatName}
-            // onChange={handleChange}
+              value={studentLatName}
             ></input>
           </label>
-          <label className="w-[350px]">
+          {/* </div>
+<div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
+          <label>
             Course ID:
             <input
-              className="ml-12 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
+              className="ml-2 mt-3 w-40 max-[850px]:ml-3 max-[850px]:mt-0"
               type="text"
               name="ID"
               onChange={(e) => setCourseId(e.target.value)}
               placeholder="Select Course ID"
-            value={courseId}
-            // onChange={handleChange}
-            ></input>
-          </label>
-          <label className="invisible max-[850px]:visible max-[850px]:hidden">
-            From:
-            <input
-              className="ml-10 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="date"
-              name="from"
-            // value={formData.from}
+              value={courseId}
             // onChange={handleChange}
             ></input>
           </label>
 
-          <label className="w-[350px]">
-            Course Name:
+          <label>
+
+            Course:
             <input
-              className="ml-0 mt-3 w-40 max-[850px]:ml-6 max-[850px]:mt-0"
+              className="ml-9 mt-3 w-40 max-[850px]:ml-7 max-[850px]:mt-0"
               type="text"
               name="ID"
               onChange={(e) => setCourseName(e.target.value)}
               placeholder="Select Course Name"
-            value={courseName}
+              value={courseName}
             // onChange={handleChange}
             ></input>
           </label>
-          {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
 
-          {/* <label className="w-[350px]">
-                Promotion:
-                {
-                  <CustomSelectBox
-                    options={promotion}
-                    placeholder="Select Promotion"
-                    onSelect={handlePromotion}
-                    styled={
-                      'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]'
-                    }
-                  />
-                }
-              </label> */}
-          <label className="w-[350px]">
+
+
+          <label >
+            present:
+            <select
+              onChange={(e) => setPresent(e.target.value)}
+              value={presents}
+              className="ml-7 mt-3 w-40 max-[850px]:ml-7 max-[850px]:mt-0"
+            >
+              <option value=" ">Choose a Value</option>
+              <option value="true">Present</option>
+              <option value="false">Absence</option>
+            </select>
+          </label>
+          <label>
+            Date:
+            <input
+              className="ml-10 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
+              type="date"
+              name="date"
+              placeholder=""
+              id={"date"}
+              value={attendance_Date}
+              onChange={(e) => {
+                setAttendanceDate(e.target.value);
+              }}
+            ></input>
+            
+          </label>
+          <label >
             Major:
             <select
               onChange={(e) => { setMajorValue(e.target.value) }}
               value={majorValue}
-              className="ml-20 mt-3 w-40 max-[850px]:ml-20 max-[850px]:mt-0 "
+              className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0 "
 
             >
               <option key={"uu2isdvf"} value="">
@@ -223,57 +229,12 @@ export default function ReportById({
                 ))}
             </select>
           </label>
+  
+          
+          
+          
 
-
-
-          <label className="w-[350px]">
-            present:
-            <select
-              onChange={(e) => setPresent(e.target.value)}
-              value={presents}
-              className="ml-10 mt-3 w-40 max-[850px]:ml-16 max-[850px]:mt-0"
-            >
-              <option value="">Choose a Value</option>
-              <option value="true">Present</option>
-              <option value="false">Absence</option>
-            </select>
-          </label>
-
-          <label className="w-[350px]">
-            Date:
-            <input
-              className="ml-16 mt-3 w-40 max-[850px]:ml-[85px] max-[850px]:mt-0"
-              type="date"
-              name="date"
-              placeholder=""
-              id={"date"}
-              value={attendance_Date}
-              onChange={(e) => {
-                setAttendanceDate(e.target.value);
-              }}
-            ></input>
-          </label>
-          <label className="invisible max-[850px]:visible max-[850px]:hidden">
-            From:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="date"
-              name="from"
-            // value={formData.from}
-            // onChange={handleChange}
-            ></input>
-          </label>
-          <label className="invisible max-[850px]:visible max-[850px]:hidden">
-            From:
-            <input
-              className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-              type="date"
-              name="from"
-            // value={formData.from}
-            // onChange={handleChange}
-            ></input>
-          </label>
-          <div className="flex flex-col-1 min-[850px]:flex-row gap-2">
+          <div className="flex flex-col min-[850px]:flex-row gap-4">
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"
@@ -288,17 +249,18 @@ export default function ReportById({
             >
               Show All
             </button>
-            <button
+
+          </div>
+          <button
               className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-              type="reset"
+              type="button"
               onClick={exportData}
             >
               Export
             </button>
-          </div>
+
         </div>
         <ExportAttendanceData data={data} />
-        {/* <StudentsList users={users} setUsers={setUsers} /> */}
       </form>
     </>
   );

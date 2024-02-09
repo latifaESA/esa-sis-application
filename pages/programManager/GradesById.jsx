@@ -74,22 +74,13 @@ export default function GradesById() {
         handleMajors()
 
 
-    }, [])
+    }, [majorId])
 
     useEffect(() => {
         handleMajorName()
 
     }, [majorId])
 
-      const handleMajor = (selectedValue) => {
-        // Do something with the selected value
-          if (selectedValue) {
-            // Redirect to the new page with the selected major's ID
-            const newPageURL = `/programManager/GradesById?majorId=${selectedValue}`;
-            router.push(newPageURL);
-          }
-     
-      };
 
     const redirect = () => {
         router.push("/AccessDenied");
@@ -124,7 +115,19 @@ export default function GradesById() {
     };
 
     const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
-    const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+    let secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+    const handleMajor = (selectedValue) => {
+
+        // Do something with the selected value
+        if (selectedValue) {
+            // Redirect to the new page with the selected major's ID
+
+            const newPageURL = `/programManager/GradesById?majorId=${selectedValue}`;
+            router.push(newPageURL);
+        }
+
+    };
+
 
     const isExeMajor = firstMajorWord === "EXED";
 
@@ -364,7 +367,7 @@ export default function GradesById() {
             fetchPromotion()
             showAll()
             search()
-        } else if (isExeMajor && secondMajorWord === 'GMP' || majorId === 'EXED-GMP') {
+        } else if (isExeMajor && secondMajorWord === 'GMP' || majorId === '1') {
             fetchPromotion()
             showAllGMP()
             searchGMP()
@@ -390,188 +393,242 @@ export default function GradesById() {
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Grades</p>
                     <form>
-
-
-                        {clickDownload && <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
+                    {clickDownload && <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
                         {clickUpload && <UploadGradesByMajor setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
                             showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} majorId={majorId} majors={majors} />}
 
-                        <div className="mb-4 md:mb-12 p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div className="flex items-center">
-                                    <label className="mr-2">Student ID:</label>
-                                    <input
-                                        type="text"
-                                        onChange={(e) => {
-                                            setStudentID(e.target.value);
-                                        }}
-                                        placeholder="ID"
-                                        className="w-full"
-                                    />
-                                </div>
-                                <div className="flex items-center">
-                                    <label className="mr-2">First Name:</label>
-                                    <input
-                                        type="text"
-                                        value={studentFirstName}
-                                        onChange={(e) => setStudentFirstName(e.target.value)}
-                                        placeholder="First Name"
-                                        className="w-full"
-                                    />
-                                </div>
-                                <div className="flex items-center">
-                                    <label className="mr-2">Last Name:</label>
-                                    <input
-                                        type="text"
-                                        value={studentLastName}
-                                        onChange={(e) => setStudentLast(e.target.value)}
-                                        placeholder="Last Name"
-                                        className="w-full"
-                                    />
-                                </div>
-                            </div>
+                        <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
+                            <label>
+                                ID:
+                                <input
+                                    className="ml-16 w-40"
+                                    type="number"
+                                    name="ID"
+                                    value={studentId}
+                                    placeholder='Student ID'
+                                    onChange={(e) => {
+                                        setStudentID(e.target.value);
+                                    }}
+                                // onChange={handleChange}
+                                ></input>
+                            </label>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                                <div className="flex items-center">
-                                    <label className="mr-2">Course ID:</label>
+                            <label>
+                                First Name:
+                                <input
+                                    className="ml-2 w-40 max-[850px]:ml-1"
+                                    type="text"
+                                    value={studentFirstName}
+                                    onChange={(e) => setStudentFirstName(e.target.value)}
+                                    placeholder="Student FirstName"
+                                // value={formData.Fname}
+                                // onChange={handleChange}
+                                ></input>
+                            </label>
+
+                            <label>
+                                Last Name:
+                                <input
+                                    className="ml-1 w-40 max-[850px]:ml-1"
+                                    type="text"
+                                    value={studentLastName}
+                                    onChange={(e) => setStudentLast(e.target.value)}
+                                    placeholder="Student LastName"
+                                // value={formData.Lname}
+                                // onChange={handleChange}
+                                ></input>
+                            </label>
+                            {/* </div>
+<div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
+                            <label>
+                                CourseID:
+                                <input
+                                    className="ml-4 w-40 max-[850px]:ml-3"
+                                    type="text"
+                                    value={courseId}
+                                    onChange={(e) => setCourseId(e.target.value)}
+                                    placeholder="Course ID"
+                                // value={formData.Lname}
+                                // onChange={handleChange}
+                                ></input>
+                            </label>
+
+                            <label>
+                                Task:
+                                <select
+                                    className="ml-14 w-40 max-[850px]:ml-12"
+                                    value={taskName}
+                                    onChange={(e) => setTaskName(e.target.value)}
+                                >
+                                    <option value="">Task</option>
+                                    <option value='assignment'>assignment</option>
+                                    <option value='exam'>exam</option>
+                                    <option value='project'>project</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Promotion:
+                                <select
+                                    className="ml-1 w-40 max-[850px]:ml-1"
+                                    value={promotions}
+                                    onChange={(e) => setPromotion(e.target.value)}
+                                >
+                                    <option value="">Promotion</option>
+                                    {PromotionName.length > 0 ? (
+                                        PromotionName.map((item, index) => (
+                                            <option key={index} value={item.promotion_name}>
+                                                {item.promotion_name}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option value={""}>NO Promotion</option>
+                                    )}
+                                </select>
+                            </label>
+                            <label>
+                                Grade:
+                                <input
+                                    type="number"
+
+                                    value={grade}
+                                    onChange={(e) => setGrades(e.target.value)}
+                                    placeholder="Grade"
+                                    className="ml-9 w-40 max-[850px]:ml-9" />
+                            </label>
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || majorId === 2? <>
+                                <label>
+                                    Grade/30:
                                     <input
-                                        type="text"
-                                        value={courseId}
-                                        onChange={(e) => setCourseId(e.target.value)}
-                                        placeholder="Course ID"
-                                        className="w-full"
-                                    />
-                                </div>
-                                <div className="flex items-center invisible max-[850px]:visible max-[850px]:hidden">
-                                    <label className="mr-2">Promotion:</label>
+                                        type="number"
+                                        value={gradeOver30}
+                                        onChange={(e) => setGradesOver30(e.target.value)}
+                                        placeholder="Grade Over 30"
+                                        className="ml-5 w-40 max-[850px]:ml-4 max-[850px]:w-30" />
+                                </label>
+
+                            </> : <>
+                                <label>
+                                    Rank:
                                     <select
-                                        className="w-full"
-                                        value={promotions}
-                                        onChange={(e) => setPromotion(e.target.value)}
+                                        className="ml-12 w-40 max-[850px]:ml-12"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
                                     >
-                                        <option value="">Promotion</option>
-                                        {PromotionName.length > 0 ? (
-                                            PromotionName.map((item, index) => (
-                                                <option key={index} value={item.promotion_name}>
-                                                    {item.promotion_name}
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
                                                 </option>
                                             ))
                                         ) : (
-                                            <option value={""}>NO Promotion</option>
+                                            <option value={""}>NO Rank</option>
                                         )}
                                     </select>
-                                </div>
-                                <div className="flex items-center">
-                                    <label className="mr-2">Promotion:</label>
+                                </label>
+
+                            </>}
+
+                            {!isExeMajor ? <>
+                                <label>
+                                    GPA:
                                     <select
-                                        className="w-full"
-                                        value={promotions}
-                                        onChange={(e) => setPromotion(e.target.value)}
+                                        className="ml-12 w-40 max-[850px]:ml-12"
+                                        value={GPA}
+                                        onChange={(e) => setGPA(e.target.value)}
                                     >
-                                        <option value="">Promotion</option>
-                                        {PromotionName.length > 0 ? (
-                                            PromotionName.map((item, index) => (
-                                                <option key={index} value={item.promotion_name}>
-                                                    {item.promotion_name}
+                                        <option value="">GPA</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.gpa}>
+                                                    {item.gpa}
                                                 </option>
                                             ))
                                         ) : (
-                                            <option value={""}>NO Promotion</option>
+                                            <option value={""}>NO GPA</option>
                                         )}
                                     </select>
-                                </div>
-                            </div>
+                                </label>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                                <div className="flex items-center">
-                                    <label className="mr-2">Grade:</label>
-                                    <input
-                                        type="text"
-                                        value={grade}
-                                        onChange={(e) => setGrades(e.target.value)}
-                                        placeholder="Grade"
-                                        className="w-full"
-                                    />
-                                </div>
-                                {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' ?
-                                    <div className="flex items-center">
-                                        <label className="mr-2">Grade Over 30:</label>
-                                        <input
-                                            type="text"
-                                            value={gradeOver30}
-                                            onChange={(e) => setGradesOver30(e.target.value)}
-                                            placeholder="Grade Over 30"
-                                            className="w-full"
-                                        />
-                                    </div>
-                                    : <></>}
-                                {!isExeMajor ? <>
-
-                                    <div className="flex items-center">
-                                        <label className="mr-2">GPA:</label>
-                                        <select
-                                            className="w-full"
-                                            value={GPA}
-                                            onChange={(e) => setGPA(e.target.value)}
-                                        >
-                                            <option value="">GPA</option>
-                                            {data.length > 0 ? (
-                                                data.map((item, index) => (
-                                                    <option key={index} value={item.gpa}>
-                                                        {item.gpa}
-                                                    </option>
-                                                ))
-                                            ) : (
-                                                <option value={""}>NO GPA</option>
-                                            )}
-                                        </select>
-                                    </div>
-                                </> : <></>}
-                                {!isExeMajor ? <>
-
-                                    <div className="flex items-center">
-                                        <label className="mr-2">Rank:</label>
-                                        <select
-                                            className="w-full"
-                                            value={Rank}
-                                            onChange={(e) => setRank(e.target.value)}
-                                        >
-                                            <option value="">Rank</option>
-                                            {data.length > 0 ? (
-                                                data.map((item, index) => (
-                                                    <option key={index} value={item.rank}>
-                                                        {item.rank}
-                                                    </option>
-                                                ))
-                                            ) : (
-                                                <option value={""}>NO Rank</option>
-                                            )}
-                                        </select>
-                                    </div>
-                                </> : <></>}
-
-
-                                <div className="flex items-center">
-                                    <label className="mr-2">Task:</label>
+                            </> : <></>}
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ? <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
                                     <select
-                                        className="w-full"
-                                        value={taskName}
-                                        onChange={(e) => setTaskName(e.target.value)}
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
                                     >
-                                        <option value="">Task</option>
-                                        <option value='assignment'>assignment</option>
-                                        <option value='exam'>exam</option>
-                                        <option value='project'>project</option>
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
                                     </select>
-                                </div>
-                            </div>
+                                </label>
+
+
+                            </> : <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
+                                    <select
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
+
+                            </>}
+
+
+                            {!isExeMajor ? <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
+                                    <select
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
+
+
+                            </> : <></>}
                             {session.user?.hasMultiMajor === 'true' ?
+
                                 <label className=''>
                                     Major:
                                     <select
                                         onChange={(e) => handleMajor(e.target.value)}
                                         value={majorId}
-                                        className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                                        className="ml-10 w-40 max-[850px]:ml-10"
 
                                     >
                                         <option key={"uu2isdvf"} value="">
@@ -591,60 +648,76 @@ export default function GradesById() {
 
                                 : <></>}
 
+                            <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                Rank:
+                                <select
+                                    className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                    value={Rank}
+                                    onChange={(e) => setRank(e.target.value)}
+                                >
+                                    <option value="">Rank</option>
+                                    {data.length > 0 ? (
+                                        data.map((item, index) => (
+                                            <option key={index} value={item.rank}>
+                                                {item.rank}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option value={""}>NO Rank</option>
+                                    )}
+                                </select>
+                            </label>
 
 
-                        </div>
 
-                        <div className="grid grid-cols-2  md:grid-cols-1 lg:grid-cols-3 gap-4 mb-4 md:mb-12 ">
+                            <div className="flex flex-col min-[850px]:flex-row gap-4">
+                                <button
+                                    className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                                    type="button"
+                                    onClick={!isExeMajor ? search :
+                                        (secondMajorWord === 'GMP' || majorId === '1' ?
+                                            searchGMP :
+                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                                ? searchRTF : isExeMajor ? searchEXED : <></>)
+                                    }
 
-                            <button
-                                className="primary-button rounded btnCol invisible max-[850px]:visible max-[850px]:hidden text-white hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={!isExeMajor ? showAll : showAllGMP}
-                            >
-                                Show All
-                            </button>
-                            <button
-                                className="primary-button rounded btnCol text-white hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={!isExeMajor ? search :
-                                    (secondMajorWord === 'GMP' || majors === 'EXED-GMP' ?
-                                        searchGMP :
-                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
-                                            ? searchRTF : isExeMajor ? searchEXED : <></>)
-                                }
-                            >
-                                Search
-                            </button>
-                            <button
-                                className="primary-button rounded btnCol text-white hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={!isExeMajor ? showAll :
-                                    (secondMajorWord === 'GMP' || majors === 'EXED-GMP' ?
-                                        showAllGMP :
-                                        isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
-                                            ? showAllRTF : isExeMajor ? showAllEXED : <></>)
-                                }
-                            >
-                                Show All
-                            </button>
-                        </div>
+                                >
+                                    Search
+                                </button>
+                                <button
+                                    className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-                            <button
-                                className=" primary-button  w-full bg-green-600 hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={template}
-                            >
-                                Template
-                            </button>
-                            <button
-                                className="primary-button  w-full bg-green-600 hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={upload}
-                            >
-                                Upload Grade
-                            </button>
+                                    type="button"
+                                    onClick={!isExeMajor ? showAll :
+                                        (secondMajorWord === 'GMP' || majors === 'EXED-GMP' ?
+                                            showAllGMP :
+                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
+                                                ? showAllRTF : isExeMajor ? showAllEXED : <></>)
+                                    }
+                                >
+                                    Show All
+                                </button>
+
+                            </div>
+                            <div className="flex flex-col min-[850px]:flex-row gap-4">
+
+                                <button
+                                    className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                                    type="button"
+                                    onClick={template}
+                                >
+                                    Template
+                                </button>
+                                <button
+                                    className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                                    type="button"
+                                    onClick={upload}
+                                >
+                                    Upload Grade
+                                </button>
+                            </div>
+
+
                         </div>
                         {
                             !isExeMajor ? <GradeList users={users} setUser={setUser} />
@@ -654,7 +727,6 @@ export default function GradesById() {
                                         : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} /> : <></>
 
                         }
-
                     </form>
                 </>
             ) : (

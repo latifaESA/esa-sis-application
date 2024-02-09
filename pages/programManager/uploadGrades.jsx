@@ -7,13 +7,13 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF , showAllEXED , clickUpload}) {
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF, showAllEXED, clickUpload }) {
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
     const [isClick, setIsClick] = useState(false);
     const [student, setStudentData] = useState([]);
-    const [hasFetched , setHasFetched] = useState(false)
+    const [hasFetched, setHasFetched] = useState(false)
     const router = useRouter();
 
     const redirect = () => {
@@ -57,19 +57,17 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     const SecondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
     const isExeMajor = firstMajorWord === "EXED";
 
-    useEffect(() => {
-        fetchStudent()
-    }, [student])
+
 
     useEffect(() => {
-        if(isClick){
+        if (isClick) {
             if (!isExeMajor) {
                 showAll();
             } else if (isExeMajor && SecondMajorWord === 'GMP') {
                 showAllGMP();
             } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation') {
                 showAllRTF()
-            }else if (isExeMajor){
+            } else if (isExeMajor) {
                 showAllEXED()
             }
 
@@ -78,14 +76,14 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
         // Auto-refresh the page 
         const interval = setInterval(() => {
-            if(isClick){
+            if (isClick) {
                 if (!isExeMajor) {
                     showAll();
                 } else if (isExeMajor && SecondMajorWord === 'GMP') {
                     showAllGMP();
                 } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation') {
                     showAllRTF()
-                }else if (isExeMajor){
+                } else if (isExeMajor) {
                     showAllEXED()
                 }
             }
@@ -100,7 +98,8 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             const templateFields = [
                 'StudentID',
                 'StudentFirstName',
-                'StudentLastName',
+                'StudentLastName'
+                ,'Promotion',
                 'CourseID',
                 'Grade'
             ]; // Replace with your actual template fields
@@ -118,7 +117,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 return false;
             }
         } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
-            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName','Promotion','CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
 
             // Check if all template fields exist in columnA
             const missingFields = templateFields.filter(
@@ -133,7 +132,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 return false;
             }
         } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
-            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName','Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
 
             // Check if all template fields exist in columnA
@@ -148,7 +147,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Some template fields are missing
                 return false;
             }
-        }else if(isExeMajor){
+        } else if (isExeMajor) {
             const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
 
             // Check if all template fields exist in columnA
@@ -208,7 +207,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     return true; // All required fields are present and not empty
                 }
             }
-        }else if(isExeMajor){
+        } else if (isExeMajor) {
             const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
 
             for (const field of requiredFields) {
@@ -225,32 +224,42 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
     };
 
-    const fetchStudent = async () => {
+    const fetchStudent = async (promotionName) => {
         try {
+
             const payload = {
-                major_id: session.user.majorid
+                major_id: session.user?.majorid,
+                promotion_name: promotionName
             };
-            if(clickUpload && !hasFetched){
+
+            if (clickUpload && !hasFetched) {
                 const response = await axios.post('/api/pmApi/studentEmail', payload);
-           
+
                 const unsortedStudentData = response.data.data;
-    
+
+
                 // Sort the student data by student_id in increasing order
                 const sortedStudentData = [...unsortedStudentData].sort((a, b) =>
                     a.student_id - b.student_id
                 );
                 // Extract the required information (first name, last name, and email)
                 const studentInfo = sortedStudentData.map(student => ({
-                    studentID :student.student_id,
+                    studentID: student.student_id,
                     firstName: student.student_firstname,
                     lastName: student.student_lastname,
                     email: student.email,
-                    pm_id : session.user?.userid
+                    pm_id: session.user?.userid
                 }));
-            
-                // Set the student data in your state or wherever you need it
-                setStudentData(studentInfo);
-                setHasFetched(true)
+                                // Set the student data in your state or wherever you need it
+                                setStudentData(studentInfo);
+                                setHasFetched(true)
+                return {data : studentInfo}
+
+
+
+
+
+
 
             }
 
@@ -258,18 +267,12 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             return error;
         }
     };
+
     const handleAdd = async () => {
         try {
             setIsClick(true);
-                        // Fetch student emails separately
-                        const studentInfo = student;
-                        // console.log('student', studentInfo)
-                
-                        if (!studentInfo || studentInfo.length === 0) {
-                            setConfirmOpenMessage(true);
-                            setMessages("Error: Unable to fetch student information.");
-                            return;
-                        }
+            // Fetch student emails separately
+            const promotionNameColumnIndex = 3; // Assuming promotion name is in the second column (index 1)
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
 
@@ -279,11 +282,24 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
+                const cellAddress = XLSX.utils.encode_cell({ r: 1, c: promotionNameColumnIndex });
+
+                // Retrieve the value of the first cell in the specified column
+                const promotionName = worksheet[cellAddress]?.v;
+                // Fetch student emails based on the promotion name
+             
+
+
+
+               const students = await fetchStudent(promotionName)
+               
+                   
+                const studentInfo = students.data;
 
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
                 if (rows.length < 2) {
-                    
+
                     setConfirmOpenMessage(true);
                     setMessages("Error: File is empty!");
                     return;
@@ -322,7 +338,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
                 // All validation checks passed, proceed with API call
                 const formData = new FormData();
-                
+
                 formData.append("files", file);
                 formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
 
@@ -356,35 +372,35 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     const handleAddGMP = async () => {
         try {
             setIsClick(true);
-    
+
             // Fetch student emails separately
             const studentInfo = student;
             // console.log('student', studentInfo)
-    
+
             if (!studentInfo || studentInfo.length === 0) {
                 setConfirmOpenMessage(true);
                 setMessages("Error: Unable to fetch student information.");
                 return;
             }
-    
+
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
-    
+
             reader.onload = async function (event) {
                 const data = new Uint8Array(event.target.result);
                 const workbook = XLSX.read(data, { type: "array" });
-    
+
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-    
+
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    
+
                 if (rows.length < 2) {
                     setConfirmOpenMessage(true);
                     setMessages("Error: File is empty!");
                     return;
                 }
-    
+
                 const firstRow = rows[0];
                 const isValidHeaders = validateColumnHeaders(firstRow);
                 if (!isValidHeaders) {
@@ -392,17 +408,17 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     setMessages("Error File! Please upload the Grade Template and don't change the header.");
                     return;
                 }
-    
+
                 const formData = new FormData();
                 formData.append("files", file);
                 formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
-    
+
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGMPGrades",
                         formData,
                     );
-    
+
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
@@ -415,7 +431,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     }
                 }
             };
-    
+
             reader.readAsArrayBuffer(file);
         } catch (error) {
             setConfirmOpenMessage(true);
@@ -426,35 +442,40 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     const handleAddEXED = async () => {
         try {
             setIsClick(true);
-    
+
             // Fetch student emails separately
-            const studentInfo = student;
-            // console.log('student', studentInfo)
-    
-            if (!studentInfo || studentInfo.length === 0) {
-                setConfirmOpenMessage(true);
-                setMessages("Error: Unable to fetch student information.");
-                return;
-            }
-    
+            const promotionNameColumnIndex = 3; // Assuming promotion name is in the second column (index 1)
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
-    
+
             reader.onload = async function (event) {
                 const data = new Uint8Array(event.target.result);
                 const workbook = XLSX.read(data, { type: "array" });
-    
+
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-    
+                const cellAddress = XLSX.utils.encode_cell({ r: 1, c: promotionNameColumnIndex });
+
+                // Retrieve the value of the first cell in the specified column
+                const promotionName = worksheet[cellAddress]?.v;
+                // Fetch student emails based on the promotion name
+             
+
+
+
+               const students = await fetchStudent(promotionName)
+               
+                   
+                const studentInfo = students.data;
+
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    
+
                 if (rows.length < 2) {
                     setConfirmOpenMessage(true);
                     setMessages("Error: File is empty!");
                     return;
                 }
-    
+
                 const firstRow = rows[0];
                 const isValidHeaders = validateColumnHeaders(firstRow);
                 if (!isValidHeaders) {
@@ -462,17 +483,17 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     setMessages("Error File! Please upload the Grade Template and don't change the header.");
                     return;
                 }
-    
+
                 const formData = new FormData();
                 formData.append("files", file);
                 formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
-    
+
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGradesExED",
                         formData,
                     );
-    
+
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
@@ -485,46 +506,46 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     }
                 }
             };
-    
+
             reader.readAsArrayBuffer(file);
         } catch (error) {
             setConfirmOpenMessage(true);
             setMessages("Something went wrong. Please try again later.");
         }
     };
-    
+
     const handleAddRTF = async () => {
         try {
             setIsClick(true);
-    
+
             // Fetch student emails separately
             const studentInfo = student;
             // console.log('student', studentInfo)
-    
+
             if (!studentInfo || studentInfo.length === 0) {
                 setConfirmOpenMessage(true);
                 setMessages("Error: Unable to fetch student information.");
                 return;
             }
-    
+
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
-    
+
             reader.onload = async function (event) {
                 const data = new Uint8Array(event.target.result);
                 const workbook = XLSX.read(data, { type: "array" });
-    
+
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-    
+
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    
+
                 if (rows.length < 2) {
                     setConfirmOpenMessage(true);
                     setMessages("Error: File is empty!");
                     return;
                 }
-    
+
                 const firstRow = rows[0];
                 const isValidHeaders = validateColumnHeaders(firstRow);
                 if (!isValidHeaders) {
@@ -532,17 +553,17 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     setMessages("Error File! Please upload the Grade Template and don't change the header.");
                     return;
                 }
-    
+
                 const formData = new FormData();
                 formData.append("files", file);
                 formData.append("studentInfo", JSON.stringify(studentInfo)); // Add studentInfo to formData
-    
+
                 try {
                     const { data } = await axios.post(
                         "/api/pmApi/uploadGrades_RTF",
                         formData,
                     );
-    
+
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
@@ -555,14 +576,14 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     }
                 }
             };
-    
+
             reader.readAsArrayBuffer(file);
         } catch (error) {
             setConfirmOpenMessage(true);
             setMessages("Something went wrong. Please try again later.");
         }
     };
-    
+
 
 
 
@@ -634,7 +655,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                                 handleAddGMP :
                                                                 isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ?
                                                                     handleAddRTF
-                                                                    : isExeMajor?handleAddEXED : handleAdd
+                                                                    : isExeMajor ? handleAddEXED : handleAdd
                                                         }
                                                     >
                                                         Scan

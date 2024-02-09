@@ -58,12 +58,12 @@ export default function Report() {
           {!selectMajor ?  
           <>
             <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Report</p>
-          <label>
+          <label className=''>
               Major:
               <select
                 onChange={(e) => {setMajorValue(e.target.value) ; setSelectMajor(true)}}
                 value={majorValue}
-                className="ml-10 mt-3 w-60 max-[850px]:ml-10 max-[850px]:mt-0"
+                className="ml-12 w-60"
 
               >
                 <option key={"uu2isdvf"} value="">

@@ -6,7 +6,8 @@ async function handler(req, res) {
       accessToken,
       zoomId,
       classId,
-      date
+      date ,
+      Duration 
     } = req.body;
 
   
@@ -24,11 +25,12 @@ async function handler(req, res) {
       topic: `${classId}`,
       type: 2,
       start_time: date,
+      duration:Duration,
       settings: {
         join_before_host: true,
-        auto_recording: "local",
+        auto_recording: "cloud",
         mute_upon_entry: false,
-        waiting_room: false,
+        waiting_room: true,
       },
     };
  
