@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import AddClass from '../../components/addClass';
 import ClassList from '../../components/Dashboard/ClassList';
-import CopyClass from '../../components/copyClass';
+import CopyClass from '../../components/CopyClass';
 // import moment from 'moment';
 // import Link from 'next/link';
 

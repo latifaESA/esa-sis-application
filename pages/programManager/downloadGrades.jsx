@@ -461,7 +461,7 @@ export default function DownloadGrades({ setClickDownload }) {
                             options={promotion.map((promotion) => ({ value: promotion.promotion_name, label: promotion.promotion_name }))}
                             placeholder="Select a Promotion"
                             onChange={handlePromotion}
-                            className="place-items-center w-full"
+                            className="place-items-center w-auto"
                           />
                           <p className="pt-5 font-bold">please Select promotion </p>
 

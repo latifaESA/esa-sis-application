@@ -57,44 +57,44 @@ export default function ScheduleView() {
   
     return (
       <>
-        <Head>
-          <title>SIS PM - view</title>
-        </Head>
-  
-        {session?.user.role === "2" || session?.user.role === "3" ? (
-          <>
-            <div className="flex items-center justify-center h-[300px] gap-6">
-              {isMultiMajor.length > 0 && (
-                <>
-                  {isMultiMajor.map((item, index) => (
-                    <div className="flex font-bold text-xl" key={index}>
-                      <button
-                        className="primary-button hover:text-white hover:font-bold justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700 rounded uppercase"
-                        type="button"
-                        onClick={() => handleButtonClick(item.major_id ,item.major_name)}
-                      >
-                        {item.major_name.replace("EXED-", "")}
-                      </button>
-                    </div>
-                  ))}
-                  <div className="flex font-bold text-xl" >
-                      <button
-                        className="primary-button hover:text-white hover:font-bold justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700 rounded uppercase"
-                        type="button"
-                        onClick={() => handleButtonClick(session.user?.majorid , session.user?.majorName)}
-                      >
-                        {session.user?.majorName.replace("EXED-", "")}
-                      </button>
-                    </div>
-                </>
-              )}
+      <Head>
+        <title>SIS PM - view</title>
+      </Head>
 
-            </div>
-          </>
-        ) : (
-          redirect()
-        )}
-      </>
+      {session?.user.role === "2" || session?.user.role === "3" ? (
+        <>
+          <div className="flex flex-wrap justify-center gap-6 mt-10">
+            {isMultiMajor.length > 0 && (
+              <>
+                {isMultiMajor.map((item, index) => (
+                  <div className="flex font-bold text-xl" key={index}>
+                    <button
+                      className="primary-button hover:text-white hover:font-bold justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700 rounded uppercase w-40"
+                      type="button"
+                      onClick={() => handleButtonClick(item.major_id, item.major_name)}
+                    >
+                      {item.major_name.replace("EXED-", "")}
+                    </button>
+                  </div>
+                ))}
+
+                <div className="flex font-bold text-xl">
+                  <button
+                    className="primary-button hover:text-white hover:font-bold justify-center text-white font-bold py-2 px-4 border-b-4 border-red-700 rounded uppercase"
+                    type="button"
+                    onClick={() => handleButtonClick(session.user?.majorid)}
+                  >
+                    {session.user?.majorName.replace("EXED-", "")}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      ) : (
+        redirect()
+      )}
+    </>
     );
   }
   

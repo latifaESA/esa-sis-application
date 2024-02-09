@@ -29,23 +29,23 @@ export default function Requests() {
   const { data: session } = useSession();
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
-  const [pmId , setPMID]=useState()
+  const [pmId, setPMID] = useState()
   const redirect = () => {
     router.push('/AccessDenied');
   };
   const handleMajors = async () => {
     try {
-      if(session.user?.role === '3'){
+      if (session.user?.role === '3') {
         const data = await axios.post('/api/pmApi/getMajorFromAs', {
           pm_ass_id: session.user?.userid
         })
-  
+
         setMajors(data.data.data)
-      }else if(session.user?.role === '2'){
+      } else if (session.user?.role === '2') {
         const data = await axios.post('/api/pmApi/getMajorFromMajor', {
           pm_id: session.user?.userid
         })
-  
+
         setMajors(data.data.data)
       }
 
@@ -57,19 +57,19 @@ export default function Requests() {
 
   useEffect(() => {
     handleMajors()
-    if(session.user?.hasMultiMajor === 'true' && session.user?.role ==='3'){
+    if (session.user?.hasMultiMajor === 'true' && session.user?.role === '3') {
       program_manager()
     }
 
   }, [])
-  const program_manager = async()=>{
+  const program_manager = async () => {
     try {
       const payload = {
-        table :'program_manager',
-        Where:'major_id', 
-        id:session.user?.majorid
+        table: 'program_manager',
+        Where: 'major_id',
+        id: session.user?.majorid
       }
-      const response = await axios.post('/api/pmApi/getAllCourses' , payload)
+      const response = await axios.post('/api/pmApi/getAllCourses', payload)
       setPMID(response.data.data[0].pm_id)
     } catch (error) {
       return error
@@ -77,8 +77,8 @@ export default function Requests() {
   }
   const handleSearch = async () => {
     try {
-      let sendData ;
-      if(session.user?.role === '3'){
+      let sendData;
+      if (session.user?.role === '3') {
         sendData = {
           pm_id: pmId,
           req_id: reqId,
@@ -88,12 +88,12 @@ export default function Requests() {
           type: type.trim(),
           major_id: majorValue
         };
-        console.log('data',sendData)
+        console.log('data', sendData)
         let data = await axios.post('/api/pmApi/getRequests', sendData);
         setUsers(data.data.rows);
 
-      }else if(session.user?.role ==='2'){
-         sendData = {
+      } else if (session.user?.role === '2') {
+        sendData = {
           pm_id: session?.user.userid,
           req_id: reqId,
           student_id: stId.trim(),
@@ -116,8 +116,8 @@ export default function Requests() {
     try {
       let sendData;
 
-      if(session.user?.role === '3'){
-         sendData = {
+      if (session.user?.role === '3') {
+        sendData = {
           pm_id: pmId,
           req_id: '',
           student_id: '',
@@ -134,10 +134,10 @@ export default function Requests() {
         setStatus('');
         setType('');
         setMajorValue('')
-        
+
         setUsers(res.data.rows);
-      }else if(session.user?.role ==='2'){
-         sendData = {
+      } else if (session.user?.role === '2') {
+        sendData = {
           pm_id: session?.user.userid,
           req_id: '',
           student_id: '',
@@ -153,9 +153,9 @@ export default function Requests() {
         setType('');
         setMajorValue('')
         let res = await axios.post('/api/pmApi/getRequests', sendData);
-        
+
         setUsers(res.data.rows);
-       
+
 
       }
     } catch (err) {
@@ -165,7 +165,7 @@ export default function Requests() {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    if(session.user?.hasMultiMajor === 'true' && session.user?.role ==='3'){
+    if (session.user?.hasMultiMajor === 'true' && session.user?.role === '3') {
       program_manager()
     }
     handleShowAll();
@@ -248,7 +248,21 @@ export default function Requests() {
                 </label>
 
 
-                : <></>}
+                : <>
+                  <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                    Status:
+                    <select
+                      onChange={(e) => setStatus(e.target.value)}
+                      //   value={majorValue}
+                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0 invisible max-[850px]:visible max-[850px]:hidden"
+                    >
+                      <option value="">Choose a Status</option>
+                      <option value="pending">pending</option>
+                      <option value="sent">sent</option>
+                    </select>
+                  </label>
+
+                </>}
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 From:
@@ -273,32 +287,49 @@ export default function Requests() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+              {session.user?.hasMultiMajor === 'true' ?
+                  <label>
+                  Status:
+                  <select
+                    onChange={(e) => setStatus(e.target.value)}
+                    //   value={majorValue}
+                    className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  >
+                    <option value="">Choose a Status</option>
+                    <option value="pending">pending</option>
+                    <option value="sent">sent</option>
+                  </select>
+                </label>
 
-              <label>
-                Status:
-                <select
-                  onChange={(e) => setStatus(e.target.value)}
-                  //   value={majorValue}
-                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-                >
-                  <option value="">Choose a Status</option>
-                  <option value="pending">pending</option>
-                  <option value="sent">sent</option>
-                </select>
-              </label>
+                : <>
+                  <label>
+                    Status:
+                    <select
+                      onChange={(e) => setStatus(e.target.value)}
+                      //   value={majorValue}
+                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                    >
+                      <option value="">Choose a Status</option>
+                      <option value="pending">pending</option>
+                      <option value="sent">sent</option>
+                    </select>
+                  </label>
+
+                </>}
+
               <label>
                 Type:
                 <select
                   onChange={(e) => setType(e.target.value)}
                   //   value={majorValue}
-                  className="ml-8 mt-3 w-40 max-[850px]:ml-4 max-[850px]:mt-1"
+                  className="ml-8 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1"
                 >
                   <option value="">Choose a type</option>
                   <option value="transcript">transcript</option>
                   <option value="visa">visa</option>
                 </select>
               </label>
-              
+
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
