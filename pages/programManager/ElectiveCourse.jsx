@@ -118,8 +118,8 @@ export default function ElectiveCourse() {
         <title>SIS Admin - Assign Elective</title>
       </Head>
       {((session?.user.role === '2' || session?.user.role === '3') &&
-        session?.user.majorid === '5') ||
-      session?.user.majorid === '15' ? (
+        session?.user.majorName === 'MBA (Master in Business Administration)') ||
+      session?.user.majorName === 'EMBA (Executive Masters in Business Administration)' ? (
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Elective
@@ -144,7 +144,7 @@ export default function ElectiveCourse() {
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
                 First Name:
                 <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  className=" invisible max-[850px]:visible max-[850px]:hidden "
                   type="text"
                   name="Fname"
                   placeholder="Teacher's First Name"

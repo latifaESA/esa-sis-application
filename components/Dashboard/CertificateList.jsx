@@ -108,7 +108,7 @@ const CertificateList = ({
 
     const columns = [
         {
-            field: "modified_major_name",
+            field: `${session.user?.hasMultiMajor === 'true' ? 'major_name':'modified_major_name'}`,
             headerName: "Certificate Name",
             headerAlign: "center",
             align: "center",

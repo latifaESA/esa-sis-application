@@ -35,6 +35,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
   // const [elective , setIsElective] = useState(true)
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
+  const [promotions, setPromotions] = useState([]);
 
   const elective = true;
   // // console.log("users",users)
@@ -57,6 +58,22 @@ const ElectiveCourseList = ({ users, setUsers }) => {
       }
     };
     fetchCourses();
+    const fetchPromotion = async () => {
+      try {
+        const payload = {
+          table:'promotions',
+          Where:'major_id',
+          id: session.user.majorid,
+        };
+        // console.log("majorid",payload)
+        const data = await axios.post('/api/pmApi/getAllCourses', payload);
+
+        setPromotions(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchPromotion();
     const fetchStudent = async () => {
       try {
         const payload = {
@@ -176,8 +193,11 @@ const ElectiveCourseList = ({ users, setUsers }) => {
           courses={courses}
           users={users}
           setElective={setElective}
+          promotions={promotions}
+          setPromotions={setPromotions}
           students={students}
           setUsers={setUsers}
+          setStudents={setStudents}
         />
       )}
       <Box sx={{ height: 400, width: '100%' }}>
