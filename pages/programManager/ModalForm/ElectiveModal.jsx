@@ -1,28 +1,47 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 import { BsX } from "react-icons/bs";
 import Select from "react-select";
-import MessageModal from "./MessageModal";
+
+import { NotificatonMessage } from "../../../components/Dashboard/WarningMessage";
 
 export default function ElectiveModal({
   setElective,
   courses,
   students,
   setUsers,
+  promotions,
+
 }) {
   const [studentList, setStudent] = useState(false);
+  const [studentListPromo, setStudentList] = useState([]);
   const { data: session } = useSession();
   const [courseValue, setCoursesValue] = useState([]);
+  const [promotionValue, setPromotionValue] = useState([]);
   // const [selectedCourse, setSelected] = useState([])
   const [course, setCourse] = useState([]);
   const [selectStudentId, setSelectedStudentIds] = useState([]);
   // const [message , setMassage] = useState('')
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
+  const [promotion, setPromotion] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [disable, setDisable] = useState(false);
+  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
+  const [message, setMessage] = useState("");
+  
+  
+  const handleOpenNotificatonMessages = () => {
+    setConfirmOpenMessage(true);
+  };
+
+  const handleCloseNotificatonMessages = () => {
+    setConfirmOpenMessage(false);
+
+  };
+
 
   const handleCourses = (selectedOptions) => {
     const selectedCourseIds = selectedOptions.map((option) => option.value);
@@ -30,8 +49,36 @@ export default function ElectiveModal({
     setCourse(selectedName);
     setCoursesValue(selectedCourseIds);
     // setSelected(true)
+   
+  };
+  const handlePromotions = (selectedOptions) => {
+    const selectedPromotionId = selectedOptions.map((option) => option.value);
+    const selectedName = selectedOptions.map((option) => option.label);
+    setPromotion(selectedName);
+    setPromotionValue(selectedPromotionId);
+    // setSelected(true)
     setStudent(true);
   };
+  useEffect(() => {
+    const fetchPromotion = async () => {
+      try {
+        const payload = {
+          table:'student',
+          Where:'promotion',
+          id: promotionValue,
+        };
+        // console.log("majorid",payload)
+        const data = await axios.post('/api/pmApi/getAllCourses', payload);
+
+        setStudentList(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchPromotion();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [promotionValue]);
 
   const handleStudentCheckboxChange = (e) => {
     const studentId = e.target.value;
@@ -54,6 +101,9 @@ export default function ElectiveModal({
       const errors = {};
       if (courseValue.length === 0) {
         errors.courseValue = "At least one course must be selected";
+      }
+      if (promotionValue.length === 0) {
+        errors.promotionValue = "At least one promotion must be selected";
       }
 
       if (selectStudentId.length === 0) {
@@ -98,6 +148,9 @@ export default function ElectiveModal({
         setData(data);
         // setMassage(data.message)
         setShowModal(true);
+        setConfirmOpenMessage(true);
+
+        setMessage(data.message);
         setUsers((prevUsers) => [...prevUsers, newRows]);
       }
     } catch (error) {
@@ -114,14 +167,14 @@ export default function ElectiveModal({
         <>
           <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-non">
-              {showModal && (
-                <MessageModal
-                  showModal={showModal}
-                  setShowModal={setShowModal}
-                  data={data}
-                />
-              )}
-              <div className="relative w-1/2 h-screen my-6 mx-auto max-w-3xl  overflow-y-auto">
+            {confirmOpenMessage && (
+        <NotificatonMessage
+          handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+          handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+          messages={message}
+        />
+      )}
+              <div className="relative w-1/2 h-3/4 my-6 mx-auto max-w-3xl  overflow-y-auto">
                 {/*content*/}
                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                   {/*header*/}
@@ -147,9 +200,18 @@ export default function ElectiveModal({
                       <div className="flex justify-start mb-4 border-b-4">
                         <div className="font-bold ">Course Name:</div>
                         <div>{course}</div>
+                   
+                      
                       </div>
-                      {students.length > 0 ? (
-                        students.map((item, index) => (
+                      <div className="flex justify-start mb-4 border-b-4">
+                        <div className="font-bold ">Promotion:</div>
+                        <div>{promotion}</div>
+                   
+                      
+                      </div>
+
+                      {studentListPromo.length > 0 ? (
+                        studentListPromo.map((item, index) => (
                           <>
                             <div
                               className="flex flex-col border-2 justify-center"
@@ -254,6 +316,24 @@ export default function ElectiveModal({
                         {formErrors.courseValue && (
                           <div className="text-center text-red-500 font-bold p-2">
                             {formErrors.courseValue}
+                          </div>
+                        )}
+
+                        <Select
+                          isMulti
+                          options={promotions
+                            .map((promotion) => ({
+                              value: promotion.promotion_name,
+                              label: promotion.promotion_name,
+                            }))
+                            .sort((a, b) => a.label.localeCompare(b.label))}
+                          placeholder="Select Courses"
+                          onChange={handlePromotions}
+                          className="mt-3"
+                        />
+                        {formErrors.promotionValue && (
+                          <div className="text-center text-red-500 font-bold p-2">
+                            {formErrors.promotionValue}
                           </div>
                         )}
                       </from>

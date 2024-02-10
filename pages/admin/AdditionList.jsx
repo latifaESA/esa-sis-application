@@ -55,8 +55,21 @@ export default function AdditionList() {
 
 
     useEffect(() => {
-        getAllMajors();
-    }, [major]);
+        const fetchData = () => {
+            // Fetch all major-related data here
+            getAllMajors();
+        };
+    
+        // Fetch data initially
+        fetchData();
+    
+        // Fetch data every 3 minutes
+        const interval = setInterval(fetchData, 1 * 60 * 1000);
+    
+        // Cleanup function to clear interval
+        return () => clearInterval(interval);
+    }, []);
+    
     const handleAdd = async () => {
         const errors = {};
         if (promotion.trim() === "") {

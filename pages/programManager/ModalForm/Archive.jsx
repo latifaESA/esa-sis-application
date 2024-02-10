@@ -5,7 +5,7 @@ import uploadDocReducer from "../../../components/UploadDocuments/reducers/uploa
 import { BsX } from "react-icons/bs";
 // import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
-import selection_data from "../../../utilities/selection_data";
+
 
 import { NotificatonMessage } from "../../../components/Dashboard/WarningMessage";
 
@@ -20,7 +20,7 @@ export default function Archive({
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [message, setMessage] = useState("");
   const [docUrl, setDocUrl] = useState(false);
-const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
+  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
   // const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
   //   useState(false);
   // const [profileUrl, setProfileUrl] = useState(null);
@@ -31,13 +31,13 @@ const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     fileList: [],
     totalSize: 0,
   });
-const handleOpenNotificatonMessages = () => {
+  const handleOpenNotificatonMessages = () => {
     setConfirmOpenMessage(true);
   };
 
   const handleCloseNotificatonMessages = () => {
     setConfirmOpenMessage(false);
-    
+
   };
 
   const closeModal = () => {
@@ -72,7 +72,7 @@ const handleOpenNotificatonMessages = () => {
       // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
-       
+
           const date = details[0].attendance_date;
 
           const DateFormat = moment(date).format("DD_MM_YYYY");
@@ -115,25 +115,25 @@ const handleOpenNotificatonMessages = () => {
   const handleFile = async () => {
     try {
       const url = docUrl;
-      console.log('att' , attendance)
+      console.log('att', attendance)
       const attendance_id = attendance[0].attendance_id;
       const { data } = await axios.put("/api/pmApi/updateURL", {
         url,
         attendance_id,
       });
-console.log('test' , data)
-      if(data.success){
+     
+      if (data.success) {
         setConfirmOpenMessage(true);
 
         setMessage(data.message);
       }
-   
+
 
 
     } catch (error) {
       return error
-  
-  }
+
+    }
   };
   return (
     <>
@@ -180,7 +180,7 @@ console.log('test' , data)
                         dispatch={uploadPhotoDispatch}
                         type={"file"}
                       />
-  
+
                       {docUrl && docUrl !== " " && (
                         <div className="flex justify-center w-auto items-center">
                           {!showProfileModal && (
@@ -199,9 +199,9 @@ console.log('test' , data)
                   </div>
                 </div>
                 {/*footer*/}
-                <div className="flex items-center p-6  rounded-b">
+                <div className="flex  justify-center items-center p-6  rounded-b">
                   <button
-                    className="primary-button btnCol text-white w-full md:w-auto hover:text-white hover:font-bold "
+                    className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                     type="button"
                     onClick={() => handleFile()}
                   >
@@ -247,5 +247,5 @@ console.log('test' , data)
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   );
-  
+
 }
