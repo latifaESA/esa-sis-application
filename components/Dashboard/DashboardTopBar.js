@@ -232,25 +232,25 @@ export default function AdminTopBar({ showNav, setShowNav }) {
             </Popover>
             {/* group */}
             <button
-              class="relative flex justify-center items-center bg-white border focus:outline-none shadow text-gray-600 rounded focus:ring ring-gray-200 w-6 mr-4 sm:hidden"
+              className="relative flex justify-center items-center bg-white border focus:outline-none shadow text-gray-600 rounded focus:ring ring-gray-200 w-6 mr-4 sm:hidden"
               onClick={handletoggleOpen}
             >
-              {/* <p class="px-4">Dropdown</p> */}
+              {/* <p className="px-4">Dropdown</p> */}
 
-              <span class="p-2 hover:bg-gray-100">
-                {/* <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 91-7 7-7-7"></ path></svg> */}
+              <span className="p-2 hover:bg-gray-100">
+                {/* <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 91-7 7-7-7"></ path></svg> */}
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M19 9l-7 7-7-7"
                   ></path>
                 </svg>
@@ -258,9 +258,9 @@ export default function AdminTopBar({ showNav, setShowNav }) {
 
               {isOpen && (
                 // hidden group-focus:block
-                <div class="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded">
-                  <ul class="text-center border rounded">
-                    <li class="px-4 py-1 hover:bg-gray-100 border-b">
+                <div className="absolute top-full min-w-full w-max bg-white shadow-md mt-1 rounded">
+                  <ul className="text-center border rounded">
+                    <li className="px-4 py-1 hover:bg-gray-100 border-b">
                       <Popover className="relative">
                         <Popover.Button className="outline-none mr-5 md:mr-8 cursor-pointer text-gray-700">
                           <Badge
@@ -319,7 +319,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                         </Transition>
                       </Popover>
                     </li>
-                    <li class="px-4 py-1 hover:bg-gray-100 border-b">
+                    <li className="px-4 py-1 hover:bg-gray-100 border-b">
                       <a
                         href="#"
                         className="flex hover:font-bold text-primary rounded p-2 text-sm group transition-colors items-center"
