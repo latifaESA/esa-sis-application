@@ -228,13 +228,12 @@ export default function AddSchedule({
           )
 
           :
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="fixed inset-0 bg-black opacity-25"></div>
-            <div className="relative w-full max-w-3xl bg-white mx-auto rounded-lg overflow-hidden">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
+            <div className="relative w-full max-w-3xl mx-auto">
+              {/* Modal content */}
+              <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                {/* Modal header */}
+                <div className="flex items-center justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-3xl font-semibold">
                     Create Schedule
                   </h3>
@@ -242,13 +241,12 @@ export default function AddSchedule({
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
                   </button>
                 </div>
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
+                {/* Modal body */}
+                <div className="p-6 flex-auto">
+                  {/* Form fields */}
                   <div className="flex flex-wrap justify-between mb-3">
                     {/* Day selection */}
                     {[1, 2, 3, 4, 5, 6].map(day => (
@@ -305,32 +303,30 @@ export default function AddSchedule({
                   {/* Location selection */}
                   {isOnline === 'false' && (
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <label className="text-gray-700 ">
+                      <label className="text-gray-700">
                         Building:
                         <CustomSelectBox
                           options={allStages}
                           placeholder="Select Location"
                           onSelect={handleStages}
-                          styled="font-medium h-auto items-center border-[1px] border-zinc-300 w-60 md:w-50  md:ml-1"
-                          enable={false}
+                          styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                          enable={false}
                         />
                       </label>
                       {building.length > 0 && (
-                        <label className="text-gray-700">
+                        <label className="text-gray-700 mt-2 md:mt-0 md:ml-2">
                           Location:
                           <CustomSelectBox
                             options={remainingRooms}
                             placeholder="Select Location"
                             onSelect={handleLocation}
-                            styled="font-medium h-auto items-center border-[1px] border-zinc-300 w-60 md:w-50 md:ml-1"
-                            enable={false}
+                            styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                            enable={false}
                           />
                         </label>
                       )}
                     </div>
                   )}
                 </div>
-                {/*footer*/}
+                {/* Modal footer */}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button
                     type="button"
@@ -358,6 +354,7 @@ export default function AddSchedule({
               </div>
             </div>
           </div>
+
 
 
 

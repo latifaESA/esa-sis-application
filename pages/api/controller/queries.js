@@ -328,7 +328,7 @@ async function createScheduleOnline(
 async function filterCourseMajor(connection, course_id, major_name) {
   try {
     let query = `
-    SELECT c.course_id, c.course_name, c.course_credit, m.major_name
+    SELECT c.course_id, c.course_name, c.course_credit, m.major_name , c.course_type
     FROM courses c
     LEFT JOIN major m ON c.major_id = m.major_id
     WHERE 

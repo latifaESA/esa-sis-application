@@ -12,7 +12,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
     const [isClick, setIsClick] = useState(false);
-    const [student, setStudentData] = useState([]);
+    // const [student, setStudentData] = useState([]);
     const [hasFetched, setHasFetched] = useState(false)
     const router = useRouter();
 
@@ -235,7 +235,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                     pm_id: session.user?.userid
                 }));
                                 // Set the student data in your state or wherever you need it
-                                setStudentData(studentInfo);
+                                // setStudentData(studentInfo);
                                 setHasFetched(true)
                 return {data : studentInfo}
 

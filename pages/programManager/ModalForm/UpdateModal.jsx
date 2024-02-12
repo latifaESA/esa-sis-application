@@ -8,7 +8,7 @@ import moment from 'moment';
 // import CustomPagination from '../../../components/Dashboard/Pagination';
 import { useSession } from 'next-auth/react';
 
-import { BsX } from 'react-icons/bs';
+// import { BsX } from 'react-icons/bs';
 
 export default function Modal({
   setEditModal,
@@ -222,7 +222,7 @@ export default function Modal({
                 </h3>
                 <button
                   className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                  onClick={() => setShowModal(false)}
+                  // onClick={() => setShowModal(false)}
                 >
                   <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
                     ×
