@@ -7,7 +7,8 @@ async function handler(req, res) {
       zoomId,
       classId,
       date ,
-      Duration 
+      minDuration ,
+      createAt
     } = req.body;
 
   
@@ -25,7 +26,8 @@ async function handler(req, res) {
       topic: `${classId}`,
       type: 2,
       start_time: date,
-      duration:Duration,
+      created_at:createAt,
+      duration:minDuration,
       settings: {
         join_before_host: true,
         auto_recording: "cloud",

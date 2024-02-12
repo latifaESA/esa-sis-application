@@ -34,7 +34,7 @@ export default function AddClass({
           <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
             {/* Modal header */}
             <div className="flex items-center justify-between p-5 border-b border-solid border-gray-300 rounded-t">
-              <h3 className="text-lg lg:text-xl text-gray-800 font-semibold">Create Class</h3>
+              <h3 className="text-gray-700 text-3xl font-bold">Create Class</h3>
               <button
                 className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                 onClick={() => handleCancel()}

@@ -79,7 +79,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [place, setPlace] = useState('');
   // const [isSave, setIsSave] = useState(false);
   const [theDate, setTheDate] = useState('');
-  const [hasFetched , setHasFetched] = useState(false)
+  const [hasFetched, setHasFetched] = useState(false)
   const [scheduleDate, setScheduleDate] = useState([]);
   // const [allRoomBuilding, setAllRoomBuilding] = useState([]);
   const [allroomName, setAllRoomName] = useState([]);
@@ -203,6 +203,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
+      
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
@@ -212,10 +213,19 @@ export const Calender = ({ schedule, setSchedule }) => {
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      // Calculate duration in minutes
-      const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
-      const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
-      const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
+      // // Calculate duration in minutes
+      // const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
+      // const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
+      // Parse time strings into Date objects
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${to_time}:00`);
+
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
+      // const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
 
       const payload = {
         classId: `${class_id}`,
@@ -223,7 +233,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,  // You might want to choose either date or createAt
-        Duration: durationInMinutes, // Add duration to the payload
+        minDuration: minutesDifference, // Add duration to the payload
       };
 
       const response = await axios.post('/api/zoom_api/createZoom', payload);
@@ -243,17 +253,25 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       // Combine the date and time
       const localDateTime = `${formattedDate} ${fromTime}`;
-      const localToDateTime = `${formattedDate} ${toTime}`;
+      // const localToDateTime = `${formattedDate} ${toTime}`;
 
       // Parse the local time
       const parsedDateTime = moment.tz(localDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
-      const parsedToDateTime = moment.tz(localToDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
+      // const parsedToDateTime = moment.tz(localToDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
 
-      // Convert the local time to UTC
+      // // Convert the local time to UTC
       const utcDateTime = parsedDateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      // Calculate duration in minutes
-      const durationInMinutes = parsedToDateTime.diff(parsedDateTime, 'minutes');
+      // // Calculate duration in minutes
+      // const durationInMinutes = parsedToDateTime.diff(parsedDateTime, 'minutes');
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${toTime}:00`);
+
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
 
       const payload = {
         classId: `${courseName}`,
@@ -261,7 +279,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,
-        duration: durationInMinutes, // Add duration to the payload
+        minDuration: minutesDifference, // Add duration to the payload
       };
       const response = await axios.post('/api/zoom_api/createZoom', payload);
 
@@ -299,10 +317,10 @@ export const Calender = ({ schedule, setSchedule }) => {
     }
   }
 
-  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime) => {
+  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime , toTime) => {
     try {
 
-
+      console.log(fromTime ,'testt', toTime)
       const formattedDate = moment(scheduleDate).format('YYYY-MM-DD');
 
       // Combine the date and time and format it as a full ISO string
@@ -310,13 +328,23 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${toTime}:00`);
 
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
       const access_token = await getZoomToken()
       const payload = {
         zoomId: zoom_id,
         accessToken: access_token,
         date: utcDateTime,
-        classId: title
+        classId: title,
+        createAt: utcDateTime,
+        minDuration:minutesDifference
+    
       }
 
       await axios.post('/api/zoom_api/updateZoom', payload)
@@ -758,7 +786,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         );
 
         if (attendanceData.data.code != 200) {
-          const payload ={
+          const payload = {
             classID: ev.class_id,
             day: modifyDate(dragDateRef.current.date),
             fromTime: ev.from,
@@ -772,7 +800,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
           if (ev.is_online === true) {
             if (data.success) {
-              const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from ,ev.to)
+              const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
               await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
               setStudent([]);
               getData();
@@ -970,7 +998,7 @@ export const Calender = ({ schedule, setSchedule }) => {
             const payload = {
               teacher_id,
               course_id,
-              attendance_date:modifyDate(theDate) ,
+              attendance_date: modifyDate(theDate),
               major_id: session.user?.majorid,
               fromTime: fromTime,
               toTime: toTime,
@@ -1190,7 +1218,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
         // The rest of your code remains unchanged
         let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
-        const response = await handleCreateZoomMeeting(courseName, theDate, fromTime , toTime)
+        const response = await handleCreateZoomMeeting(courseName, theDate, fromTime, toTime)
 
 
         await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
@@ -1495,7 +1523,8 @@ export const Calender = ({ schedule, setSchedule }) => {
         );
 
         if (data.success) {
-          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime)
+        
+          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime , toTime)
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1528,7 +1557,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
-          const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime , toTime)
+          const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime, toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
@@ -2155,67 +2184,67 @@ const AddSchedule = ({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none rounded">
-        <div className="relative w-full max-w-2xl my-6 mx-auto bg-white rounded">
-          {/*content*/}
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            {/*header*/}
-            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
+        <div className="relative w-full max-w-2xl mx-auto my-6">
+          {/* Modal content */}
+          <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+            {/* Modal header */}
+            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
               <h3 className="text-gray-700 text-3xl font-bold">
                 Update Schedule
               </h3>
-              <button className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none">
-                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  ×
-                </span>
+              <button
+                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={handleClose}
+              >
+                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
               </button>
             </div>
-            {/*body*/}
-            <div className="relative p-6 pr-12 flex-auto overflow-y-scroll">
-              <div className="flex flex-col md:flex-row mb-4">
-                <div className="flex flex-col">
-                  <label className="text-gray-700 items-center">
-                    Class:
-                    {/* Start select box */}
-                    <CustomSelectBox
-                      options={classNames}
-                      placeholder="Select Class"
-                      onSelect={handleClass}
-                      styled="font-medium h-auto justify-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
-                      oldvalue={theclass}
-                    />
-                  </label>
-                </div>
+            {/* Modal body */}
+            <div className="p-6 flex-column overflow-y-scroll overflow-x-hidden">
+              {/* Form fields */}
+              <div className="flex flex-col mb-4 ">
+                <label className="text-gray-700 items-center ms:w-auto">
+                  Class:
+                  {/* Start select box */}
+                  <CustomSelectBox
+                    options={classNames}
+                    placeholder="Select Class"
+                    onSelect={handleClass}
+                    styled="font-medium h-auto justify-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md ms:w-auto"
+                    oldvalue={theclass}
+                  />
+                </label>
               </div>
               <div className="flex flex-col md:flex-row mb-6">
                 <div className="flex flex-col">
-                  <label className="text-gray-700 mr-20">
+                  <label className="text-gray-700 mr-20  ms:w-auto">
                     From:
                     <input
                       type="time"
                       value={formatTimeForInput(thefrom)}
                       onChange={handleFrom}
-                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
+                      className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md ms:w-auto"
                     />
                   </label>
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-gray-700">
+                  <label className="text-gray-700  ms:w-auto">
                     To:
                     <input
                       type="time"
                       value={formatTimeForInput(theto)}
                       onChange={handleTo}
-                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
+                      className="font-medium h-auto ms:w-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
                     />
                   </label>
                 </div>
               </div>
-              <div className="flex flex-col md:flex-row mb-6">
+              <div className="flex flex-col  ms:w-auto md:flex-row mb-6">
                 <label className="text-gray-700 mr-20">
                   Type:
                   <select
-                    className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
+                    className="font-medium ms:w-auto h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
                     onChange={(e) => setIsOnline(e.target.value)}
                     value={isOnline}
                   >
@@ -2225,96 +2254,65 @@ const AddSchedule = ({
                 </label>
               </div>
               {/* Location selection */}
-              {isOnline === false || isOnline === 'false' ?
-                <>
-                  <div className="flex flex-col md:flex-row mb-6">
-                    <div className="flex flex-col">
-                      <label className="text-gray-700 mr-20">
-                        Building :
-                        {
-                          <CustomSelectBox
-                            options={allStages}
-                            placeholder="Select Location"
-                            onSelect={handleStages}
-                            styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
-                            enable={false}
-                            oldvalue={theroombuilding}
-                          />
-                        }
-                      </label>
-                    </div>
-                    <div className="flex flex-col">
-                      {(theroombuilding?.length > 0 ||
-                        (building.length > 0 && allrooms.length > 0)) && (
-                          <label className="text-gray-700 mr-20">
-                            Location :
-                            {
-                              <CustomSelectBox
-                                options={
-                                  remainingRooms.length > 0
-                                    ? remainingRooms
-                                    : allroomsRef.current
-                                }
-                                placeholder="Select Location"
-                                onSelect={handlePlace}
-                                styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
-                                enable={false}
-                                oldvalue={theroomname}
-                              />
-                            }
-                          </label>
-                        )}
-                    </div>
+              {isOnline === false || isOnline === 'false' ? (
+                <div className="flex flex-col md:flex-row mb-6  ms:w-auto">
+                  <div className="flex flex-col">
+                    <label className="text-gray-700 mr-20">
+                      Building :
+                      <CustomSelectBox
+                        options={allStages}
+                        placeholder="Select Location"
+                        onSelect={handleStages}
+                        styled="font-medium h-auto ms:w-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                        enable={false}
+                        oldvalue={theroombuilding}
+                      />
+                    </label>
                   </div>
-                </>
-                : <></>}
+                  <div className="flex flex-col">
+                    {(theroombuilding?.length > 0 ||
+                      (building.length > 0 && allrooms.length > 0)) && (
+                        <label className="text-gray-700  ms:w-auto mr-20">
+                          Location :
+                          <CustomSelectBox
+                            options={
+                              remainingRooms.length > 0
+                                ? remainingRooms
+                                : allroomsRef.current
+                            }
+                            placeholder="Select Location"
+                            onSelect={handlePlace}
+                            styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                            enable={false}
+                            oldvalue={theroomname}
+                          />
+                        </label>
+                      )}
+                  </div>
+                </div>
+              ) : null}
             </div>
-            {/*footer*/}
-            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-              {clickEdit ? (
-                <>
-                  <button
-                    className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4 "
-                    disabled
-                    type="button"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded mr-4"
-                    type="button"
-                    disabled
-                    onClick={handleClose}
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4 "
-                    type="button"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded mr-4"
-                    type="button"
-                    onClick={handleClose}
-                  >
-                    Cancel
-                  </button>
-                </>
-              )}
+            {/* Modal footer */}
+            <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
+              <button
+                className={`primary-button btnCol text-white hover:text-white hover:font-bold mr-4 ${clickEdit && 'opacity-50 cursor-not-allowed'}`}
+                type="button"
+                onClick={handleSave}
+                disabled={clickEdit}
+              >
+                Save
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                type="button"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black rounded"></div>
-
-
     </>
   );
 
