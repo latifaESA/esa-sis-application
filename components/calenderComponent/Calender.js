@@ -203,6 +203,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
+      
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
@@ -212,10 +213,19 @@ export const Calender = ({ schedule, setSchedule }) => {
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      // Calculate duration in minutes
-      const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
-      const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
-      const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
+      // // Calculate duration in minutes
+      // const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
+      // const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
+      // Parse time strings into Date objects
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${to_time}:00`);
+
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
+      // const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
 
       const payload = {
         classId: `${class_id}`,
@@ -223,7 +233,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,  // You might want to choose either date or createAt
-        Duration: durationInMinutes, // Add duration to the payload
+        minDuration: minutesDifference, // Add duration to the payload
       };
 
       const response = await axios.post('/api/zoom_api/createZoom', payload);
@@ -243,17 +253,25 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       // Combine the date and time
       const localDateTime = `${formattedDate} ${fromTime}`;
-      const localToDateTime = `${formattedDate} ${toTime}`;
+      // const localToDateTime = `${formattedDate} ${toTime}`;
 
       // Parse the local time
       const parsedDateTime = moment.tz(localDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
-      const parsedToDateTime = moment.tz(localToDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
+      // const parsedToDateTime = moment.tz(localToDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
 
-      // Convert the local time to UTC
+      // // Convert the local time to UTC
       const utcDateTime = parsedDateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      // Calculate duration in minutes
-      const durationInMinutes = parsedToDateTime.diff(parsedDateTime, 'minutes');
+      // // Calculate duration in minutes
+      // const durationInMinutes = parsedToDateTime.diff(parsedDateTime, 'minutes');
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${toTime}:00`);
+
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
 
       const payload = {
         classId: `${courseName}`,
@@ -261,7 +279,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,
-        duration: durationInMinutes, // Add duration to the payload
+        minDuration: minutesDifference, // Add duration to the payload
       };
       const response = await axios.post('/api/zoom_api/createZoom', payload);
 
@@ -299,10 +317,10 @@ export const Calender = ({ schedule, setSchedule }) => {
     }
   }
 
-  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime) => {
+  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime , toTime) => {
     try {
 
-
+      console.log(fromTime ,'testt', toTime)
       const formattedDate = moment(scheduleDate).format('YYYY-MM-DD');
 
       // Combine the date and time and format it as a full ISO string
@@ -310,13 +328,23 @@ export const Calender = ({ schedule, setSchedule }) => {
 
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${toTime}:00`);
 
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
       const access_token = await getZoomToken()
       const payload = {
         zoomId: zoom_id,
         accessToken: access_token,
         date: utcDateTime,
-        classId: title
+        classId: title,
+        createAt: utcDateTime,
+        minDuration:minutesDifference
+    
       }
 
       await axios.post('/api/zoom_api/updateZoom', payload)
@@ -1495,7 +1523,8 @@ export const Calender = ({ schedule, setSchedule }) => {
         );
 
         if (data.success) {
-          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime)
+        
+          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime , toTime)
           getData();
           setIsOnline('')
           setIsClickEdit(false);

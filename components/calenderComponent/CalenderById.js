@@ -207,6 +207,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
+      
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
@@ -216,10 +217,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
-      // Calculate duration in minutes
-      const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
-      const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
-      const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
+      // // Calculate duration in minutes
+      // const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
+      // const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
+      // Parse time strings into Date objects
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${to_time}:00`);
+
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
+      // const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
 
       const payload = {
         classId: `${class_id}`,
@@ -227,7 +237,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,  // You might want to choose either date or createAt
-        Duration: durationInMinutes, // Add duration to the payload
+        minDuration: minutesDifference, // Add duration to the payload
       };
 
       const response = await axios.post('/api/zoom_api/createZoom', payload);
@@ -237,6 +247,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return error;
     }
   };
+
 
 
 
@@ -303,7 +314,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   }
 
-  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime) => {
+  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime , toTime) => {
     try {
 
 
@@ -314,13 +325,23 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      const startDate = new Date(`2000-01-01T${fromTime}:00`);
+      const endDate = new Date(`2000-01-01T${toTime}:00`);
 
+      // Calculate difference in milliseconds
+      const differenceMs = endDate - startDate;
+
+      // Convert milliseconds to minutes
+      const minutesDifference = Math.floor(differenceMs / (1000 * 60));
       const access_token = await getZoomToken()
       const payload = {
         zoomId: zoom_id,
         accessToken: access_token,
         date: utcDateTime,
-        classId: title
+        classId: title,
+        createAt: utcDateTime,
+        minDuration:minutesDifference
+    
       }
 
       await axios.post('/api/zoom_api/updateZoom', payload)
@@ -1485,7 +1506,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         );
 
         if (data.success) {
-          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime)
+          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime , toTime)
           getData();
           setIsOnline('')
           setIsClickEdit(false);
