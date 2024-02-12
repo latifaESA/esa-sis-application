@@ -128,91 +128,42 @@ export default function TeacherCourse() {
         <>
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Assign</p>
           <form>
-            {/* <div className="grid grid-cols-1 gap-3 min-[850px]:grid-cols-3 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-
-                        <div>
-                            <label className='w-[350px]'>
-                                Teacher firstname:
-                                <input
-                                    className="ml-5 w-40 max-[850px]:ml-3"
-                                    type="text"
-                                    name="teacher_id"
-                                    placeholder='Teacher LastName'
-                                    id={'teacherId'}
-                                    value={teacher_firstname}
-                                    onChange={(e) => { setTeacherFirstName(e.target.value) }}
-                                ></input>
-                            </label>
-
-                        </div>
-
-                        <div>
-                            <label className='w-[350px]'>
-                                Teacher lastname:
-                                <input
-                                    className="ml-5 w-40 max-[850px]:ml-4"
-                                    type="text"
-                                    name="teacher_id"
-                                    placeholder='Teacher FirstName'
-                                    id={'teacherId'}
-                                    value={teacher_lastname}
-                                    onChange={(e) => { setTeacherLastName(e.target.value) }}
-                                ></input>
-                            </label>
-
-                        </div>
-                        <div>
-                            <label className='w-[350px]'>
-                                course ID:
-                                <input
-                                    className="ml-7 w-40 max-[850px]:ml-4"
-                                    type="text"
-                                    name="from"
-                                    id={'text'}
-                                    placeholder='Course ID'
-                                    value={course_id}
-                                    onChange={(e) => { setCourseid(e.target.value)}}
-                                ></input>
-                            </label>
-                        </div>
-
-                        <div className="flex flex-col  min-[850px]:flex-row gap-4">
-                            <button
-                                className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={handleSearch}
-                            >
-                                Search
-                            </button>
-                            <button
-                                className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                                type="button"
-                                onClick={handleShowAll}
-                            >
-                                Show All
-                            </button>
-                        </div>
-                    </div> */}
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
-              <label className="w-[350px]">
-                Teacher firstname:
+
+              <label>
+                First Name:
                 <input
-                  className="ml-5 w-40 max-[850px]:ml-3"
+                  className="ml-2 w-40 max-[850px]:ml-1"
                   type="text"
-                  name="teacher_id"
-                  placeholder="Teacher FirstName"
-                  id={'teacherId'}
                   value={teacher_firstname}
                   onChange={(e) => {
                     setTeacherFirstName(e.target.value);
                   }}
+                  placeholder="Select Name"
+                // value={formData.Fname}
+                // onChange={handleChange}
+                ></input>
+              </label>
+              <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                First Name:
+                <input
+                  className="ml-2 w-10 invisible max-[850px]:visible max-[850px]:hidden"
+                  type="text"
+                  value={teacher_firstname}
+                  onChange={(e) => {
+                    setTeacherFirstName(e.target.value);
+                  }}
+                  placeholder="Select Name"
+                // value={formData.Fname}
+                // onChange={handleChange}
                 ></input>
               </label>
 
-              <label className="w-[350px]">
-                Teacher lastname:
+
+              <label>
+                Last Name:
                 <input
-                  className="ml-5 w-40 max-[850px]:ml-3"
+                  className="ml-1 w-40 max-[850px]:ml-1"
                   type="text"
                   name="teacher_id"
                   placeholder="Teacher LastName"
@@ -221,12 +172,57 @@ export default function TeacherCourse() {
                   onChange={(e) => {
                     setTeacherLastName(e.target.value);
                   }}
+                // value={formData.Lname}
+                // onChange={handleChange}
                 ></input>
               </label>
-              <label className="w-[350px]">
+
+
+              {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                Major:
+                {/* Start select box */}
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  // options={major}
+                  placeholder="Select Major"
+
+                  styled={
+                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10'
+                  }
+                />
+              </label>
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                From:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="date"
+                  name="from"
+                // value={formData.from}
+                // onChange={handleChange}
+                ></input>
+              </label>
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+              {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+
+              <label>
+                
                 Course ID:
                 <input
-                  className="ml-5 w-40 max-[850px]:ml-8 "
+                  className="ml-4 w-40 max-[850px]:ml-4 "
                   type="text"
                   name="courseId"
                   placeholder="Course ID"
@@ -234,73 +230,39 @@ export default function TeacherCourse() {
                   value={course_id}
                   onChange={(e) => {
                     setCourseid(e.target.value);
-                  }}
-                ></input>
+                  }} />
               </label>
-
-              {/* <label className='w-[350px]'>
-                            course ID:
-                            <input
-                                 className="ml-5 w-40 max-[850px]:ml-4 "
-                                type="text"
-                                name="from"
-                                id={'text'}
-                                placeholder='Course ID'
-                                value={course_id}
-                                onChange={(e) => { setCourseid(e.target.value) }}
-                            ></input>
-
-                        </label> */}
-              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-                Teacher firstname:
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
                 <input
-                  className="ml-5 w-40 max-[850px]:visible max-[850px]:hidden"
-                  type="text"
-                  name="teacher_id"
-                  placeholder="Teacher FirstName"
-                  id={'teacherId'}
-                  value={teacher_firstname}
-                  onChange={(e) => {
-                    setTeacherFirstName(e.target.value);
-                  }}
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
-
-              <label className="w-[350px] invisible max-[850px]:visible max-[850px]:hidden">
-                Teacher lastname:
-                <input
-                  className="ml-5 w-40 max-[850px]:visible max-[850px]:hidden"
-                  type="text"
-                  name="teacher_id"
-                  placeholder="Teacher LastName"
-                  id={'teacherId'}
-                  value={teacher_lastname}
-                  onChange={(e) => {
-                    setTeacherLastName(e.target.value);
-                  }}
-                ></input>
-              </label>
-
-              <div className="flex flex-col justify-end min-[850px]:flex-row gap-4">
+              <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
-                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleSearch}
                 >
                   Search
                 </button>
                 <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleShowAll}
                 >
                   Show All
                 </button>
               </div>
-            </div>
 
+            </div>
             <TeachersCourseList users={users} setUsers={setUsers} />
           </form>
+
         </>
       ) : (
         redirect()

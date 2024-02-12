@@ -12,13 +12,14 @@ async function handler(req, res) {
    
       
             const response = await createSchedule(connection, classId, days, fromTime, toTime, room, pmID, attendanceId , is_online);
-
+            
             await disconnect(connection)
             if (response.rowCount > 0) {
                 return res.status(201).json({
                     success: true,
                     code: 201,
                     message: 'Schedule created successfully',
+                    scheduleId: response.rows[0].tmpschedule_id
                 })
             } else {
                 return res.status(201).json({

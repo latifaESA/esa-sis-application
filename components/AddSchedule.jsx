@@ -228,214 +228,135 @@ export default function AddSchedule({
           )
 
           :
-          <>
-
-            <div
-              className="justify-center items-center flex  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-            >
-              <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                {/*content*/}
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none h-screen">
-                  {/*header*/}
-                  <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                    <h3 className="text-gray-700 text-3xl font-bold">
-                      Create Schedule
-                    </h3>
-                    <button
-                      className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    // onClick={() => setShowModal(false)}
-                    >
-                      <span className="bg-transparent  text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                        ×
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
+            <div className="relative w-full max-w-3xl mx-auto">
+              {/* Modal content */}
+              <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                {/* Modal header */}
+                <div className="flex items-center justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                  <h3 className="text-3xl font-semibold">
+                    Create Schedule
+                  </h3>
+                  <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
+                  </button>
+                </div>
+                {/* Modal body */}
+                <div className="p-6 flex-auto">
+                  {/* Form fields */}
+                  <div className="flex flex-wrap justify-between mb-3">
+                    {/* Day selection */}
+                    {[1, 2, 3, 4, 5, 6].map(day => (
+                      <span
+                        key={day}
+                        className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer mb-2 ${selectedValues.includes(day)
+                          ? " bg-third btnCol text-white"
+                          : "bg-primary"
+                          }`}
+                        onClick={() => handleSelect(day)}
+                      >
+                        {day === 1 ? "Mon" : day === 2 ? "Tue" : day === 3 ? "Wed" : day === 4 ? "Thurs" : day === 5 ? "Fri" : "Sat"}
                       </span>
-                    </button>
+                    ))}
                   </div>
-                  {/*body*/}
-                  <div className="relative p-6 pr-12 h-3/4  flex-auto overflow-y-scroll">
-                    <div className="flex flex-col mb-6 mr-0">
-                      <div className="flex flex-row justify-between">
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(1)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(1)}
-                        >
-                          Mon
-                        </span>
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(2)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(2)}
-                        >
-                          Tue
-                        </span>
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(3)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(3)}
-                        >
-                          Wed
-                        </span>
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(4)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(4)}
-                        >
-                          Thurs
-                        </span>
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(5)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(5)}
-                        >
-                          Fri
-                        </span>
-                        <span
-                          className={`rounded text-white py-2 px-4 shadow outline-none hover:bg-secondary hover:font-bold active:bg-third disabled:bg-gray-400 hover:text-white cursor-pointer  ${selectedValues.includes(6)
-                            ? " bg-third btnCol text-white"
-                            : "bg-primary"
-                            }`}
-                          onClick={() => handleSelect(6)}
-                        >
-                          Sat
-                        </span>
-                      </div>
-
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
+                    {/* From and To inputs */}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start w-full">
+                      <label className="text-gray-700 mb-2 md:mr-8">
+                        From:
+                        <input
+                          type="time"
+                          onChange={(e) => handleFrom(e)}
+                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-auto"
+                          style={{ width: 'calc(100% - 8px)' }}
+                        />
+                      </label>
+                      <label className="text-gray-700">
+                        To:
+                        <input
+                          type="time"
+                          onChange={(e) => handleTo(e)}
+                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-auto"
+                          style={{ width: 'calc(100% - 8px)' }}
+                        />
+                      </label>
                     </div>
-                    <div className="flex  flex-col">
-                      <div className="flex flex-row justify-center mb-6">
-                        <div className="flex flex-col">
-                          <label className="text-gray-700 mr-20">
-                            From :
-                            <input type={'time'}
-                              onChange={(e) => handleFrom(e)}
-                              className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                            />
-                          </label>
-                        </div>
-
-
-                        <div className="flex flex-col">
-                          <label className="text-gray-700">
-                            To :
-                            <input
-                              type={'time'}
-                              onChange={(e) => handleTo(e)}
-                              className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]" />
-                          </label>
-                        </div>
-                      </div>
-                      <div className="flex flex">
-                        <label className="text-gray-700 mr-20 ">
-                          type:
-                          <select
-                            className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                            onChange={(e) => setIsOnLine(e.target.value)}
-                            value={isOnline}
-                          // disabled={role == "0" ? true : false}
-                          >
-                            {/* <option value="">Choose Value..</option> */}
-                            <option value="">Choose Value..</option>
-                            <option value="true">Online</option>
-                            <option value="false">Onsite</option>
-                          </select>
+                  </div>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
+                    {/* Type selection */}
+                    <label className="text-gray-700">
+                      Type:
+                      <select
+                        className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-60 inline-block md:ml-1"
+                        onChange={(e) => setIsOnLine(e.target.value)}
+                        value={isOnline}
+                      >
+                        <option value="">Choose Value..</option>
+                        <option value="true">Online</option>
+                        <option value="false">Onsite</option>
+                      </select>
+                    </label>
+                  </div>
+                  {/* Location selection */}
+                  {isOnline === 'false' && (
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                      <label className="text-gray-700">
+                        Building:
+                        <CustomSelectBox
+                          options={allStages}
+                          placeholder="Select Location"
+                          onSelect={handleStages}
+                          styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                          enable={false}
+                        />
+                      </label>
+                      {building.length > 0 && (
+                        <label className="text-gray-700 mt-2 md:mt-0 md:ml-2">
+                          Location:
+                          <CustomSelectBox
+                            options={remainingRooms}
+                            placeholder="Select Location"
+                            onSelect={handleLocation}
+                            styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                            enable={false}
+                          />
                         </label>
-                        {/* {isOnline === 'true' &&
-                          <>
-                              <label className="text-gray-700 mr-20 ">
-                                Topic :
-                                <div>
-                                  <input type="text" />
-                                </div>
-                              </label>
-                          </>
-                        } */}
-                      </div>
-                      {isOnline === 'false' &&
-                        <>
-                          <div className="flex flex-row  mb-4">
-                            <div className="flex flex-col">
-                              <label className="text-gray-700 mr-20 ">
-                                Building :
-                                {
-                                  <CustomSelectBox
-                                    options={allStages}
-                                    placeholder="Select Location"
-                                    onSelect={handleStages}
-                                    styled={
-                                      "font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                                    }
-                                    enable={false}
-                                  />
-                                }
-                              </label>
-                            </div>
-                            <div className="flex flex-col">
-                              {building.length > 0 && (
-                                <label className="text-gray-700">
-                                  Location:
-                                  <CustomSelectBox
-                                    options={remainingRooms}
-                                    placeholder="Select Location"
-                                    onSelect={handleLocation}
-                                    styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                                    enable={false}
-                                  />
-                                </label>
-                              )}
-                            </div>
-
-
-                          </div>
-                        </>}
-
-
+                      )}
                     </div>
-                  </div>
-                  {/*footer*/}
-                  <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleSaveAll()}
-                        className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
-
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="bg-red-500 text-white px-4 py-2 rounded mr-4"
-                        onClick={() => {
-                          handleCancelSchedule();
-                          setStudent([]);
-                          setDetails([]);
-                          setIsOnLine('')
-                          // setCourseType("");
-                          setCourseValue("");
-                          setPromotions("");
-                          deleteTable()
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  </div>
+                  )}
+                </div>
+                {/* Modal footer */}
+                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAll()}
+                    className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                    onClick={() => {
+                      handleCancelSchedule();
+                      setStudent([]);
+                      setDetails([]);
+                      setIsOnLine('')
+                      setCourseValue("");
+                      setPromotions("");
+                      deleteTable()
+                    }}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+          </div>
 
-          </>
+
+
 
       }
 

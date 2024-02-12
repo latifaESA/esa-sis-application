@@ -48,8 +48,8 @@ export default function Attendance() {
         datesArray.push(attendance.major_name);
       });
 
-     
-      
+
+
     };
     getMajor();
 
@@ -172,7 +172,7 @@ export default function Attendance() {
               <label>
                 Date:
                 <input
-                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  className="ml-2 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
                   type="date"
                   name="date"
                   placeholder=""
@@ -181,39 +181,11 @@ export default function Attendance() {
                   onChange={(e) => {
                     setAttendanceDate(e.target.value);
                   }}
+                // value={formData.ID}
+                // onChange={handleChange}
                 ></input>
               </label>
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                First Name:
-                <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-                  type="text"
-                  name="Fname"
-                  placeholder="Teacher's First Name"
-                  // value={formData.Fname}
-                  onChange={() => {
-                    // setFname(e.target.value)
-                  }}
-                ></input>
-              </label>
-
-              <label>
-                Course ID:
-                <input
-                  className="ml-1 w-40 max-[850px]:ml-1"
-                  type="text"
-                  name="Lname"
-                  placeholder="Course ID"
-                  id={'text'}
-                  value={course_id}
-                  onChange={(e) => {
-                    setCourseId(e.target.value);
-                  }}
-                ></input>
-              </label>
-              {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
               <label>
                 First Name:
                 <input
@@ -229,24 +201,13 @@ export default function Attendance() {
                 ></input>
               </label>
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                From:
-                <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-                  type="date"
-                  name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
-                ></input>
-              </label>
-
               <label>
                 Last Name:
                 <input
-                  className="ml-1 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+                  className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
                   type="text"
                   name="lastname"
-                  placeholder="Last Name"
+                  placeholder="last Name"
                   id={'teacherId'}
                   value={teacher_lastName}
                   onChange={(e) => {
@@ -255,9 +216,61 @@ export default function Attendance() {
                 ></input>
               </label>
               {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                Major:
+                {/* Start select box */}
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  // options={major}
+                  placeholder="Select Major"
+                  // onSelect={handleMajor}
+                  styled={
+                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-10'
+                  }
+                />
+              </label>
 
               <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                From:
+                <input
+                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
+                  type="date"
+                  name="from"
+                // value={formData.from}
+                // onChange={handleChange}
+                ></input>
+              </label>
+
+              <label className="invisible max-[850px]:visible max-[850px]:hidden">
+                To:
+                <input
+                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
+                  type="date"
+                  name="to"
+                // value={formData.to}
+                // onChange={handleChange}
+                ></input>
+              </label>
+              {/* </div>
+        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
+
+              <label className="">
+                Course ID:
+                <input
+                  className="ml-1 w-40 max-[850px]:ml-1"
+                  type="text"
+                  name="Lname"
+                  placeholder="Course ID"
+                  id={'text'}
+                  value={course_id}
+                  onChange={(e) => {
+                    setCourseId(e.target.value);
+                  }}
+                ></input>
+              </label>
+
+              <label className='invisible max-[850px]:visible max-[850px]:hidden'>
                 Course ID:
                 <input
                   className="ml-3 w-40 max-[850px]:ml-2"
@@ -270,37 +283,27 @@ export default function Attendance() {
                   }}
                 ></input>
               </label>
-
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
-              </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
                 <button
-                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleAttendance}
                 >
                   Search
                 </button>
                 <button
-                  className="primary-button btnCol text-white rounded w-60 hover:text-white hover:font-bold"
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
                   type="button"
                   onClick={handleShowAll}
                 >
                   Show All
                 </button>
               </div>
-            </div>
 
+            </div>
             <AttendanceList users={users} setUsers={setUsers} />
           </form>
+
         </>
       ) : (
         redirect()

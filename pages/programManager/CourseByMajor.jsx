@@ -251,6 +251,29 @@ export default function CourseByMajor() {
                 ></input>
               </label>
 
+              {session.user?.hasMultiMajor === 'true' ?
+              <label className="">
+              Type:
+              <select
+                className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                value={courseType}
+                onChange={(e) => setcourseType(e.target.value)}
+              >
+                <option value="">Choose Type..</option>
+                {type &&
+                  type.map((type) => (
+                    <>
+                      <option key={type.course_type} value={type.course_type}>
+                        {type.course_type}
+                      </option>
+                    </>
+                  ))}
+              </select>
+            </label>
+
+
+                : <>
+                
               <label className="">
                 Type:
                 <select
@@ -270,7 +293,11 @@ export default function CourseByMajor() {
                 </select>
               </label>
 
-              {session.user?.hasMultiMajor === 'true' ?
+                
+                
+                </>}
+
+                {session.user?.hasMultiMajor === 'true' ?
                 <label className=''>
                   Major:
                   <select
@@ -292,8 +319,6 @@ export default function CourseByMajor() {
                       ))}
                   </select>
                 </label>
-
-
                 : <></>}
               <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button

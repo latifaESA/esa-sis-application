@@ -23,7 +23,7 @@ export default function Send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  
+
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
   const redirect = () => {
@@ -32,17 +32,17 @@ export default function Send() {
 
   const handleMajors = async () => {
     try {
-      if(session.user?.role === '3'){
+      if (session.user?.role === '3') {
         const data = await axios.post('/api/pmApi/getMajorFromAs', {
           pm_ass_id: session.user?.userid
         })
-  
+
         setMajors(data.data.data)
-      }else if(session.user?.role === '2'){
+      } else if (session.user?.role === '2') {
         const data = await axios.post('/api/pmApi/getMajorFromMajor', {
           pm_id: session.user?.userid
         })
-  
+
         setMajors(data.data.data)
       }
 
@@ -64,7 +64,7 @@ export default function Send() {
           majorID: major_id,
         });
         setSelectedMajorID(data[0].major_id)
- 
+
         return;
       } else {
         let major_id = session.user.majorid;
@@ -72,7 +72,7 @@ export default function Send() {
           majorID: major_id,
         });
         setSelectedMajorID(data[0].major_id)
-        
+
         return;
       }
 
@@ -86,7 +86,7 @@ export default function Send() {
   useEffect(() => {
 
     handleMajorPM();
-  }, [session, selectedMajorID , majorValue]); // Empty dependency array means this effect runs once when the component mounts
+  }, [session, selectedMajorID, majorValue]); // Empty dependency array means this effect runs once when the component mounts
 
   // const handleSelect = (selectedValue) => {
   //   if (selectedValue.trim() !== '') {
@@ -152,100 +152,81 @@ export default function Send() {
     }
   };
   return (
+<>
+  <Head>
+    <title>SIS Admin - Send</title>
+  </Head>
+
+  {session?.user.role === '2' || session?.user.role === '3' ? (
     <>
-      <Head>
-        <title>SIS Admin - Send</title>
-      </Head>
+      <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
 
-
-
-      {session?.user.role === '2' || session?.user.role === '3'? (
-      <>
-        <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Send</p>
-
-        <div>
-          <div className="flex flex-col items-start justify-center w-2/4">
-            <div className="text-center">
-              <p className={` ${messageClass}`}>{message}</p>
-            </div>
-            <form onSubmit={submitHandler} className='w-full'>
-              <div>
-                {/*
-                  <div className="flex m-10 flex-col md:flex-row">
-                    <label className="w-[350px] mb-2">Select Major:</label>
-                    <CustomSelectBox
-                      options={majors}
-                      placeholder="Select Major Name"
-                      onSelect={handleSelect}
-                      styled={
-                        'font-medium h-auto items-start border-[1px] border-zinc-300 self-start w-60 inline-block'
-                      }
-                      refresh={afterSub}
-                    />
-                  </div>
-                   */}
-                {
-                  session.user?.hasMultiMajor === 'true' &&
-                  <label>
-                    Major:
-                    <select
-                      onChange={(e) => setMajorValue(e.target.value)}
-                      value={majorValue}
-                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
-
-                    >
-                      <option key={"uu2isdvf"} value="">
-                        Choose a Major
-                      </option>
-                      {majors &&
-                        majors.map((major) => (
-                          <>
-                            <option key={major.major_id} value={major.major_id}>
-                              {major.major_name}
-                            </option>
-                          </>
-                        ))}
-                    </select>
-                  </label>
-                }
-
-                <div className="m-4">
-                  <input
-                    type="text"
-                    value={subjectContent}
-                    onChange={(e) => setSubjectContent(e.target.value)}
-                    placeholder="Subject"
-                  />
-                </div>
-                <div className="m-4">
-                  <textarea
-                    className="w-full p-2 border rounded"
-                    rows="6"
-                    name="emailContent"
-                    value={emailContent}
-                    onChange={(e) => setEmailContent(e.target.value)}
-                    placeholder="Message"
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row sm:gap-4 justify-end">
-                  <button
-                    className="w-full sm:w-1/2 p-2 rounded primary-button"
-                    type="submit"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Sending...' : 'Send'}
-                  </button>
-                  {isLoading && <Loader />}
-                </div>
-              </div>
-            </form>
-          </div>
+      <div className="flex flex-col md:flex-row items-center justify-center w-full">
+        <div className="text-center md:mr-10">
+          <p className={` ${messageClass}`}>{message}</p>
         </div>
-      </>
-      ) : (
-      redirect()
-      )}
+        <form onSubmit={submitHandler} className='w-full max-w-4xl'>
+          <div className="w-full md:w-2/3 lg:w-1/2">
+            {session.user?.hasMultiMajor === 'true' &&
+              <label className="block mb-4 md:mt-3 md:w-40">
+              
+                <select
+                  onChange={(e) => setMajorValue(e.target.value)}
+                  value={majorValue}
+                  className="mt-3 ml-5"
+                >
+                  <option key={"uu2isdvf"} value="">
+                    Choose a Major
+                  </option>
+                  {majors &&
+                    majors.map((major) => (
+                      <option key={major.major_id} value={major.major_id}>
+                        {major.major_name}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            }
+
+            <div className="m-4">
+              <input
+                type="text"
+                value={subjectContent}
+                onChange={(e) => setSubjectContent(e.target.value)}
+                placeholder="Subject"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="m-4">
+              <textarea
+                className="w-full p-2 border rounded"
+                rows="6"
+                name="emailContent"
+                value={emailContent}
+                onChange={(e) => setEmailContent(e.target.value)}
+                placeholder="Message"
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row sm:gap-4 justify-end">
+              <button
+                className="w-full sm:w-auto p-2 rounded primary-button md:min-w-[150px]"
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Sending...' : 'Send'}
+              </button>
+              {isLoading && <Loader />}
+            </div>
+          </div>
+        </form>
+      </div>
     </>
+  ) : (
+    redirect()
+  )}
+</>
+
+
   );
 }
 Send.auth = true;

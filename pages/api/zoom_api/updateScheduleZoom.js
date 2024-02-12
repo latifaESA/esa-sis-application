@@ -10,8 +10,9 @@ async function handler(req, res) {
             tmpscheduleIds, meetingIds, zoomUrls
         } = req.body;
    
-      
+            
             const response = await updateZoomInfo(connection,tmpscheduleIds, meetingIds, zoomUrls);
+          
 
             await disconnect(connection)
             if (response.rowCount > 0) {

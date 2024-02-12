@@ -201,12 +201,10 @@ export const Calender = ({ schedule, setSchedule }) => {
     }
   }
 
-  const handleCreateZoomMeeting = async (class_id, day, fromTime) => {
+  const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
-
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
-
 
       // Combine the date and time and format it as a full ISO string
       const localDateTime = `${formattedDate}T${fromTime}`;
@@ -214,12 +212,18 @@ export const Calender = ({ schedule, setSchedule }) => {
       // Convert the local time to UTC
       const utcDateTime = moment.tz(localDateTime, 'Asia/Beirut').utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 
+      // Calculate duration in minutes
+      const fromDateTime = moment.tz(localDateTime, 'Asia/Beirut');
+      const toDateTime = moment.tz(`${formattedDate}T${to_time}`, 'Asia/Beirut');
+      const durationInMinutes = toDateTime.diff(fromDateTime, 'minutes');
+
       const payload = {
         classId: `${class_id}`,
         date: utcDateTime,  // Use utcDateTime instead of formattedDateTime
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,  // You might want to choose either date or createAt
+        Duration: durationInMinutes, // Add duration to the payload
       };
 
       const response = await axios.post('/api/zoom_api/createZoom', payload);
@@ -231,20 +235,25 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
 
-  const handleCreateZoomMeetingEdit = async (courseName, day, fromTime) => {
+
+  const handleCreateZoomMeetingEdit = async (courseName, day, fromTime, toTime) => {
     try {
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
-
       // Combine the date and time
       const localDateTime = `${formattedDate} ${fromTime}`;
+      const localToDateTime = `${formattedDate} ${toTime}`;
 
       // Parse the local time
       const parsedDateTime = moment.tz(localDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
+      const parsedToDateTime = moment.tz(localToDateTime, 'YYYY-MM-DD hh:mm A', 'Asia/Beirut');
 
       // Convert the local time to UTC
       const utcDateTime = parsedDateTime.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+
+      // Calculate duration in minutes
+      const durationInMinutes = parsedToDateTime.diff(parsedDateTime, 'minutes');
 
       const payload = {
         classId: `${courseName}`,
@@ -252,8 +261,8 @@ export const Calender = ({ schedule, setSchedule }) => {
         accessToken: access_token,
         userId: zoomUserId,
         createAt: utcDateTime,
+        duration: durationInMinutes, // Add duration to the payload
       };
-
       const response = await axios.post('/api/zoom_api/createZoom', payload);
 
       return { zoom_id: response.data.data.id, zoom_url: response.data.data.join_url };
@@ -763,7 +772,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
           if (ev.is_online === true) {
             if (data.success) {
-              const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from)
+              const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from ,ev.to)
               await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
               setStudent([]);
               getData();
@@ -1181,7 +1190,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
         // The rest of your code remains unchanged
         let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
-        const response = await handleCreateZoomMeeting(courseName, theDate, fromTime)
+        const response = await handleCreateZoomMeeting(courseName, theDate, fromTime , toTime)
 
 
         await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
@@ -1519,7 +1528,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
-          const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime)
+          const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime , toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
@@ -2146,8 +2155,8 @@ const AddSchedule = ({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="relative w-auto my-6 mx-auto max-w-3xl">
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none rounded">
+        <div className="relative w-full max-w-2xl my-6 mx-auto bg-white rounded">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*header*/}
@@ -2162,120 +2171,103 @@ const AddSchedule = ({
               </button>
             </div>
             {/*body*/}
-            <div className="relative p-6 pr-12 h-3/4  flex-auto overflow-y-scroll">
-              <div className="flex  flex-col">
-                <div className="flex flex-row mb-4">
-                  <div className="flex flex-col">
-                    <label className="text-gray-700 items-center">
-                      Class:
-                      {/* Start select box */}
-                      <CustomSelectBox
-                        options={classNames}
-                        placeholder="Select Class"
-                        onSelect={handleClass}
-                        styled={
-                          'font-medium h-auto justify-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px] '
-                        }
-                        oldvalue={theclass}
-                      />
-                    </label>
-                  </div>
+            <div className="relative p-6 pr-12 flex-auto overflow-y-scroll">
+              <div className="flex flex-col md:flex-row mb-4">
+                <div className="flex flex-col">
+                  <label className="text-gray-700 items-center">
+                    Class:
+                    {/* Start select box */}
+                    <CustomSelectBox
+                      options={classNames}
+                      placeholder="Select Class"
+                      onSelect={handleClass}
+                      styled="font-medium h-auto justify-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
+                      oldvalue={theclass}
+                    />
+                  </label>
                 </div>
-                <div className="flex flex-row  mb-6">
-                  <div className="flex flex-col">
-                    <label className="text-gray-700 mr-20">
-                      From:
-                      <input
-                        type="time"
-                        value={formatTimeForInput(thefrom)}
-                        onChange={handleFrom}
-                        className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                      />
-                    </label>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label className="text-gray-700">
-                      To:
-                      <input
-                        type="time"
-                        value={formatTimeForInput(theto)}
-                        onChange={handleTo}
-                        className="font-medium h-auto items-center 
-                        border-[1px] border-zinc-300 self-center
-                         w-60 inline-block ml-[8px]"
-                      />
-                    </label>
-                  </div>
+              </div>
+              <div className="flex flex-col md:flex-row mb-6">
+                <div className="flex flex-col">
+                  <label className="text-gray-700 mr-20">
+                    From:
+                    <input
+                      type="time"
+                      value={formatTimeForInput(thefrom)}
+                      onChange={handleFrom}
+                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
+                    />
+                  </label>
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-gray-700 mr-20 ">
-                    type:
-                    <select
-                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                      onChange={(e) => setIsOnline(e.target.value)}
-                      value={isOnline}
-                    // disabled={role == "0" ? true : false}
-                    >
-                      {/* <option value="">Choose Value..</option> */}
-                      <option value="true">Online</option>
-                      <option value="false">Onsite</option>
-                    </select>
+                  <label className="text-gray-700">
+                    To:
+                    <input
+                      type="time"
+                      value={formatTimeForInput(theto)}
+                      onChange={handleTo}
+                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-60"
+                    />
                   </label>
-
                 </div>
-
-                {isOnline === false || isOnline === 'false' ?
-                  <>
-                    <div className="flex flex-row  mb-4">
-                      <div className="flex flex-col">
-                        <label className="text-gray-700 mr-20 ">
-                          Building :
-                          {
-                            <CustomSelectBox
-                              options={allStages}
-                              placeholder="Select Location"
-                              onSelect={handleStages}
-                              styled={
-                                'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                              }
-                              enable={false}
-                              oldvalue={theroombuilding}
-                            />
-                          }
-                        </label>
-                      </div>
-
-                      <div className="flex flex-col">
-                        {(theroombuilding?.length > 0 ||
-                          (building.length > 0 && allrooms.length > 0)) && (
-                            <label className="text-gray-700 mr-20 ">
-                              Location :
-                              {
-                                <CustomSelectBox
-                                  options={
-                                    remainingRooms.length > 0
-                                      ? remainingRooms
-                                      : allroomsRef.current
-                                  }
-                                  placeholder="Select Location"
-                                  onSelect={handlePlace}
-                                  styled={
-                                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                                  }
-                                  enable={false}
-                                  oldvalue={theroomname}
-                                />
-                              }
-                            </label>
-                          )}
-                      </div>
-                    </div>
-
-                  </>
-                  : <></>}
-
               </div>
+              <div className="flex flex-col md:flex-row mb-6">
+                <label className="text-gray-700 mr-20">
+                  Type:
+                  <select
+                    className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
+                    onChange={(e) => setIsOnline(e.target.value)}
+                    value={isOnline}
+                  >
+                    <option value="true">Online</option>
+                    <option value="false">Onsite</option>
+                  </select>
+                </label>
+              </div>
+              {/* Location selection */}
+              {isOnline === false || isOnline === 'false' ?
+                <>
+                  <div className="flex flex-col md:flex-row mb-6">
+                    <div className="flex flex-col">
+                      <label className="text-gray-700 mr-20">
+                        Building :
+                        {
+                          <CustomSelectBox
+                            options={allStages}
+                            placeholder="Select Location"
+                            onSelect={handleStages}
+                            styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
+                            enable={false}
+                            oldvalue={theroombuilding}
+                          />
+                        }
+                      </label>
+                    </div>
+                    <div className="flex flex-col">
+                      {(theroombuilding?.length > 0 ||
+                        (building.length > 0 && allrooms.length > 0)) && (
+                          <label className="text-gray-700 mr-20">
+                            Location :
+                            {
+                              <CustomSelectBox
+                                options={
+                                  remainingRooms.length > 0
+                                    ? remainingRooms
+                                    : allroomsRef.current
+                                }
+                                placeholder="Select Location"
+                                onSelect={handlePlace}
+                                styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 md:w-50"
+                                enable={false}
+                                oldvalue={theroomname}
+                              />
+                            }
+                          </label>
+                        )}
+                    </div>
+                  </div>
+                </>
+                : <></>}
             </div>
             {/*footer*/}
             <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
@@ -2320,9 +2312,13 @@ const AddSchedule = ({
           </div>
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black rounded"></div>
+
+
     </>
   );
+
+
 };
 
 const AddSchedules = ({

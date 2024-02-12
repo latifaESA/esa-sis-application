@@ -5,7 +5,9 @@ import uploadDocReducer from "../../../components/UploadDocuments/reducers/uploa
 import { BsX } from "react-icons/bs";
 // import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
-import selection_data from "../../../utilities/selection_data";
+
+
+import { NotificatonMessage } from "../../../components/Dashboard/WarningMessage";
 
 import axios from "axios";
 
@@ -18,6 +20,7 @@ export default function Archive({
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [message, setMessage] = useState("");
   const [docUrl, setDocUrl] = useState(false);
+  const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
   // const [updateProfileButtonDisable, setupdateProfileButtonDisable] =
   //   useState(false);
   // const [profileUrl, setProfileUrl] = useState(null);
@@ -28,9 +31,15 @@ export default function Archive({
     fileList: [],
     totalSize: 0,
   });
-  setTimeout(() => {
-    setMessage("");
-  }, selection_data.message_disapear_timing);
+  const handleOpenNotificatonMessages = () => {
+    setConfirmOpenMessage(true);
+  };
+
+  const handleCloseNotificatonMessages = () => {
+    setConfirmOpenMessage(false);
+
+  };
+
   const closeModal = () => {
     setShowProfileModal(false);
   };
@@ -63,7 +72,7 @@ export default function Archive({
       // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
         try {
-       
+
           const date = details[0].attendance_date;
 
           const DateFormat = moment(date).format("DD_MM_YYYY");
@@ -106,22 +115,39 @@ export default function Archive({
   const handleFile = async () => {
     try {
       const url = docUrl;
+      console.log('att', attendance)
       const attendance_id = attendance[0].attendance_id;
       const { data } = await axios.put("/api/pmApi/updateURL", {
         url,
         attendance_id,
       });
-      setMessage(data.message);
+     
+      if (data.success) {
+        setConfirmOpenMessage(true);
+
+        setMessage(data.message);
+      }
+
+
+
     } catch (error) {
-      return error;
+      return error
+
     }
   };
   return (
     <>
+      {confirmOpenMessage && (
+        <NotificatonMessage
+          handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+          handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+          messages={message}
+        />
+      )}
       {!showProfileModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative  w-1/2 overflow-y-auto  my-6 mx-auto max-w-3xl">
+            <div className="relative w-full md:w-1/2 overflow-y-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
@@ -173,9 +199,9 @@ export default function Archive({
                   </div>
                 </div>
                 {/*footer*/}
-                <div className="flex items-center p-6  rounded-b">
+                <div className="flex  justify-center items-center p-6  rounded-b">
                   <button
-                    className="primary-button btnCol text-white  w-screen hover:text-white hover:font-bold "
+                    className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                     type="button"
                     onClick={() => handleFile()}
                   >
@@ -189,7 +215,7 @@ export default function Archive({
         </>
       ) : (
         <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-          <div className="relative w-auto h-auto  overflow-y-auto my-6 mx-auto max-w-3xl">
+          <div className="relative w-full h-full md:w-auto md:h-auto overflow-y-auto my-6 mx-auto max-w-3xl">
             {/*content*/}
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               {/*header*/}
@@ -221,4 +247,5 @@ export default function Archive({
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   );
+
 }

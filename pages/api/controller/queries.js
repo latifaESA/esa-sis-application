@@ -233,7 +233,7 @@ async function createSchedule(
       const day = days[i];
       const query = `
         INSERT INTO tmpschedule (class_id, day, from_time, to_time, room, pm_id , attendance_id ,is_online)
-        VALUES ($1, $2, $3, $4, $5, $6 , $7 , $8)
+        VALUES ($1, $2, $3, $4, $5, $6 , $7 , $8) RETURNING tmpschedule_id
       `;
       res = await connection.query(query, [
         classId,
@@ -245,6 +245,7 @@ async function createSchedule(
         attendanceId,
         isOnline
       ]);
+      
     }
     return res;
   } catch (error) {
@@ -254,22 +255,17 @@ async function createSchedule(
 
 async function updateZoomInfo(connection,tmpscheduleIds, meetingIds, zoomUrls) {
   try {
-    for (let i = 0; i < tmpscheduleIds.length; i++) {
-      const tmpscheduleId = tmpscheduleIds[i];
-      const meetingId = meetingIds;
-      const zoomUrl = zoomUrls;
+
 
       const query = `
         UPDATE tmpschedule
         SET
-          zoom_meeting_id = $1,
-          zoom_url = $2
-        WHERE tmpschedule_id = $3;
+          zoom_meeting_id = '${meetingIds}',
+          zoom_url = '${zoomUrls}'
+        WHERE tmpschedule_id = '${tmpscheduleIds}';
       `;
-      await connection.query(query, [meetingId, zoomUrl, tmpscheduleId]);
-    }
-
-    return { success: true, message: 'Update successful' };
+      const res = await connection.query(query)
+      return res
   } catch (error) {
     return { success: false, message: `Error updating: ${error.message}` };
   }
@@ -332,7 +328,7 @@ async function createScheduleOnline(
 async function filterCourseMajor(connection, course_id, major_name) {
   try {
     let query = `
-    SELECT c.course_id, c.course_name, c.course_credit, m.major_name
+    SELECT c.course_id, c.course_name, c.course_credit, m.major_name , c.course_type
     FROM courses c
     LEFT JOIN major m ON c.major_id = m.major_id
     WHERE 
@@ -2988,13 +2984,14 @@ async function updateGradesExED(
     return error;
   }
 }
-async function searchEmailStudent(connection, major_id) {
+async function searchEmailStudent(connection, major_id , promotion_name) {
   try {
     const query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
 
-     WHERE student.major_id ='${major_id}' AND student.status = 'active'`;
+     WHERE student.major_id ='${major_id}' AND student.promotion ='${promotion_name}' AND student.status = 'active'`;
+     console.log('student' , query)
     const res = await connection.query(query);
     return res;
 
@@ -3457,7 +3454,6 @@ async function updateScheduleSharepointID (connection , sharepointId , attendanc
 
 async function createBooking (connection , bookingId , room , space ,bookingBy ,date , fromTime , toTime){
   try {
-   
     const query = `INSERT INTO booking (booking_id , rooms , space ,bookingby ,date_booking , from_time , to_time) VALUES (${bookingId} , '${room}' , '${space}' ,'${bookingBy}' ,'${date}' , '${fromTime}' , '${toTime}')`
    
     const res = await connection.query(query)
@@ -3647,6 +3643,7 @@ async function updateEmailForEditProfilePM(connection, email, status ,mobile_num
 /* End Postegresql */
 
 module.exports = {
+
   updateEmailForEditProfilePM,
   getMajorFromAS,
   AddStudentAlumni,

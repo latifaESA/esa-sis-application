@@ -2,7 +2,7 @@ import axios from 'axios';
 
 async function handler(req, res) {
   try {
-    const { classId, date, accessToken, userId , createAt} = req.body;
+    const { classId, date, accessToken, userId , createAt ,Duration} = req.body;
 
     // Define additional headers
     const headers = {
@@ -21,6 +21,7 @@ async function handler(req, res) {
         auto_recording: "cloud",
         mute_upon_entry: true,
         waiting_room: true,
+        duration:Duration,
         registrants_email_notification: true,
       },
     };

@@ -470,12 +470,13 @@ const handleCloseNotificatonMessages = () => {
                     console.log('the payload : ', payload)
               
                     const response = await axios.post('/api/zoom_api/createZoom', payload);
-              console.log('the response: ', response.data.data)
+              console.log('the response: ',  data)
                       let payload1 = {
                         tmpscheduleIds : data.scheduleId,
                         meetingIds : response.data.data.id,
                         zoomUrls : response.data.data.join_url
                       }
+                      console.log('payload1' , payload1)
                       let result = await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
 
                     if (schedulesCreated === totalSchedules && result.status === 201) {
@@ -668,10 +669,7 @@ const handleShowAll = async (tmpclass_id) => {
         for (const booking of data.d.results) {
           // Format the date to 'YYYY-MM-DDT00:00:00Z'
          
-          
           const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-        
-  
           // Make the API call
           await axios.post('/api/pmApi/createBooking', {
             bookingId: booking.ID,
