@@ -2,7 +2,7 @@ import axios from 'axios';
 
 async function handler(req, res) {
   try {
-    const { classId, date, accessToken, userId , createAt ,Duration} = req.body;
+    const { classId, date, accessToken, userId , createAt ,Duration, minDuration} = req.body;
 
     // Define additional headers
     const headers = {
@@ -16,6 +16,7 @@ async function handler(req, res) {
       type: 2,
       start_time: date,
       created_at:createAt,
+      duration:minDuration,
       settings: {
         join_before_host: true,
         auto_recording: "cloud",
