@@ -201,28 +201,8 @@ export default function Students() {
                   }}
                 ></input>
               </label>
-              {isExeMajor ? <>
-                <div className="flex flex-col min-[850px]:flex-row gap-4">
-                <button
-                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={createExcelTemplateTeacher}
-                >
-                  Teacher Template
-                </button>
-                <button
-                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={handleUpload}
-                >
-                  Upload
-                </button>
-              </div>
-              </>:<>
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
-                </div>
-              </>}
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
+
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button
                   className="primary-button w-60"
                   type="submit"
@@ -238,6 +218,25 @@ export default function Students() {
                   Show All
                 </button>
               </div>
+              {isExeMajor ? <>
+                <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
+                <button
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={createExcelTemplateTeacher}
+                >
+                  Teacher Template
+                </button>
+                <button
+                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </button>
+              </div>
+              </>:
+              <></>}
 
             </div>
             <TeachersList users={users} setUsers={setUsers} />
