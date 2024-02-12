@@ -14,7 +14,7 @@ export default function AddClass({
   handleTeacher,
   handleCancel,
   handleSave,
-  error,
+  // error,
   errorCourse,
   errorTeacher,
   errorStart,

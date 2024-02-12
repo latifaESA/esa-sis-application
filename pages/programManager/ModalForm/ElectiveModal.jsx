@@ -24,8 +24,8 @@ export default function ElectiveModal({
   const [course, setCourse] = useState([]);
   const [selectStudentId, setSelectedStudentIds] = useState([]);
   // const [message , setMassage] = useState('')
-  const [showModal, setShowModal] = useState(false);
-  const [data, setData] = useState([]);
+  // const [showModal, setShowModal] = useState(false);
+  // const [data, setData] = useState([]);
   const [promotion, setPromotion] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [disable, setDisable] = useState(false);
@@ -145,9 +145,9 @@ export default function ElectiveModal({
           )?.student_lastname,
         };
 
-        setData(data);
+        // setData(data);
         // setMassage(data.message)
-        setShowModal(true);
+  
         setConfirmOpenMessage(true);
 
         setMessage(data.message);
