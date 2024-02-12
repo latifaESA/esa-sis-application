@@ -15,12 +15,12 @@ import {
   AcademicCapIcon,
   WalletIcon,
   PaperAirplaneIcon,
+  EnvelopeIcon,
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import { useSession } from 'next-auth/react';
-
 
 // // >>>>>>> main
 const ProgramManagerView = () => {
@@ -284,21 +284,21 @@ const ProgramManagerView = () => {
 
             {isExeMajor ?
 
-              <Link href="/programManager/Send">
+              <Link href="/programManager/send">
                 {/* <Link href='/admin/Settings/Settings'> */}
                 <div
                   className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                     // router.pathname == '/admin/Settings/Settings' ||
                     // router.pathname == '/admin/Settings/General' ||
                     // router.pathname == '/admin/Settings/DropDownList'
-                    router.pathname == '/programManager/Send'
+                    router.pathname == '/programManager/send'
 
                       ? 'bg-blue-100 text-blue-500'
                       : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                     }`}
                 >
                   <div className="mr-2">
-                    <PaperAirplaneIcon className="h-5 w-5" />
+                    <EnvelopeIcon className="h-5 w-5" />
                   </div>
                   <div>
                     <p>Send</p>
@@ -598,20 +598,20 @@ const ProgramManagerView = () => {
 
             {isExeMajor ?
 
-              <Link href="/programManager/Send">
+              <Link href="/programManager/send">
                 {/* <Link href='/admin/Settings/Settings'> */}
                 <div
                   className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
                     // router.pathname == '/admin/Settings/Settings' ||
                     // router.pathname == '/admin/Settings/General' ||
                     // router.pathname == '/admin/Settings/DropDownList'
-                    router.pathname == '/programManager/Send'
+                    router.pathname == '/programManager/send'
                       ? 'bg-blue-100 text-blue-500'
                       : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                     }`}
                 >
                   <div className="mr-2">
-                    <PaperAirplaneIcon className="h-5 w-5" />
+                    <EnvelopeIcon className="h-5 w-5" />
                   </div>
                   <div>
                     <p>Send</p>
