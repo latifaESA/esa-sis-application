@@ -234,7 +234,7 @@ export default function ReportById({
           
           
 
-          <div className="flex flex-col min-[850px]:flex-row gap-4">
+          <div className="flex flex-col min-[850px]:flex-row gap-4 h-10">
             <button
               className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
               type="button"

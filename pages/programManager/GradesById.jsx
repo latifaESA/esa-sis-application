@@ -648,29 +648,7 @@ export default function GradesById() {
 
                                 : <></>}
 
-                            <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-                                Rank:
-                                <select
-                                    className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
-                                    value={Rank}
-                                    onChange={(e) => setRank(e.target.value)}
-                                >
-                                    <option value="">Rank</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.rank}>
-                                                {item.rank}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO Rank</option>
-                                    )}
-                                </select>
-                            </label>
-
-
-
-                            <div className="flex flex-col min-[850px]:flex-row gap-4">
+                            <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                                 <button
                                     className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                                     type="button"
@@ -699,7 +677,7 @@ export default function GradesById() {
                                 </button>
 
                             </div>
-                            <div className="flex flex-col min-[850px]:flex-row gap-4">
+                            <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
 
                                 <button
                                     className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"

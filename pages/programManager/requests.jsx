@@ -264,29 +264,6 @@ export default function Requests() {
 
                 </>}
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                From:
-                <input
-                  className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
-                  type="date"
-                  name="from"
-                // value={formData.from}
-                // onChange={handleChange}
-                ></input>
-              </label>
-
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                // value={formData.to}
-                // onChange={handleChange}
-                ></input>
-              </label>
-              {/* </div>
-        <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3 pb-4  border-blue-300 border-b-2"> */}
               {session.user?.hasMultiMajor === 'true' ?
                   <label>
                   Status:
@@ -330,7 +307,7 @@ export default function Requests() {
                 </select>
               </label>
 
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"

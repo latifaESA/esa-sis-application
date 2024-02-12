@@ -589,18 +589,7 @@ export default function Class() {
             }
           </label> */}
 
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
-              </label>
-
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button
                   className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                   type="submit"
@@ -616,47 +605,8 @@ export default function Class() {
                   Show All
                 </button>
               </div>
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                Course:
-                {/* <input
-                  type="text"
-                  placeholder="type course id"
-                  className=" invisible max-[850px]:visible max-[850px]:hidden "
-                  onChange={(e) => setSearchCourse(e.target.value)}
-                /> */}
-                {/* {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Course"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            } */}
-              </label>
 
-              {/* <label className='w-[350px]'>
-            Promotion:
-            {
-              <CustomSelectBox
-              options={promotion}
-              placeholder="Select Promotion"
-              onSelect={handlePromotion}
-              styled={"font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-40 inline-block ml-[8px]"}
-              />
-            }
-          </label> */}
-
-              <label className="invisible max-[850px]:visible max-[850px]:hidden">
-                To:
-                <input
-                  className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
-                  type="date"
-                  name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
-                ></input>
-              </label>
-              <div className="flex flex-col  min-[850px]:flex-row gap-4">
+              <div className="flex flex-col  min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 max-[850px]:mb-16">
                 <button
                   className="py-1 px-2 primary-button hover:text-white w-60 bg-green-600  hover:font-bold"
                   type="button"
