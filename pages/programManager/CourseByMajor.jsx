@@ -295,7 +295,7 @@ export default function CourseByMajor() {
 
 
                 : <></>}
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
@@ -312,7 +312,7 @@ export default function CourseByMajor() {
                 </button>
               </div>
               {isExeMajor ? <>
-                <div className="flex flex-col min-[850px]:flex-row gap-4">
+                <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
