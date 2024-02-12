@@ -14,13 +14,13 @@ export default function DownloadCourseStudent() {
   const [Data, setData] = useState([]);
   const [DataCourseType, setDataCourseType] = useState([]);
   const [majors, setMajors] = useState([]);
-  const [courseType, setCourseType] = useState([]);
+  // const [courseType, setCourseType] = useState([]);
   const [isSelected, setSelected] = useState(false);
   const router = useRouter();
 
-  const headerCourse = [
-    ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
-  ];
+  // const headerCourse = [
+  //   ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
+  // ];
 
   const headerStudent = [
     [
@@ -85,11 +85,11 @@ export default function DownloadCourseStudent() {
     setSelected(true);
   };
 
-  const handleCourseType = (selectedOption) => {
-    const selectedName = selectedOption.label;
-    setCourseType([selectedName]);
-    setSelected(true);
-  };
+  // const handleCourseType = (selectedOption) => {
+  //   const selectedName = selectedOption.label;
+  //   setCourseType([selectedName]);
+  //   setSelected(true);
+  // };
   
   const createExcelTemplateCourse = async () => {
     if (!Array.isArray(DataCourseType) || DataCourseType.length === 0) {
@@ -101,13 +101,13 @@ export default function DownloadCourseStudent() {
     const sheet = workbook.addWorksheet('Course');
 
     // Add header row
-    const headerRow = sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+   sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
 
     // Define the list of valid CourseType options
     const courseTypeOptions = DataCourseType.map(course => course.course_type);
 
     // Add data row with selected major
-    const dataRow = sheet.addRow(['', '', '', '', majors[0]]);
+   sheet.addRow(['', '', '', '', majors[0]]);
 
     // Set default column widths
     sheet.columns.forEach((column, index) => {

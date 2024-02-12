@@ -18,10 +18,10 @@ export default function Students() {
   const [users, setUsers] = useState([]);
   const router = useRouter();
   // const [major, setMajor] = useState([]);
-  const [allMajor, setallMajor] = useState([]);
+  // const [allMajor, setallMajor] = useState([]);
   const [status, setStatus] = useState([]);
   const [promotion, setPromotion] = useState([]);
-  const [test, setTest] = useState(false);
+  // const [test, setTest] = useState(false);
 
   const [idValue, setIdValue] = useState('');
   const [firstnameValue, setFirstnameValue] = useState('');
@@ -244,31 +244,31 @@ export default function Students() {
    
     setUsers(data.rows);
     // setMajorValue('');
-    setTest(true);
+    // setTest(true);
     setIdValue('');
-    setallMajor([]);
+    // setallMajor([]);
     setFirstnameValue('');
     setLastnameValue('');
     setStatusValue('');
     setPromotionValue('');
   };
 
-  const handleMajor = (selectedValue) => {
-    // Do something with the selected value
+  // const handleMajor = (selectedValue) => {
+  //   // Do something with the selected value
     
-    if (test) {
-      selectedValue == '';
-    }
-    if (selectedValue.trim() !== '') {
-     allMajor.filter(
-        (major) => major.major_name === selectedValue
-      );
+  //   if (test) {
+  //     selectedValue == '';
+  //   }
+  //   if (selectedValue.trim() !== '') {
+  //    allMajor.filter(
+  //       (major) => major.major_name === selectedValue
+  //     );
     
-      // setMajorValue(majorID[0].major_id);
-    } else {
-      // setMajorValue('');
-    }
-  };
+  //     // setMajorValue(majorID[0].major_id);
+  //   } else {
+  //     // setMajorValue('');
+  //   }
+  // };
   const handleStatus = (selectedValue) => {
     // Do something with the selected value
    
