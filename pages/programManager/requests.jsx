@@ -249,12 +249,12 @@ export default function Requests() {
 
 
                 : <>
-                  <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                  <label className=''>
                     Status:
                     <select
                       onChange={(e) => setStatus(e.target.value)}
                       //   value={majorValue}
-                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0 invisible max-[850px]:visible max-[850px]:hidden"
+                      className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0 "
                     >
                       <option value="">Choose a Status</option>
                       <option value="pending">pending</option>
@@ -265,7 +265,7 @@ export default function Requests() {
                 </>}
 
               {session.user?.hasMultiMajor === 'true' ?
-                  <label>
+                <label>
                   Status:
                   <select
                     onChange={(e) => setStatus(e.target.value)}
@@ -279,7 +279,68 @@ export default function Requests() {
                 </label>
 
                 : <>
-                  <label>
+
+                  <label className=''>
+                    Type:
+                    <select
+                      onChange={(e) => setType(e.target.value)}
+                      //   value={majorValue}
+                      className="ml-8 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1"
+                    >
+                      <option value="">Choose a type</option>
+                      <option value="transcript">transcript</option>
+                      <option value="visa">visa</option>
+                    </select>
+                  </label>
+
+                </>}
+
+              {session.user?.hasMultiMajor === 'true' ?
+                 <label>
+                 Type:
+                 <select
+                   onChange={(e) => setType(e.target.value)}
+                   //   value={majorValue}
+                   className="ml-3 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1"
+                 >
+                   <option value="">Choose a type</option>
+                   <option value="transcript">transcript</option>
+                   <option value="visa">visa</option>
+                 </select>
+               </label>
+
+                : <>
+
+                  <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                    Type:
+                    <select
+                      onChange={(e) => setType(e.target.value)}
+                      //   value={majorValue}
+                      className="ml-8 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1 invisible max-[850px]:visible max-[850px]:hidden"
+                    >
+                      <option value="">Choose a type</option>
+                      <option value="transcript">transcript</option>
+                      <option value="visa">visa</option>
+                    </select>
+                  </label>
+
+                </>}
+              {session.user?.hasMultiMajor === 'true' ?
+                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                  Type:
+                  <select
+                    onChange={(e) => setType(e.target.value)}
+                    //   value={majorValue}
+                    className="ml-8 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1 invisible max-[850px]:visible max-[850px]:hidden"
+                  >
+                    <option value="">Choose a type</option>
+                    <option value="transcript">transcript</option>
+                    <option value="visa">visa</option>
+                  </select>
+                </label>
+
+                : <>
+                  <label className='invisible max-[850px]:visible max-[850px]:hidden'>
                     Status:
                     <select
                       onChange={(e) => setStatus(e.target.value)}
@@ -292,22 +353,10 @@ export default function Requests() {
                     </select>
                   </label>
 
+
                 </>}
 
-              <label>
-                Type:
-                <select
-                  onChange={(e) => setType(e.target.value)}
-                  //   value={majorValue}
-                  className="ml-8 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-1"
-                >
-                  <option value="">Choose a type</option>
-                  <option value="transcript">transcript</option>
-                  <option value="visa">visa</option>
-                </select>
-              </label>
-
-              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16 mt-3">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"

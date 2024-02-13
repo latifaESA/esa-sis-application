@@ -393,7 +393,7 @@ export default function GradesById() {
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Grades</p>
                     <form>
-                    {clickDownload && <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
+                        {clickDownload && <DownloadGradeMultiMajor setClickDownload={setClickDownload} majorId={majorId} majors={majors} />}
                         {clickUpload && <UploadGradesByMajor setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
                             showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} majorId={majorId} majors={majors} />}
 
@@ -496,7 +496,7 @@ export default function GradesById() {
                                     placeholder="Grade"
                                     className="ml-9 w-40 max-[850px]:ml-9" />
                             </label>
-                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || majorId === 2? <>
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || majorId === 2 ? <>
                                 <label>
                                     Grade/30:
                                     <input

@@ -22,7 +22,7 @@ export default function Courses() {
   const [courseType, setcourseType] = useState('');
   const router = useRouter();
   const [type, setType] = useState([]);
-  const [openUpload , setOpenUpload] = useState(false)
+  const [openUpload, setOpenUpload] = useState(false)
 
   const headerCourse = [
     ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
@@ -32,19 +32,19 @@ export default function Courses() {
     router.push('/AccessDenied');
   };
 
-  const handleUpload = ()=>{
+  const handleUpload = () => {
     setOpenUpload(true)
   }
   const getAllType = async () => {
     let table = 'course_type';
     let typeCourse = await axios.post('/api/pmApi/getAll', { table });
-  
+
     setType(typeCourse.data.rows);
   };
   const handleCourses = async () => {
     // console.log(courseid, courseName, courseCredit, majorid)
     try {
-      
+
       let sendData = {
         course_id: courseid.trim(),
         course_name: courseName,
@@ -56,8 +56,8 @@ export default function Courses() {
       // console.log(JSON.stringify(sendData))
       // id,firstname,lastname,major,promotion,status
       let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
-  
-     
+
+
       setUsers(data.data);
     } catch (error) {
       setUsers([])
@@ -79,7 +79,7 @@ export default function Courses() {
       major_id: session.user.majorid,
       course_type: '',
     };
-  
+
     // id,firstname,lastname,major,promotion,status
     let { data } = await axios.post('/api/pmApi/filterCourse', sendData);
 
@@ -91,65 +91,65 @@ export default function Courses() {
     setcourseType('');
   };
 
-      // Function to extract the first word before a hyphen "-"
-      const getFirstWordBeforeHyphen = (text) => {
-        if (text) {
-          const words = text.split("-");
-          if (words.length > 0) {
-            return words[0];
-          }
-        }
-        return "";
-      };
-      const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
-    
-      const isExeMajor = firstMajorWord === "EXED";
-      const calculateColumnWidths = (data) => {
-        const columnWidths = data[0].map((col, colIndex) => {
-          const maxContentWidth = data.reduce((max, row) => {
-            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-            const contentWidth = cellContent.length;
-            return Math.max(max, contentWidth);
-          }, col.length);
-          
-          return { wch: maxContentWidth };
-        });
-    
-        return columnWidths;
-      };
-      const createExcelTemplateCourse = () => {
-        const majors = session.user?.majorName
-        const data = headerCourse.concat([
-          ['', '', '', '', majors], // MajorName data
-        ])
-      
-        const columnWidths = calculateColumnWidths(data);
-        const worksheet = XLSX.utils.aoa_to_sheet(data);
-        worksheet['!cols'] = columnWidths;
-      
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Course');
-      
-        const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-        const excelBlob = new Blob([excelBuffer], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-        saveAs(excelBlob, 'course.xlsx');
-      };
-      
-    
-   
+  // Function to extract the first word before a hyphen "-"
+  const getFirstWordBeforeHyphen = (text) => {
+    if (text) {
+      const words = text.split("-");
+      if (words.length > 0) {
+        return words[0];
+      }
+    }
+    return "";
+  };
+  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
+
+  const isExeMajor = firstMajorWord === "EXED";
+  const calculateColumnWidths = (data) => {
+    const columnWidths = data[0].map((col, colIndex) => {
+      const maxContentWidth = data.reduce((max, row) => {
+        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+        const contentWidth = cellContent.length;
+        return Math.max(max, contentWidth);
+      }, col.length);
+
+      return { wch: maxContentWidth };
+    });
+
+    return columnWidths;
+  };
+  const createExcelTemplateCourse = () => {
+    const majors = session.user?.majorName
+    const data = headerCourse.concat([
+      ['', '', '', '', majors], // MajorName data
+    ])
+
+    const columnWidths = calculateColumnWidths(data);
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    worksheet['!cols'] = columnWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Course');
+
+    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+    const excelBlob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(excelBlob, 'course.xlsx');
+  };
+
+
+
 
   return (
     <>
       <Head>
         <title>SIS Admin - Courses</title>
       </Head>
-      
+
       {session?.user.role === '2' || session?.user.role === '3' ? (
         <>
-             {openUpload ? <UploadCourses setOpenUpload={setOpenUpload} />:<></>}
-    
+          {openUpload ? <UploadCourses setOpenUpload={setOpenUpload} /> : <></>}
+
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Courses</p>
           <form>
             <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
@@ -195,7 +195,7 @@ export default function Courses() {
                 ></input>
               </label>
 
-              <label className="">
+              <label className="ml-10">
                 Type:
                 <select
                   className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
@@ -213,8 +213,9 @@ export default function Courses() {
                     ))}
                 </select>
               </label>
+              
 
-              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16 mt-3">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
@@ -223,8 +224,8 @@ export default function Courses() {
                   Search
                 </button>
                 <button
-                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                  type="reset"
+                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                  type="button"
                   onClick={handleShowAll}
                 >
                   Show All
@@ -232,22 +233,22 @@ export default function Courses() {
               </div>
               {isExeMajor ? <>
                 <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
-                <button
-                  className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={createExcelTemplateCourse}
-                >
-                  Course Template
-                </button>
-                <button
-                  className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
-                  type="button"
-                  onClick={handleUpload}
-                >
-                  Upload
-                </button>
-              </div>
-              </>:<></>}
+                  <button
+                    className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={createExcelTemplateCourse}
+                  >
+                    Course Template
+                  </button>
+                  <button
+                    className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                    type="button"
+                    onClick={handleUpload}
+                  >
+                    Upload
+                  </button>
+                </div>
+              </> : <></>}
             </div>
             <CourseList users={users} setUsers={setUsers} />
           </form>

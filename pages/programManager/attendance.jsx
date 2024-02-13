@@ -219,7 +219,7 @@ export default function Attendance() {
               <label className="">
                 Course ID:
                 <input
-                  className="ml-1 w-40 max-[850px]:ml-1"
+                  className="ml-1 w-40 max-[850px]:ml-1 mt-3"
                   type="text"
                   name="Lname"
                   placeholder="Course ID"
@@ -234,7 +234,7 @@ export default function Attendance() {
               <label className='invisible max-[850px]:visible max-[850px]:hidden'>
                 Course ID:
                 <input
-                  className="ml-3 w-40 max-[850px]:ml-2"
+                  className="ml-3 w-40 max-[850px]:ml-2 invisible max-[850px]:visible max-[850px]:hidden"
                   type="number"
                   name="course-id"
                   placeholder="Enter Course ID"
@@ -244,7 +244,7 @@ export default function Attendance() {
                   }}
                 ></input>
               </label>
-              <div className="flex flex-col min-[850px]:flex-row gap-4">
+              <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16 mt-3">
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
