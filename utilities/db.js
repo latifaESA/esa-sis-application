@@ -37,7 +37,12 @@ async function connect() {
 }
 
 async function disconnect(client) {
+  console.log('the client ending : ',client._ending)
   try {
+    if (!client || client._ending) {
+      console.log('No active connection to release');
+      return;
+    }
     await client.release();
     console.log('Connection to database pool released');
   } catch (err) {
