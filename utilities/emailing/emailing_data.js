@@ -22,9 +22,9 @@ const emailing_data = {
     itServiceDeskEmail: 'itservicedesk@esa.edu.lb',
     fromEmail: 'noreply@esa.edu.lb',
   
-    admissionsDepartmentEmail: 'kanso.a@esa.edu.lb',
-    ccEmail: 'kanso.a@esa.edu.lb',
-    bccEmail: ' bcc@esa.edu.lb',
+    admissionsDepartmentEmail: '',
+    ccEmail: '',
+    bccEmail: '',
   
     // TODO: Change Email to below  in production phase
     // admissionsDepartmentEmail: 'admissions@esa.edu.lb',

@@ -116,33 +116,47 @@ async function handler(req, res) {
     }
     const { fields } = await readFile(req, true, directory);
 
+    // Initialize a set to store unique emails
+    const emailSet = new Set();
+
+
     for (const fieldKey in fields) {
       let countSaved = 0; // Add a variable to track the number of records saved
       const connection = await connect();
-    
+
       // Access the field value using the key from the fields object
       const field = fields[fieldKey];
-    
+      // Check for duplicate email
+      if (emailSet.has(field.Email)) {
+        return res.status(200).json({
+          success: true,
+          code: 200,
+          message: `Duplicate email found: ${field.Email}`,
+        });
+      }
+
+      // Add the email to the set
+      emailSet.add(field.Email);
       // Check if the necessary fields exist in the field object
-    
+
       const major = await getMajor(connection, field.MajorName);
-      
+
       const majorid = major.rows[0].major_id;
       const exist = await StudentExist(connection, field.Email, majorid);
-   
+     
+
       if (exist) {
         return res.status(200).json({
           success: true,
           code: 200,
-          message: `Student Already Exist! ${
-            countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`
-          }`,
+          message: `Student Already Exist! ${countSaved === 0 ? 'No Students Saved' : `${countSaved} Students Saved`
+            }`,
         });
       }
-    
+
       const promotion_name = field.Promotion.replace(/\s+/g, '').toUpperCase();
       const promotion_exist = await PromotionExist(connection, promotion_name);
-    
+
       if (!promotion_exist) {
         return res.status(400).json({
           code: 400,
@@ -150,9 +164,9 @@ async function handler(req, res) {
           message: `Promotion ${promotion_name} not Found`,
         });
       }
-    
+
       const major_exist = await PromotionMajorExist(connection, promotion_name, majorid);
-    
+
       if (!major_exist) {
         return res.status(400).json({
           success: false,
@@ -160,10 +174,10 @@ async function handler(req, res) {
           message: `Promotion ${promotion_name} not in major ${field.MajorName}`,
         });
       }
-    
-      
+
+
     }
-    
+
     let student_file = await fs.readdirSync(directory);
 
     // Access the file path from the 'files' object
@@ -260,13 +274,13 @@ async function handler(req, res) {
             code: 400,
             message: `No data was uploaded due to missing required information.`
           })
-          }
+        }
 
         const settings = await DataSettings(connection, 'settings')
 
         const esa_logo = settings[0].esa_logo
-    
-       
+
+
 
         const StudentArray = Object.values({ field });
 
