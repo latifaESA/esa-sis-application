@@ -258,7 +258,7 @@ export default function ClassByMajor() {
 
     // console.log(selectedDate);
     if (dateTo.length > 0 && selectedDate > dateTo) {
-      alert('The date from is greater than date to');
+      alert('The start date is greater than end date');
     } else if (dateTo.length > 0 && selectedDate === dateTo) {
       alert('The date from and to are equal');
     } else {
@@ -272,7 +272,7 @@ export default function ClassByMajor() {
 
     // console.log(selectedDate);
     if (dateFrom.length > 0 && selectedDate < dateFrom) {
-      alert('The date to is less than date to');
+      alert('The end date is less than start date');
     } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
       alert('The date from and to are equal');
     } else {
