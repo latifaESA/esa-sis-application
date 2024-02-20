@@ -158,18 +158,42 @@ export default function Class() {
     try {
       if (courseValue.length === 0) {
         setErrorCourse('Select At least one Course');
+        return;
       }
       if (teacherValue.length === 0) {
         setErrorTeacher('Select At least one Teacher');
+        return;
       }
       if (promotionValueClass.length === 0) {
         setErrorPromotion('Select At least one Promotion ');
+        return;
       }
       if (dateFrom === '') {
         setErrorStart('Please Fill The Start Date');
+        return;
       }
       if (dateTo === '') {
         setErrorEnd('Please Fill The End Date');
+        return;
+      }
+      // dateFrom
+      if (dateTo.length > 0 && dateFrom > dateTo) {
+        setErrorStart('The start date is greater than end date');
+        return;
+        // alert('The start date is greater than end date');
+      } else if (dateTo.length > 0 && dateFrom === dateTo) {
+        // alert('The date from and to are equal');
+        setErrorStart('The date from and to are equal');
+        return;
+      }
+      if (dateFrom.length > 0 && dateTo < dateFrom) {
+        // alert('The end date is less than start date');
+        setErrorEnd('The end date is less than start date');
+        return;
+      } else if (dateFrom.length > 0 && dateTo === dateFrom) {
+        // alert('The date from and to are equal');
+        setErrorEnd('The date from and to are equal');
+        return;
       }
       const payload = {
         major_id: session.user.majorid,
@@ -206,6 +230,11 @@ export default function Class() {
       } else {
         alert('Error creating class');
       }
+      setErrorCourse('');
+      setErrorTeacher('');
+      setErrorPromotion('');
+      setErrorStart('');
+      setErrorEnd('');
 
       // setOpen(false)
     } catch (err) {
@@ -256,28 +285,32 @@ export default function Class() {
   const handleDateFromChange = (event) => {
     const selectedDate = event.target.value;
 
-    // console.log(selectedDate);
-    if (dateTo.length > 0 && selectedDate > dateTo) {
-      alert('The date from is greater than date to');
-    } else if (dateTo.length > 0 && selectedDate === dateTo) {
-      alert('The date from and to are equal');
-    } else {
+    // // console.log(selectedDate);
+    // if (dateTo.length > 0 && selectedDate > dateTo) {
+    //   setErrorStart('The start date is greater than end date');
+    //   // alert('The start date is greater than end date');
+    // } else if (dateTo.length > 0 && selectedDate === dateTo) {
+    //   // alert('The date from and to are equal');
+    //   setErrorStart('The date from and to are equal');
+    // } else {
       // console.log(new Date(selectedDate))
       setDateFrom(selectedDate);
-    }
+    // }
   };
 
   const handleDateToChange = (event) => {
     const selectedDate = event.target.value;
-
-    // console.log(selectedDate);
-    if (dateFrom.length > 0 && selectedDate < dateFrom) {
-      alert('The date to is less than date to');
-    } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
-      alert('The date from and to are equal');
-    } else {
+// console.log(selectedDate)
+//     // console.log(selectedDate);
+//     if (dateFrom.length > 0 && selectedDate < dateFrom) {
+//       // alert('The end date is less than start date');
+//       setErrorEnd('The end date is less than start date');
+//     } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
+//       // alert('The date from and to are equal');
+//       setErrorEnd('The date from and to are equal');
+//     } else {
       setDateTo(selectedDate);
-    }
+    // }
   };
 
   const fetchClass = async () => {
