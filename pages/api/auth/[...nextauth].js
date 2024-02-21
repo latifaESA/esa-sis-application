@@ -59,7 +59,11 @@ export const authOptions = {
   /* A callback function that is called by the `next-auth` module. */
   callbacks: {
     /* A function that is called by the `next-auth` module. */
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if(trigger === "update"){
+        token.name = session.user.name;
+        return token
+      }
       if (user?.name) token.name = user.name;
       if (user?.email) token.email = user.email;
       if (user?.role) token.role = user.role;

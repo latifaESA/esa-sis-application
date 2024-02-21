@@ -21,7 +21,7 @@ export default function ProfileScreen() {
   // // console.log("-----------profileRole")
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [profileUrl, setProfileUrl] = useState(null);
   const [email, setEmail] = useState("");
   const [initialEmail, setInitialEmail] = useState("");
@@ -150,13 +150,19 @@ export default function ProfileScreen() {
         password,
         profileUrl: userState.user.profileUrl,
       });
-      
+
       // // console.log(response.data)
       // // console.log('response.message=', response.data.message);
       if (response.data.message === "User Profile Updated") {
         dispatch(userNameChanged(fname + " " + lname));
       }
       setMessage("Profile Updated Successfully");
+      await update({
+        ...session,
+        user: {
+          name: `${fname} ${lname}`
+        }
+      })
       if (email != initialEmail) {
         let sendData = {
           email: email.trim(),
@@ -180,6 +186,7 @@ export default function ProfileScreen() {
           setMessage(result.error);
         }
       }
+
     } catch (err) {
       setMessage(getError(err));
       // console.log(err)
@@ -236,7 +243,7 @@ export default function ProfileScreen() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              // disabled="true"
+            // disabled="true"
             />
           </div>
         )}
