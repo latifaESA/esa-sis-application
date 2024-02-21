@@ -652,9 +652,9 @@ const handleShowAll = async (tmpclass_id) => {
   const getRoomBooking = async () => {
     try {
       const accessToken = await getSharePointToken();
-  
+
       const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
-  
+
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -663,29 +663,38 @@ const handleShowAll = async (tmpclass_id) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       const data = await response.json();
-      if (data.d.results.length > 0) {
-        for (const booking of data.d.results) {
-          // Format the date to 'YYYY-MM-DDT00:00:00Z'
-         
-          const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-          // Make the API call
-          await axios.post('/api/pmApi/createBooking', {
-            bookingId: booking.ID,
-            room: booking.Title,
-            space: booking.Space,
-            bookingBy: booking.BookedBy,
-            date: formattedDate,
-            fromTime: booking.FromTime,
-            toTime: booking.ToTime,
-          });
-          // console.log(result);
-        }
-      }
-  
-      return { ok: true, result: data };
-  
+      await axios.post('/api/pmApi/createBooking', {
+        booking:data.d.results
+      })
+      // if (data.d.results.length > 0) {
+      //   const start = new Date().getMilliseconds()
+      //   for (const booking of data.d.results) {
+      //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
+
+
+          // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+
+
+      //     // Make the API call
+      //     await axios.post('/api/pmApi/createBooking', {
+      //       bookingId: booking.ID,
+      //       room: booking.Title,
+      //       space: booking.Space,
+      //       bookingBy: booking.BookedBy,
+      //       date: formattedDate,
+      //       fromTime: booking.FromTime,
+      //       toTime: booking.ToTime,
+      //     });
+      //     // console.log(result);
+      //   }
+      //   const end = new Date().getMilliseconds() - start
+      //   console.log('end', end)
+      // }
+
+      // return { ok: true, result: data };
+
     } catch (error) {
       console.error('Error checking room availability in SharePoint:', error.message);
       // Assuming an error means the room is not available

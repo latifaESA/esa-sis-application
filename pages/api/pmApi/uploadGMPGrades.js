@@ -12,6 +12,7 @@ import xlsx from "xlsx";
 import { authOptions } from "../auth/[...nextauth]";
 import SendEmail from "./emailGrade";
 import { env } from "process";
+import gradeExists from "./exist/ExistGrade";
 
 
 
@@ -92,7 +93,7 @@ async function handler(req, res) {
     }
 
     const { fields } = await readFile(req, true, directory);
-   
+
 
     let grade_file = await fs.readdirSync(directory);
 
@@ -160,6 +161,15 @@ async function handler(req, res) {
         //   })
         // }
 
+        const exist = await gradeExists(connection, row.StudentID, row.CertificateName, row.TaskName)
+
+        if (exist) {
+          return res.status(200).json({
+            success: true,
+            status: 200,
+            message: `${row.FirstName} ${row.FamilyName} Grade Already Exist !`
+          })
+        }
         await uploadGMPGrade(
           connection,
           {
@@ -182,48 +192,48 @@ async function handler(req, res) {
     // Send email using the last processed row outside the loop
     if (processedRows.length > 0) {
       const lastProcessedRow = processedRows[processedRows.length - 1];
-    
+
       // Assuming fields.studentInfo is a JSON string
       const recipientInfoString = fields.studentInfo;
-    
+
       // Parse the JSON string into an array of objects
       const recipientInfoArray = JSON.parse(recipientInfoString);
 
-    
+
       // Assuming recipientInfoArray is an array of objects with the specified properties
       for (const recipientInfo of recipientInfoArray) {
-        try {   
+        try {
           // Assuming the SendEmail function requires the recipient's email, first name, and last name
           await SendEmail(
-             lastProcessedRow.CertificateName,
-             recipientInfo.email,
-             recipientInfo.firstName,
-             recipientInfo.lastName,
+            lastProcessedRow.CertificateName,
+            recipientInfo.email,
+            recipientInfo.firstName,
+            recipientInfo.lastName,
           );
-          await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`,{
-            receiverIds:[recipientInfo.studentID], 
-            senderId:recipientInfo.pm_id, 
-            content:'<!DOCTYPE html>' +
-            '<html><head><title>Grades</title>' +
-            '</head><body><div>' +
-            `<div style="text-align: center;">
+          await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`, {
+            receiverIds: [recipientInfo.studentID],
+            senderId: recipientInfo.pm_id,
+            content: '<!DOCTYPE html>' +
+              '<html><head><title>Grades</title>' +
+              '</head><body><div>' +
+              `<div style="text-align: center;">
                </div>` +
-            `</br>` +
-            `<p>Dear <span style="font-weight: bold">${ recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
-            `<p>We trust this email finds you well.</p> ` +
-            `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
-            // `<p> Please login using the below credentials:</p>` +
-            // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
-            // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
-      
-            `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
-            `<p>
+              `</br>` +
+              `<p>Dear <span style="font-weight: bold">${recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
+              `<p>We trust this email finds you well.</p> ` +
+              `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
+              // `<p> Please login using the below credentials:</p>` +
+              // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
+              // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
+
+              `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
+              `<p>
             Should you have any inquiries or require further clarification regarding the updated grade, do not hesitate to contact your program manager.</p>` +
-            `<p>Best regards,</p> ` +
-            `<p>ESA Business School</p> ` +
-      
-            '</div></body></html>',
-             subject:'Student Grades'
+              `<p>Best regards,</p> ` +
+              `<p>ESA Business School</p> ` +
+
+              '</div></body></html>',
+            subject: 'Student Grades'
           })
         } catch (error) {
           console.error('Error sending email:', error);

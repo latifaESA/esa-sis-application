@@ -245,7 +245,7 @@ async function createSchedule(
         attendanceId,
         isOnline
       ]);
-      
+
     }
     return res;
   } catch (error) {
@@ -253,19 +253,19 @@ async function createSchedule(
   }
 }
 
-async function updateZoomInfo(connection,tmpscheduleIds, meetingIds, zoomUrls) {
+async function updateZoomInfo(connection, tmpscheduleIds, meetingIds, zoomUrls) {
   try {
 
 
-      const query = `
+    const query = `
         UPDATE tmpschedule
         SET
           zoom_meeting_id = '${meetingIds}',
           zoom_url = '${zoomUrls}'
         WHERE tmpschedule_id = '${tmpscheduleIds}';
       `;
-      const res = await connection.query(query)
-      return res
+    const res = await connection.query(query)
+    return res
   } catch (error) {
     return { success: false, message: `Error updating: ${error.message}` };
   }
@@ -315,9 +315,9 @@ async function createScheduleOnline(
     }
 
     // Return the array of created IDs
-    if(createdRowIds.length === days.length){
+    if (createdRowIds.length === days.length) {
       return createdRowIds;
-    }else{
+    } else {
       return 'false'
     }
   } catch (error) {
@@ -646,7 +646,7 @@ async function updateSchedule(
       pm_id,
       is_online,
       tmpscheduleID
-    
+
     ];
     // console.log('query' , query , values)
     const res = await connection.query(query, values);
@@ -1332,7 +1332,7 @@ async function getScheduleToStudents(connection, major_id, promotion) {
      INNER JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id
      WHERE tmpclass.major_id = '${major_id}' AND (trim(tmpclass.promotion)) = '${promotion}'`;
     const result = await connection.query(query);
-  
+
     return result;
   } catch (error) {
     return error;
@@ -1352,7 +1352,7 @@ async function getStdEmailForEditProfile(connection, user_id) {
   try {
     const query = `SELECT * FROM user_contact WHERE userid = '${user_id}'`;
     const res = await connection.query(query);
-    
+
     return res;
   } catch (error) {
     return error;
@@ -1389,7 +1389,7 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
     const query = `UPDATE teacher_courses SET teacher_id = '${teacher_id}' WHERE course_id = '${course_id}' AND teacher_id='${condition}' RETURNING teacher_courses_id`;
 
     const res = await connection.query(query);
-    
+
     return res;
   } catch (error) {
     return error;
@@ -1567,6 +1567,7 @@ async function ExistElective(connection, course_id, student_id) {
 //     return error
 //   }
 // }
+
 async function filterElective(
   connection,
   major_id,
@@ -1673,10 +1674,10 @@ async function createPMAccount(
   }
 }
 
-async function createExtra(connection, pm_id, major_id ) {
+async function createExtra(connection, pm_id, major_id) {
   try {
     const query = `INSERT INTO program_manager_extra_major (pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
-    
+
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -1842,7 +1843,7 @@ async function createTeacher(
       ${teacher_id},
       '${teacher_firstname}', '${teacher_mail}','${teacher_lastname}' , '${teacher_mobile}') RETURNING teacher_id , teacher_firstname , teacher_lastname , teacher_mail , mobile_number`;
     const res = await connection.query(query);
-    console.log('quary' , query)
+    console.log('quary', query)
     return res;
   } catch (error) {
     return error;
@@ -1851,7 +1852,7 @@ async function createTeacher(
 
 async function uploadTeacher(
   connection,
-  { teacher_id, teacher_firstname, teacher_mail, teacher_lastname , teacher_mobile}
+  { teacher_id, teacher_firstname, teacher_mail, teacher_lastname, teacher_mobile }
 ) {
   try {
     const query = {
@@ -1861,7 +1862,7 @@ async function uploadTeacher(
       $3,
       $4,
       $5)`,
-      values: [teacher_id, teacher_firstname, teacher_mail, teacher_lastname , teacher_mobile],
+      values: [teacher_id, teacher_firstname, teacher_mail, teacher_lastname, teacher_mobile],
     };
     const res = await connection.query(query);
     return res;
@@ -2268,7 +2269,7 @@ async function filterStudentAdmin(
     if (student_lastname != "") {
       query += ` AND lower(trim(student.student_lastname)) LIKE lower(trim('%${student_lastname}%'))`;
     }
-      
+
     const result = await connection.query(query);
     return result;
   } catch (err) {
@@ -2486,7 +2487,7 @@ async function occupiedRoom(connection, attendance_date, room) {
 async function updateStatusBlue(connection, student_id) {
   try {
     const query = `UPDATE student SET status = 'limited'  WHERE student_id = '${student_id}'`;
-   
+
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -2640,9 +2641,9 @@ async function updateGrades(
   try {
     const query = `UPDATE student_grades SET grade = '${grade}' , gpa='${GPA}' , rank='${Rank}' 
       WHERE student_id='${student_id}' AND course_id='${course_id}' AND task_name = '${taskName}'`;
-      console.log('query' , query)
+    console.log('query', query)
     const res = await connection.query(query);
-    console.log('res' , res)
+    console.log('res', res)
     return res;
   } catch (error) {
     return error;
@@ -2984,14 +2985,14 @@ async function updateGradesExED(
     return error;
   }
 }
-async function searchEmailStudent(connection, major_id , promotion_name) {
+async function searchEmailStudent(connection, major_id, promotion_name) {
   try {
     const query = `SELECT student.*, user_contact.email
      FROM student INNER JOIN user_contact 
      ON student.student_id = user_contact.userid 
 
      WHERE student.major_id ='${major_id}' AND student.promotion ='${promotion_name}' AND student.status = 'active'`;
-     console.log('student' , query)
+    console.log('student', query)
     const res = await connection.query(query);
     return res;
 
@@ -3104,7 +3105,7 @@ async function updateGradesRTF(
   grade_over_20,
   grade_over_30,
   student_id,
-  course_id ,
+  course_id,
   task_name
 ) {
   try {
@@ -3269,7 +3270,7 @@ async function filterEXEDGrade(
 //   }
 // }
 
-async function getMajorPMExtra(connection, pm_id , table , pmID) {
+async function getMajorPMExtra(connection, pm_id, table, pmID) {
   try {
     const query = `SELECT ${table}.* , major.major_name , major.status
     FROM ${table} 
@@ -3288,7 +3289,7 @@ async function getPromtionsMajor(connection, major_id, date) {
   try {
     const query = `SELECT * FROM promotions WHERE major_id = '${major_id}' AND academic_year = '${date}'`;
     const res = await connection.query(query);
- 
+
     return res;
   } catch (error) {
     return error;
@@ -3301,7 +3302,7 @@ async function getClassInfoForEmail(connection, class_id) {
     JOIN courses ON tmpclass.course_id = courses.course_id
     WHERE tmpclass_id = '${class_id}'`;
     const res = await connection.query(query);
-  
+
     return res;
   } catch (error) {
     return error;
@@ -3311,7 +3312,7 @@ async function getLocationInfo(connection, room_id) {
   try {
     const query = `SELECT * FROM rooms WHERE room_id = '${room_id}'`;
     const res = await connection.query(query);
-   
+
     return res;
   } catch (error) {
     return error;
@@ -3321,20 +3322,20 @@ async function getStudentEmailsForEmailClass(connection, promo) {
   try {
     const query = `SELECT user_contact.email ,student.student_id FROM student JOIN user_contact ON student.student_id = user_contact.userid WHERE promotion = '${promo}'`;
     const res = await connection.query(query);
- 
+
     return res;
   } catch (error) {
     return error;
   }
 }
 // <<<<<<< Hassan
-async function updateEmailForEditProfile(connection, email,user_id) {
+async function updateEmailForEditProfile(connection, email, user_id) {
   try {
     const query = ` UPDATE user_contact
     SET email = '${email}' 
     WHERE userid = '${user_id}'`;
     const res = await connection.query(query);
-    
+
     return res;
   } catch (error) {
     return error;
@@ -3441,10 +3442,10 @@ async function exportAttendanceData(
     // >>>>>>> main
   }
 }
-async function updateScheduleSharepointID (connection , sharepointId , attendanceId){
+async function updateScheduleSharepointID(connection, sharepointId, attendanceId) {
   try {
     const query = `UPDATE tmpschedule Set sharepoint_id =${sharepointId} WHERE attendance_id ='${attendanceId}' `
-    
+
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -3452,18 +3453,19 @@ async function updateScheduleSharepointID (connection , sharepointId , attendanc
   }
 }
 
-async function createBooking (connection , bookingId , room , space ,bookingBy ,date , fromTime , toTime){
+async function createBooking(connection, 
+{  bookingId, room, space, bookingBy, date, fromTime, toTime}) {
   try {
     const query = `INSERT INTO booking (booking_id , rooms , space ,bookingby ,date_booking , from_time , to_time) VALUES (${bookingId} , '${room}' , '${space}' ,'${bookingBy}' ,'${date}' , '${fromTime}' , '${toTime}')`
-   
+    
     const res = await connection.query(query)
-   
+
     return res
   } catch (error) {
     return error
   }
 }
-async function deleteBooking (connection){
+async function deleteBooking(connection) {
   try {
     const query = `DELETE FROM booking`
     const res = await connection.query(query)
@@ -3473,20 +3475,20 @@ async function deleteBooking (connection){
   }
 }
 
-async function SearchBooking (connection , space , date , fromTime , toTime ){
+async function SearchBooking(connection, space, date, fromTime, toTime) {
   try {
-    const query =  `SELECT * FROM booking WHERE space='${space}' AND date_booking ='${date}' AND from_time='${fromTime}' AND to_time='${toTime}'`
-   
+    const query = `SELECT * FROM booking WHERE space='${space}' AND date_booking ='${date}' AND from_time='${fromTime}' AND to_time='${toTime}'`
+
     const res = await connection.query(query)
     return res
   } catch (error) {
     return error
   }
 }
-async function AddRoomFromSharePoint(connection , roomName , roomBuilding){
+async function AddRoomFromSharePoint(connection, roomName, roomBuilding) {
   try {
     const query = `INSERT INTO rooms (room_name , room_building) VALUES ('${roomName}' , '${roomBuilding}')`
-    
+
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -3494,7 +3496,7 @@ async function AddRoomFromSharePoint(connection , roomName , roomBuilding){
   }
 }
 
-async function getRoom(connection ){
+async function getRoom(connection) {
   try {
     const query = `SELECT * FROM rooms`
 
@@ -3504,7 +3506,7 @@ async function getRoom(connection ){
     return error
   }
 }
-async function deleteSharepointId(connection  , attendance_id){
+async function deleteSharepointId(connection, attendance_id) {
   try {
     const query = `UPDATE tmpschedule
     SET sharepoint_id = NULL
@@ -3512,16 +3514,16 @@ async function deleteSharepointId(connection  , attendance_id){
     `
     const res = await connection.query(query)
     return res
-    
+
   } catch (error) {
     return error
   }
 }
 
-async function updateOnlineSchedule(connection ,zoom_id , zoom_url , attendance_id){
+async function updateOnlineSchedule(connection, zoom_id, zoom_url, attendance_id) {
   try {
-    const query =`UPDATE tmpschedule SET zoom_meeting_id = '${zoom_id}' , zoom_url='${zoom_url}' WHERE attendance_id ='${attendance_id}'`
-    
+    const query = `UPDATE tmpschedule SET zoom_meeting_id = '${zoom_id}' , zoom_url='${zoom_url}' WHERE attendance_id ='${attendance_id}'`
+
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -3529,7 +3531,7 @@ async function updateOnlineSchedule(connection ,zoom_id , zoom_url , attendance_
   }
 }
 
-async function deleteZoomId(connection  , attendance_id){
+async function deleteZoomId(connection, attendance_id) {
   try {
     const query = `UPDATE tmpschedule
     SET zoom_meeting_id = NULL,
@@ -3538,13 +3540,13 @@ async function deleteZoomId(connection  , attendance_id){
     `
     const res = await connection.query(query)
     return res
-    
+
   } catch (error) {
     return error
   }
 }
 
-async function updateCourseType(connection, course_id, course_credit , course_name , course_type) {
+async function updateCourseType(connection, course_id, course_credit, course_name, course_type) {
   try {
     let result = connection.query(`UPDATE courses
     SET course_name ='${course_name}',
@@ -3559,7 +3561,7 @@ async function updateCourseType(connection, course_id, course_credit , course_na
 
 async function AddStudentAlumni(
   connection,
-  { status, graduated_year, student_id, promotion, major_id, firstname, lastname, academic_year  , email , mobile_number}
+  { status, graduated_year, student_id, promotion, major_id, firstname, lastname, academic_year, email, mobile_number }
 ) {
   try {
 
@@ -3578,10 +3580,10 @@ async function AddStudentAlumni(
     return error;
   }
 }
-async function createExtraAS(connection, pm_id, major_id ) {
+async function createExtraAS(connection, pm_id, major_id) {
   try {
     const query = `INSERT INTO program_manager_assistance_extra_major (pm_ass_id , major_id) VALUES ('${pm_id}' , '${major_id}')`;
-    
+
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3625,25 +3627,68 @@ async function getMajorFromAS(connection, pm_ass_id) {
     return error;
   }
 }
-async function updateEmailForEditProfilePM(connection, email, status ,mobile_number,user_id) {
+async function updateEmailForEditProfilePM(connection, email, status, mobile_number, user_id) {
   try {
     const query = ` UPDATE user_contact
     SET email = '${email}' , mobile_number ='${mobile_number}'
     WHERE userid = '${user_id}';
     UPDATE student SET status ='${status}' WHERE student_id='${user_id}' `;
     const res = await connection.query(query);
-    
+
     return res;
   } catch (error) {
     return error;
   }
 }
+async function ExistGrades(connection, student_id, course_id, task_name) {
+  try {
+    const query = `SELECT * FROM grades_gmp WHERE student_id = '${student_id}' AND course_id = '${course_id}' AND task_name='${task_name}'`
+ 
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
+async function ExistGradesDT(connection, student_id, course_id, task_name) {
+  try {
+    const query = `SELECT * FROM grades_rtf WHERE student_id = '${student_id}' AND course_id = '${course_id}' AND task_name='${task_name}'`
+
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function ExistGradesEXED(connection, student_id, course_id, task_name) {
+  try {
+    const query = `SELECT * FROM grade_exed WHERE student_id = '${student_id}' AND course_id = '${course_id}' AND task_name='${task_name}'`
+
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+async function ExistGradesStudent(connection, student_id, course_id, task_name) {
+  try {
+    const query = `SELECT * FROM student_grades WHERE student_id = '${student_id}' AND course_id = '${course_id}' AND task_name='${task_name}'`
+
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
 /* End Postegresql */
 
 module.exports = {
-
+  ExistGradesStudent,
+  ExistGradesEXED,
+  ExistGradesDT,
+  ExistGrades,
   updateEmailForEditProfilePM,
   getMajorFromAS,
   AddStudentAlumni,

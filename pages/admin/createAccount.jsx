@@ -292,7 +292,7 @@ export default function Create() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label>
+              <label className="">
                 Major:
 
                 <Select
@@ -300,7 +300,7 @@ export default function Create() {
                   options={major.map((majors) => ({ value: majors.major_id, label: majors.major_name })).sort((a, b) => a.label.localeCompare(b.label))}
                   placeholder="Select a Major"
                   onChange={handleMajor}
-                  className='place-items-center'
+                  className='place-items-center ml-20 w-60 mt-0'
                 />
 
 

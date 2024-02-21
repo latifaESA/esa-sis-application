@@ -736,32 +736,35 @@ const ClassList = ({ users, allCourse }) => {
       });
 
       const data = await response.json();
-      if (data.d.results.length > 0) {
-        const start = new Date().getMilliseconds()
-        for (const booking of data.d.results) {
-          // Format the date to 'YYYY-MM-DDT00:00:00Z'
+      await axios.post('/api/pmApi/createBooking', {
+        booking:data.d.results
+      })
+      // if (data.d.results.length > 0) {
+      //   const start = new Date().getMilliseconds()
+      //   for (const booking of data.d.results) {
+      //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
 
 
-          const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+          // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
 
 
-          // Make the API call
-          await axios.post('/api/pmApi/createBooking', {
-            bookingId: booking.ID,
-            room: booking.Title,
-            space: booking.Space,
-            bookingBy: booking.BookedBy,
-            date: formattedDate,
-            fromTime: booking.FromTime,
-            toTime: booking.ToTime,
-          });
-          // console.log(result);
-        }
-        const end = new Date().getMilliseconds() - start
-        console.log('end', end)
-      }
+      //     // Make the API call
+      //     await axios.post('/api/pmApi/createBooking', {
+      //       bookingId: booking.ID,
+      //       room: booking.Title,
+      //       space: booking.Space,
+      //       bookingBy: booking.BookedBy,
+      //       date: formattedDate,
+      //       fromTime: booking.FromTime,
+      //       toTime: booking.ToTime,
+      //     });
+      //     // console.log(result);
+      //   }
+      //   const end = new Date().getMilliseconds() - start
+      //   console.log('end', end)
+      // }
 
-      return { ok: true, result: data };
+      // return { ok: true, result: data };
 
     } catch (error) {
       console.error('Error checking room availability in SharePoint:', error.message);
