@@ -655,7 +655,7 @@ export default function GradesById() {
                                     onClick={!isExeMajor ? search :
                                         (secondMajorWord === 'GMP' || majorId === '1' ?
                                             searchGMP :
-                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                                 ? searchRTF : isExeMajor ? searchEXED : <></>)
                                     }
 

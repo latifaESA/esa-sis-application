@@ -285,8 +285,8 @@ export default function DownloadGrades({ setClickDownload }) {
         data = header.concat(
           student.map((studentData) => [
             studentData.student_id,
-            studentData.student_lastname,
             studentData.student_firstname,
+            studentData.student_lastname,
             promotionName,
             courses,
             taskName,

@@ -11,6 +11,7 @@ import xlsx from "xlsx";
 import { env } from 'process';
 import { authOptions } from "../auth/[...nextauth]";
 import SendEmail from "./emailGrade";
+import gradeExistsDT from "./exist/ExistDTGrade";
 
 
 
@@ -159,6 +160,17 @@ async function handler(req, res) {
         //     message: `No data was uploaded due to missing required information.`
         //   })
         // }
+        
+        const exist = await gradeExistsDT(connection ,row.StudentID ,row.CertificateName , row.TaskName)
+    
+        if (exist) {
+          return res.status(200).json({
+            success :true,
+            status : 200,
+            message:`${row.FirstName} ${row.FamilyName} Grade Already Exist !`
+          })
+        }
+
 
         await uploadGradesRTF(
           connection,

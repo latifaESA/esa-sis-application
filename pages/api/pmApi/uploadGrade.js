@@ -11,6 +11,7 @@ import { env } from 'process';
 import { authOptions } from "../auth/[...nextauth]";
 import gpaToGrades from "./gpa";
 import SendEmail from "./emailGrade";
+import gradeExistsStudent from "./exist/ExistStudentGrade";
 
 
 
@@ -156,8 +157,18 @@ async function handler(req, res) {
             message: `No data was uploaded due to missing required information.`
           })
         }
+        
+        const exist = await gradeExistsStudent(connection ,row.StudentID ,row.CourseID , row.TaskName)
+      
+        if (exist) {
+          return res.status(200).json({
+            success :true,
+            status : 200,
+            message:`${row.StudentFirstName} ${row.StudentLastName} Grade Already Exist !`
+          })
+        }
         const data = await gpaToGrades(row.Grade)
-        const res = await uploadGrades(
+         await uploadGrades(
           connection,
           {
             student_id: row.StudentID,
