@@ -60,7 +60,7 @@ export default function CourseView() {
 
       {session?.user.role === "2" || session?.user.role === "3" ? (
         <>
-          <div className="flex flex-wrap justify-center gap-6 mt-10">
+          <div className="flex flex-wrap p-40 justify-center gap-6 mt-10">
             {isMultiMajor.length > 0 && (
               <>
                 {isMultiMajor.map((item, index) => (

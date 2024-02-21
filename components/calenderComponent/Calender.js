@@ -1344,8 +1344,8 @@ export const Calender = ({ schedule, setSchedule }) => {
           colName: 'attendance_id',
           id: portalData.attendanceId,
         };
-        await axios.post('/api/pmApi/delete', payload);
-        // console.log(data1)
+        const data1 =await axios.post('/api/pmApi/delete', payload);
+        console.log(data1)
 
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
