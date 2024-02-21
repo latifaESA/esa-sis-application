@@ -99,7 +99,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 'StudentID',
                 'StudentFirstName',
                 'StudentLastName'
-                ,'Promotion',
+                , 'Promotion',
                 'CourseID',
                 'Grade'
             ]; // Replace with your actual template fields
@@ -117,7 +117,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 return false;
             }
         } else if (SecondMajorWord === 'GMP' || SecondMajorWord === 'gmp' || SecondMajorWord === 'Gmp') {
-            const templateFields = ['StudentID', 'FamilyName', 'FirstName','Promotion','CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments']
 
             // Check if all template fields exist in columnA
             const missingFields = templateFields.filter(
@@ -132,7 +132,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 return false;
             }
         } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
-            const templateFields = ['StudentID', 'FamilyName', 'FirstName','Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
+            const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
 
             // Check if all template fields exist in columnA
@@ -250,10 +250,10 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     email: student.email,
                     pm_id: session.user?.userid
                 }));
-                                // Set the student data in your state or wherever you need it
-                                setStudentData(studentInfo);
-                                setHasFetched(true)
-                return {data : studentInfo}
+                // Set the student data in your state or wherever you need it
+                setStudentData(studentInfo);
+                setHasFetched(true)
+                return { data: studentInfo }
 
 
 
@@ -287,13 +287,13 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Retrieve the value of the first cell in the specified column
                 const promotionName = worksheet[cellAddress]?.v;
                 // Fetch student emails based on the promotion name
-             
 
 
 
-               const students = await fetchStudent(promotionName)
-               
-                   
+
+                const students = await fetchStudent(promotionName)
+
+
                 const studentInfo = students.data;
 
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
@@ -373,16 +373,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
         try {
             setIsClick(true);
 
-            // Fetch student emails separately
-            const studentInfo = student;
-            // console.log('student', studentInfo)
-
-            if (!studentInfo || studentInfo.length === 0) {
-                setConfirmOpenMessage(true);
-                setMessages("Error: Unable to fetch student information.");
-                return;
-            }
-
+            const promotionNameColumnIndex = 3; // Assuming promotion name is in the second column (index 1)
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
 
@@ -392,6 +383,18 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
+                const cellAddress = XLSX.utils.encode_cell({ r: 1, c: promotionNameColumnIndex });
+
+                // Retrieve the value of the first cell in the specified column
+                const promotionName = worksheet[cellAddress]?.v;
+                // Fetch student emails based on the promotion name
+
+
+
+                const students = await fetchStudent(promotionName)
+
+
+                const studentInfo = students.data;
 
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
@@ -420,6 +423,9 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     );
 
                     if (data.success === true) {
+                        // Extract promotion name from the first row of the specified column
+                        // Get the cell address of the first cell in the specified column
+
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
                     }
@@ -440,6 +446,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     };
 
     const handleAddEXED = async () => {
+
         try {
             setIsClick(true);
 
@@ -459,13 +466,12 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Retrieve the value of the first cell in the specified column
                 const promotionName = worksheet[cellAddress]?.v;
                 // Fetch student emails based on the promotion name
-             
 
 
 
-               const students = await fetchStudent(promotionName)
-               
-                   
+                const students = await fetchStudent(promotionName)
+
+
                 const studentInfo = students.data;
 
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
@@ -515,19 +521,10 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
     };
 
     const handleAddRTF = async () => {
+
         try {
             setIsClick(true);
-
-            // Fetch student emails separately
-            const studentInfo = student;
-            // console.log('student', studentInfo)
-
-            if (!studentInfo || studentInfo.length === 0) {
-                setConfirmOpenMessage(true);
-                setMessages("Error: Unable to fetch student information.");
-                return;
-            }
-
+            const promotionNameColumnIndex = 3; // Assuming promotion name is in the second column (index 1)
             const file = uploadPhotoData.fileList[0];
             const reader = new FileReader();
 
@@ -537,6 +534,18 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
+                const cellAddress = XLSX.utils.encode_cell({ r: 1, c: promotionNameColumnIndex });
+
+                // Retrieve the value of the first cell in the specified column
+                const promotionName = worksheet[cellAddress]?.v;
+                // Fetch student emails based on the promotion name
+
+
+
+                const students = await fetchStudent(promotionName)
+
+
+                const studentInfo = students.data;
 
                 const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
@@ -583,7 +592,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             setMessages("Something went wrong. Please try again later.");
         }
     };
-
 
 
 
@@ -651,9 +659,9 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                         className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
                                                         type="button"
                                                         onClick={
-                                                            isExeMajor && SecondMajorWord === 'GMP' ?
+                                                            isExeMajor && SecondMajorWord === 'GMP' || session.user?.majorName === 'EXED-GMP' ?
                                                                 handleAddGMP :
-                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' ?
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || session.user?.majorName === 'EXED-Digital Transformation in Financial Services' ?
                                                                     handleAddRTF
                                                                     : isExeMajor ? handleAddEXED : handleAdd
                                                         }

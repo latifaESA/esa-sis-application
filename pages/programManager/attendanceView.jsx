@@ -60,7 +60,7 @@ export default function AttendanceView() {
 
       {session?.user.role === "2" || session?.user.role === "3" ? (
         <>
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-10">
+          <div className="flex flex-wrap items-center justify-center  p-40 gap-6 mt-10">
             {isMultiMajor.length > 0 && (
               <>
                 {isMultiMajor.map((item, index) => (

@@ -333,7 +333,7 @@ export default function Grades() {
                     <form>
                         {clickDownload && <DownloadGrades setClickDownload={setClickDownload} />}
                         {clickUpload && <UploadGrades setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
-                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED}/>}
+                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} />}
                         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
                             <label>
                                 ID:
@@ -427,141 +427,149 @@ export default function Grades() {
                                 Grade:
                                 <input
                                     type="number"
-                                    
+
                                     value={grade}
                                     onChange={(e) => setGrades(e.target.value)}
                                     placeholder="Grade"
                                     className="ml-9 w-40 max-[850px]:ml-9" />
                             </label>
-                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ?<>
-                            <label>
-                            Grade/30:
-                                <input
-                                    type="number"
-                                    value={gradeOver30}
-                                    onChange={(e) => setGradesOver30(e.target.value)}
-                                    placeholder="Grade Over 30"
-                                    className="ml-5 w-40 max-[850px]:ml-4 max-[850px]:w-30" />
-                            </label>
-                            
-                            </>:<>
-                            <label>
-                                Rank:
-                                <select
-                                    className="ml-12 w-40 max-[850px]:ml-12"
-                                    value={Rank}
-                                    onChange={(e) => setRank(e.target.value)}
-                                >
-                                    <option value="">Rank</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.rank}>
-                                                {item.rank}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO Rank</option>
-                                    )}
-                                </select>
-                            </label>
-                            
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || session.user?.majorName === 'EXED-Digital Transformation' ?
+
+                            (                                <>
+                                <label>
+                                    Grade/30:
+                                    <input
+                                        type="number"
+                                        value={gradeOver30}
+                                        onChange={(e) => setGradesOver30(e.target.value)}
+                                        placeholder="Grade Over 30"
+                                        className="ml-5 w-40 max-[850px]:ml-4 max-[850px]:w-30" />
+                                </label>
+
+                            </> )
+
+                            :!isExeMajor ?(
+                                <>
+                                <label>
+                                    Rank:
+                                    <select
+                                        className="ml-12 w-40 max-[850px]:ml-12"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
+
+                            </>
+                            ):<></>
+
+                           }
+
+                            {!isExeMajor ? <>
+                                <label>
+                                    GPA:
+                                    <select
+                                        className="ml-12 w-40 max-[850px]:ml-12"
+                                        value={GPA}
+                                        onChange={(e) => setGPA(e.target.value)}
+                                    >
+                                        <option value="">GPA</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.gpa}>
+                                                    {item.gpa}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO GPA</option>
+                                        )}
+                                    </select>
+                                </label>
+
+                            </> : <></>}
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ? <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
+                                    <select
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
+
+
+                            </> : <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
+                                    <select
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
+
                             </>}
 
-                     {!isExeMajor ? <>
-                        <label>
-                                GPA:
-                                <select
-                                    className="ml-12 w-40 max-[850px]:ml-12"
-                                    value={GPA}
-                                    onChange={(e) => setGPA(e.target.value)}
-                                >
-                                    <option value="">GPA</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.gpa}>
-                                                {item.gpa}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO GPA</option>
-                                    )}
-                                </select>
-                            </label>
-                     
-                     </>:<></>}
-                     {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'? <>
-                     <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-                                Rank:
-                                <select
-                                    className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
-                                    value={Rank}
-                                    onChange={(e) => setRank(e.target.value)}
-                                >
-                                    <option value="">Rank</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.rank}>
-                                                {item.rank}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO Rank</option>
-                                    )}
-                                </select>
-                            </label>
-                     
-                     
-                     </>:<>
-                     <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-                                Rank:
-                                <select
-                                    className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
-                                    value={Rank}
-                                    onChange={(e) => setRank(e.target.value)}
-                                >
-                                    <option value="">Rank</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.rank}>
-                                                {item.rank}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO Rank</option>
-                                    )}
-                                </select>
-                            </label>
-                     
-                     </>}
+
+                            {!isExeMajor ? <>
+                                <label className='invisible max-[850px]:visible max-[850px]:hidden'>
+                                    Rank:
+                                    <select
+                                        className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
+                                        value={Rank}
+                                        onChange={(e) => setRank(e.target.value)}
+                                    >
+                                        <option value="">Rank</option>
+                                        {data.length > 0 ? (
+                                            data.map((item, index) => (
+                                                <option key={index} value={item.rank}>
+                                                    {item.rank}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option value={""}>NO Rank</option>
+                                        )}
+                                    </select>
+                                </label>
 
 
-                     {!isExeMajor  ? <>
-                        <label className='invisible max-[850px]:visible max-[850px]:hidden'>
-                                Rank:
-                                <select
-                                    className="ml-10 w-40 invisible max-[850px]:visible max-[850px]:hidden"
-                                    value={Rank}
-                                    onChange={(e) => setRank(e.target.value)}
-                                >
-                                    <option value="">Rank</option>
-                                    {data.length > 0 ? (
-                                        data.map((item, index) => (
-                                            <option key={index} value={item.rank}>
-                                                {item.rank}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value={""}>NO Rank</option>
-                                    )}
-                                </select>
-                            </label>
-                     
-                     
-                     </>:<></>}
-                     
+                            </> : <></>}
 
 
-                     <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
+
+                            <div className="flex flex-col min-[850px]:flex-row gap-4 min-[850px]:col-start-2 min-[1100px]:col-start-3 h-10 max-[850px]:mb-16">
                                 <button
                                     className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                                     type="button"

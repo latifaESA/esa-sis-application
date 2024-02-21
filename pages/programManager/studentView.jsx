@@ -6,61 +6,61 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 
 export default function StudentView() {
-    const { data: session } = useSession();
-    const router = useRouter();
-  
-    const redirect = () => {
-      router.push("/AccessDenied");
-    };
-  
-    const [isMultiMajor, setIsMultiMajor] = useState([]);
-  
-    useEffect(() => {
-      const handleMajor = async () => {
-        try {
-          let payload;
-          if(session.user?.role === '3'){
-             payload = {
-              pm_id : session.user?.userid , 
-              table :'program_manager_assistance_extra_major', 
-              pmID:'pm_ass_id'
-            }
-          }else if(session.user?.role === '2'){
-            payload = {
-              pm_id : session.user?.userid , 
-              table :'program_manager_extra_major', 
-              pmID:'pm_id'
-            }
+  const { data: session } = useSession();
+  const router = useRouter();
 
+  const redirect = () => {
+    router.push("/AccessDenied");
+  };
+
+  const [isMultiMajor, setIsMultiMajor] = useState([]);
+
+  useEffect(() => {
+    const handleMajor = async () => {
+      try {
+        let payload;
+        if (session.user?.role === '3') {
+          payload = {
+            pm_id: session.user?.userid,
+            table: 'program_manager_assistance_extra_major',
+            pmID: 'pm_ass_id'
+          }
+        } else if (session.user?.role === '2') {
+          payload = {
+            pm_id: session.user?.userid,
+            table: 'program_manager_extra_major',
+            pmID: 'pm_id'
           }
 
-          const response = await axios.post('/api/pmApi/getMajorPMExtra', payload);
-  
-          setIsMultiMajor(response.data.data);
-  
-        } catch (error) {
-          console.error(error);
         }
-      };
-  
-      if (session?.user?.role === "2" || session?.user?.role === "3") {
-        handleMajor();
+
+        const response = await axios.post('/api/pmApi/getMajorPMExtra', payload);
+
+        setIsMultiMajor(response.data.data);
+
+      } catch (error) {
+        console.error(error);
       }
-    }, [session.user?.pm_id]);
-  
-    const handleButtonClick = (majorId) => {
-      router.push(`/programManager/StudentByMajor?majorId=${majorId}`);
     };
-  
-    return (
-      <>
+
+    if (session?.user?.role === "2" || session?.user?.role === "3") {
+      handleMajor();
+    }
+  }, [session.user?.pm_id]);
+
+  const handleButtonClick = (majorId) => {
+    router.push(`/programManager/StudentByMajor?majorId=${majorId}`);
+  };
+
+  return (
+    <>
       <Head>
         <title>SIS PM - view</title>
       </Head>
 
       {session?.user.role === "2" || session?.user.role === "3" ? (
         <>
-          <div className="flex flex-wrap justify-center gap-6 mt-10">
+          <div className="flex justify-center p-40 gap-6 mt-10">
             {isMultiMajor.length > 0 && (
               <>
                 {isMultiMajor.map((item, index) => (
@@ -87,12 +87,13 @@ export default function StudentView() {
               </>
             )}
           </div>
+
         </>
       ) : (
         redirect()
       )}
-    </>    );
-  }
-  
+    </>);
+}
+
 StudentView.auth = true;
 StudentView.adminOnly = true;
