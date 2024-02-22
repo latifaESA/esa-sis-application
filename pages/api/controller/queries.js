@@ -962,7 +962,9 @@ async function updatePresent(connection, present, student_id, attendance_id) {
 
 async function getAllStudent(connection, major_id, promotion) {
   try {
-    const query = `SELECT * FROM student WHERE major_id = '${major_id}' AND (trim(promotion)) = '${promotion}' AND status != 'Alumni'`;
+    const query = `SELECT student.* , users.access_token FROM student 
+    INNER JOIN users ON student.student_id = users.userid
+    WHERE student.major_id = '${major_id}' AND (trim(student.promotion)) = '${promotion}' AND student.status != 'Alumni'`;
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -3682,9 +3684,33 @@ async function ExistGradesStudent(connection, student_id, course_id, task_name) 
   }
 }
 
+async function insertGoogleEventDetails(connection , student_id , event_id ){
+  try {
+    const query = `INSERT INTO google_calendar (user_id , event_id) VALUES ('${student_id}' , '${event_id}')`
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
+
+async function deleteGoogleEventDetails(connection , student_id ){
+  try {
+    const query = `DELETE google_calendar WHERE user_id = '${student_id}'`
+    const res = connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+
+}
+
 /* End Postegresql */
 
 module.exports = {
+  deleteGoogleEventDetails,
+  insertGoogleEventDetails,
   ExistGradesStudent,
   ExistGradesEXED,
   ExistGradesDT,
