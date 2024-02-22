@@ -18,7 +18,7 @@ import {
 const CourseSchedule = () => {
   const { data: session } = useSession();
   const [events, setEvents] = useState([]);
-  const [event, setEvent] = useState([]);
+  // const [event, setEvent] = useState([]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -253,7 +253,7 @@ const CourseSchedule = () => {
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId="748431984812-251tnvfcugl1c3uns4h751pr3119oktc.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="670796006199-lddpd6dcka3bh1u5126ibgja7uft5dn9.apps.googleusercontent.com">
       <CourseSchedule />
     </GoogleOAuthProvider>
   );

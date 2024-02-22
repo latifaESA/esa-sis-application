@@ -103,6 +103,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [zoomUserId, setZoomUserId] = useState()
   const [zoom_id, setZoomID] = useState()
+  const [googleToken, setGoogleToken] = useState('')
 
   const [courseName, setCourseName] = useState('')
 
@@ -965,6 +966,12 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               major_id,
               promotion,
             });
+            const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
+              oldRefreshToken: data.data[0].access_token
+            })
+
+            setGoogleToken(refreshToken.data.data)
+
             setStudent(data.data);
             setHasFetched(true);
           }
@@ -1813,7 +1820,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
    
 
 
-      const response = await axios.post('/api/google-api/addSchedule', {
+        await axios.post('/api/google-api/addSchedule', {
         access_token: accessToken,
         event: schedule
       })
