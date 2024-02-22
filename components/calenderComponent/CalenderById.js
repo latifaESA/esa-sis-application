@@ -789,12 +789,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             if (data.success) {
               const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
               await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
+              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+
               setStudent([]);
               getData();
             }
           } else {
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
+              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+
               setStudent([]);
               getData();
             }
@@ -1216,6 +1220,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
+          await handleInsertGoogleEvent(theDate, fromTime, toTime)
+
           deleteTable()
           setShowForm(false);
           setIsClick(false);
@@ -1243,6 +1249,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         // console.log("axios data ==>  ", place);
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceData.data.data)
+          await handleInsertGoogleEventOnSite(theDate, fromTime, toTime , roomName , building  )
+
           deleteTable()
           setShowForm(false);
           setIsClick(false);
@@ -1785,7 +1793,80 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return error
     }
   };
+  const handleInsertGoogleEvent = async (day, fromTime, to_time) => {
 
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+
+        const schedule = {
+          summary: `${courseName}`,
+          description: `Online`,
+          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+        };
+   
+
+
+      const response = await axios.post('/api/google-api/addSchedule', {
+        access_token: accessToken,
+        event: schedule
+      })
+      
+      // console.log('response', response)
+      // await axios.post('/api/pmApi/fillGoogleCalender' , {
+      //   student_id: '2024124599',
+      //   event_id:response.event.id
+
+      // })
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time , roomName , building) => {
+
+    try {
+   
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+    
+
+         const schedule = {
+          summary: `${courseName}`,
+          description: `Room-${roomName } building-${building}`,
+          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+        };
+
+      const response = await axios.post('/api/google-api/addSchedule', {
+        access_token: accessToken,
+        event: schedule
+      })
+      
+      console.log('response', response)
+      // if(response.statusText === 'OK'){
+      //  const logs= await axios.post('/api/pmApi/fillgoogleCalender' , {
+      //     student_id: '2024124599',
+      //     event_id:response.data.event.id
+  
+      //   })
+      //   console.log(logs)
+      // }
+
+    } catch (error) {
+      return error
+    }
+  }
 
 
 
