@@ -22,8 +22,8 @@ async function handler(req, res) {
   //  return res.status(401).send({ message: 'Signin Required To Reset' });
   //  }
 
+  const connection = await connect();
   try {
-    const connection = await connect();
 
     const existingtableID = await ReadDropdown(connection, "setting");
 
@@ -39,6 +39,8 @@ async function handler(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Failed to Reset values", error });
+  }finally{
+    await disconnect(connection);
   }
 }
 export default handler;

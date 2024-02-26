@@ -14,6 +14,7 @@ export default async function handler(req, res) {
   if (req.method !== "PUT") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
+  try{
   const encryptedBody = req.body.data;
   // // console.log(encryptedBody);
   const { email, role, info, error } = JSON.parse(decrypt(encryptedBody));
@@ -26,7 +27,11 @@ export default async function handler(req, res) {
       userAgentinfo.source
     }=${userAgentinfo.device.family}`
   );
-  res.send({
+  return res.send({
     message: "logged",
   });
+  }catch(error){
+    console.log('the error is in sendErrorToLogger.js in logger in api : ', error)
+    return
+  }
 }

@@ -46,6 +46,7 @@ async function handler(req, res) {
       .status(500)
       .json({ message: "HTTP method not valid only GET Accepted" });
   }
+  try{
   /* Checking if the request is coming from a secure connection or not. */
 
   // change one to https in protocol
@@ -584,6 +585,10 @@ async function handler(req, res) {
     await disconnect(connection);
 
     return;
+  }
+  }catch(error){
+    console.log('the error is in resetpassword.js in password in api : ', error)
+    return
   }
 }
 

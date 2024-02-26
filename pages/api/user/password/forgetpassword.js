@@ -26,6 +26,7 @@ async function handler(req, res) {
       .status(500)
       .json({ message: "HTTP method not valid only POST Accepted" });
   }
+  try{
   const { email } = req.body;
   console.log(email, "email in forget password");
   // if (!email || !email.includes("@")) {
@@ -214,6 +215,7 @@ async function handler(req, res) {
     // // console.log('timeAct')
     // // console.log(UpdateActivityTime)
     await disconnect(connection);
+    return
     // // console.log(UpdateData)
     // // console.log(email);
     // // console.log(userinfo.emailToken);
@@ -233,6 +235,10 @@ async function handler(req, res) {
     //lname: validateUserEmail.lname,
     // });
   }
+    }catch(error){
+      console.log('the error is in forgetpassword.js in password in api : ', error)
+      return
+    }
 }
 
 export default handler;

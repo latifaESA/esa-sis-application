@@ -13,7 +13,7 @@ async function getMeetings(){
         const data = response.data;
         return data;
     }catch(error){
-        console.error('Error',error);
+        console.error('Error in meet.js in api in function getMeetings : ',error);
     }
 }
 
@@ -46,7 +46,8 @@ async function createMeeting(topic, start_time,type,duration,timezone,agenda){
         const body = response.data;
         return body;
     }catch(error){
-        console.error('Error',error);
+        console.error('Error in meet.js in api : ',error);
+        return;
     }
 }
 

@@ -41,10 +41,10 @@ export default async function handler(req, res) {
         
             res.json({ access_token: response.data.access_token });
         } catch (error) {
-            res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
+            return res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
         }
         
     } catch (error) {
-        res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
+        return res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
     }
 }

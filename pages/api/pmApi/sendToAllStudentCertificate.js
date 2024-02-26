@@ -37,6 +37,7 @@ const SendEmailTo = async (emails, emailContent, subjectContent) => {
 
     await transporter.sendMail(mailOptions);
   } catch (error) {
+    console.log('this error is in email in pmApi : ', error)
     return error;
   }
 };

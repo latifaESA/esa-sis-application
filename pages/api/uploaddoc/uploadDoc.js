@@ -16,6 +16,7 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
+  try{
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
@@ -94,6 +95,11 @@ async function handler(req, res) {
   return res.status(200).send({
     url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
   });
+
+}catch(error){
+  console.log('the error is in uploadDoc.js in uploaddoc in api : ', error)
+  return
+}
   //=======
   // eslint-disable-next-line no-unused-vars
   // const { fields, files } = await readFile(req, true, directory);

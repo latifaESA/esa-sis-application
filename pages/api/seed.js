@@ -17,6 +17,7 @@ const path = require("path");
 const logDir = "../../logs"; // directory where log files are stored
 const logFiles = fs.readdirSync(logDir); // get list of log files
 
+try{
 const logs = []; // array to store log objects
 
 // iterate over log files
@@ -36,6 +37,9 @@ for (const file of logFiles) {
       logs.push({ date, parts }); // store log object with date and parts array
     }
   }
+}
+}catch(error){
+  console.log('the error is in seed.js in api : ', error)
 }
 
 // console.log(logs); // print array of log objects

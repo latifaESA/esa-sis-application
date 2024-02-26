@@ -16,6 +16,7 @@ const handler = async (req, res) => {
   // Get all active sessions
   // const sessions = await getSession({});
   // const session = await getSession()
+  try{
   const session = await getServerSession(req, res, authOptions);
   const sessions = await session?.provider?.getAllSessions();
 
@@ -41,7 +42,11 @@ const handler = async (req, res) => {
   });
 
   // Send a response to indicate the check has completed
-  res.status(200).json({ message: "Session check completed" });
+  return res.status(200).json({ message: "Session check completed" });
+  }catch(error){
+    console.log('the error is in check_sessions.js in session in api : ', error)
+    return
+  }
 };
 
 export default handler;

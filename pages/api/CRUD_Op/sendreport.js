@@ -24,6 +24,7 @@ async function handler(req, res) {
   }
   const { user } = session;
 
+  try{
   const reportURL = req.body.reportURL;
 
   //// console.log("reportServer", typeof reportURL,reportURL )
@@ -65,7 +66,11 @@ async function handler(req, res) {
   //// console.log("report saved to:", reportFilePath);
 
   // Return a response
-  res.status(200).send({ reportURL: reportURL });
+  return res.status(200).send({ reportURL: reportURL });
+  }catch(error){
+    console.log('the error is in sendreport.js in CRUD_Op in api : ', error)
+    return
+  }
 }
 
 export default handler;

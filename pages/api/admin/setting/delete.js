@@ -56,8 +56,8 @@ async function handler(req, res) {
     });
     return;
   }
+  const connection = await connect();
   try {
-    const connection = await connect();
 
     const existingtableID = await findData(connection, tableid, tablename, id);
     //// console.log(existingtableID);
@@ -81,6 +81,8 @@ async function handler(req, res) {
     console.error(error);
     res.status(400).send({ message: "Failed to Delete table", error });
     //throw error;
+  }finally{
+    await disconnect(connection);
   }
 }
 export default handler;

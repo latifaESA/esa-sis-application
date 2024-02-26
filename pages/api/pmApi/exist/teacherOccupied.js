@@ -15,6 +15,7 @@ const OccupiedTeacher = async(
     toTime
 
     )=>{
+      try{
         let occupied = false;
 
         const teacherAvailability = await occupiedTeacher(connection , teacherId , attendance_date);
@@ -41,6 +42,9 @@ const OccupiedTeacher = async(
           }
         }
         return occupied;
+      } catch (error) {
+        console.log('in the teacherOccupied.js in exist in pmApi: ',error)  
+    }
     
 
 }

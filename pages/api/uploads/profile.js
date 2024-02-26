@@ -24,6 +24,7 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
+  try{
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
@@ -105,6 +106,10 @@ async function handler(req, res) {
     secure_url: `${env.NEXTAUTH_URL}/file/sis/Users/${user.userid}/photo/${allimages[0]}`,
   });
 
+  }catch(error){
+    console.log('the error is in profile.js in uploads in api : ', error)
+    return
+  }
   // return res.status(200).send(req)
 }
 

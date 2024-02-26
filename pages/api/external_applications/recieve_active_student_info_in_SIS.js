@@ -139,6 +139,7 @@ const { env } = require('process');
 // });
 
 export default async function handler(req, res) {
+  try{
   // Generate a strong KEY from an online key generator
   const ONLINE_SIS_SECRET_KEY = env.ONLINE_SIS_SECRET_KEY;
   // for dev mode should be localhost:3001
@@ -525,5 +526,9 @@ export default async function handler(req, res) {
     res.end('Not found');
     // TODO: Dear SIS developper
     // TODO: write an error log
+  }
+  }catch(error){
+    console.log('the error is in recieve_active_student_info_in_SIS.js in external_applications in api : ', error)
+    return
   }
 }

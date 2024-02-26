@@ -1,6 +1,7 @@
 const { getExistCourse } = require("../../controller/queries");
 
 const courseExist = async (connection, course_id, teacher_id, major_id) => {
+  try {
   const exist = await getExistCourse(
     connection,
     course_id,
@@ -13,5 +14,8 @@ const courseExist = async (connection, course_id, teacher_id, major_id) => {
   } else {
     return true;
   }
+} catch (error) {
+    console.log('in the existCourse.js in exist in pmApi: ',error)
+}
 };
 export default courseExist;

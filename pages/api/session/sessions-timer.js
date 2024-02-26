@@ -13,6 +13,7 @@ let timer;
 
 // Start the sessions timer
 export const startSessionsTimer = () => {
+  try{
   // Clear any existing timer to prevent duplicates
   if (timer) clearTimeout(timer);
 
@@ -28,4 +29,8 @@ export const startSessionsTimer = () => {
     // Restart the sessions timer
     startSessionsTimer();
   }, SESSION_DURATION);
+  }catch(error){
+    console.log('the error is in sessions-timer.js in session in api : ', error)
+    return
+  }
 };

@@ -255,6 +255,7 @@ async function handler(req, res) {
         }
       } catch (error) {
         console.error(`Error while processing row: `, row, "\nError: ", error);
+        return;
       }
     }
 

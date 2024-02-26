@@ -15,8 +15,8 @@ const OccupiedRoom = async(
     room
 
     )=>{
+      try{
         let occupied = false;
-
         const roomAvailability = await occupiedRoom(connection ,  attendance_date ,room );
         
         for (let i = 0; i < roomAvailability.rowCount; i++) {
@@ -41,8 +41,9 @@ const OccupiedRoom = async(
           }
         }
         return occupied;
-    
-
+      } catch (error) {
+        console.log('in the roomOccupied.js in exist in pmApi: ',error)  
+    }
 }
 export default OccupiedRoom;
 
