@@ -80,7 +80,7 @@ const ClassList = ({ users, allCourse }) => {
   const [timeResult, setTimeResult] = useState([])
   // const router = useRouter();
   const [isOnline, setIsOnLine] = useState('')
-
+  const [googleToken, setGoogleToken] = useState([])
 
   const [roomName, setRoomName] = useState('')
 
@@ -230,6 +230,7 @@ const ClassList = ({ users, allCourse }) => {
           major_id,
           promotion,
         });
+        await handleAccessToken(data.data)
         setStudent(data.data);
       } else {
         const payload = {
@@ -239,6 +240,7 @@ const ClassList = ({ users, allCourse }) => {
         };
         try {
           const data = await axios.post("/api/pmApi/getStudentAssign", payload);
+          await handleAccessToken(data.data)
           setStudent(data.data.data);
         } catch (error) {
           let major_id = session.user?.majorid;
@@ -249,6 +251,7 @@ const ClassList = ({ users, allCourse }) => {
             major_id,
             promotion,
           });
+          await handleAccessToken(data.data)
           setStudent(data.data);
         }
       }
@@ -429,13 +432,13 @@ const ClassList = ({ users, allCourse }) => {
               createdAttendanceIds.push(attendance_id);
 
               if (data3.data.code === 201) {
-                for (let j = 0; j < student.length; j++) {
-                  const student_id = student[j].student_id;
-                  await axios.post("/api/pmApi/createAttendanceStudent", {
-                    attendance_id,
-                    student_id,
-                  });
-                }
+
+                // const student_id = student[j].student_id;
+                await axios.post("/api/pmApi/createAttendanceStudent", {
+                  attendance_id,
+                  student_id: student,
+                });
+
               }
               // }
             } catch (error) {
@@ -504,6 +507,7 @@ const ClassList = ({ users, allCourse }) => {
                       zoomUrls: response.data.data.join_url
                     }
                     let result = await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
+                    await handleInsertGoogleEvent(attendance_date, fromTime, toTime, attendance_id, response.data.data.join_url)
                     if (schedulesCreated === totalSchedules && result.status === 201) {
                       // update the schedule
                       setIsClicked(false);
@@ -580,6 +584,7 @@ const ClassList = ({ users, allCourse }) => {
 
                   if (data.success) {
                     await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
+                    await handleInsertGoogleEventOnSite(attendance_date, fromTime, toTime, roomName, building, attendance_id)
                     deleteTable()
                     schedulesCreated++;
 
@@ -612,9 +617,6 @@ const ClassList = ({ users, allCourse }) => {
 
 
 
-
-
-  // Your client-side code
   const getSharePointToken = async () => {
     try {
       const response = await fetch('/api/pmApi/getsharePointToken', {
@@ -737,7 +739,7 @@ const ClassList = ({ users, allCourse }) => {
 
       const data = await response.json();
       await axios.post('/api/pmApi/createBooking', {
-        booking:data.d.results
+        booking: data.d.results
       })
       // if (data.d.results.length > 0) {
       //   const start = new Date().getMilliseconds()
@@ -745,7 +747,7 @@ const ClassList = ({ users, allCourse }) => {
       //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
 
 
-          // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+      // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
 
 
       //     // Make the API call
@@ -772,6 +774,93 @@ const ClassList = ({ users, allCourse }) => {
       return { ok: false, result: false };
     }
   };
+
+  const handleAccessToken = async (studentDetails) => {
+    try {
+
+      const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
+        oldRefreshToken: studentDetails
+      })
+
+      setGoogleToken(refreshToken.data.data)
+    } catch (error) {
+      return error
+    }
+  }
+
+
+
+  const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
+
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Online-${zoomURL}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+
+
+
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
+      })
+
+
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time, roomName, building, attendanceId) => {
+
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+
+
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Room-${roomName} building-${building}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
+      })
+
+
+      // if(response.statusText === 'OK'){
+      //  const logs= await axios.post('/api/pmApi/fillgoogleCalender' , {
+      //     student_id: '2024124599',
+      //     event_id:response.data.event.id
+
+      //   })
+      //   console.log(logs)
+      // }
+
+    } catch (error) {
+      return error
+    }
+  }
 
   // useEffect(() => {
   //   getRoomBooking();

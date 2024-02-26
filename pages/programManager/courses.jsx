@@ -7,9 +7,10 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 import UploadCourses from './UploadCourses';
 import { saveAs } from 'file-saver';
+import ExcelJS from 'exceljs';
 
 export default function Courses() {
   const { data: session } = useSession();
@@ -23,10 +24,9 @@ export default function Courses() {
   const router = useRouter();
   const [type, setType] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
+  const [DataCourseType, setDataCourseType] = useState([]);
 
-  const headerCourse = [
-    ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
-  ];
+
 
   const redirect = () => {
     router.push('/AccessDenied');
@@ -68,6 +68,16 @@ export default function Courses() {
   useEffect(() => {
     handleShowAll();
     getAllType();
+    const fetchCourseType= async () => {
+      try {
+        const table = 'course_type';
+        const data = await axios.post('/api/pmApi/getAll', { table });
+        setDataCourseType(data.data.rows);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchCourseType();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,38 +114,62 @@ export default function Courses() {
   const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
 
   const isExeMajor = firstMajorWord === "EXED";
-  const calculateColumnWidths = (data) => {
-    const columnWidths = data[0].map((col, colIndex) => {
-      const maxContentWidth = data.reduce((max, row) => {
-        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-        const contentWidth = cellContent.length;
-        return Math.max(max, contentWidth);
-      }, col.length);
+  // const calculateColumnWidths = (data) => {
+  //   const columnWidths = data[0].map((col, colIndex) => {
+  //     const maxContentWidth = data.reduce((max, row) => {
+  //       const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+  //       const contentWidth = cellContent.length;
+  //       return Math.max(max, contentWidth);
+  //     }, col.length);
 
-      return { wch: maxContentWidth };
+  //     return { wch: maxContentWidth };
+  //   });
+
+  //   return columnWidths;
+  // };
+  const createExcelTemplateCourse = async () => {
+    if (!Array.isArray(DataCourseType) || DataCourseType.length === 0) {
+        console.error("DataCourseType is empty or not an array");
+        return;
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Course');
+
+    // Add header row
+   sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+
+    // Define the list of valid CourseType options
+    const courseTypeOptions = DataCourseType.map(course => course.course_type);
+
+    // Add data row with selected major
+   sheet.addRow(['', '', '', '', session.user?.majorName]);
+
+    // Set default column widths
+    sheet.columns.forEach((column, index) => {
+        if (index === 4) {
+            column.width = 38; // Set a larger width for the last column
+        } else {
+            column.width = 15; // Set default width for other columns
+        }
     });
 
-    return columnWidths;
-  };
-  const createExcelTemplateCourse = () => {
-    const majors = session.user?.majorName
-    const data = headerCourse.concat([
-      ['', '', '', '', majors], // MajorName data
-    ])
-
-    const columnWidths = calculateColumnWidths(data);
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Course');
-
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // Apply data validation to all cells in the "CourseType" column
+    const courseTypeColumn = sheet.getColumn('D');
+    courseTypeColumn.eachCell((cell, rowNumber) => {
+        if (rowNumber > 1) { // Skip header row
+            cell.dataValidation = {
+                type: 'list',
+                formulae: [`"${courseTypeOptions.join(',')}"`], // Apply the dropdown list to each cell in the "CourseType" column
+            };
+        }
     });
+
+    // Generate Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const excelBlob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(excelBlob, 'course.xlsx');
-  };
+};
 
 
 

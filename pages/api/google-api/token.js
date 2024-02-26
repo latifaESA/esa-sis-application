@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         const oauth2Client = new google.auth.OAuth2({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            redirectUri: 'http://localhost:3001', // Set the redirect URI to match your application configuration
+            redirectUri: 'http://localhost:3001',
         });
 
         const { tokens } = await oauth2Client.getToken(code);

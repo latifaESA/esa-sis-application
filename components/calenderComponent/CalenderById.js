@@ -103,13 +103,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [confirmOccupied, setConfirmOccupied] = useState(false);
   const [zoomUserId, setZoomUserId] = useState()
   const [zoom_id, setZoomID] = useState()
-  const [googleToken, setGoogleToken] = useState('')
+  const [googleToken, setGoogleToken] = useState([])
 
   const [courseName, setCourseName] = useState('')
 
   const [allCourses, setAllCourses] = useState([]);
+  const [studentGoogle, setStudentGoogleAccess] = useState([]);
 
-
+  const [urlZoom , setZoomUrl] = useState('')
   const getAllRooms = async () => {
     try {
       let table = 'rooms';
@@ -137,7 +138,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
       const data = await response.json();
       await axios.post('/api/pmApi/createBooking', {
-        booking:data.d.results
+        booking: data.d.results
       })
       // if (data.d.results.length > 0) {
       //   const start = new Date().getMilliseconds()
@@ -145,7 +146,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
 
 
-          // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+      // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
 
 
       //     // Make the API call
@@ -212,7 +213,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
-      
+
       const formattedDate = moment(day).format('YYYY-MM-DD');
       const access_token = await getZoomToken();
 
@@ -319,7 +320,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   }
 
-  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime , toTime) => {
+  const handleUpdateZoom = async (zoom_id, scheduleDate, title, fromTime, toTime) => {
     try {
 
 
@@ -345,8 +346,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         date: utcDateTime,
         classId: title,
         createAt: utcDateTime,
-        minDuration:minutesDifference
-    
+        minDuration: minutesDifference
+
       }
 
       await axios.post('/api/zoom_api/updateZoom', payload)
@@ -434,11 +435,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         is_online: sched.is_online,
         attendance_id: sched.attendance_id,
         zoom_meeting_id: sched.zoom_meeting_id,
+        zoom_url:sched.zoom_url,
         color: '#00CED1',
       });
     });
 
     setScheduleDate(datesArray);
+    console.log(schedule)
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -789,8 +792,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           if (ev.is_online === true) {
             if (data.success) {
               const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
-              await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+              await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data , response.zoom_url)
+              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to , attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -798,7 +801,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           } else {
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+              await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to , attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -942,6 +945,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             major_id,
             promotion,
           });
+          await handleAccessToken(data.data)
           setStudent(data.data);
           setHasFetched(true);
         } else {
@@ -955,6 +959,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               '/api/pmApi/getStudentAssign',
               payload
             );
+            await handleAccessToken(data.data.data)
             setStudent(data.data.data);
             setHasFetched(true);
           } catch (error) {
@@ -966,11 +971,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               major_id,
               promotion,
             });
-            const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
-              oldRefreshToken: data.data[0].access_token
-            })
-
-            setGoogleToken(refreshToken.data.data)
+            console.log('data.data' , data.data)
+            await handleAccessToken(data.data)
 
             setStudent(data.data);
             setHasFetched(true);
@@ -981,6 +983,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       }
     }
   };
+
 
   const handleCreateAttendance = () => {
     return new Promise((resolve, reject) => {
@@ -996,12 +999,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           .then((response1) => {
             const teacher_id = response1.data.data[0].teacher_id;
             const course_id = response1.data.data[0].course_id;
-
             const payload = {
               teacher_id,
               course_id,
               attendance_date: modifyDate(theDate),
-              major_id: majorId,
+              major_id: session.user?.majorid,
               fromTime: fromTime,
               toTime: toTime,
               room_id: place,
@@ -1009,29 +1011,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
             axios
               .post('/api/pmApi/createAttendanceReport', payload)
-              .then((response2) => {
+              .then(async (response2) => {
                 const attendance_id = response2.data.data;
 
                 if (attendance_id) {
-                  const createAttendanceStudentPromises = student.map((s) => {
-                    return axios.post('/api/pmApi/createAttendanceStudent', {
-                      attendance_id,
-                      student_id: s.student_id,
-                    });
+                  await axios.post('/api/pmApi/createAttendanceStudent', {
+                    attendance_id,
+                    student_id: student,
                   });
 
-                  Promise.all(createAttendanceStudentPromises)
-                    .then(() => {
-                      resolve(response2);
-                      setSelect(false)
-                      setHasFetched(false)
-                    })
-                    .catch((error) => {
-                      reject(error);
-                    });
-                } else {
-                  resolve(response2);
                 }
+
+                resolve(response2);
               })
               .catch((error) => {
                 if (error.response && error.response.data.success === false) {
@@ -1050,7 +1041,6 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       }
     });
   };
-
   const getStudentsDragDrop = (ev) => {
     return new Promise((resolve, reject) => {
       if (ev.class_id != ' ') {
@@ -1090,6 +1080,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                       promotion,
                     }
                   );
+                  await handleAccessToken(data.data)
                   resolve(data.data);
                 } else {
                   const payload = {
@@ -1103,6 +1094,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                       '/api/pmApi/getStudentAssign',
                       payload
                     );
+                    await handleAccessToken(data.data.data)
                     resolve(data.data.data);
                   } catch (error) {
                     let major_id = majorId;
@@ -1117,6 +1109,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
                         promotion,
                       }
                     );
+                    await handleAccessToken(data.data)
                     resolve(data.data);
                   }
                 }
@@ -1164,13 +1157,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             const response = await getStudentsDragDrop(ev);
             const attendance_id = data.data.data;
             if (attendance_id) {
-              for (let i = 0; i < response.length; i++) {
-                const student_id = response[i].student_id;
+       
                 await axios.post('/api/pmApi/createAttendanceStudent', {
                   attendance_id,
-                  student_id,
+                  student_id:response,
                 });
-              }
             }
             resolve(data);
           })
@@ -1188,27 +1179,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     });
   };
 
-  // getDarkColor() is a function to get a random color
   const handleSave = async (e) => {
-
     e.preventDefault();
 
     try {
       setIsClick(true);
-      // console.log('roomName' , roomName)
-      // console.log('date' , theDate)
-      // const CheckRooms = await CheckRoomISharePoint(roomName , theDate )
-      // console.log('room' , CheckRooms)
-      // if (CheckRooms.ok && CheckRooms.result.d.results.length >0) {
-      // Room is not available, stop the process
-      // setConfirmOccupied(true);
-      // setMessage("Room not available");
-      // return; // Stop the process
-      // }else if(CheckRooms.ok && CheckRooms.result.d.results.length <= 0){
 
+      // Create attendance data
       const attendanceData = await handleCreateAttendance();
-      if (isOnline === 'true') {
 
+      // Proceed based on the type of class
+      if (isOnline === 'true') {
+        // Payload for online class
         const payload = {
           classID: classes,
           day: modifyDate(theDate),
@@ -1218,17 +1200,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           pm_id: session.user.userid,
           attendanceId: attendanceData.data.data,
           is_online: isOnline
-        }
+        };
+
+        // The rest of your code remains unchanged
         let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
         const response = await handleCreateZoomMeeting(courseName, theDate, fromTime, toTime)
+        await handleInsertGoogleEvent(theDate, fromTime, toTime, attendanceData.data.data, response.zoom_url)
 
 
         await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
-          await handleInsertGoogleEvent(theDate, fromTime, toTime)
-
           deleteTable()
           setShowForm(false);
           setIsClick(false);
@@ -1241,9 +1224,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         } setPortalData
 
       } else {
-
-
-        let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
+        // Payload for in-person class
+        const payload = {
           classID: classes,
           day: modifyDate(theDate),
           fromTime: fromTime,
@@ -1252,12 +1234,17 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           pm_id: session.user.userid,
           attendanceId: attendanceData.data.data,
           is_online: isOnline
-        });
+        };
+
+
+
+        // The rest of your code remains unchanged
+        let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
+
         // console.log("axios data ==>  ", place);
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceData.data.data)
-          await handleInsertGoogleEventOnSite(theDate, fromTime, toTime , roomName , building  )
-
+          await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
           setIsClick(false);
@@ -1274,14 +1261,42 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       // }
 
     } catch (error) {
-      return error;
+      console.error(error);
+      // Handle error
     }
-
-    // setShowForm(false)
   };
 
-  const handleOnClickEvent = (event) => {
+  const studentGoogleAccess = async(event)=>{
+    try {
+      const payload = {
+        table:'google_calendar',
+        Where:'attendence_id',
+        id:event.attendance_id
+      }
+      const response = await axios.post('/api/pmApi/getAllCourses', payload)
+      setStudentGoogleAccess(response)
+      const payload2 = {
+        table:'users',
+        Where:'userid',
+        id:response.data.data[0].user_id
+      }
+     
+      if(response.data.success === true){
+       
+        const response2 = await axios.post('/api/pmApi/getAllCourses', payload2)
+        await handleAccessToken(response2.data.data)
+      }
 
+
+    
+     
+    } catch (error) {
+      return error
+    }
+  }
+  const handleOnClickEvent = async(event) => {
+ 
+    await studentGoogleAccess(event)
     setConfirmOpenMessage(true);
     // setShowPortal(true);
     setPortalData(event);
@@ -1311,6 +1326,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName: 'attendance_id',
           id: portalData.attendanceId,
         };
+        const payload1 = {
+          table: 'google_calendar',
+          colName: 'attendence_id',
+          id: portalData.attendanceId,
+        };
+        await deleteFromGoogleCalendar(studentGoogle)
+        await axios.post('/api/pmApi/delete', payload1);
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
 
@@ -1345,6 +1367,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           colName: 'attendance_id',
           id: portalData.attendanceId,
         };
+        const payload1 = {
+          table: 'google_calendar',
+          colName: 'attendence_id',
+          id: portalData.attendanceId,
+        };
+        await deleteFromGoogleCalendar(studentGoogle)
+        await axios.post('/api/pmApi/delete', payload1);
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
 
@@ -1442,7 +1471,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
   const handleEdit = async (e, event, date) => {
 
+    await studentGoogleAccess(event)
     // searchBook()
+    setZoomUrl(event.zoom_url)
     setCourseName(event.title)
     setAttendanceId(event.attendance_id)
     setSharePointId(event.sharepoint_id)
@@ -1522,9 +1553,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
+       
 
         if (data.success) {
-          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime , toTime)
+
+          await handleUpdateZoom(zoom_id, theDate, courseName, fromTime, toTime)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle ,urlZoom)
+
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1536,9 +1571,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
+       
         if (data.success) {
+          await handleUpdateGoogleCalender(schedData, studentGoogle , roomName , building)
+
 
           await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1554,11 +1593,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
+        
+
 
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
           const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime, toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle , response.zoom_url)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
           })
@@ -1575,17 +1617,23 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           schedData
         );
         if (data.success) {
+
           await handleSharePointBookingRoom(theDate, attendanceId)
+          await handleUpdateGoogleCalender(schedData, studentGoogle ,roomName , building)
+
           await handleDeleteZoom(zoom_id)
           await axios.post('/api/pmApi/deleteZoomSchedule', {
             attendance_id: attendanceId
           })
+          
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
           setIsOnline('')
           if (isOnline === false) {
             await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+            await handleUpdateGoogleCalender(schedData, studentGoogle , roomName , building)
+
             getData();
             setIsClickEdit(false);
             setShowFormEdit(false);
@@ -1800,72 +1848,83 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return error
     }
   };
-  const handleInsertGoogleEvent = async (day, fromTime, to_time) => {
-
+  const handleAccessToken = async (studentDetails) => {
+    console.log('studentDetails' , studentDetails)
     try {
-
-      const accessToken = googleToken
-      // Define the schedule data
-      const formattedDate = moment(day).format('YYYY-MM-DD');
-      // Combine the date and time and format it as a full ISO string
-      const localDateTime = `${formattedDate}T${fromTime}:00`;
-      const localDateToTime = `${formattedDate}T${to_time}:00`;
-
-        const schedule = {
-          summary: `${courseName}`,
-          description: `Online`,
-          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
-          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
-        };
-   
-
-
-        await axios.post('/api/google-api/addSchedule', {
-        access_token: accessToken,
-        event: schedule
+      const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
+        oldRefreshToken: studentDetails
       })
-      
-      // console.log('response', response)
-      // await axios.post('/api/pmApi/fillGoogleCalender' , {
-      //   student_id: '2024124599',
-      //   event_id:response.event.id
 
-      // })
+      setGoogleToken(refreshToken.data.data)
     } catch (error) {
       return error
     }
   }
 
-  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time , roomName , building) => {
+console.log('googleToken' , googleToken)
+
+  const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 
     try {
-   
+
       const accessToken = googleToken
       // Define the schedule data
       const formattedDate = moment(day).format('YYYY-MM-DD');
       // Combine the date and time and format it as a full ISO string
       const localDateTime = `${formattedDate}T${fromTime}:00`;
       const localDateToTime = `${formattedDate}T${to_time}:00`;
-    
 
-         const schedule = {
-          summary: `${courseName}`,
-          description: `Room-${roomName } building-${building}`,
-          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
-          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
-        };
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Online-${zoomURL}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
 
-      const response = await axios.post('/api/google-api/addSchedule', {
-        access_token: accessToken,
-        event: schedule
+
+
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
       })
-      
-      console.log('response', response)
+
+
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time, roomName, building, attendanceId) => {
+
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+
+
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Room-${roomName} building-${building}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
+      })
+
+
       // if(response.statusText === 'OK'){
       //  const logs= await axios.post('/api/pmApi/fillgoogleCalender' , {
       //     student_id: '2024124599',
       //     event_id:response.data.event.id
-  
+
       //   })
       //   console.log(logs)
       // }
@@ -1875,6 +1934,85 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   }
 
+  const deleteFromGoogleCalendar = async(event_id)=>{
+    try {
+     
+      const payload = {
+        access_token :googleToken,
+        eventId:event_id
+      }
+       await axios.post(`/api/google-api/deleteSchedule` , payload)
+    } catch (error) {
+      return error
+    }
+   }
+
+   const handleUpdateGoogleCalender = async (data, event_id , roomName ,roomBuilding) => {
+    try {
+      const formattedDate = moment(data.day).format('YYYY-MM-DD');
+      let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
+      let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
+  
+      // Check if the time is in PM or AM format and adjust if needed
+      if (!fromTime.isValid() || !toTime.isValid()) {
+        throw new Error('Invalid time format');
+      }
+  
+      const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
+      const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
+  
+      const newData = {
+        summary: `${courseName}`,
+        description: `R-${roomName}-B-${roomBuilding}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+  
+      const payload = {
+        accessToken: googleToken,
+        eventId: event_id,
+        newData: newData,
+      };
+  
+      await axios.post('/api/google-api/updateSchedule', payload);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const handleUpdateGoogleCalenderZoom = async (data, event_id , zoomURL) => {
+    try {
+      console.log(zoomURL)
+      const formattedDate = moment(data.day).format('YYYY-MM-DD');
+      let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
+      let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
+  
+      // Check if the time is in PM or AM format and adjust if needed
+      if (!fromTime.isValid() || !toTime.isValid()) {
+        throw new Error('Invalid time format');
+      }
+  
+      const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
+      const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
+  
+      const newData = {
+        summary: `${courseName}`,
+        description: `Online-${zoomURL}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+  
+      const payload = {
+        accessToken: googleToken,
+        eventId: event_id,
+        newData: newData,
+      };
+  
+      await axios.post('/api/google-api/updateSchedule', payload);
+    } catch (error) {
+      return error;
+    }
+  };
 
 
 
@@ -2256,137 +2394,137 @@ const AddSchedule = ({
   // console.log(allrooms , 'allrooms')
 
   return (
-<>
-  <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
-    <div className="relative w-full max-w-2xl mx-auto my-6">
-      {/* Modal content */}
-      <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
-        {/* Modal header */}
-        <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
-          <h3 className="text-gray-700 text-3xl font-bold">
-            Update Schedule
-          </h3>
-          <button
-            className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-            onClick={handleClose}
-          >
-            <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
-          </button>
-        </div>
-        {/* Modal body */}
-        <div className="p-6 flex-column overflow-y-scroll overflow-x-hidden">
-          {/* Form fields */}
-          <div className="flex flex-col mb-4">
-            <label className="text-gray-700 items-center">
-              Class:
-              {/* Start select box */}
-              <CustomSelectBox
-                options={classNames}
-                placeholder="Select Class"
-                onSelect={handleClass}
-                styled="font-medium h-auto justify-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                oldvalue={theclass}
-              />
-            </label>
-          </div>
-          <div className="flex flex-col md:flex-row mb-6">
-            <div className="flex flex-col">
-              <label className="text-gray-700 mr-20">
-                From:
-                <input
-                  type="time"
-                  value={formatTimeForInput(thefrom)}
-                  onChange={handleFrom}
-                  className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                />
-              </label>
-            </div>
-            <div className="flex flex-col">
-              <label className="text-gray-700">
-                To:
-                <input
-                  type="time"
-                  value={formatTimeForInput(theto)}
-                  onChange={handleTo}
-                  className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                />
-              </label>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row mb-6">
-            <label className="text-gray-700 mr-20">
-              Type:
-              <select
-                className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                onChange={(e) => setIsOnline(e.target.value)}
-                value={isOnline}
+    <>
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
+        <div className="relative w-full max-w-2xl mx-auto my-6">
+          {/* Modal content */}
+          <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+            {/* Modal header */}
+            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
+              <h3 className="text-gray-700 text-3xl font-bold">
+                Update Schedule
+              </h3>
+              <button
+                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={handleClose}
               >
-                <option value="true">Online</option>
-                <option value="false">Onsite</option>
-              </select>
-            </label>
-          </div>
-          {/* Location selection */}
-          {isOnline === false || isOnline === 'false' ? (
-            <div className="flex flex-col md:flex-row mb-6">
-              <div className="flex flex-col">
-                <label className="text-gray-700 mr-20">
-                  Building :
+                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
+              </button>
+            </div>
+            {/* Modal body */}
+            <div className="p-6 flex-column overflow-y-scroll overflow-x-hidden">
+              {/* Form fields */}
+              <div className="flex flex-col mb-4">
+                <label className="text-gray-700 items-center">
+                  Class:
+                  {/* Start select box */}
                   <CustomSelectBox
-                    options={allStages}
-                    placeholder="Select Location"
-                    onSelect={handleStages}
-                    styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                    enable={false}
-                    oldvalue={theroombuilding}
+                    options={classNames}
+                    placeholder="Select Class"
+                    onSelect={handleClass}
+                    styled="font-medium h-auto justify-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                    oldvalue={theclass}
                   />
                 </label>
               </div>
-              <div className="flex flex-col">
-                {(theroombuilding?.length > 0 ||
-                  (building.length > 0 && allrooms.length > 0)) && (
+              <div className="flex flex-col md:flex-row mb-6">
+                <div className="flex flex-col">
                   <label className="text-gray-700 mr-20">
-                    Location :
-                    <CustomSelectBox
-                      options={
-                        remainingRooms.length > 0
-                          ? remainingRooms
-                          : allroomsRef.current
-                      }
-                      placeholder="Select Location"
-                      onSelect={handlePlace}
-                      styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                      enable={false}
-                      oldvalue={theroomname}
+                    From:
+                    <input
+                      type="time"
+                      value={formatTimeForInput(thefrom)}
+                      onChange={handleFrom}
+                      className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
                     />
                   </label>
-                )}
+                </div>
+                <div className="flex flex-col">
+                  <label className="text-gray-700">
+                    To:
+                    <input
+                      type="time"
+                      value={formatTimeForInput(theto)}
+                      onChange={handleTo}
+                      className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                    />
+                  </label>
+                </div>
               </div>
+              <div className="flex flex-col md:flex-row mb-6">
+                <label className="text-gray-700 mr-20">
+                  Type:
+                  <select
+                    className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                    onChange={(e) => setIsOnline(e.target.value)}
+                    value={isOnline}
+                  >
+                    <option value="true">Online</option>
+                    <option value="false">Onsite</option>
+                  </select>
+                </label>
+              </div>
+              {/* Location selection */}
+              {isOnline === false || isOnline === 'false' ? (
+                <div className="flex flex-col md:flex-row mb-6">
+                  <div className="flex flex-col">
+                    <label className="text-gray-700 mr-20">
+                      Building :
+                      <CustomSelectBox
+                        options={allStages}
+                        placeholder="Select Location"
+                        onSelect={handleStages}
+                        styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                        enable={false}
+                        oldvalue={theroombuilding}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex flex-col">
+                    {(theroombuilding?.length > 0 ||
+                      (building.length > 0 && allrooms.length > 0)) && (
+                        <label className="text-gray-700 mr-20">
+                          Location :
+                          <CustomSelectBox
+                            options={
+                              remainingRooms.length > 0
+                                ? remainingRooms
+                                : allroomsRef.current
+                            }
+                            placeholder="Select Location"
+                            onSelect={handlePlace}
+                            styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
+                            enable={false}
+                            oldvalue={theroomname}
+                          />
+                        </label>
+                      )}
+                  </div>
+                </div>
+              ) : null}
             </div>
-          ) : null}
-        </div>
-        {/* Modal footer */}
-        <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
-          <button
-            className={`primary-button btnCol text-white hover:text-white hover:font-bold mr-4 ${clickEdit && 'opacity-50 cursor-not-allowed'}`}
-            type="button"
-            onClick={handleSave}
-            disabled={clickEdit}
-          >
-            Save
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
-            type="button"
-            onClick={handleClose}
-          >
-            Cancel
-          </button>
+            {/* Modal footer */}
+            <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
+              <button
+                className={`primary-button btnCol text-white hover:text-white hover:font-bold mr-4 ${clickEdit && 'opacity-50 cursor-not-allowed'}`}
+                type="button"
+                onClick={handleSave}
+                disabled={clickEdit}
+              >
+                Save
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                type="button"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</>
+    </>
 
   );
 
