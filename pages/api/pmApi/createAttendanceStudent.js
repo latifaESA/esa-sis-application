@@ -5,15 +5,24 @@ async function handler(req, res) {
   try {
     const connection = await connect();
     const { attendance_id, student_id } = req.body;
-    await createAttendanceStudent(connection, student_id, attendance_id);
-    // // console.log(response)
-    await disconnect(connection);
 
-    return res.status(201).json({
-      success: true,
-      code: 201,
-      message: "Student Report Create Successfully",
-    });
+    if (student_id.length > 0) {
+      for (let i = 0; i < student_id.length; i++) {
+        const result = await createAttendanceStudent(connection, student_id[i].student_id, attendance_id);
+        console.log('result' , result)
+
+      }
+      // // console.log(response)
+      await disconnect(connection);
+
+      return res.status(201).json({
+        success: true,
+        code: 201,
+        message: "Student Report Create Successfully",
+      });
+
+    }
+
   } catch (error) {
     return res.status(500).json({
       success: false,

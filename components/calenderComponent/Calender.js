@@ -105,10 +105,11 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [zoom_id, setZoomID] = useState()
 
   const [courseName, setCourseName] = useState('')
-  const [googleToken, setGoogleToken] = useState('')
+  const [googleToken, setGoogleToken] = useState([])
 
   const [allCourses, setAllCourses] = useState([]);
-
+  const [studentGoogle, setStudentGoogleAccess] = useState([]);
+  const [urlZoom, setZoomUrl] = useState('')
   const getAllRooms = async () => {
     try {
       let table = 'rooms';
@@ -441,6 +442,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         is_online: sched.is_online,
         attendance_id: sched.attendance_id,
         zoom_meeting_id: sched.zoom_meeting_id,
+        zoom_url: sched.zoom_url,
         color: '#00CED1',
       });
     });
@@ -811,14 +813,14 @@ export const Calender = ({ schedule, setSchedule }) => {
             if (data.success) {
               const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
               await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, response.zoom_url)
               setStudent([]);
               getData();
             }
           } else {
             if (data.success) {
               await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to)
+              await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -932,6 +934,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student, select]);
+  console.log('student', student)
 
   const getStudentSchedule = async () => {
     if (select && !hasFetched) {
@@ -960,6 +963,7 @@ export const Calender = ({ schedule, setSchedule }) => {
             major_id,
             promotion,
           });
+          await handleAccessToken(data.data)
           setStudent(data.data);
           setHasFetched(true);
         } else {
@@ -973,6 +977,8 @@ export const Calender = ({ schedule, setSchedule }) => {
               '/api/pmApi/getStudentAssign',
               payload
             );
+            await handleAccessToken(data.data.data)
+            setHasFetched(true)
             setStudent(data.data.data);
           } catch (error) {
             let major_id = session.user?.majorid;
@@ -983,11 +989,8 @@ export const Calender = ({ schedule, setSchedule }) => {
               major_id,
               promotion,
             });
-            const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
-              oldRefreshToken: data.data[0].access_token
-            })
+            await handleAccessToken(data.data)
 
-            setGoogleToken(refreshToken.data.data)
 
             setStudent(data.data);
             setHasFetched(true);
@@ -1026,27 +1029,18 @@ export const Calender = ({ schedule, setSchedule }) => {
 
             axios
               .post('/api/pmApi/createAttendanceReport', payload)
-              .then((response2) => {
+              .then(async (response2) => {
                 const attendance_id = response2.data.data;
 
                 if (attendance_id) {
-                  const createAttendanceStudentPromises = student.map((s) => {
-                    return axios.post('/api/pmApi/createAttendanceStudent', {
-                      attendance_id,
-                      student_id: s.student_id,
-                    });
+                  await axios.post('/api/pmApi/createAttendanceStudent', {
+                    attendance_id,
+                    student_id: student,
                   });
 
-                  Promise.all(createAttendanceStudentPromises)
-                    .then(() => {
-                      resolve(response2);
-                    })
-                    .catch((error) => {
-                      reject(error);
-                    });
-                } else {
-                  resolve(response2);
                 }
+
+                resolve(response2);
               })
               .catch((error) => {
                 if (error.response && error.response.data.success === false) {
@@ -1065,6 +1059,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       }
     });
   };
+
 
   const getStudentsDragDrop = (ev) => {
     return new Promise((resolve, reject) => {
@@ -1105,6 +1100,7 @@ export const Calender = ({ schedule, setSchedule }) => {
                       promotion,
                     }
                   );
+                  await handleAccessToken(data.data)
                   resolve(data.data);
                   setHasFetched(true);
                 } else {
@@ -1119,6 +1115,8 @@ export const Calender = ({ schedule, setSchedule }) => {
                       '/api/pmApi/getStudentAssign',
                       payload
                     );
+                    await handleAccessToken(data.data.data)
+
                     resolve(data.data.data);
                   } catch (error) {
                     let major_id = session.user?.majorid;
@@ -1133,6 +1131,7 @@ export const Calender = ({ schedule, setSchedule }) => {
                         promotion,
                       }
                     );
+                    await handleAccessToken(data.data)
                     resolve(data.data);
                     setHasFetched(true);
                   }
@@ -1180,13 +1179,11 @@ export const Calender = ({ schedule, setSchedule }) => {
             const response = await getStudentsDragDrop(ev);
             const attendance_id = data.data.data;
             if (attendance_id) {
-              for (let i = 0; i < response.length; i++) {
-                const student_id = response[i].student_id;
-                await axios.post('/api/pmApi/createAttendanceStudent', {
-                  attendance_id,
-                  student_id,
-                });
-              }
+
+              await axios.post('/api/pmApi/createAttendanceStudent', {
+                attendance_id,
+                student_id: response,
+              });
             }
             resolve(data);
           })
@@ -1206,27 +1203,20 @@ export const Calender = ({ schedule, setSchedule }) => {
 
   // getDarkColor() is a function to get a random color
   const handleSave = async (e) => {
-
     e.preventDefault();
 
     try {
       setIsClick(true);
-      // console.log('roomName' , roomName)
-      // console.log('date' , theDate)
-      // const CheckRooms = await CheckRoomISharePoint(roomName , theDate )
-      // console.log('room' , CheckRooms)
-      // if (CheckRooms.ok && CheckRooms.result.d.results.length >0) {
-      // Room is not available, stop the process
-      // setConfirmOccupied(true);
-      // setMessage("Room not available");
-      // return; // Stop the process
-      // }else if(CheckRooms.ok && CheckRooms.result.d.results.length <= 0){
 
+      // Create attendance data
       const attendanceData = await handleCreateAttendance();
+
+      // Proceed based on the type of class
       if (isOnline === 'true') {
+        // Payload for online class
         const payload = {
           classID: classes,
-          day: modifyDate(theDate), // Call a function to modify the date
+          day: modifyDate(theDate),
           fromTime: fromTime,
           toTime: toTime,
           room_id: '75',
@@ -1238,7 +1228,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         // The rest of your code remains unchanged
         let { data } = await axios.post('/api/pmApi/createSingleSchedule', payload);
         const response = await handleCreateZoomMeeting(courseName, theDate, fromTime, toTime)
-        await handleInsertGoogleEvent(theDate, fromTime, toTime)
+        await handleInsertGoogleEvent(theDate, fromTime, toTime, attendanceData.data.data, response.zoom_url)
 
 
         await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data)
@@ -1257,9 +1247,10 @@ export const Calender = ({ schedule, setSchedule }) => {
         } setPortalData
 
       } else {
+        // Payload for in-person class
         const payload = {
           classID: classes,
-          day: modifyDate(theDate), // Call a function to modify the date
+          day: modifyDate(theDate),
           fromTime: fromTime,
           toTime: toTime,
           room_id: place,
@@ -1276,7 +1267,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         // console.log("axios data ==>  ", place);
         if (data.success) {
           await handleSharePointBookingRoom(theDate, attendanceData.data.data)
-          await handleInsertGoogleEventOnSite(theDate, fromTime, toTime , roomName , building  )
+          await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
           setIsClick(false);
@@ -1293,14 +1284,46 @@ export const Calender = ({ schedule, setSchedule }) => {
       // }
 
     } catch (error) {
-      return error;
+      console.error(error);
+      // Handle error
     }
-
-    // setShowForm(false)
   };
 
-  const handleOnClickEvent = (event) => {
+
+  const studentGoogleAccess = async (event) => {
+    try {
+      const payload = {
+        table: 'google_calendar',
+        Where: 'attendence_id',
+        id: event.attendance_id
+      }
+      const response = await axios.post('/api/pmApi/getAllCourses', payload)
+      setStudentGoogleAccess(response)
+      const payload2 = {
+        table: 'users',
+        Where: 'userid',
+        id: response.data.data[0].user_id
+      }
+
+      if (response.data.success === true) {
+
+        const response2 = await axios.post('/api/pmApi/getAllCourses', payload2)
+        console.log('response2', response2)
+        await handleAccessToken(response2.data.data)
+      }
+
+
+
+
+    } catch (error) {
+      return error
+    }
+  }
+  const handleOnClickEvent = async (event) => {
+
+    await studentGoogleAccess(event)
     setConfirmOpenMessage(true);
+    setZoomUrl(event.zoom_url)
     // setShowPortal(true);
     setPortalData(event);
   };
@@ -1329,6 +1352,13 @@ export const Calender = ({ schedule, setSchedule }) => {
           colName: 'attendance_id',
           id: portalData.attendanceId,
         };
+        const payload1 = {
+          table: 'google_calendar',
+          colName: 'attendence_id',
+          id: portalData.attendanceId,
+        };
+        await deleteFromGoogleCalendar(studentGoogle)
+        await axios.post('/api/pmApi/delete', payload1);
         await axios.post('/api/pmApi/delete', payload);
         // console.log(data1)
 
@@ -1363,8 +1393,15 @@ export const Calender = ({ schedule, setSchedule }) => {
           colName: 'attendance_id',
           id: portalData.attendanceId,
         };
-        const data1 = await axios.post('/api/pmApi/delete', payload);
-        console.log(data1)
+        const payload1 = {
+          table: 'google_calendar',
+          colName: 'attendence_id',
+          id: portalData.attendanceId,
+        };
+        await deleteFromGoogleCalendar(studentGoogle)
+        await axios.post('/api/pmApi/delete', payload1);
+        await axios.post('/api/pmApi/delete', payload);
+        // console.log(data1)
 
         let table = 'tmpschedule';
         let colName = 'tmpschedule_id';
@@ -1396,6 +1433,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
     // // console.log(id)
   };
+
 
   // Your client-side code
   const getSharePointToken = async () => {
@@ -1460,7 +1498,9 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
   const handleEdit = async (e, event, date) => {
 
+    await studentGoogleAccess(event)
     // searchBook()
+    setZoomUrl(event.zoom_url)
     setCourseName(event.title)
     setAttendanceId(event.attendance_id)
     setSharePointId(event.sharepoint_id)
@@ -1541,9 +1581,12 @@ export const Calender = ({ schedule, setSchedule }) => {
           schedData
         );
 
+
         if (data.success) {
 
           await handleUpdateZoom(zoom_id, theDate, courseName, fromTime, toTime)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle, urlZoom)
+
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1555,9 +1598,13 @@ export const Calender = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
+
         if (data.success) {
+          await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
+
 
           await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+
           getData();
           setIsOnline('')
           setIsClickEdit(false);
@@ -1574,10 +1621,13 @@ export const Calender = ({ schedule, setSchedule }) => {
           schedData
         );
 
+
+
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
           const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime, toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle, response.zoom_url)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
           })
@@ -1594,17 +1644,23 @@ export const Calender = ({ schedule, setSchedule }) => {
           schedData
         );
         if (data.success) {
+
           await handleSharePointBookingRoom(theDate, attendanceId)
+          await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
+
           await handleDeleteZoom(zoom_id)
           await axios.post('/api/pmApi/deleteZoomSchedule', {
             attendance_id: attendanceId
           })
+
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
           setIsOnline('')
           if (isOnline === false) {
             await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+            await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
+
             getData();
             setIsClickEdit(false);
             setShowFormEdit(false);
@@ -1821,72 +1877,83 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
 
-  const handleInsertGoogleEvent = async (day, fromTime, to_time) => {
-
+  const handleAccessToken = async (studentDetails) => {
     try {
-
-      const accessToken = googleToken
-      // Define the schedule data
-      const formattedDate = moment(day).format('YYYY-MM-DD');
-      // Combine the date and time and format it as a full ISO string
-      const localDateTime = `${formattedDate}T${fromTime}:00`;
-      const localDateToTime = `${formattedDate}T${to_time}:00`;
-
-        const schedule = {
-          summary: `${courseName}`,
-          description: `Online`,
-          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
-          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
-        };
-   
-
-
-      const response = await axios.post('/api/google-api/addSchedule', {
-        access_token: accessToken,
-        event: schedule
+      const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
+        oldRefreshToken: studentDetails
       })
-      
-      console.log('response', response)
-      // await axios.post('/api/pmApi/fillGoogleCalender' , {
-      //   student_id: '2024124599',
-      //   event_id:response.event.id
 
-      // })
+      setGoogleToken(refreshToken.data.data)
     } catch (error) {
       return error
     }
   }
 
-  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time , roomName , building) => {
+
+
+  const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 
     try {
-   
+
       const accessToken = googleToken
       // Define the schedule data
       const formattedDate = moment(day).format('YYYY-MM-DD');
       // Combine the date and time and format it as a full ISO string
       const localDateTime = `${formattedDate}T${fromTime}:00`;
       const localDateToTime = `${formattedDate}T${to_time}:00`;
-    
 
-         const schedule = {
-          summary: `${courseName}`,
-          description: `Room-${roomName } building-${building}`,
-          start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
-          end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
-        };
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Online-${zoomURL}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
 
-      const response = await axios.post('/api/google-api/addSchedule', {
-        access_token: accessToken,
-        event: schedule
+
+
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
       })
-      
-      console.log('response', response)
+
+
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleInsertGoogleEventOnSite = async (day, fromTime, to_time, roomName, building, attendanceId) => {
+
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+
+
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Room-${roomName} building-${building}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+
+      await axios.post('/api/google-api/addSchedule', {
+        access_Token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
+      })
+
+
       // if(response.statusText === 'OK'){
       //  const logs= await axios.post('/api/pmApi/fillgoogleCalender' , {
       //     student_id: '2024124599',
       //     event_id:response.data.event.id
-  
+
       //   })
       //   console.log(logs)
       // }
@@ -1896,6 +1963,87 @@ export const Calender = ({ schedule, setSchedule }) => {
     }
   }
 
+  const deleteFromGoogleCalendar = async (event_id) => {
+    try {
+
+      const payload = {
+        access_token: googleToken,
+        eventId: event_id
+      }
+      await axios.post(`/api/google-api/deleteSchedule`, payload)
+    } catch (error) {
+      return error
+    }
+  }
+
+
+
+  const handleUpdateGoogleCalender = async (data, event_id, roomName, roomBuilding) => {
+    try {
+      const formattedDate = moment(data.day).format('YYYY-MM-DD');
+      let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
+      let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
+
+      // Check if the time is in PM or AM format and adjust if needed
+      if (!fromTime.isValid() || !toTime.isValid()) {
+        throw new Error('Invalid time format');
+      }
+
+      const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
+      const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
+
+      const newData = {
+        summary: `${courseName}`,
+        description: `R-${roomName}-B-${roomBuilding}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+
+      const payload = {
+        accessToken: googleToken,
+        eventId: event_id,
+        newData: newData,
+      };
+
+      await axios.post('/api/google-api/updateSchedule', payload);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const handleUpdateGoogleCalenderZoom = async (data, event_id, zoomURL) => {
+    try {
+      console.log(zoomURL)
+      const formattedDate = moment(data.day).format('YYYY-MM-DD');
+      let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
+      let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
+
+      // Check if the time is in PM or AM format and adjust if needed
+      if (!fromTime.isValid() || !toTime.isValid()) {
+        throw new Error('Invalid time format');
+      }
+
+      const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
+      const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
+
+      const newData = {
+        summary: `${courseName}`,
+        description: `Online-${zoomURL}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+
+      const payload = {
+        accessToken: googleToken,
+        eventId: event_id,
+        newData: newData,
+      };
+
+      await axios.post('/api/google-api/updateSchedule', payload);
+    } catch (error) {
+      return error;
+    }
+  };
 
 
 

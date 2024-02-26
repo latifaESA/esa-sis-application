@@ -1630,8 +1630,9 @@ async function getStudentByYear(connection, major_id, academic_year) {
 }
 async function getStudentAssigned(connection, promotion, major_id, course_id) {
   try {
-    const query = `SELECT assign_student .* , student.student_firstname , student.student_lastname FROM assign_student 
+    const query = `SELECT assign_student .* , users.access_token ,student.student_firstname , student.student_lastname FROM assign_student 
     INNER JOIN student ON assign_student.student_id = student.student_id 
+    INNER JOIN users ON student.student_id = users.userid
     WHERE assign_student.promotion ='${promotion}' 
     AND assign_student.major_id='${major_id}' AND assign_student.course_id = '${course_id}'`;
     const res = await connection.query(query);
@@ -3684,9 +3685,10 @@ async function ExistGradesStudent(connection, student_id, course_id, task_name) 
   }
 }
 
-async function insertGoogleEventDetails(connection , student_id , event_id ){
+async function insertGoogleEventDetails(connection , student_id , event_id , attendance_id){
   try {
-    const query = `INSERT INTO google_calendar (user_id , event_id) VALUES ('${student_id}' , '${event_id}')`
+    const query = `INSERT INTO google_calendar (user_id , event_id , attendence_id) VALUES ('${student_id}' , '${event_id}' , '${attendance_id}')`
+    console.log('query' , query)
     const res = connection.query(query)
     return res
   } catch (error) {

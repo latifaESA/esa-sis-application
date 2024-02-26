@@ -92,7 +92,7 @@ async function handler(req, res) {
   //  let attendance_file = await fs.readdirSync(directory);
 
   return res.status(200).send({
-    url: `${env.NEXTAUTH_URL}/file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
+    url: `${env.NEXTAUTH_URL}file/sis/Sis-documents/attendance/attendance-${fields.attendance_id}-${fields.course_id}-${fields.teacher_id}-${fields.attendance_date}.${fields.ext}`,
   });
   //=======
   // eslint-disable-next-line no-unused-vars
