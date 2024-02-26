@@ -38,8 +38,8 @@ async function handler(req, res) {
   const LoggerExpiryDay = incomingData.LoggerExpiryDay;
   const LoggerMaxFileSize = incomingData.LoggerMaxFileSize;
 
+  const connection = await connect();
   try {
-    const connection = await connect();
 
     const existingtableID = await ReadDropdown(connection, "setting");
 
@@ -70,6 +70,8 @@ async function handler(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Failed to Update table", error });
+  }finally{
+    await disconnect(connection);
   }
 }
 

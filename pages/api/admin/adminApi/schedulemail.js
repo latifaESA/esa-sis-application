@@ -33,6 +33,7 @@ async function handler(req, res) {
         console.log("Email sent successfully.");
       } catch (error) {
         console.error("Error sending email:", error);
+        return;
       }
     });
 

@@ -92,11 +92,11 @@ async function handler(req, res) {
         userAgentinfo.family
       }=${userAgentinfo.source}=${userAgentinfo.device.family}`
     );
-    res.status(422).send({ message: "Failed to Save Folder", error });
+    return res.status(422).send({ message: "Failed to Save Folder", error });
     //throw error;
   }
   // Return a response
-  res.status(200).send({ reportURL: reportUrl });
+  return res.status(200).send({ reportURL: reportUrl });
 }
 
 export default handler;

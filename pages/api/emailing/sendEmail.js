@@ -16,6 +16,7 @@ require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 async function sendEmail(req, res) {
+  try{
   // const sendEmail = (req, res) => {
   // // console.log('sendEmail..........');
   // // console.log('req.body=', req.body);
@@ -115,5 +116,9 @@ async function sendEmail(req, res) {
     }
   });
   return;
+  }catch(error){
+    console.log('the error is in sendEmail.js in emailing in api : ', error)
+    return
+  }
 }
 export default sendEmail;

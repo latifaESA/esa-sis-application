@@ -12,6 +12,7 @@ import encrypt from "../../../utilities/encrypt_decrypt/encryptText";
 const handler = nextConnect();
 
 handler.get(async (req, res) => {
+  try{
   const major = req.query.major;
   const type = req.query.type;
   let response = {};
@@ -383,6 +384,11 @@ handler.get(async (req, res) => {
   }
   // Disconnect from the database only once
   await disconnect(connection);
+}catch(error){
+  console.log('the error is in Dropdownitems.js in controller in api : ', error)
+  return;
+}
 });
+
 
 export default handler;

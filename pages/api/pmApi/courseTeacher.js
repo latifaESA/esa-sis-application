@@ -24,6 +24,7 @@ async function handler(req, res) {
     }
   } catch (error) {
     // console.log(error);
+    console.log('the courseTeacher.js in the pmApi : ', error)
   }
 }
 module.exports = handler;

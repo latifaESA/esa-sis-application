@@ -65,7 +65,7 @@ async function handler(req, res) {
             }
         } catch (error) {
             // console.error('Error creating/updating event:', error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 code: 500,
                 message: error.message,
@@ -73,7 +73,7 @@ async function handler(req, res) {
         }
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             code: 500,
             message: error.message,

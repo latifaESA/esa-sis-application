@@ -85,6 +85,10 @@ async function handler(req, res) {
       );
       res.status(500).send({ message: "Internal Server Error" });
     }
+      finally{
+        await disconnect(connection);
+      }
+    
   } else {
     filter2 += `WHERE UserProfileID !='${user._id}' AND role !='0' AND role !='2' AND role!='3' AND isVerified !=0`;
 
@@ -119,9 +123,10 @@ async function handler(req, res) {
         }=${userAgentinfo.source}=${userAgentinfo.device.family}`
       );
       res.status(500).send({ message: "Internal Server Error" });
+    }finally{
+      await disconnect(connection);
     }
 
-    await disconnect(connection);
   }
 }
 

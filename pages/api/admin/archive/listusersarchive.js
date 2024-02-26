@@ -148,8 +148,9 @@ async function handler(req, res) {
       }=${userAgentinfo.source}=${userAgentinfo.device.family}`
     );
     res.status(500).send({ message: "Failed to get users", error });
+  }finally{
+    await disconnect(connection);
   }
-  await disconnect(connection);
 }
 
 export default handler;

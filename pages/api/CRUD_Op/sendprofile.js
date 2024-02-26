@@ -26,6 +26,7 @@ async function handler(req, res) {
   }
   const { user } = session;
 
+  try{
   // const secure_url = req.body;
   const cloudURL = req.body.cloudURL;
   let lastThreeChars = cloudURL.slice(-3);
@@ -95,6 +96,10 @@ async function handler(req, res) {
   // res.status(200).send({ reportURL: `/api/get-report?filePath=${encodeURIComponent(reportFilePath)}` });
   //res.status(200).send({ cloudURL: `/Files/Users/${user.ID.toString()}/Photo/${photoFileName}` });
   //res.status(200).send({ cloudURL: `/Files/Users/${user.ID.toString()}/Photo/${photoFileName}` });
-  res.status(200).send({ cloudURL: cloudURL });
+  return res.status(200).send({ cloudURL: cloudURL });
+  }catch(error){
+    console.log('the error is in sendprofile.js in CRUD_Op in api : ', error)
+    return
+  }
 }
 export default handler;

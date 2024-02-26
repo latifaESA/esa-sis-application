@@ -1,4 +1,5 @@
 const gpaToGrades = async (grade) => {
+  try{
   let gpa, rank;
 
   switch (true) {
@@ -56,5 +57,8 @@ const gpaToGrades = async (grade) => {
   }
 
   return { gpa, rank };
+}catch(error){
+  console.log('this error in gpa in pmApi : ', error)
+}
 }
 export default gpaToGrades

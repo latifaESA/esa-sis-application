@@ -35,7 +35,7 @@ const handler = async (req, res) => {
     // console.log('fields=:', fields);
     let url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
 
-    res.status(200).json({
+    return res.status(200).json({
       data: {
         url,
       },
@@ -43,10 +43,10 @@ const handler = async (req, res) => {
     });
   } catch (e) {
     if (e instanceof FormidableError) {
-      res.status(e.httpCode || 400).json({ data: null, error: e.message });
+      return res.status(e.httpCode || 400).json({ data: null, error: e.message });
     } else {
       console.error(e);
-      res.status(500).json({ data: null, error: "Internal Server Error" });
+      return res.status(500).json({ data: null, error: "Internal Server Error" });
     }
   }
 };

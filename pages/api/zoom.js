@@ -17,7 +17,7 @@ async function handler(req, res) {
                 'Authorization': `Basic ${Buffer.from(`jcqVkacUTNaderIiAFk0Iw:rEPg51ObnYLH1gb5BTFMl15GUYkGnaze`).toString('base64')}`
             }
         });
-        res.send(response.data.access_token);
+        return res.send(response.data.access_token);
 
     } catch (error) {
         return res.status(500).json({

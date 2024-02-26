@@ -12,6 +12,7 @@ import encrypt from '../../../utilities/encrypt_decrypt/encryptText';
 
 const handler = nextConnect().get(async (req, res) => {
   
+  try{
   const connection = await connect();
   const majors = await ReadDropdown(connection, 'major');
   const status = await ReadDropdown(connection, 'status');
@@ -23,5 +24,10 @@ const handler = nextConnect().get(async (req, res) => {
   const encryptedBody = encrypt(JSON.stringify(response));
   res.status(200).json({ message: 'success', data: encryptedBody });
   await disconnect(connection);
+}catch(error){
+  console.log('the error is in majoritems.js in controller in api : ', error)
+  return
+}
 });
+
 export default handler;

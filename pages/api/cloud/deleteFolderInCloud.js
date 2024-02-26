@@ -49,6 +49,7 @@ export default async function handler(req, res) {
       console.log(result);
     } catch (error) {
       console.error("Error=", error);
+      return;
     }
   };
   // deleteFolderresources(`onlineUsers/${name}-${StudentID}/application`);

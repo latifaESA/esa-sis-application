@@ -21,6 +21,8 @@ import useragent from "useragent";
 // );
 
 const handler = nextConnect().get(async (req, res) => {
+
+  try{
   const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);
 
@@ -51,5 +53,9 @@ const handler = nextConnect().get(async (req, res) => {
     res.status(200).json({ message: "success", data: encryptedBody });
     await disconnect(connection);
   }
+}catch(error){
+  console.log('the error is in settingdata.js in controller in api : ', error)
+  return
+}
 });
 export default handler;

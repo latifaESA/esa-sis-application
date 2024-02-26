@@ -27,6 +27,7 @@ async function handler(req, res) {
   }
   // FIXME:
 
+  try{
   // const session = await getSession({ req });
   const session = await getServerSession(req, res, authOptions);
   //  // console.log(session)
@@ -184,10 +185,14 @@ async function handler(req, res) {
         userAgentinfo.source
       }=${userAgentinfo.device.family}`
     );
-    res.send({
+    return res.send({
       message: "User Profile Updated",
     });
   }
+    }catch(error){
+      console.log('the error is in updateProfile.js in user in api : ', error)
+      return
+    }
 }
 
 export default handler;
