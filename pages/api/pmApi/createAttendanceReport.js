@@ -13,6 +13,11 @@ async function handler(req, res) {
     const { teacher_id, course_id, major_id, attendance_date  ,fromTime,
       toTime,
       room  } = req.body;
+      console.log(teacher_id, course_id, major_id, attendance_date  ,fromTime,
+        toTime,
+        room  )
+        console.log(teacher_id.length)
+        console.log(course_id.length)
     if (teacher_id === "" || course_id === "") {
       return res.status(200).json({
         code: 200,

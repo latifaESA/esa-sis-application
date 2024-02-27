@@ -52,13 +52,17 @@ export default function AddSchedule({
   building
 }) {
 
-
+console.log('is triggering')
+console.log('the timeResult : ',timeResult)
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [remainingRooms, setRemainingRooms] = useState([]);
 
   const searchBook = async () => {
+    console.log('in the searchbook')
     try {
+      console.log(timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '')
       if (timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '') {
+        console.log('in condition')
         const occupiedRoomsArray = [];
 
         for (let i = 0; i < timeResult.length; i++) {
@@ -102,23 +106,26 @@ export default function AddSchedule({
               // Set state to store remaining rooms
               const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
               setRemainingRooms(remainingRoomsArray);
+              console.log("all room filter :", allrooms)
 
             } else {
               // If data.data.success is not true, set all rooms as remaining
 
               setRemainingRooms(allrooms);
+              console.log("all room :", allrooms)
+
             }
           } else {
             console.error('fromTimes or toTimes is null or undefined');
           }
         }
       }
+      console.log('outside the condition ')
     } catch (error) {
-
-      return error;
+      console.log('the error in the AddSchedule is : ', error)
+      return;
     }
   };
-
 
   useEffect(() => {
     searchBook();
@@ -131,15 +138,16 @@ export default function AddSchedule({
 
 
       // Rest of the code to clear state or perform any other actions if needed.
-      setStudent([]);
-      setDetails([]);
-      // setCourseType("");
-      setCourseValue("");
-      setPromotions("");
+      // setStudent([]);
+      // setDetails([]);
+      // // setCourseType("");
+      // setCourseValue("");
+      // setPromotions("");
 
     } catch (error) {
       // Handle any errors that may occur during the API calls.
       console.error("Error occurred while saving: ", error);
+      return
     }
   };
 
@@ -312,7 +320,7 @@ export default function AddSchedule({
                           styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                          enable={false}
                         />
                       </label>
-                      {building.length > 0 && (
+                      {building.length > 0 && remainingRooms.length > 0 && (
                         <label className="text-gray-700 mt-2 md:mt-0 md:ml-2">
                           Location:
                           <CustomSelectBox
