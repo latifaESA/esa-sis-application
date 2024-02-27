@@ -136,8 +136,6 @@ const ClassList = ({ users, allCourse }) => {
       selectedValue.length > 0 &&
       theRoom.filter((room) => room.room_name === selectedValue)[0].room_id
     );
-
-
   };
   const handleStages = (selectedValue) => {
     setBuilding(selectedValue);
@@ -165,13 +163,9 @@ const ClassList = ({ users, allCourse }) => {
 
   const handleSelect = async (value) => {
 
-
     const isSelected = selectedValues.includes(value);
     if (isSelected) {
-
       setSelectedValues(selectedValues.filter((val) => val !== value));
-
-
 
       // console.log(selectedValues.filter((val) => val !== value));
       // console.log(selectedValues.length == 0);
@@ -180,7 +174,12 @@ const ClassList = ({ users, allCourse }) => {
       // console.log('startdate' , startDate , selectedValues)
       // console.log('selectedValues'  , selectedValues)
       // console.log('value' , value)
-      const weekDates = await getWeekDays(startDate, endDate, selectedValues)
+      let weekDates = null
+      if(selectedValues.length === 0){
+       weekDates = await getWeekDays(startDate, endDate, [value])
+      }else{
+       weekDates = await getWeekDays(startDate, endDate, selectedValues);
+      }
       setTimeResult(weekDates)
       setSelectedValues([...selectedValues, value]);
 
@@ -191,6 +190,7 @@ const ClassList = ({ users, allCourse }) => {
     }
   };
   const getDetails = async (event) => {
+    console.log('the course value : ', event.course_id)
     try {
 
       setTeacherValue(event.teacher_id);
@@ -226,10 +226,12 @@ const ClassList = ({ users, allCourse }) => {
       if (response.data.data[0].course_type !== "Elective") {
         let major_id = session.user?.majorid;
         let promotion = event.promotion.replace(/\s/g, "");
+        console.log(major_id,"  ",promotion)
         const { data } = await axios.post("/api/pmApi/getAllStudent", {
           major_id,
           promotion,
         });
+        console.log('the student : ', data)
         await handleAccessToken(data.data)
         setStudent(data.data);
       } else {
@@ -333,6 +335,16 @@ const ClassList = ({ users, allCourse }) => {
 
   const handleSaveSchedule = async () => {
 
+    console.log(teacherValue, courseValue, session.user?.majorid , fromTime, toTime, location, building)
+    if(isOnline == 'false' || isOnline == ""){
+      if(teacherValue.trim() === '' || courseValue.trim() === '' || !session.user?.majorid  || fromTime.trim() === '' || toTime.trim() === '' || location == '' || building.trim() === ''){
+        alert("Please fill all the data");
+        return;
+        }
+    }else if(teacherValue.trim() === '' || courseValue.trim() === '' || !session.user?.majorid  || fromTime.trim() === '' || toTime.trim() === ''){
+      alert("Please fill all the data");
+      return;
+      }
 
     const weekDays = await getWeekDays(startDate, endDate, selectedValues);
     // Usage example:
@@ -434,14 +446,33 @@ const ClassList = ({ users, allCourse }) => {
               if (data3.data.code === 201) {
 
                 // const student_id = student[j].student_id;
+                try{
                 await axios.post("/api/pmApi/createAttendanceStudent", {
                   attendance_id,
                   student_id: student,
                 });
+              }catch(error){
+                setStudent([]);
+                setDetails([]);
+                // setCourseType("");
+                setCourseValue("");
+                setPromotions("");
+                setIsOnLine('')
+                console.log('error while sending to createAttendanceStudent : ', error)
+                return;
+              }
 
               }
               // }
             } catch (error) {
+              setSelectedValues([])
+              setStudent([]);
+              setDetails([]);
+              // setCourseType("");
+              setCourseValue("");
+              setPromotions("");
+              setIsOnLine('')
+
               if (error.response && error.response.data.success === false) {
                 setConfirmOccupied(true);
                 setMessages(error.response.data.message);
@@ -564,7 +595,9 @@ const ClassList = ({ users, allCourse }) => {
                   console.log("error");
                 }
               } catch (error) {
-                return error;
+                setSelectedValues([])
+                console.log('the error in this unknown is : ', error)
+                return;
               }
 
             } else {
@@ -600,14 +633,32 @@ const ClassList = ({ users, allCourse }) => {
                   console.log("error");
                 }
               } catch (error) {
-                return error;
+                setSelectedValues([])
+                console.log('the error in another unkown is : ', error)
+                return;
               }
             }
 
 
           }
+          setSelectedValues([])
+          setStudent([]);
+          setDetails([]);
+          // setCourseType("");
+          setCourseValue("");
+          setPromotions("");
+          setIsOnLine('')
+
         } catch (error) {
-          return error;
+          setSelectedValues([])
+          setStudent([]);
+          setDetails([]);
+          // setCourseType("");
+          setCourseValue("");
+          setPromotions("");
+          setIsOnLine('')
+          console.log('the error in third unknown is : ', error)
+          return;
         }
 
       };
