@@ -19,4 +19,4 @@ async function handler(req, res) {
     // return error;
   }
 }
-module.exports = handler;
+export default handler;

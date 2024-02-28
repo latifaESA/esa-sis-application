@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FiEdit3, FiCheck, FiX } from 'react-icons/fi';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), {
-  ssr: false,
-});
+// const ReactSpeedometer = dynamic(() => import('react-d3-speedometer'), {
+//   ssr: false,
+// });
 
 const StudentProfile = () => {
   const { data: session } = useSession();
@@ -39,7 +39,7 @@ const StudentProfile = () => {
     }
   };
 
-  const averageGrades = 60;
+  // const averageGrades = 60;
 
   const updateDetails = async () => {
     try {
@@ -85,7 +85,8 @@ const StudentProfile = () => {
 
       <div className="flex flex-col justify-end lg:flex-row ">
         <div className="md:w-1/2 lg:w-1/3 md:pr-4 max-sm:overflow-auto">
-          <ReactSpeedometer
+        
+          {/* <ReactSpeedometer
             value={averageGrades}
             minValue={0}
             maxValue={100}
@@ -100,7 +101,8 @@ const StudentProfile = () => {
             segmentColors={['#CCCCFF', '#89CFF0', '#4169E1', '#000080']}
             currentValueText={`Avg. Grades: ${averageGrades}%`}
             needleHeightRatio={0.6}
-          />
+          /> */}
+          
         </div>
         <div className="md:w-1/2 lg:w-2/3 md:pl-4 ml-12">
           <div className="mb-4 flex items-center">

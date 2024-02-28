@@ -18,5 +18,5 @@ async function handler(req, res) {
     await disconnect(connection);
   }
 }
-// export default handler;
-module.exports = handler;
+export default handler;
+// module.exports = handler;

@@ -9,7 +9,6 @@
 import "../styles/globals.css";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-// import Layout from '../components/Layout';
 import { wrapper } from "../redux/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -17,11 +16,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Cookies from "js-cookie";
 import Head from "next/head";
-// import sendMailClass from "../utilities/emailing/emailBeforeClass";
+
+function componentDidMount() {
+  process.on('uncaughtException', function (exception) {
+    console.log('uncaughtException',exception);
+    
+  });
+}
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
+
+  componentDidMount(); // Call componentDidMount when component mounts
 
   if (Component.getLayout) {
     return (
