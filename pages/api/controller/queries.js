@@ -21,7 +21,7 @@ const bcryptjs = require("bcryptjs");
 //     );
 //     return result;
 //   } catch (err) {
-//     return err;
+//     console.log("error in the query file : ", err); return;
 //   }
 // }
 
@@ -54,7 +54,7 @@ async function findDataForResetPassword(
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -66,7 +66,7 @@ async function findData(connection, table, where, columnName) {
     // console.log('the result : ', result)
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -81,7 +81,7 @@ async function newEmailToken(connection, userid) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -95,7 +95,7 @@ async function UpdateToken(connection, emailToken) {
 
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -106,7 +106,7 @@ async function Userinfo(connection, email) {
 	user_contact.userid = users.userid WHERE user_contact.email = '${email}'`);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -121,7 +121,7 @@ async function newpassword(connection, email, newPassword) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -133,7 +133,7 @@ async function getCourseMajor(connection) {
     LEFT JOIN major ON courses.major_id = major.major_id;`);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // course
@@ -148,7 +148,7 @@ async function updateCourse(connection, course_id, major_name) {
     WHERE course_id = '${course_id}'`);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -168,7 +168,7 @@ async function createClass(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -189,7 +189,7 @@ async function copyClass(
     const res = await connection.query(query);
     return res.rows[0].tmpclass_id;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -203,7 +203,7 @@ async function insertPromotion(connection, table, columns, values) {
     );
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -213,7 +213,7 @@ async function getClassDetails(connection, tmpclass_id) {
     const result = connection.query(query);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createSchedule(
@@ -249,7 +249,7 @@ async function createSchedule(
     }
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -321,7 +321,7 @@ async function createScheduleOnline(
       return 'false'
     }
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -342,7 +342,7 @@ async function filterCourseMajor(connection, course_id, major_name) {
     return result;
     // return `couse id: ${course_id} major name: ${major_name}`
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -363,7 +363,7 @@ async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
   //   const result = await executeQuery(connection, query, values);
   //   return result;
   // } catch (err) {
-  //   return err;
+  //   console.log("error in the query file : ", err); return;
   // }
 }
 
@@ -377,7 +377,7 @@ async function UpdateActivityTime(userid, connection) {
   //   );
   //   return result;
   // } catch (err) {
-  //   return err;
+  //   console.log("error in the query file : ", err); return;
   // }
 }
 
@@ -391,7 +391,7 @@ async function insertData(connection, table, columns, values) {
     );
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -401,7 +401,7 @@ async function getAll(connection, table) {
     const result = connection.query(`SELECT * from ${table}`);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -414,7 +414,7 @@ async function getMajorPM(connection, majorID) {
     AND major_name LIKE 'EXED%'`);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -433,7 +433,7 @@ const getEmailsByMajorId = async (connection, majorId) => {
 
     return result.rows;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 };
 
@@ -464,7 +464,7 @@ const insertNotifications = async (
 
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 };
 
@@ -482,7 +482,7 @@ const countNotification = async (connection, receiver_id) => {
     );
     return result.rows[0].count;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 };
 
@@ -511,7 +511,7 @@ const getEmailsSender = async (connection, receiver_id) => {
     );
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 };
 
@@ -528,7 +528,7 @@ const changeViewed = async (connection, receiver_id) => {
     );
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 };
 // get all data from specific column
@@ -539,7 +539,7 @@ async function getAllById(connection, table, colName, val) {
     );
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -567,7 +567,7 @@ async function getScheduleByPM(connection, pmID) {
     `);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -579,7 +579,7 @@ async function deleteByID(connection, table, colName, id) {
     );
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -603,7 +603,7 @@ async function addSchedule(
     );
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -619,7 +619,7 @@ async function copySchedule(connection, classID, newClassID) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // update Schedule
@@ -652,7 +652,7 @@ async function updateSchedule(
     const res = await connection.query(query, values);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -662,7 +662,7 @@ async function updateSchedule(
 //     const result = connection.query(`SELECT * from student WHERE student_id = '${id}' AND student_firstname = '${firstname}' AND student_lastname = '${lastname}' AND major_id = ${major} AND promotion = '${promotion}' AND status ='${status}'`)
 //     return result;
 //   }catch(err){
-//     return err
+//     console.log("error in the query file : ", err); return
 //   }
 // }
 // async function filterStudent(connection, id, firstname, lastname, major, promotion, status) {
@@ -691,7 +691,7 @@ async function updateSchedule(
 //     const result = await connection.query(query);
 //     return result;
 //   } catch (err) {
-//     return err;
+//     console.log("error in the query file : ", err); return;
 //   }
 // }
 
@@ -735,7 +735,7 @@ async function filterStudent(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -771,7 +771,7 @@ async function filterTeacher(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -791,7 +791,7 @@ async function getUserTeacher(connection, pmID) {
     const result = await connection.query(query);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //<<<<<<< batoul
@@ -832,7 +832,7 @@ async function filterCourses(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function getAllCourses(connection, course_id, major_id) {
@@ -842,7 +842,7 @@ async function getAllCourses(connection, course_id, major_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //filter attendance
@@ -896,7 +896,7 @@ async function filterAttendances(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -907,7 +907,7 @@ async function getCourse(connection, table, where, id) {
     const response = await connection.query(query);
     return response;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // get course_id in table teacher_courses use in function exist
@@ -920,7 +920,7 @@ async function getExistCourse(connection, course_id, teacher_idC, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -932,7 +932,7 @@ async function getTeachersByMajorCourse(connection) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
@@ -943,7 +943,7 @@ async function getTeachersCourses(connection, teacher_id, course_id, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -956,7 +956,7 @@ async function updatePresent(connection, present, student_id, attendance_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -968,7 +968,7 @@ async function getAllStudent(connection, major_id, promotion) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file in getAllStudent function : ", error); return;
   }
 }
 //insert data to attendance_table
@@ -980,7 +980,7 @@ async function createAttendanceStudent(connection, student_id, attendance_id) {
     // console.log("[[[[[[[[[[[[[[[",res.lastrowid)
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //select
@@ -996,7 +996,7 @@ async function createAttendance(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error);
   }
 }
 async function AttendanceView(connection, attendance_id) {
@@ -1010,7 +1010,7 @@ async function AttendanceView(connection, attendance_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getAttendanceByCTD(
@@ -1025,7 +1025,7 @@ async function getAttendanceByCTD(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterpm(
@@ -1065,7 +1065,7 @@ async function filterpm(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function filterassistance(
@@ -1105,7 +1105,7 @@ async function filterassistance(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1145,7 +1145,7 @@ async function filterStudentForResetPassword(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1180,7 +1180,7 @@ async function filterAdmin(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function UpdateAdminStatus(connection, admin_status, adminid) {
@@ -1191,7 +1191,7 @@ async function UpdateAdminStatus(connection, admin_status, adminid) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateStatusPM(connection, pm_id, pm_status) {
@@ -1204,7 +1204,7 @@ async function updateStatusPM(connection, pm_id, pm_status) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
@@ -1217,7 +1217,7 @@ async function updateStatusAssistance(connection, pm_ass_id, pm_ass_status) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1233,7 +1233,7 @@ async function enableUserpm(connection, pm_id, userpassword) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function enableUserAdmin(connection, adminid, userpassword) {
@@ -1248,7 +1248,7 @@ async function enableUserAdmin(connection, adminid, userpassword) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function enableUserAs(connection, pm_ass_id, userpassword) {
@@ -1262,7 +1262,7 @@ async function enableUserAs(connection, pm_ass_id, userpassword) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function deleteUserpm(connection, pm_id) {
@@ -1278,7 +1278,7 @@ async function deleteUserpm(connection, pm_id) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 //filter teacher-course
@@ -1319,7 +1319,7 @@ async function teacherCourse(
     // console.log(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //get Schedule by major and promotion to each student
@@ -1337,7 +1337,7 @@ async function getScheduleToStudents(connection, major_id, promotion) {
 
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getAllMajors(connection) {
@@ -1346,7 +1346,7 @@ async function getAllMajors(connection) {
     const result = await connection.query(query);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1357,7 +1357,7 @@ async function getStdEmailForEditProfile(connection, user_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1370,7 +1370,7 @@ async function unassign(connection, teacher_id, course_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // update query to upload url
@@ -1381,7 +1381,7 @@ async function uploadFile(connection, Url, attendance_id) {
     // console.log(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //update teacher
@@ -1394,7 +1394,7 @@ async function updateAssign(connection, teacher_id, course_id, condition) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // assignment  course to teacher
@@ -1406,7 +1406,7 @@ async function assignmentTeacherCourse(connection, course_id, teacher_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //get teacher by id of courses
@@ -1419,7 +1419,7 @@ async function coursesTeachers(connection, course_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //attendance details
@@ -1435,7 +1435,7 @@ async function AttendanceDetails(connection, attendance_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //get student fullname and promotion by attendance_id
@@ -1448,7 +1448,7 @@ async function getStudentPromotion(connection, attendance_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getPromotion(connection, major_id, academic_year) {
@@ -1460,7 +1460,7 @@ async function getPromotion(connection, major_id, academic_year) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function getAllMajor(connection) {
@@ -1471,7 +1471,7 @@ async function getAllMajor(connection) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1483,7 +1483,7 @@ async function getTheMajors(connection) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 //create courses
@@ -1502,7 +1502,7 @@ async function createCourse(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //ELECTIVE COURSES
@@ -1518,7 +1518,7 @@ async function createElective(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //GET STUDENT ELECTIVE
@@ -1529,7 +1529,7 @@ async function ExistElective(connection, course_id, student_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //filter ElectiveStudent
@@ -1566,7 +1566,7 @@ async function ExistElective(connection, course_id, student_id) {
 //     return res
 
 //   } catch (error) {
-//     return error
+//     console.log("error in the query file : ", error); return
 //   }
 // }
 
@@ -1605,7 +1605,7 @@ async function filterElective(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // check with batoul
@@ -1615,7 +1615,7 @@ async function getElectiveCourse(connection, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1625,7 +1625,7 @@ async function getStudentByYear(connection, major_id, academic_year) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getStudentAssigned(connection, promotion, major_id, course_id) {
@@ -1638,7 +1638,7 @@ async function getStudentAssigned(connection, promotion, major_id, course_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createPMAccount(
@@ -1673,7 +1673,7 @@ async function createPMAccount(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1684,7 +1684,7 @@ async function createExtra(connection, pm_id, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1720,7 +1720,7 @@ async function createASAccount(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function createAdmin(
@@ -1754,7 +1754,7 @@ async function createAdmin(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -1765,7 +1765,7 @@ async function getExistPM(connection, pm_email, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getExistASPM(connection, pm_ass_email, major_id) {
@@ -1774,7 +1774,7 @@ async function getExistASPM(connection, pm_ass_email, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getExistTeacher(connection, teacher_mail) {
@@ -1785,7 +1785,7 @@ async function getExistTeacher(connection, teacher_mail) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1827,7 +1827,7 @@ async function filterStudentAttendance(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1849,7 +1849,7 @@ async function createTeacher(
     console.log('quary', query)
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1870,7 +1870,7 @@ async function uploadTeacher(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //get promotion
@@ -1884,7 +1884,7 @@ async function getSchedulePromotion(connection, major_id, attendance_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function CreateCourse(
@@ -1901,7 +1901,7 @@ async function CreateCourse(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -1911,7 +1911,7 @@ async function getMajor(connection, major_name) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 //scan student
@@ -1963,7 +1963,7 @@ async function uploadStudent(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2024,7 +2024,7 @@ async function uploadInfo(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2043,7 +2043,7 @@ async function uploadContact(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uploadEmerg(
@@ -2083,7 +2083,7 @@ async function uploadEmerg(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uploadEducation(
@@ -2116,7 +2116,7 @@ async function uploadEducation(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uploadAddress(
@@ -2154,7 +2154,7 @@ async function uploadAddress(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function ActiveUser(connection, { userid, userpassword }) {
@@ -2172,7 +2172,7 @@ async function ActiveUser(connection, { userid, userpassword }) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function userDocument(connection, { userid }) {
@@ -2182,7 +2182,7 @@ async function userDocument(connection, { userid }) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2198,7 +2198,7 @@ async function getAdminExist(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2219,7 +2219,7 @@ async function studentExist(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2230,7 +2230,7 @@ async function promotionExist(connection, promotion_name) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function isPromotionMajor(connection, promotion_name, major_id) {
@@ -2240,7 +2240,7 @@ async function isPromotionMajor(connection, promotion_name, major_id) {
     // console.log(query)
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterStudentAdmin(
@@ -2276,7 +2276,7 @@ async function filterStudentAdmin(
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -2290,7 +2290,7 @@ async function updateStatusStudent(connection, student_id, status) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -2311,7 +2311,7 @@ async function addStudentActivityToLogs(
     const response = await connection.query(query);
     return response;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 //filter schedule
@@ -2335,7 +2335,7 @@ FROM tmpschedule
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createPromotion(
@@ -2349,7 +2349,7 @@ async function createPromotion(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createMajor(connection, major_id, major_name) {
@@ -2358,7 +2358,7 @@ async function createMajor(connection, major_id, major_name) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function create(connection, table, column, value) {
@@ -2369,7 +2369,7 @@ async function create(connection, table, column, value) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function existMajor(connection, major_name) {
@@ -2378,7 +2378,7 @@ async function existMajor(connection, major_name) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function existType(connection, value) {
@@ -2387,7 +2387,7 @@ async function existType(connection, value) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateStudentStatus(
@@ -2404,7 +2404,7 @@ async function updateStudentStatus(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2426,7 +2426,7 @@ async function profileStudent(connection, user_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2452,7 +2452,7 @@ async function updateContactAddressProfile(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2464,7 +2464,7 @@ async function getStudentFromBlueForLogs(connection, student_id) {
     const response = await connection.query(query);
     return response;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 async function occupiedTeacher(connection, teacherId, attendance_date) {
@@ -2475,7 +2475,7 @@ async function occupiedTeacher(connection, teacherId, attendance_date) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function occupiedRoom(connection, attendance_date, room) {
@@ -2484,7 +2484,7 @@ async function occupiedRoom(connection, attendance_date, room) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateStatusBlue(connection, student_id) {
@@ -2494,7 +2494,7 @@ async function updateStatusBlue(connection, student_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateStatusPreBlue(connection, student_id) {
@@ -2503,7 +2503,7 @@ async function updateStatusPreBlue(connection, student_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getStudentPromotionMajor(connection, major_id, promotion) {
@@ -2512,7 +2512,7 @@ async function getStudentPromotionMajor(connection, major_id, promotion) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uploadGrades(
@@ -2537,7 +2537,7 @@ async function uploadGrades(
     const res = await connnection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2574,7 +2574,7 @@ async function uploadGMPGrade(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterGrades(
@@ -2629,7 +2629,7 @@ async function filterGrades(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateGrades(
@@ -2649,7 +2649,7 @@ async function updateGrades(
     console.log('res', res)
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function studentForRequestTranscript(connection, student_id) {
@@ -2668,7 +2668,7 @@ async function studentForRequestTranscript(connection, student_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getPmDetailsForRequests(connection, major_id) {
@@ -2686,7 +2686,7 @@ async function getPmDetailsForRequests(connection, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function addRequestForPm(
@@ -2704,7 +2704,7 @@ async function addRequestForPm(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2714,7 +2714,7 @@ async function addRequestForPm(
 //     const res = await connection.query(query);
 //     return res;
 //   } catch (error) {
-//     return error;
+//     console.log("error in the query file : ", error); return;
 //   }
 // }
 async function getRequestsForPm(
@@ -2759,7 +2759,7 @@ async function getRequestsForPm(
     // console.log(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateRequestStatus(connection, req_id, status) {
@@ -2772,7 +2772,7 @@ async function updateRequestStatus(connection, req_id, status) {
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the query file : ", err); return;
   }
 }
 
@@ -2784,7 +2784,7 @@ async function Promotion(connection) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2794,7 +2794,7 @@ async function updateUsers(connection, accessToken, user_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2816,7 +2816,7 @@ WHERE  major_name LIKE 'EXED%'  AND major_id != '${majorId}' AND status = 'activ
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getSendMailInfo(connection, course_id) {
@@ -2833,7 +2833,7 @@ async function getSendMailInfo(connection, course_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getClassForSendMail(connection) {
@@ -2842,7 +2842,7 @@ async function getClassForSendMail(connection) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getRoomAndTimeForSendMail(connection, class_id) {
@@ -2854,7 +2854,7 @@ async function getRoomAndTimeForSendMail(connection, class_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2864,7 +2864,7 @@ async function getRequests(connection) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createCertificate(connection, majorId, name) {
@@ -2873,7 +2873,7 @@ async function createCertificate(connection, majorId, name) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2884,7 +2884,7 @@ async function updateStatusActive(connection, status, majorId) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2903,7 +2903,7 @@ WHERE  major_name LIKE 'EXED%' AND major_id = '${major_id}'
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2920,7 +2920,7 @@ async function getGradeStudent(connection, table, studentId) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterGMPGrades(
@@ -2968,7 +2968,7 @@ async function filterGMPGrades(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -2985,7 +2985,7 @@ async function updateGradesExED(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function searchEmailStudent(connection, major_id, promotion_name) {
@@ -3010,7 +3010,7 @@ async function searchEmailStudent(connection, major_id, promotion_name) {
     //     return res;
     // >>>>>>> main
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uploadGradesRTF(
@@ -3046,7 +3046,7 @@ async function uploadGradesRTF(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterRTFGrades(
@@ -3099,7 +3099,7 @@ async function filterRTFGrades(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateGradesRTF(
@@ -3116,7 +3116,7 @@ async function updateGradesRTF(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function uplaodEXEDGrade(
@@ -3151,7 +3151,7 @@ async function uplaodEXEDGrade(
     const res = await connnection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function filterEXEDGrade(
@@ -3199,7 +3199,7 @@ async function filterEXEDGrade(
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -3211,7 +3211,7 @@ async function filterEXEDGrade(
 // //     console.log('res', res)
 // //     return res
 // //   } catch (error) {
-// //     return error
+// //     console.log("error in the query file : ", error); return
 // //   }
 // // }
 
@@ -3226,7 +3226,7 @@ async function filterEXEDGrade(
 
 // //     return res
 // //   } catch (error) {
-// //     return error
+// //     console.log("error in the query file : ", error); return
 // //   }
 // // }
 
@@ -3269,7 +3269,7 @@ async function filterEXEDGrade(
 //     console.log("res", res);
 //     return res;
 //   } catch (error) {
-//     return error;
+//     console.log("error in the query file : ", error); return;
 //   }
 // }
 
@@ -3284,7 +3284,7 @@ async function getMajorPMExtra(connection, pm_id, table, pmID) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -3295,7 +3295,7 @@ async function getPromtionsMajor(connection, major_id, date) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getClassInfoForEmail(connection, class_id) {
@@ -3308,7 +3308,7 @@ async function getClassInfoForEmail(connection, class_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getLocationInfo(connection, room_id) {
@@ -3318,7 +3318,7 @@ async function getLocationInfo(connection, room_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function getStudentEmailsForEmailClass(connection, promo) {
@@ -3328,7 +3328,7 @@ async function getStudentEmailsForEmailClass(connection, promo) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // <<<<<<< Hassan
@@ -3341,7 +3341,7 @@ async function updateEmailForEditProfile(connection, email, user_id) {
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 // // =======
@@ -3378,7 +3378,7 @@ async function getMajorFromPM(connection, pm_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function exportAttendanceData(
@@ -3441,7 +3441,7 @@ async function exportAttendanceData(
     const res = connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
     // >>>>>>> main
   }
 }
@@ -3452,7 +3452,7 @@ async function updateScheduleSharepointID(connection, sharepointId, attendanceId
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3465,7 +3465,7 @@ async function createBooking(connection,
 
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file in the createBooking function : ", error); return
   }
 }
 async function deleteBooking(connection) {
@@ -3474,7 +3474,7 @@ async function deleteBooking(connection) {
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3485,7 +3485,7 @@ async function SearchBooking(connection, space, date, fromTime, toTime) {
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file in the searchBooking function : ", error); return
   }
 }
 async function AddRoomFromSharePoint(connection, roomName, roomBuilding) {
@@ -3495,7 +3495,7 @@ async function AddRoomFromSharePoint(connection, roomName, roomBuilding) {
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3506,7 +3506,7 @@ async function getRoom(connection) {
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 async function deleteSharepointId(connection, attendance_id) {
@@ -3519,7 +3519,7 @@ async function deleteSharepointId(connection, attendance_id) {
     return res
 
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3530,7 +3530,7 @@ async function updateOnlineSchedule(connection, zoom_id, zoom_url, attendance_id
     const res = await connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3545,7 +3545,7 @@ async function deleteZoomId(connection, attendance_id) {
     return res
 
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3558,7 +3558,7 @@ async function updateCourseType(connection, course_id, course_credit, course_nam
     WHERE course_id = '${course_id}'`);
     return result;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -3580,7 +3580,7 @@ async function AddStudentAlumni(
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function createExtraAS(connection, pm_id, major_id) {
@@ -3590,7 +3590,7 @@ async function createExtraAS(connection, pm_id, major_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 
@@ -3627,7 +3627,7 @@ async function getMajorFromAS(connection, pm_ass_id) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function updateEmailForEditProfilePM(connection, email, status, mobile_number, user_id) {
@@ -3640,7 +3640,7 @@ async function updateEmailForEditProfilePM(connection, email, status, mobile_num
 
     return res;
   } catch (error) {
-    return error;
+    console.log("error in the query file : ", error); return;
   }
 }
 async function ExistGrades(connection, student_id, course_id, task_name) {
@@ -3650,7 +3650,7 @@ async function ExistGrades(connection, student_id, course_id, task_name) {
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3661,7 +3661,7 @@ async function ExistGradesDT(connection, student_id, course_id, task_name) {
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 async function ExistGradesEXED(connection, student_id, course_id, task_name) {
@@ -3671,7 +3671,7 @@ async function ExistGradesEXED(connection, student_id, course_id, task_name) {
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 async function ExistGradesStudent(connection, student_id, course_id, task_name) {
@@ -3681,7 +3681,7 @@ async function ExistGradesStudent(connection, student_id, course_id, task_name) 
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 }
 
@@ -3692,7 +3692,7 @@ async function insertGoogleEventDetails(connection , student_id , event_id , att
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 
 }
@@ -3703,7 +3703,7 @@ async function deleteGoogleEventDetails(connection , student_id ){
     const res = connection.query(query)
     return res
   } catch (error) {
-    return error
+    console.log("error in the query file : ", error); return
   }
 
 }

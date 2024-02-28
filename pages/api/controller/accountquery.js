@@ -22,7 +22,7 @@ async function findUserData(connection, name, table, value) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -73,7 +73,7 @@ async function newAccount(
       );
     }
   } catch (error) {
-    return error;
+    console.log("error in the accountquery file : ", error); return;
   }
 }
 
@@ -87,7 +87,7 @@ async function findmajor_id(connection, major_program) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -104,7 +104,7 @@ async function DeleteAccountBYID(ID, tables, connection) {
     }
     return results;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -117,7 +117,7 @@ async function UpdateIsUnVerified(connection, user_id, isVerified) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -130,7 +130,7 @@ async function UpdateIsVerified(connection, user_id, isVerified) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -153,7 +153,7 @@ async function UpdateData(connection, table, whereValue, ...columnValuePairs) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -164,7 +164,7 @@ async function findData(connection, table) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -177,7 +177,7 @@ async function findextramajor(connection, user_id) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 
@@ -190,7 +190,7 @@ async function findemajor_user(connection, user_id) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 async function FilterDataExport(connection, table, wherevalues) {
@@ -201,7 +201,7 @@ async function FilterDataExport(connection, table, wherevalues) {
 
     return result;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 async function UpdateUserpassword(connection, password, userid) {
@@ -215,7 +215,7 @@ async function UpdateUserpassword(connection, password, userid) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 // async function UpdateadminInfo(connection ,table , condition , em , name , email){
@@ -231,7 +231,7 @@ async function UpdateUserpassword(connection, password, userid) {
 //      consolele.log(userdata)
 //     return userdata;
 //   } catch (error) {
-//     return error
+//     console.log("error in the accountquery file : ", error); return
 //   }
 // }
 
@@ -243,7 +243,7 @@ async function UpdateadminInfo(connection, name, lname, email) {
     );
     return userdata;
   } catch (error) {
-    return error;
+    console.log("error in the accountquery file : ", error); return;
   }
 }
 async function Userinfo(connection, userid) {
@@ -254,7 +254,7 @@ async function Userinfo(connection, userid) {
     );
     return UserData;
   } catch (err) {
-    return err;
+    console.log("error in the accountquery file : ", err); return;
   }
 }
 async function updateUser(connection, table, condition, column, value, id) {
@@ -264,7 +264,7 @@ async function updateUser(connection, table, condition, column, value, id) {
     const data = await executeQuery(connection, sql);
     return data;
   } catch (error) {
-    return error;
+    console.log("error in the accountquery file : ", error); return;
   }
 }
 

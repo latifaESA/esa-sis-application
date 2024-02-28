@@ -2,8 +2,6 @@ const { connect, disconnect } = require("../../../utilities/db");
 const { createAttendance } = require("../controller/queries");
 const { default: attendanceExist } = require("./exist/getAttendance");
 
-
-
 async function handler(req, res) {
 
   try {
@@ -56,4 +54,5 @@ async function handler(req, res) {
     });
   }
 }
-module.exports = handler;
+// module.exports = handler;
+export default handler;

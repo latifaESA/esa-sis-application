@@ -39,7 +39,7 @@ async function connect() {
 async function disconnect(client) {
   console.log('the client ending : ',client._ending)
   try {
-    if (!client || client._ending) {
+    if (!client || client._ending===undefined || client._ending) {
       console.log('No active connection to release');
       return;
     }

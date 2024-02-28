@@ -6,7 +6,6 @@ async function handler(req, res) {
     const connection = await connect();
     const { student_id } = req.body;
     const data = await studentForRequestTranscript(connection, student_id);
-    console.log(data);
     return res.status("200").json(data);
   } catch (error) {
     // console.log('the error is: ', error)

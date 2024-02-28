@@ -71,7 +71,7 @@ const StudentRequests = () => {
 
   const radioRef = useRef(null);
   const radioRef2 = useRef(null);
-
+  
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -160,7 +160,7 @@ const StudentRequests = () => {
       <div className="text-center">
         <p className={` ${messageClass}`}>{message}</p>
       </div>
-      <form onSubmit={submitHandler} className="mt-12">
+      <form onSubmit={submitHandler} className="mt-12 min-w-full">
         {session?.user.majorName ===
           'BBA (Bachelor in Business Administration)' && (
           <div className="mb-4">
@@ -175,6 +175,8 @@ const StudentRequests = () => {
           </div>
         )}
         <div className="mb-4 flex flex-col md:flex-row">
+          {!session?.user.majorName.includes('EXED') && (
+            <>
           <div className="flex items-center">
             <input
               type="radio"
@@ -205,6 +207,8 @@ const StudentRequests = () => {
               Exclude GPA
             </label>
           </div>
+          </>
+          )}
         </div>
         <div className="flex flex-col">
           <div className="mb-4">
