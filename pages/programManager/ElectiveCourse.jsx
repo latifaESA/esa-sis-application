@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import axios from 'axios';
 import ElectiveCourseList from '../../components/Dashboard/ElectiveCourseList';
+import ElectiveModal from './ModalForm/ElectiveModal';
 
 export default function ElectiveCourse() {
   const { data: session } = useSession();
@@ -23,6 +24,69 @@ export default function ElectiveCourse() {
   const [course_name, setCourse_name] = useState('');
   // const [test, setTest] = useState()
   // console.log(session)
+
+  const [iselective, setElective] = useState(false);
+  // const [elective , setIsElective] = useState(true)
+  const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [promotions, setPromotions] = useState([]);
+
+
+  // // console.log("users",users)
+  // setTimeout(() => {
+  //   setMessage('');
+  // },10000);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const payload = {
+          major_id: session.user.majorid,
+        };
+        // console.log("majorid",payload)
+        const data = await axios.post('/api/pmApi/getElectiveCourse', payload);
+
+        setCourses(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchCourses();
+    const fetchPromotion = async () => {
+      try {
+        const payload = {
+          table: 'promotions',
+          Where: 'major_id',
+          id: session.user.majorid,
+        };
+        // console.log("majorid",payload)
+        const data = await axios.post('/api/pmApi/getAllCourses', payload);
+
+        setPromotions(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchPromotion();
+    const fetchStudent = async () => {
+      try {
+        const payload = {
+          major_id: session.user.majorid,
+          academic_year: new Date().getFullYear(),
+        };
+        const data = await axios.post(
+          '/api/pmApi/getStudentByAcademicYear',
+          payload
+        );
+        setStudents(data.data.data);
+      } catch (error) {
+        return error;
+      }
+    };
+
+    fetchStudent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +133,7 @@ export default function ElectiveCourse() {
       setUsers(result.data.data);
       // setTest(true)
     } catch (error) {
+      setUsers([])
       return error;
     }
   };
@@ -88,9 +153,14 @@ export default function ElectiveCourse() {
       );
       setUsers(result.data.data);
     } catch (error) {
+      setUsers([])
       return error;
     }
   };
+
+  const handleIsElective =()=>{
+      setElective(true)
+  }
 
   // const handleMajor = (selectedValue) => {
   //   // Do something with the selected value
@@ -119,8 +189,20 @@ export default function ElectiveCourse() {
       </Head>
       {((session?.user.role === '2' || session?.user.role === '3') &&
         session?.user.majorName === 'MBA (Master in Business Administration)') ||
-      session?.user.majorName === 'EMBA (Executive Masters in Business Administration)' ? (
+        session?.user.majorName === 'EMBA (Executive Masters in Business Administration)' ? (
         <>
+          {iselective && (
+            <ElectiveModal
+              courses={courses}
+              users={users}
+              setElective={setElective}
+              promotions={promotions}
+              setPromotions={setPromotions}
+              students={students}
+              setUsers={setUsers}
+              setStudents={setStudents}
+            />
+          )}
           <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
             Elective
           </p>
@@ -192,8 +274,8 @@ export default function ElectiveCourse() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -234,8 +316,8 @@ export default function ElectiveCourse() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">
@@ -252,6 +334,13 @@ export default function ElectiveCourse() {
                   onClick={handleShowAll}
                 >
                   Show All
+                </button>
+                <button
+                  className="primary-button rounded w-60 btnCol text-white hover:text-white hover:font-bold"
+                  type="button"
+                  onClick={handleIsElective}
+                >
+                  Elective
                 </button>
               </div>
             </div>

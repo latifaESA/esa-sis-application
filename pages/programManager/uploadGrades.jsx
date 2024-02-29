@@ -7,7 +7,8 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF, showAllEXED, clickUpload }) {
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF, showAllEXED, clickUpload , majors}) {
+
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
     const [messages, setMessages] = useState("");
@@ -65,7 +66,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 showAll();
             } else if (isExeMajor && SecondMajorWord === 'GMP') {
                 showAllGMP();
-            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation') {
+            } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'Digital Transformation') {
                 showAllRTF()
             } else if (isExeMajor) {
                 showAllEXED()
@@ -81,7 +82,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     showAll();
                 } else if (isExeMajor && SecondMajorWord === 'GMP') {
                     showAllGMP();
-                } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation') {
+                } else if (isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'Digital Transformation') {
                     showAllRTF()
                 } else if (isExeMajor) {
                     showAllEXED()
@@ -131,7 +132,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Some template fields are missing
                 return false;
             }
-        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'Digital Transformation'||majors === 'EXED-Digital Transformation') {
             const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
 
@@ -196,7 +197,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     return true; // All required fields are present and not empty
                 }
             }
-        } else if (SecondMajorWord === 'Digital Transformation in Financial Services') {
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'EXED-Digital Transformation') {
             const requiredFields = ['StudentID', 'FamilyName', 'FirstName', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
             for (const field of requiredFields) {
@@ -661,7 +662,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                         onClick={
                                                             isExeMajor && SecondMajorWord === 'GMP' || session.user?.majorName === 'EXED-GMP' ?
                                                                 handleAddGMP :
-                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || session.user?.majorName === 'EXED-Digital Transformation in Financial Services' ?
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || session.user?.majorName === 'EXED-Digital Transformation in Financial Services' || majors==='EXED-Digital Transformation' || majors==='EXED-Digital Transformation in Financial Services' ?
                                                                     handleAddRTF
                                                                     : isExeMajor ? handleAddEXED : handleAdd
                                                         }

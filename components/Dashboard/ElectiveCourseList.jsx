@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import { LowerButtons } from './LowerButtons';
+// import { LowerButtons } from './LowerButtons';
 import { useSession } from 'next-auth/react';
 import CustomPagination from './Pagination';
 // import { WarningMessageObsolote } from './WarningMessage';
@@ -37,7 +37,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
   const [students, setStudents] = useState([]);
   const [promotions, setPromotions] = useState([]);
 
-  const elective = true;
+  // const elective = true;
   // // console.log("users",users)
   // setTimeout(() => {
   //   setMessage('');
@@ -122,21 +122,21 @@ const ElectiveCourseList = ({ users, setUsers }) => {
       headerName: 'First Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
     {
       field: 'student_lastname',
       headerName: 'Last Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
     {
       field: 'promotion',
       headerName: 'promotion Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
 
     {
@@ -144,7 +144,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
       headerName: 'course Name',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
 
     {
@@ -152,7 +152,7 @@ const ElectiveCourseList = ({ users, setUsers }) => {
       headerName: 'Course ID',
       headerAlign: 'center',
       align: 'center',
-      width: 150,
+      width: 200,
     },
 
     // {
@@ -223,13 +223,13 @@ const ElectiveCourseList = ({ users, setUsers }) => {
         />
       </Box>
 
-      <div className="grid lg:grid-cols-1 p-5 shadow-sm items-center">
+      {/* <div className="grid lg:grid-cols-1 p-5 shadow-sm items-center">
         <LowerButtons
           elective={elective}
           setElective={setElective}
           session={session}
         />
-      </div>
+      </div> */}
     </>
   );
 };

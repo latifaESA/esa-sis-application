@@ -8,7 +8,8 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 import Select from 'react-select';
 
-export default function DownloadGrades({ setClickDownload }) {
+export default function DownloadGrades({ setClickDownload , majors }) {
+ 
   const { data: session } = useSession();
   const [Data, setData] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -57,11 +58,11 @@ export default function DownloadGrades({ setClickDownload }) {
   const isExeMajor = firstMajorWord === "EXED";
   let header = []
   if (isExeMajor) {
-    if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp') {
+    if (secondMajorWord === 'GMP' || secondMajorWord === 'gmp' || secondMajorWord === 'Gmp' || majors === 'EXED-GMP') {
       header = [
         ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'Grade', 'Comments'],
       ]
-    } else if (secondMajorWord === 'Digital Transformation in Financial Services') {
+    } else if (secondMajorWord === 'Digital Transformation in Financial Services' ||majors === 'Digital Transformation' || majors==='EXED-Digital Transformation') {
       header = [
         ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20'],
       ]

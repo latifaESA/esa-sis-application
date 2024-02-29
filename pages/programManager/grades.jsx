@@ -28,6 +28,8 @@ export default function Grades() {
     const [users, setUser] = useState([])
     const [taskName, setTaskName] = useState("")
     const [data, setData] = useState([])
+    const [majors, setMajorName] = useState('')
+    // const [major, setMajors] = useState([])
     const router = useRouter();
 
     const redirect = () => {
@@ -61,6 +63,53 @@ export default function Grades() {
         }
         return "";
     };
+    
+
+    const handleMajorName = async () => {
+        try {
+            const response = await axios.post('/api/pmApi/getAllCourses', {
+                table: 'major',
+                Where: 'major_id',
+                id: session.user?.majorid
+            })
+            setMajorName(response.data.data[0].major_name)
+        } catch (error) {
+            return error
+        }
+    }
+
+    // const handleMajors = async () => {
+    //     try {
+    //         if (session.user?.role === '3') {
+    //             const data = await axios.post('/api/pmApi/getMajorFromAs', {
+    //                 pm_ass_id: session.user?.userid
+    //             })
+
+    //             setMajors(data.data.data)
+    //         } else if (session.user?.role === '2') {
+    //             const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+    //                 pm_id: session.user?.userid
+    //             })
+
+    //             setMajors(data.data.data)
+    //         }
+
+
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // };
+    // useEffect(() => {
+    //     handleMajors()
+
+
+    // }, [session?.user.majorid])
+
+    useEffect(() => {
+        handleMajorName()
+
+    }, [session?.user.majorid])
+
 
     const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
     const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
@@ -309,7 +358,7 @@ export default function Grades() {
             fetchPromotion()
             showAllGMP()
             searchGMP()
-        } else if (isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services') {
+        } else if (isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation') {
             fetchPromotion()
             showAllRTF()
             searchRTF()
@@ -331,9 +380,9 @@ export default function Grades() {
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">Grades</p>
                     <form>
-                        {clickDownload && <DownloadGrades setClickDownload={setClickDownload} />}
+                        {clickDownload && <DownloadGrades setClickDownload={setClickDownload}  majors={majors} />}
                         {clickUpload && <UploadGrades setClickUpload={setClickUpload} showAll={showAll} clickUpload={clickUpload}
-                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} />}
+                            showAllGMP={showAllGMP} showAllRTF={showAllRTF} showAllEXED={showAllEXED} majors={majors} />}
                         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
                             <label>
                                 ID:
@@ -576,7 +625,7 @@ export default function Grades() {
                                     onClick={!isExeMajor ? search :
                                         (secondMajorWord === 'GMP' ?
                                             searchGMP :
-                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                                 ? searchRTF : isExeMajor ? searchEXED : <></>)
                                     }
 
@@ -589,7 +638,7 @@ export default function Grades() {
                                     onClick={!isExeMajor ? showAll :
                                         (secondMajorWord === 'GMP' ?
                                             showAllGMP :
-                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services'
+                                            isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                                 ? showAllRTF : isExeMajor ? showAllEXED : <></>)
                                     }
                                 >
