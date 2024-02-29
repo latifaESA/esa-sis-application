@@ -242,7 +242,7 @@ const ClassList = ({ users, allCourse }) => {
         };
         try {
           const data = await axios.post("/api/pmApi/getStudentAssign", payload);
-          await handleAccessToken(data.data)
+          await handleAccessToken(data.data.data)
           setStudent(data.data.data);
         } catch (error) {
           let major_id = session.user?.majorid;

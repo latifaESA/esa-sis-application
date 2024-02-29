@@ -2602,8 +2602,9 @@ const AddSchedule = ({
                 </select>
 
               </div>
-              {isOnline === 'false' &&
-                <div className="sm:flex">
+              {isOnline === false || isOnline === 'false' ?
+              <>
+                              <div className="sm:flex">
                   <div className="mb-4 sm:mr-8 sm:w-1/2">
                     <label className="text-gray-700 block mb-2">
                       Building:
@@ -2635,6 +2636,9 @@ const AddSchedule = ({
                     </div>
                   }
                 </div>
+              
+              </>:<></>
+
               }
             </div>
             {/*footer*/}

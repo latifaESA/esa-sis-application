@@ -15,6 +15,7 @@ export default function ElectiveModal({
   promotions,
 
 }) {
+  
   const [studentList, setStudent] = useState(false);
   const [studentListPromo, setStudentList] = useState([]);
   const { data: session } = useSession();
@@ -114,45 +115,46 @@ export default function ElectiveModal({
         return;
       }
 
-      for (let i = 0; i < selectStudentId.length; i++) {
+
         const payload = {
           course_id: courseValue,
-          student_id: selectStudentId[i],
+          student_id: selectStudentId,
           major_id: session.user.majorid,
-          promotion: students.find(
-            (student) => student.student_id === selectStudentId[i]
-          )?.promotion,
+          promotion: promotion
         };
 
         const { data } = await axios.post(
           "/api/pmApi/createAssignStudent",
           payload
         );
+        
+          for(let i =0 ;i<data.data.length ; i++){
+            const newRows = {
+              assign_student_id: data.data[i].assign_student_id,
+              course_id: courseValue[0],
+              course_name: course[0],
+              student_id: selectStudentId[i],
+              promotion: promotion,
+              student_firstname: students.find(
+                (student) => student.student_id === selectStudentId[i]
+              )?.student_firstname,
+              student_lastname: students.find(
+                (student) => student.student_id === selectStudentId[i]
+              )?.student_lastname,
+            };
+            // setData(data);
+          
+    
+            setConfirmOpenMessage(true);
+    
+            setMessage(data.message);
+            setUsers((prevUsers) => [...prevUsers, newRows]);
+    
 
-        const newRows = {
-          assign_student_id: data.data.assign_student_id,
-          course_id: courseValue[0],
-          course_name: course[0],
-          student_id: selectStudentId[i],
-          promotion: students.find(
-            (student) => student.student_id === selectStudentId[i]
-          )?.promotion,
-          student_firstname: students.find(
-            (student) => student.student_id === selectStudentId[i]
-          )?.student_firstname,
-          student_lastname: students.find(
-            (student) => student.student_id === selectStudentId[i]
-          )?.student_lastname,
-        };
+          }
+        
 
-        // setData(data);
-        // setMassage(data.message)
-  
-        setConfirmOpenMessage(true);
-
-        setMessage(data.message);
-        setUsers((prevUsers) => [...prevUsers, newRows]);
-      }
+      
     } catch (error) {
       console.error("Error:", error);
       return error;
@@ -327,7 +329,7 @@ export default function ElectiveModal({
                               label: promotion.promotion_name,
                             }))
                             .sort((a, b) => a.label.localeCompare(b.label))}
-                          placeholder="Select Courses"
+                          placeholder="Select Promotion"
                           onChange={handlePromotions}
                           className="mt-3"
                         />
