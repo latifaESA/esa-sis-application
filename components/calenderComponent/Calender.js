@@ -844,7 +844,7 @@ export const Calender = ({ schedule, setSchedule }) => {
           setMessage(attendanceData.data.message);
         }
       } else {
-        setConfirmOpenMessageNotificationsetPlacehan(true);
+        setConfirmOpenMessageNotification(true);
         setMessage('missing data , please try again!');
       }
     }
@@ -2676,12 +2676,12 @@ const AddSchedules = ({
   errorBuilding,
   errorEnd,
   errorLocation,
-  classes,
+  // classes,
   errorStart,
   errorType,
   handleSave,
-  fromTime,
-  toTime,
+  // fromTime,
+  // toTime,
   // theroom,
   click,
   allrooms,
@@ -2701,7 +2701,7 @@ const AddSchedules = ({
   remainingRooms,
   // theroomname,
   // isEdit,
-  place
+  // place
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id);
 
