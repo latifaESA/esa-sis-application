@@ -2639,7 +2639,15 @@ const AddSchedules = ({
   allClasses,
   handleClass,
   handleClose,
+  errorBuilding,
+  errorEnd,
+  errorLocation,
+  // classes,
+  errorStart,
+  errorType,
   handleSave,
+  // fromTime,
+  // toTime,
   // theroom,
   click,
   allrooms,
@@ -2650,6 +2658,7 @@ const AddSchedules = ({
   // thefrom,
   // theto,
   // theclass,
+  errorClass,
   theroombuilding,
   handleStages,
   allStages,
@@ -2658,6 +2667,7 @@ const AddSchedules = ({
   remainingRooms,
   // theroomname,
   // isEdit,
+  // place
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id);
 
@@ -2863,6 +2873,9 @@ const AddSchedules = ({
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
+
+
+
       )}
     </>
   );
