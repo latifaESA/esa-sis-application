@@ -110,6 +110,16 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [allCourses, setAllCourses] = useState([]);
   const [studentGoogle, setStudentGoogleAccess] = useState([]);
   const [urlZoom, setZoomUrl] = useState('')
+
+  const [errorType, setErrorType] = useState('');
+  // eslint-disable-next-line no-unused-vars
+
+  const [errorBuilding, setErrorBuilding] = useState('');
+  const [errorLocation, setErrorLocation] = useState('');
+  const [errorStart, setErrorStart] = useState('');
+  const [errorClass, setErrorClass] = useState('');
+  const [errorEnd, setErrorEnd] = useState('');
+
   const getAllRooms = async () => {
     try {
       let table = 'rooms';
@@ -834,7 +844,7 @@ export const Calender = ({ schedule, setSchedule }) => {
           setMessage(attendanceData.data.message);
         }
       } else {
-        setConfirmOpenMessageNotification(true);
+        setConfirmOpenMessageNotificationsetPlacehan(true);
         setMessage('missing data , please try again!');
       }
     }
@@ -924,6 +934,13 @@ export const Calender = ({ schedule, setSchedule }) => {
     deleteTable()
     setRemainingRooms([])
     setIsOnline('')
+    setErrorBuilding('')
+    setErrorClass('')
+    setErrorEnd('')
+    setErrorLocation('')
+    setErrorStart('')
+    setErrorType('')
+
     setZoomID()
     setHasFetched(false)
     setShowForm(false);
@@ -1206,15 +1223,72 @@ export const Calender = ({ schedule, setSchedule }) => {
     e.preventDefault();
 
     try {
-      setIsClick(true);
 
+
+
+      if (fromTime === '') {
+        setErrorStart('Please Fill The Start Date');
+        setIsClick(false)
+        return;
+      }
+      if (toTime === '') {
+        setErrorEnd('Please Fill The End Date');
+        setIsClick(false)
+        return;
+      }
+      if (isOnline !== 'false' && isOnline !== 'true') {
+        setErrorType('Please Fill The Type');
+        setIsClick(false)
+        return;
+      }
+      if (isOnline === 'false') {
+        if (building === '') {
+          setErrorBuilding('Please Fill The Building');
+          setIsClick(false)
+          return;
+        }
+        if (place === '') {
+          setErrorLocation('Please Fill The Location');
+          setIsClick(false)
+          return;
+        }
+      }
+
+      // dateFrom
+      if (fromTime > toTime) {
+        setErrorStart('The start time is greater than end date');
+        setIsClick(false)
+        return;
+        // alert('The start date is greater than end date');
+      } else if (fromTime === toTime) {
+        // alert('The date from and to are equal');
+
+        setErrorStart('The time from and to are equal');
+        setIsClick(false)
+        return;
+      }
+      if (toTime < fromTime) {
+        // alert('The end date is less than start date');
+
+        setErrorEnd('The end time is less than start date');
+        setIsClick(false)
+        return;
+      } else if (toTime === fromTime) {
+        // alert('The date from and to are equal');
+        setErrorEnd('The time from and to are equal');
+        setIsClick(false)
+        return;
+      }
+      setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
+
 
       // Proceed based on the type of class
       if (isOnline === 'true') {
         // Payload for online class
         const payload = {
+
           classID: classes,
           day: modifyDate(theDate),
           fromTime: fromTime,
@@ -1242,6 +1316,12 @@ export const Calender = ({ schedule, setSchedule }) => {
           setRemainingRooms([])
           getData();
           setIsOnline('')
+          setErrorBuilding('')
+          setErrorClass('')
+          setErrorEnd('')
+          setErrorLocation('')
+          setErrorStart('')
+          setErrorType('')
           setZoomID('')
 
         } setPortalData
@@ -1273,6 +1353,12 @@ export const Calender = ({ schedule, setSchedule }) => {
           setIsClick(false);
           setStudent([]);
           setRemainingRooms([])
+          setErrorBuilding('')
+          setErrorClass('')
+          setErrorEnd('')
+          setErrorLocation('')
+          setErrorStart('')
+          setErrorType('')
           getData();
           setIsOnline('')
         } setPortalData
@@ -2301,6 +2387,15 @@ export const Calender = ({ schedule, setSchedule }) => {
           )}
           {showForm && (
             <AddSchedules
+              errorBuilding={errorBuilding}
+              errorEnd={errorEnd}
+              classes={classes}
+              errorStart={errorStart}
+              fromTime={fromTime}
+              toTime={toTime}
+              place={place}
+              errorType={errorType}
+              errorLocation={errorLocation}
               handleClose={handleClose}
               isOnline={isOnline}
               setIsOnline={setIsOnline}
@@ -2321,6 +2416,7 @@ export const Calender = ({ schedule, setSchedule }) => {
               handleTo={handleTo}
               handlePlace={handlePlace}
               theroom={allroomName}
+              errorClass={errorClass}
               handleSave={handleSave}
             />
           )}
@@ -2426,118 +2522,124 @@ const AddSchedule = ({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-black bg-opacity-50">
-        <div className="relative w-full max-w-2xl mx-auto my-6">
-          {/* Modal content */}
-          <div className="border border-gray-300 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
-            {/* Modal header */}
-            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
-              <h3 className="text-gray-700 text-3xl font-bold">
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="relative w-full sm:w-auto my-6 mx-2 sm:mx-auto max-w-3xl">
+          {/*content*/}
+          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            {/*header*/}
+            <div className="flex items-start justify-between p-3 sm:p-5 border-b border-solid border-slate-200 rounded-t">
+              <h3 className="text-gray-700 text-lg sm:text-3xl font-bold">
                 Update Schedule
               </h3>
-              <button
-                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={handleClose}
-              >
-                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
+              <button className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-lg sm:text-3xl leading-none font-semibold outline-none focus:outline-none">
+                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-lg sm:text-2xl block outline-none focus:outline-none">
+                  ×
+                </span>
               </button>
             </div>
-            {/* Modal body */}
-            <div className="p-6 flex-column overflow-y-scroll overflow-x-hidden">
-              {/* Form fields */}
-              <div className="flex flex-col mb-4 ">
-                <label className="text-gray-700 items-center ms:w-auto">
-                  Class:
-                  {/* Start select box */}
+            {/*body*/}
+            <div className="relative p-3 sm:p-6 pr-4 sm:pr-12 flex-auto overflow-y-scroll">
+              <div className="sm:flex">
+                <div className="mb-4 sm:mr-8 sm:w-1/2">
+                  <label className="text-gray-700 block mb-2">
+                    Class:
+                  </label>
                   <CustomSelectBox
                     options={classNames}
                     placeholder="Select Class"
                     onSelect={handleClass}
-                    styled="font-medium h-auto justify-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md ms:w-auto"
                     oldvalue={theclass}
+                    styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
                   />
-                </label>
+
+                </div>
+
               </div>
-              <div className="flex flex-col md:flex-row mb-6">
-                <div className="flex flex-col">
-                  <label className="text-gray-700 mr-20  ms:w-auto">
+              <div className="sm:flex ">
+                <div className='mb-4 sm:mr-8 sm:w-1/2'>
+                  <label className="text-gray-700 block mb-2">
                     From:
-                    <input
-                      type="time"
-                      value={formatTimeForInput(thefrom)}
-                      onChange={handleFrom}
-                      className="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md ms:w-auto"
-                    />
                   </label>
+                  <input
+                    type="time"
+                    value={formatTimeForInput(thefrom)}
+                    onChange={handleFrom}
+                    className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                  />
+
                 </div>
-                <div className="flex flex-col">
-                  <label className="text-gray-700  ms:w-auto">
+                <div className='mb-4 sm:mr-8 sm:w-1/2'>
+                  <label className="text-gray-700  mb-2">
                     To:
-                    <input
-                      type="time"
-                      value={formatTimeForInput(theto)}
-                      onChange={handleTo}
-                      className="font-medium h-auto ms:w-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                    />
                   </label>
+                  <input
+                    type="time"
+                    value={formatTimeForInput(theto)}
+                    onChange={handleTo}
+                    className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                  />
+
+
                 </div>
+
+
+
               </div>
-              <div className="flex flex-col  ms:w-auto md:flex-row mb-6">
-                <label className="text-gray-700 mr-20">
+
+              <div className="mb-4 sm:w-1/2">
+                <label className="text-gray-700 block mb-2">
                   Type:
-                  <select
-                    className="font-medium ms:w-auto h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                    onChange={(e) => setIsOnline(e.target.value)}
-                    value={isOnline}
-                  >
-                    <option value="true">Online</option>
-                    <option value="false">Onsite</option>
-                  </select>
                 </label>
+                <select
+                  className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                  onChange={(e) => setIsOnline(e.target.value)}
+                  value={isOnline}
+                >
+
+                  <option value="true">Online</option>
+                  <option value="false">Onsite</option>
+                </select>
+
               </div>
-              {/* Location selection */}
-              {isOnline === false || isOnline === 'false' ? (
-                <div className="flex flex-col md:flex-row mb-6  ms:w-auto">
-                  <div className="flex flex-col">
-                    <label className="text-gray-700 mr-20">
-                      Building :
-                      <CustomSelectBox
-                        options={allStages}
-                        placeholder="Select Location"
-                        onSelect={handleStages}
-                        styled="font-medium h-auto ms:w-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                        enable={false}
-                        oldvalue={theroombuilding}
-                      />
+              {isOnline === 'false' &&
+                <div className="sm:flex">
+                  <div className="mb-4 sm:mr-8 sm:w-1/2">
+                    <label className="text-gray-700 block mb-2">
+                      Building:
                     </label>
+                    <CustomSelectBox
+                      options={allStages}
+                      placeholder="Select Location"
+                      onSelect={handleStages}
+                      styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                      enable={false}
+                      oldvalue={theroombuilding}
+                    />
+
                   </div>
-                  <div className="flex flex-col">
-                    {(theroombuilding?.length > 0 ||
-                      (building.length > 0 && allrooms.length > 0)) && (
-                        <label className="text-gray-700  ms:w-auto mr-20">
-                          Location :
-                          <CustomSelectBox
-                            options={
-                              remainingRooms.length > 0
-                                ? remainingRooms
-                                : allroomsRef.current
-                            }
-                            placeholder="Select Location"
-                            onSelect={handlePlace}
-                            styled="font-medium h-auto items-center border-[1px] border-gray-300 self-center w-full px-4 py-2 rounded-md"
-                            enable={false}
-                            oldvalue={theroomname}
-                          />
-                        </label>
-                      )}
-                  </div>
+                  {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
+                    <div className="mb-4 sm:w-1/2">
+                      <label className="text-gray-700 block mb-2">
+                        Location:
+                      </label>
+                      <CustomSelectBox
+                        options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                        placeholder="Select Location"
+                        onSelect={handlePlace}
+                        styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                        enable={false}
+                        oldvalue={theroomname}
+                      />
+
+                    </div>
+                  }
                 </div>
-              ) : null}
+              }
             </div>
-            {/* Modal footer */}
-            <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
+            {/*footer*/}
+            <div className="flex items-center justify-end p-3 sm:p-6 border-t border-solid border-slate-200 rounded-b">
               <button
-                className={`primary-button btnCol text-white hover:text-white hover:font-bold mr-4 ${clickEdit && 'opacity-50 cursor-not-allowed'}`}
+                className="primary-button btnCol text-white hover:text-white hover:font-bold mr-2 sm:mr-4"
                 type="button"
                 onClick={handleSave}
                 disabled={clickEdit}
@@ -2545,7 +2647,7 @@ const AddSchedule = ({
                 Save
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded"
                 type="button"
                 onClick={handleClose}
               >
@@ -2555,6 +2657,7 @@ const AddSchedule = ({
           </div>
         </div>
       </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
   );
 
@@ -2570,7 +2673,15 @@ const AddSchedules = ({
   allClasses,
   handleClass,
   handleClose,
+  errorBuilding,
+  errorEnd,
+  errorLocation,
+  classes,
+  errorStart,
+  errorType,
   handleSave,
+  fromTime,
+  toTime,
   // theroom,
   click,
   allrooms,
@@ -2581,6 +2692,7 @@ const AddSchedules = ({
   // thefrom,
   // theto,
   // theclass,
+  errorClass,
   theroombuilding,
   handleStages,
   allStages,
@@ -2589,6 +2701,7 @@ const AddSchedules = ({
   remainingRooms,
   // theroomname,
   // isEdit,
+  place
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id);
 
@@ -2667,142 +2780,122 @@ const AddSchedules = ({
       ) : (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            <div className="relative w-full sm:w-auto my-6 mx-2 sm:mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-gray-700 text-3xl font-bold">
+                <div className="flex items-start justify-between p-3 sm:p-5 border-b border-solid border-slate-200 rounded-t">
+                  <h3 className="text-gray-700 text-lg sm:text-3xl font-bold">
                     Create Schedule
                   </h3>
-                  <button className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none">
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                  <button className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-lg sm:text-3xl leading-none font-semibold outline-none focus:outline-none">
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-lg sm:text-2xl block outline-none focus:outline-none">
                       ×
                     </span>
                   </button>
                 </div>
                 {/*body*/}
-                <div className="relative p-6 pr-12 h-3/4  flex-auto overflow-y-scroll">
-                  <div className="flex  flex-col">
-                    <div className="flex flex-row mb-4">
-                      <div className="flex flex-col">
-                        <label className="text-gray-700 items-center">
-                          Class:
-                          {/* Start select box */}
-                          <CustomSelectBox
-                            options={classNames}
-                            placeholder="Select Class"
-                            onSelect={handleClass}
-                            styled={
-                              'font-medium h-auto justify-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px] '
-                            }
-                          />
-                        </label>
-                      </div>
-                    </div>
-                    <div className="flex flex-row  mb-6">
-                      <div className="flex flex-col">
-                        <label className="text-gray-700 mr-20">
-                          From:
-                          <input
-                            type="time"
-                            // value={formatTimeForInput(thefrom)}
-                            onChange={handleFrom}
-                            className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                          />
-                        </label>
-                      </div>
-
-                      <div className="flex flex-col">
-                        <label className="text-gray-700">
-                          To:
-                          <input
-                            type="time"
-                            // value={formatTimeForInput(theto)}
-                            onChange={handleTo}
-                            className="font-medium h-auto items-center 
-                        border-[1px] border-zinc-300 self-center
-                         w-60 inline-block ml-[8px]"
-                          />
-                        </label>
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-gray-700 mr-20 ">
-                        type:
-                        <select
-                          className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]"
-                          onChange={(e) => setIsOnline(e.target.value)}
-                          value={isOnline}
-                        // disabled={role == "0" ? true : false}
-                        >
-                          {/* <option value="">Choose Value..</option> */}
-                          <option value=" ">Choose Value..</option>
-                          <option value="true">Online</option>
-                          <option value="false">Onsite</option>
-                        </select>
+                <div className="relative p-3 sm:p-6 pr-4 sm:pr-12 flex-auto overflow-y-scroll">
+                  <div className="sm:flex">
+                    <div className="mb-4 sm:mr-8 sm:w-1/2">
+                      <label className="text-gray-700 block mb-2">
+                        Class:
                       </label>
-
+                      <CustomSelectBox
+                        options={classNames}
+                        placeholder="Select Class"
+                        onSelect={handleClass}
+                        styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                      />
+                      <div className="text-red-500 mt-1">{errorClass}</div>
                     </div>
-                    {isOnline === 'false' ?
-                      <>
-                        <div className="flex flex-row  mb-4">
-                          <div className="flex flex-col">
-                            <label className="text-gray-700 mr-20 ">
-                              Building :
-                              {
-                                <CustomSelectBox
-                                  options={allStages}
-                                  placeholder="Select Location"
-                                  onSelect={handleStages}
-                                  styled={
-                                    'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                                  }
-                                  enable={false}
-                                />
-                              }
-                            </label>
-                          </div>
-                          <div className="flex flex-col">
-                            {(theroombuilding?.length > 0 ||
-                              (building.length > 0 && allrooms.length > 0)) && (
-                                <label className="text-gray-700 mr-20 ">
-                                  Location :
-                                  {
-                                    <CustomSelectBox
-                                      options={
-                                        remainingRooms.length > 0
-                                          ? remainingRooms
-                                          : allroomsRef.current
-                                      }
-                                      placeholder="Select Location"
-                                      onSelect={handlePlace}
-                                      styled={
-                                        'font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-60 inline-block ml-[8px]'
-                                      }
-                                      enable={false}
-                                    />
-                                  }
-                                </label>
-                              )}
-                          </div>
-                        </div>
-                      </>
-                      : <></>}
 
                   </div>
+                  <div className="sm:flex ">
+                    <div className='mb-4 sm:mr-8 sm:w-1/2'>
+                      <label className="text-gray-700 block mb-2">
+                        From:
+                      </label>
+                      <input
+                        type="time"
+                        onChange={handleFrom}
+                        className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                      />
+                      <div className="text-red-500 mt-1">{errorStart}</div>
+                    </div>
+                    <div className='mb-4 sm:mr-8 sm:w-1/2'>
+                      <label className="text-gray-700  mb-2">
+                        To:
+                      </label>
+                      <input
+                        type="time"
+                        onChange={handleTo}
+                        className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                      />
+                      <div className="text-red-500 mt-1">{errorEnd}</div>
+
+                    </div>
+                  </div>
+
+                  <div className="mb-4 sm:w-1/2">
+                    <label className="text-gray-700 block mb-2">
+                      Type:
+                    </label>
+                    <select
+                      className="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                      onChange={(e) => setIsOnline(e.target.value)}
+                      value={isOnline}
+                    >
+                      <option value=" ">Choose Value..</option>
+                      <option value="true">Online</option>
+                      <option value="false">Onsite</option>
+                    </select>
+                    <div className="text-red-500 mt-1">{errorType}</div>
+                  </div>
+                  {isOnline === 'false' &&
+                    <div className="sm:flex">
+                      <div className="mb-4 sm:mr-8 sm:w-1/2">
+                        <label className="text-gray-700 block mb-2">
+                          Building:
+                        </label>
+                        <CustomSelectBox
+                          options={allStages}
+                          placeholder="Select Location"
+                          onSelect={handleStages}
+                          styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                          enable={false}
+                        />
+                        <div className="text-red-500 mt-1">{errorBuilding}</div>
+                      </div>
+                      {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
+                        <div className="mb-4 sm:w-1/2">
+                          <label className="text-gray-700 block mb-2">
+                            Location:
+                          </label>
+                          <CustomSelectBox
+                            options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                            placeholder="Select Location"
+                            onSelect={handlePlace}
+                            styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                            enable={false}
+                          />
+                          <div className="text-red-500 mt-1 ">{errorLocation}</div>
+                        </div>
+                      }
+                    </div>
+                  }
                 </div>
                 {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                <div className="flex items-center justify-end p-3 sm:p-6 border-t border-solid border-slate-200 rounded-b">
                   <button
-                    className="primary-button btnCol text-white hover:text-white hover:font-bold mr-4"
+                    className="primary-button btnCol text-white hover:text-white hover:font-bold mr-2 sm:mr-4"
                     type="button"
                     onClick={handleSave}
                   >
                     Save
                   </button>
                   <button
-                    className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+                    className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded"
                     type="button"
                     onClick={handleClose}
                   >
@@ -2814,6 +2907,9 @@ const AddSchedules = ({
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
+
+
+
       )}
     </>
   );
