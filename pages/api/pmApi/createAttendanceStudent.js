@@ -21,6 +21,12 @@ async function handler(req, res) {
         message: "Student Report Create Successfully",
       });
 
+    }else{
+      return res.status(400).json({
+        success: true,
+        code: 201,
+        message: "no student id",
+      });
     }
 
   } catch (error) {

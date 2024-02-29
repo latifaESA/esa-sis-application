@@ -33,9 +33,7 @@ async function handler(req, res) {
             message: error.message
         })
     } finally {
-        if (connection) {
             await disconnect(connection); // Release the connection if it exists
-        }
     }
 }
     // module.exports = handler;

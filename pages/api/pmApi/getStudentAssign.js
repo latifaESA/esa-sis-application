@@ -9,7 +9,6 @@ async function handler(req , res){
             promotion , 
             major_id , 
             course_id
-          
         }=req.body;
         const response = await getStudentAssigned(connection , 
             promotion , 

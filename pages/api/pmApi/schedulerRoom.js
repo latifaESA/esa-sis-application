@@ -5,6 +5,63 @@ dotenv.config("../env");
 
 const axios = require("axios");
 
+const CompareRooms = (roomFromDB, roomFromSharePoint) => {
+    try {
+        // console.log('roomFromDB:', roomFromSharePoint);
+
+
+        // Ensure roomFromDB is an array
+        if (!Array.isArray(roomFromDB)) {
+            throw new Error('roomFromDB is not an array');
+        }
+    
+        // Filter new rooms to add
+        const roomsToAdd = roomFromSharePoint.filter(
+            (sharepointRoom) => !roomFromDB.some((dbRoom) => dbRoom.room_name === sharepointRoom.Room)
+        );
+       
+
+        // Return the result
+        return {
+            roomsAarray: roomsToAdd
+        };
+    } catch (error) {
+        // Handle errors and throw an error
+        throw new Error(`Error in CompareRooms: ${error.message}`);
+    }
+};
+const getAccessToken = async ()=>{
+    const encodeFormData = (data) => {
+        return Object.keys(data)
+            .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+            .join('&');
+    };
+    try {
+        const URL = process.env.TENANTID
+ 
+  
+            const tokenEndpoint = `https://accounts.accesscontrol.windows.net/${URL}/tokens/OAuth/2`;
+            const data = {
+                grant_type: 'client_credentials',
+                client_id: process.env.SHAREPOINT_CLIENTID ,
+                client_secret: process.env.SHAREPOINT_SECRET,
+                resource: process.env.SHAREPOINT_SOURCES
+            };
+        
+            const response = await axios.post(
+                tokenEndpoint,
+                encodeFormData(data),
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+            return  response.data.access_token
+    } catch (error) {
+        throw new Error(`Error in access token :${error.message}`)
+    }
+}
 
 async function handler(req, res) {
     try {
@@ -84,66 +141,5 @@ async function handler(req, res) {
     }
 }
 
-const CompareRooms = (roomFromDB, roomFromSharePoint) => {
-    try {
-        // console.log('roomFromDB:', roomFromSharePoint);
-
-
-        // Ensure roomFromDB is an array
-        if (!Array.isArray(roomFromDB)) {
-            throw new Error('roomFromDB is not an array');
-        }
-    
-        // Filter new rooms to add
-        const roomsToAdd = roomFromSharePoint.filter(
-            (sharepointRoom) => !roomFromDB.some((dbRoom) => dbRoom.room_name === sharepointRoom.Room)
-        );
-       
-
-        // Return the result
-        return {
-            roomsAarray: roomsToAdd
-        };
-    } catch (error) {
-        // Handle errors and throw an error
-        throw new Error(`Error in CompareRooms: ${error.message}`);
-    }
-};
-const getAccessToken = async ()=>{
-    const encodeFormData = (data) => {
-        return Object.keys(data)
-            .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-            .join('&');
-    };
-    try {
-        const URL = process.env.TENANTID
- 
-  
-            const tokenEndpoint = `https://accounts.accesscontrol.windows.net/${URL}/tokens/OAuth/2`;
-            const data = {
-                grant_type: 'client_credentials',
-                client_id: process.env.SHAREPOINT_CLIENTID ,
-                client_secret: process.env.SHAREPOINT_SECRET,
-                resource: process.env.SHAREPOINT_SOURCES
-            };
-        
-            const response = await axios.post(
-                tokenEndpoint,
-                encodeFormData(data),
-                {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                }
-            );
-            return  response.data.access_token
-    } catch (error) {
-        throw new Error(`Error in access token :${error.message}`)
-    }
-}
-
-
-
-
-
-export default handler;
+// export default handler;
+module.exports = handler;

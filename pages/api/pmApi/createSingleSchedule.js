@@ -29,6 +29,11 @@ async function handler(req, res) {
         message: "Single Schedule created successfully",
       });
     }
+    return res.status(422).json({
+      success: true,
+      code: 201,
+      message: "Single Schedule did not created successfully",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,

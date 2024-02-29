@@ -37,12 +37,12 @@ export default async function handler(req, res) {
             if (!response.data.access_token) {
                 throw new Error('Access token not obtained');
             }
-            res.json({ access_token: response.data.access_token });
+            return res.json({ access_token: response.data.access_token });
         } catch (error) {
-            res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
+            return res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
         }
         
     } catch (error) {
-        res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
+        return res.status(500).json({ error: `Error obtaining access token: ${error.message}` });
     }
 }
