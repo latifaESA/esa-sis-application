@@ -85,6 +85,10 @@ const StudentProfile = () => {
 
       <div className="flex flex-col justify-end lg:flex-row ">
         <div className="md:w-1/2 lg:w-1/3 md:pr-4 max-sm:overflow-auto">
+{/* <<<<<<< HEAD
+        
+=======
+>>>>>>> 049f7915655ca52c8086eba51b82a86c3f6592df */}
           {/* <ReactSpeedometer
             value={averageGrades}
             minValue={0}
@@ -101,6 +105,10 @@ const StudentProfile = () => {
             currentValueText={`Avg. Grades: ${averageGrades}%`}
             needleHeightRatio={0.6}
           /> */}
+{/* <<<<<<< HEAD
+          
+=======
+>>>>>>> 049f7915655ca52c8086eba51b82a86c3f6592df */}
         </div>
         <div className="md:w-1/2 lg:w-2/3 md:pl-4 ml-12">
           <div className="mb-4 flex items-center">

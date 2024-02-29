@@ -34,5 +34,10 @@ async function handler(req, res) {
     // return error;
   }
 }
+// <<<<<<< HEAD
+// export default handler;
 export default handler;
-// module.exports = handler;
+// =======
+// export default handler;
+// // module.exports = handler;
+// >>>>>>> 049f7915655ca52c8086eba51b82a86c3f6592df

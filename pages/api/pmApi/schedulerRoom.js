@@ -146,4 +146,4 @@ const getAccessToken = async ()=>{
 
 
 
-module.exports = handler;
+export default handler;

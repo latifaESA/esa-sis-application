@@ -29,5 +29,5 @@ async function handler(req, res) {
     // console.log("db Released");
   }
 }
-// export default handler;
-module.exports = handler;
+export default handler;
+// module.exports = handler;
