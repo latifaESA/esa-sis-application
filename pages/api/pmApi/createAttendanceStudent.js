@@ -24,7 +24,7 @@ async function handler(req, res) {
     }else{
       return res.status(400).json({
         success: true,
-        code: 201,
+        code: 400,
         message: "no student id",
       });
     }
