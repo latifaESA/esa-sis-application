@@ -997,6 +997,7 @@ async function createAttendance(
     return res;
   } catch (error) {
     console.log("error in the query file : ", error);
+    return;
   }
 }
 async function AttendanceView(connection, attendance_id) {
@@ -3462,7 +3463,6 @@ async function createBooking(connection,
     const query = `INSERT INTO booking (booking_id , rooms , space ,bookingby ,date_booking , from_time , to_time) VALUES (${bookingId} , '${room}' , '${space}' ,'${bookingBy}' ,'${date}' , '${fromTime}' , '${toTime}')`
     
     const res = await connection.query(query)
-
     return res
   } catch (error) {
     console.log("error in the query file in the createBooking function : ", error); return

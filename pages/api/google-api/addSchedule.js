@@ -5,8 +5,7 @@ import { env } from "process";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    res.status(405).end(); // Method Not Allowed
-    return;
+    return res.status(405).end(); // Method Not Allowed
   }
 
   const { access_Token, event, attendance_id } = req.body;
@@ -37,6 +36,7 @@ export default async function handler(req, res) {
           success = true; // Mark this iteration as successful
         } catch (error) {
           console.error('Error inserting event:', error);
+          return;
           // Handle the error but continue with next iteration
         }
       }
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
       });
     }
   } else {
-    res.status(400).json({ message: 'No access tokens provided' });
+    return res.status(400).json({ message: 'No access tokens provided' });
   }
 }
 

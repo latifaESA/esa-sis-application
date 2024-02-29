@@ -1044,6 +1044,7 @@ export const Calender = ({ schedule, setSchedule }) => {
               room_id: place,
             };
 
+            
             axios
               .post('/api/pmApi/createAttendanceReport', payload)
               .then(async (response2) => {

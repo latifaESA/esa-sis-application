@@ -13,6 +13,7 @@ const attendanceExist = async( connection ,teacher_id , course_id , attendance_d
             
 } catch (error) {
     console.log('in the getAttendance.js in exist in pmApi: ',error)  
+    return;
 }
 }
 export default attendanceExist;

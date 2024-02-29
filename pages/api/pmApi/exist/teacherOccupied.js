@@ -44,6 +44,7 @@ const OccupiedTeacher = async(
         return occupied;
       } catch (error) {
         console.log('in the teacherOccupied.js in exist in pmApi: ',error)  
+        return;
     }
     
 

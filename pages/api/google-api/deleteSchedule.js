@@ -2,8 +2,7 @@ import { google } from 'googleapis';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    res.status(405).end(); // Method Not Allowed
-    return;
+    return res.status(405).end(); // Method Not Allowed
   }
 
   const { access_token, eventId } = req.body;
@@ -36,13 +35,13 @@ export default async function handler(req, res) {
         });
 
         // Return success message
-        res.status(200).json({ message: 'Event deleted successfully' });
+        return res.status(200).json({ message: 'Event deleted successfully' });
       } catch (error) {
         console.error('Error deleting event:', error);
-        res.status(500).json({ error: 'Failed to delete event' });
+        return res.status(500).json({ error: 'Failed to delete event' });
       }
     }
   } else {
-    res.status(400).json({ message: 'No access tokens provided' });
+    return res.status(400).json({ message: 'No access tokens provided' });
   }
 }
