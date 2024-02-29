@@ -52,8 +52,8 @@ export default function AddSchedule({
   building
 }) {
 
-console.log('is triggering')
-console.log('the timeResult : ',timeResult)
+  console.log('is triggering')
+  console.log('the timeResult : ', timeResult)
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [remainingRooms, setRemainingRooms] = useState([]);
 
@@ -247,7 +247,7 @@ console.log('the timeResult : ',timeResult)
                   </h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    // onClick={() => setShowModal(false)}
+                  // onClick={() => setShowModal(false)}
                   >
                     <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">×</span>
                   </button>
@@ -273,32 +273,30 @@ console.log('the timeResult : ',timeResult)
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                     {/* From and To inputs */}
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start w-full">
-                      <label className="text-gray-700 mb-2 md:mr-8">
+                      <label className="text-gray-700 mb-2 md:mr-8 w-full">
                         From:
                         <input
                           type="time"
                           onChange={(e) => handleFrom(e)}
-                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-auto"
-                          style={{ width: 'calc(100% - 8px)' }}
+                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full"
                         />
                       </label>
-                      <label className="text-gray-700">
+                      <label className="text-gray-700 w-full">
                         To:
                         <input
                           type="time"
                           onChange={(e) => handleTo(e)}
-                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-auto"
-                          style={{ width: 'calc(100% - 8px)' }}
+                          className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full"
                         />
                       </label>
                     </div>
                   </div>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                     {/* Type selection */}
-                    <label className="text-gray-700">
+                    <label className="text-gray-700 w-full md:w-full">
                       Type:
                       <select
-                        className="font-medium h-auto items-center border-[1px] border-zinc-300 w-full md:w-60 inline-block md:ml-1"
+                        className="font-medium h-1/2 items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"
                         onChange={(e) => setIsOnLine(e.target.value)}
                         value={isOnline}
                       >
@@ -311,23 +309,23 @@ console.log('the timeResult : ',timeResult)
                   {/* Location selection */}
                   {isOnline === 'false' && (
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <label className="text-gray-700">
+                      <label className="text-gray-700 w-full">
                         Building:
                         <CustomSelectBox
                           options={allStages}
-                          placeholder="Select Location"
+                          placeholder="Select Building"
                           onSelect={handleStages}
-                          styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                          enable={false}
+                          styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md" 
                         />
                       </label>
-                      {building.length > 0 && remainingRooms.length > 0 && (
-                        <label className="text-gray-700 mt-2 md:mt-0 md:ml-2">
+                      {building.length > 0 && (
+                        <label className="text-gray-700 mt-2 md:mt-0 md:ml-2 w-full">
                           Location:
                           <CustomSelectBox
                             options={remainingRooms}
                             placeholder="Select Location"
                             onSelect={handleLocation}
-                            styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md"                            enable={false}
+                            styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md" 
                           />
                         </label>
                       )}
@@ -362,6 +360,7 @@ console.log('the timeResult : ',timeResult)
               </div>
             </div>
           </div>
+
 
 
 

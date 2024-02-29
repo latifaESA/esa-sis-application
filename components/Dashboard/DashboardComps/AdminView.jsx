@@ -182,7 +182,7 @@ const AdminView = () => {
           </div>
         </Link>
         {/* Statistics Section */}
-        <Link href="/admin/statistics">
+        <Link href="/admin/Statistics">
           <div
             // className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
             //   router.pathname == "/admin/main"

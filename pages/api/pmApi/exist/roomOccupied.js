@@ -18,6 +18,7 @@ const OccupiedRoom = async(
       try{
         let occupied = false;
         const roomAvailability = await occupiedRoom(connection ,  attendance_date ,room );
+        console.log('room',roomAvailability)
         
         for (let i = 0; i < roomAvailability.rowCount; i++) {
           
