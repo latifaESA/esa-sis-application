@@ -32,18 +32,11 @@ export default async function handler(req, res) {
             event_id: response.data.id, 
             attendance_id: attendance_id
           });
-          return res.status(201).json({
-            success: true,
-            code:201,
-            message:`Add Schedule Successfully!`
-          })
           success = true; // Mark this iteration as successful
-  
-          
         } catch (error) {
           console.error('Error inserting event:', error);
-          return;
           // Handle the error but continue with next iteration
+          continue;
         }
       }
 
@@ -75,4 +68,3 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'No access tokens provided' });
   }
 }
-
