@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:next": "next dev -p 3001",
+    "dev:next": "node server.js",
     "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
     "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\"",
     "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS",
     "build": "next build",
-    "start": "next start -p 3001 & node ./pages/api/pmApi/schedulerhandler.js",
+    "start": "node server.js & node ./pages/api/pmApi/schedulerhandler.js",
     "lint": "next lint",
     "generate-sitemap": "next-sitemap",
     "test": "npx playwright test"
@@ -45,6 +45,7 @@
     "dotenv": "^16.0.3",
     "eslint-config-next": "^13.1.2",
     "exceljs": "^4.4.0",
+    "express": "^4.18.3",
     "file-saver": "^2.0.5",
     "formidable": "^2.1.1",
     "fs-extra": "^11.1.0",
@@ -117,7 +118,7 @@
     "eslint": "8.22.0",
     "jest": "^29.3.1",
     "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8",
+    "tailwindcss": "^3.4.1",
     "terser-webpack-plugin": "^5.3.6"
   },
   "browser": {
