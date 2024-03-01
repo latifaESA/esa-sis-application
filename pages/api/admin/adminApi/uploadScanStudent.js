@@ -140,9 +140,11 @@ async function handler(req, res) {
       // Check if the necessary fields exist in the field object
 
       const major = await getMajor(connection, field.MajorName);
+      await disconnect(connection)
 
       const majorid = major.rows[0].major_id;
       const exist = await StudentExist(connection, field.Email, majorid);
+     await disconnect(connection)
      
 
       if (exist) {
