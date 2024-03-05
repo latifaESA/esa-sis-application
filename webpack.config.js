@@ -15,7 +15,7 @@ module.exports = {
         terserOptions: {
           compress: {
             unused: true,
-            drop_console: true,
+            // drop_console: true, // Commented out for debugging purposes
           },
           // mangle: {
           //   reserved: ['foo', 'bar'],
