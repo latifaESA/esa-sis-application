@@ -76,8 +76,8 @@ export const authOptions = {
       if (user?.majorid) token.majorid = user.majorid;
       if (user?.promotion) token.promotion = user.promotion;
       if (user?.hasMultiMajor) token.hasMultiMajor = user.hasMultiMajor;
-
       if (user?.profileurl) token.profileurl = user.profileurl;
+      if (user?.pimsId) token.pimsId = user.pimsId;
       return token;
     },
     async session({ session, token }) {
@@ -94,6 +94,7 @@ export const authOptions = {
       if (token?.hasMultiMajor) session.user.hasMultiMajor = token.hasMultiMajor;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
+      if (token?.pimsId) session.user.pimsId = token.pimsId;
       return session;
     },
   },
@@ -110,7 +111,6 @@ export const authOptions = {
         const userAgent = req.headers['user-agent'];
         const userAgentinfo = useragent.parse(userAgent);
         const connection = await connect();
-        console.log(connection._connected)
         if (connection._connected) {
 
           // get the user info
@@ -253,7 +253,6 @@ export const authOptions = {
                     // console.log(insertToLogs);
                   }
                   if (user.rows[0].role === 1) {
-
                     // get the student data
                     const ST = await findData(
                       connection,
@@ -261,6 +260,14 @@ export const authOptions = {
                       'student_id',
                       user.rows[0].userid
                     );
+
+                    const ST_FIN = await findData(
+                      connection,
+                      'student_financial',
+                      'student_financial_id',
+                      user.rows[0].userid
+                    );
+                    console.log('the ST_FIN: ', ST_FIN)
                     const ST_major = await findData(
                       connection,
                       "major",
@@ -293,7 +300,8 @@ export const authOptions = {
                           accessToken: `${user.rows[0].access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
-                          majorName: ST_major.rows[0].major_name
+                          majorName: ST_major.rows[0].major_name,
+                          pimsId: ST_FIN.rows[0].pims_id
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -302,6 +310,7 @@ export const authOptions = {
                     }
                   }
                 } else {
+
                   if (user.rows[0].role === 1) {
                     // get the student data
                     const ST = await findData(
@@ -310,6 +319,13 @@ export const authOptions = {
                       'student_id',
                       user.rows[0].userid
                     );
+                    const ST_FIN = await findData(
+                      connection,
+                      'student_financial',
+                      'stundent_financial_id',
+                      user.rows[0].userid
+                    );
+                    console.log('the ST_FIN : ',ST_FIN)
                     const ST_major = await findData(
                       connection,
                       'major',
@@ -362,6 +378,7 @@ export const authOptions = {
                           majorid: ST.rows[0].major_id,
                           majorName: ST_major.rows[0].major_name,
                           promotion: ST.rows[0].promotion,
+                          pimsId: ST_FIN.rowCount > 0 ? ST_FIN.rows[0].pims_id : ''
                         };
                       } else {
                         // if the student is not exists then send this message to frontend

@@ -7,7 +7,7 @@ const nextConfig = {
   images: {
     deviceSizes: [320, 420, 768, 1024, 1200], // Specify the sizes of the images you want to optimize
     // domains: ['res.cloudinary.com'],
-    domains: ['localhost','res.cloudinary.com', '77.42.159.227'],
+    domains: ['localhost','res.cloudinary.com', '77.42.159.227','80.77.180.245'],
 
      },
 
