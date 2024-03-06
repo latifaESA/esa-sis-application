@@ -21,6 +21,7 @@ import sis_app_logger from "../../../api/logger";
 import useragent from "useragent";
 
 async function handler(req, res) {
+  console.log("wslllllllll")
   if (req.method !== "POST") {
     return res
       .status(500)

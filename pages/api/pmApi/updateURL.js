@@ -8,6 +8,7 @@ async function handler(req , res) {
         url,
        attendance_id
     } = req.body;
+    console.log('ws;lllllllllllllllllll')
    await uploadFile(connection ,url ,attendance_id);
     await disconnect(connection);
     return res.status(201).json({

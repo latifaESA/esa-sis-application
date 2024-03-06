@@ -2,13 +2,13 @@ import formidable from "formidable";
 import fs from "fs";
 import path from "path";
 
-import { getServerSession } from "next-auth/next";
+// import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../../utilities/db");
 const { getMajor, CreateCourse } = require("../../controller/queries");
 
 import xlsx from "xlsx";
 // import { env } from 'process';
-import { authOptions } from "../../auth/[...nextauth]";
+// import { authOptions } from "../../auth/[...nextauth]";
 import CourseExist from "../../pmApi/exist/getCourses";
 
 
@@ -24,11 +24,11 @@ async function handler(req, res) {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
-    const session = await getServerSession(req, res, authOptions);
+    // const session = await getServerSession(req, res, authOptions);
 
-    if (!session) {
-      return res.status(401).send({ message: "Signin Required To Save Data" });
-    }
+    // if (!session) {
+    //   return res.status(401).send({ message: "Signin Required To Save Data" });
+    // }
 
     // const { user } = session;
 

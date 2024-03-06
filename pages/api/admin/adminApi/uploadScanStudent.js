@@ -37,9 +37,9 @@ export const config = {
 async function handler(req, res) {
   try {
     // const message = '';
-    if (req.method !== "POST") {
-      return res.status(400).send({ message: `${req.method} not supported` });
-    }
+    // if (req.method !== "POST") {
+    //   return res.status(400).send({ message: `${req.method} not supported` });
+    // }
 
     const session = await getServerSession(req, res, authOptions);
 

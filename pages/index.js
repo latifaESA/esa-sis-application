@@ -82,6 +82,7 @@ export default function Home() {
       <Head>
         <title>ESA Business School - SIS Application</title>
         <link rel='icon' href='/esa.ico' />
+        <meta name="google-site-verification" content="OM1_3GqV2ivos-Y_OSyfU7Gcfz6ajfWkpejdKaNJMxE" />
       </Head>
       <LoginScreen />
       {/* <Carousel

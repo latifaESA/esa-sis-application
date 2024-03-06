@@ -78,7 +78,7 @@ const ResetPassword = () => {
     // // console.log('Reset Password Function ....');
     if (password) {
       try {
-        await axios.put("/api/user/password/changepassword", {
+        await axios.post("/api/user/password/changepassword", {
           userid,
           password,
         });

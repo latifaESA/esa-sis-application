@@ -1,34 +1,28 @@
-const fs = require('fs');
-const https = require('https');
-const next = require('next');
-const express = require('express'); // Require express directly
+const { createServer } = require('http')
+const { parse } = require('url')
+const next = require('next')
 
-const port = process.env.PORT || 3001; 
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-
-const handle = app.getRequestHandler();
-const ca = fs.readFileSync('../esa-sis-application/_.esa.edu.lb/b6100e1ad302c9e.pem');
-
-const httpsOptions = {
-  cert: fs.readFileSync('../esa-sis-application/_.esa.edu.lb/b6100e1ad302c9e.crt'),
-  key: fs.readFileSync('../esa-sis-application/_.esa.edu.lb/privatKey.txt'),
-  ca: ca,
-  
-};
+const dev = process.env.NODE_ENV !== 'production'
+const port = process.env.PORT || 3000;
+const app = next({ dev })
+const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
-  // Create an express app
-  const server = express();
+  createServer((req, res) => {
+    // Be sure to pass `true` as the second argument to `url.parse`.
+    // This tells it to parse the query portion of the URL.
+    const parsedUrl = parse(req.url, true)
+    const { pathname, query } = parsedUrl
 
-  // Define your routes and middleware here
-  server.all('*', (req, res) => {
-    return handle(req, res);
-  });
-
-  // Start HTTPS server
-  https.createServer(httpsOptions, server).listen(port, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on https://esasis.esa.edu.lb`);
-  });
-});
+    if (pathname === '/a') {
+      app.render(req, res, '/a', query)
+    } else if (pathname === '/b') {
+      app.render(req, res, '/b', query)
+    } else {
+      handle(req, res, parsedUrl)
+    }
+  }).listen(port, (err) => {
+    if (err) throw err
+    console.log(`> Ready on http://localhost:${port}`)
+  })
+})

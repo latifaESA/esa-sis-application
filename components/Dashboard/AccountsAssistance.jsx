@@ -102,7 +102,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
       pm_ass_status: user.pm_ass_status == "active" ? "inactive" : "active",
     };
     axios
-      .put("/api/admin/adminApi/updateAssistance", sendData)
+      .post("/api/admin/adminApi/updateAssistance", sendData)
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         // Handle success

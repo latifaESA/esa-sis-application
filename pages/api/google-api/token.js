@@ -2,6 +2,7 @@
 import { google } from 'googleapis';
 
 export default async function handler(req, res) {
+    
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed', message: 'Only POST requests are allowed' });
     }
@@ -12,12 +13,10 @@ export default async function handler(req, res) {
         const oauth2Client = new google.auth.OAuth2({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            redirectUri: 'http://localhost:3001',
+            redirectUri: 'https://esasis.esa.edu.lb',
         });
 
         const { tokens } = await oauth2Client.getToken(code);
-        console.log('Access token:', tokens.access_token);
-        console.log('Refresh token:', tokens.refresh_token);
 
         // Return both access token and refresh token in the response
         return res.status(200).json({ 

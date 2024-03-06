@@ -115,9 +115,9 @@ export default function Archive({
   const handleFile = async () => {
     try {
       const url = docUrl;
-      console.log('att', attendance)
+      console.log('att', attendance[0].attendance_id)
       const attendance_id = attendance[0].attendance_id;
-      const { data } = await axios.put("/api/pmApi/updateURL", {
+      const { data } = await axios.post("/api/pmApi/updateURL", {
         url,
         attendance_id,
       });

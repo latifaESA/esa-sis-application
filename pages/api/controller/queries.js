@@ -1377,9 +1377,10 @@ async function unassign(connection, teacher_id, course_id) {
 // update query to upload url
 async function uploadFile(connection, Url, attendance_id) {
   try {
+    console.log('attebdance' , attendance_id)
     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id ='${attendance_id}'`;
     const res = await connection.query(query);
-    // console.log(query);
+    console.log(query);
     return res;
   } catch (error) {
     console.log("error in the query file : ", error); return;
