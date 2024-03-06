@@ -267,7 +267,6 @@ export const authOptions = {
                       'student_financial_id',
                       user.rows[0].userid
                     );
-                    console.log('the ST_FIN: ', ST_FIN)
                     const ST_major = await findData(
                       connection,
                       "major",
@@ -301,7 +300,7 @@ export const authOptions = {
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
                           majorName: ST_major.rows[0].major_name,
-                          pimsId: ST_FIN.rows[0].pims_id
+                          pimsId: ST_FIN.rowCount > 0 ? ST_FIN.rows[0].pims_id : ''
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -325,7 +324,6 @@ export const authOptions = {
                       'stundent_financial_id',
                       user.rows[0].userid
                     );
-                    console.log('the ST_FIN : ',ST_FIN)
                     const ST_major = await findData(
                       connection,
                       'major',
