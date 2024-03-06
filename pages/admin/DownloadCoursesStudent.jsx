@@ -25,7 +25,7 @@ export default function DownloadCourseStudent() {
   const headerStudent = [
     [
       'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
-      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'Title','SecondEmail', 'LandLineNumber',
+      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'PimsId', 'Title','SecondEmail', 'LandLineNumber',
       'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
       'FirstNationality', 'SecondNationality', 'Country', 'Region', 'City', 'Street', 'Building', 'Floor', 'Postal',
       'Degree', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
@@ -141,7 +141,7 @@ export default function DownloadCourseStudent() {
 
   const createExcelTemplateStudent = () => {
     const data2 = headerStudent.concat([
-        ['', '', '', '', '', '', majors, '', '', '', '', '', '', '', '', '', '', '', '', '',
+        ['', '', '', '', '', '', majors, '', '','', '', '', '', '', '', '', '', '', '', '', '',
 
             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 

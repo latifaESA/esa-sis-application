@@ -128,25 +128,27 @@ export default async function handler(req, res) {
   //     .send({ message: "Signin Required To View your financial data ." });
   // }
   try {
+    let {pimsID} = req.body;
         const credentialsXml = 
         `<CREDENTIALS>
         <USERNAME>TEST</USERNAME>
         <PASSWORD>TEST</PASSWORD>
         </CREDENTIALS>`;
-
-        let token = await axios.post('http://localhost:8075/login', credentialsXml, {
-            headers: {
-              'Content-Type': 'application/xml'
-            }
-          })
-          console.log(token)
+        const axiosConfig = {
+          headers: {
+            'Content-Type': 'application/xml'
+          },
+          timeout: 10000 // Set timeout to 10 seconds (adjust as needed)
+        };
+        let token = await axios.post('http://localhost:8075/login', credentialsXml, axiosConfig)
+          // console.log(token)
         if(token.status === 200){
             // recieve financial data
-            let {data} = await axios.get(`http://localhost:8075/statement?token=${token.data}&auxiliary=A001&curr=<ALL>`);
+            let {data} = await axios.get(`http://localhost:8075/statement?token=${token.data}&auxiliary=${pimsID}&curr=<ALL>`);
             // console.log('the data is : ', data)
             parseString(data, (err, result) => {
               if (err) {
-                console.error('Error parsing XML:', err);
+                // console.error('Error parsing XML:', err);
                 res.status(500).json({ error: 'Error parsing XML' });
                 return;
               }
@@ -163,8 +165,18 @@ export default async function handler(req, res) {
             return res.status('401').send({message: "No token recieved ."})
         }
   } catch (error) {
-    console.log('the error : ', error)
-    return;
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.status;
+      console.log('the status code in pims : ', errorMessage)
+      if (errorMessage === 400){
+    return res.status(500).send({ error: "Your pims Id is not existing in Pims database" });
+      }
+      // You can handle the error message here as needed
+    } else {
+      // Handle other types of errors
+      console.error('An unexpected error occurred:', error);
+    }
+    return res.status(500).send({ error: 'The pims server is shutdown.' });
   }
 
 //   try{

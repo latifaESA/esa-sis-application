@@ -3709,6 +3709,37 @@ async function deleteGoogleEventDetails(connection , student_id ){
 
 }
 
+async function uploadStudentFinancial(
+  connection,
+  {
+    student_id,
+    pims_id,
+  }
+) {
+  try {
+    const query = {
+      text: `
+        INSERT INTO student_financial (
+        stundent_financial_id,
+        pims_id
+      ) VALUES (
+        $1,
+        $2
+      )
+      `,
+
+      values: [
+        student_id,
+        pims_id
+      ],
+    };
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("error in the query file : ", error); return;
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -3890,5 +3921,6 @@ module.exports = {
   updateZoomInfo,
   updateOnlineSchedule,
   deleteZoomId,
-  createExtraAS
+  createExtraAS,
+  uploadStudentFinancial
 };

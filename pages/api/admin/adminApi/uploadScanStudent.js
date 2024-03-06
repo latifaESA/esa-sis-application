@@ -14,6 +14,7 @@ const {
   uploadStudent,
   ActiveUser,
   userDocument,
+  uploadStudentFinancial,
 
 } = require("../../controller/queries");
 
@@ -370,8 +371,14 @@ async function handler(req, res) {
             student_firstname: student.StudentFirstName,
             student_lastname: student.StudentLastName,
             major_id: majorid,
-          });
-
+          })
+          if(response){
+            await uploadStudentFinancial(connection, {
+              student_id: student.student_id,
+              pims_id: student.PimsId
+            })
+  
+          }
           await SendEmail(
             student.StudentFirstName,
             student.Email,

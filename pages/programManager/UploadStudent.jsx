@@ -62,7 +62,7 @@ export default function UploadStudent({setOpenUpload}) {
         const templateFields = [
             'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
 
-            'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)', 'MobileNumber(required)', 'Title', 'SecondEmail', 'LandLineNumber',
+            'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)', 'MobileNumber(required)', 'PimsId', 'Title', 'SecondEmail', 'LandLineNumber',
 
             'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
 
@@ -251,6 +251,7 @@ export default function UploadStudent({setOpenUpload}) {
                                 Building: record[25],
                                 Floor: record[26],
                                 Postal: record[27],
+                                PimsId: record[9]
                             };
     
                             studentData.push(studentDataArray);    
