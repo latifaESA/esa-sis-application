@@ -51,7 +51,7 @@ export default function Students() {
     [
       'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
 
-      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'Title','SecondEmail', 'LandLineNumber',
+      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)','PimsId', 'Title','SecondEmail', 'LandLineNumber',
 
       'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
 
@@ -126,7 +126,7 @@ export default function Students() {
   const createExcelTemplateStudent = () => {
     const majors = session.user?.majorName
     const data2 = headerStudent.concat([
-        ['', '', '', '', '', promotionsName, majors, '', '', '', '', '', '', '', '', '', '', '', '', '',
+        ['', '', '', '', '', promotionsName, majors, '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 
             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 
