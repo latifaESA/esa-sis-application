@@ -48,7 +48,7 @@ export default function LoginScreen() {
   const userState = useSelector(
     (state) => state.persistedReducer.user_state.userState
   );
-
+   console.log('user' , userState)
   // const appState = useSelector(
   //   (state) => state.persistedReducer.app_state.appState
   // );
@@ -235,7 +235,7 @@ console.log('session?.user  : ', session?.user)
           error: `${getError(err)}`,
         })
       );
-      await axios.put("/api/logger/sendErrorToLogger", {
+      await axios.post("/api/logger/sendErrorToLogger", {
         data: encryptedBody,
       });
     }

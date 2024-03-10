@@ -1,38 +1,30 @@
 const { connect, disconnect } = require("../../../utilities/db");
-
 const { createBooking } = require("../controller/queries");
-import moment from 'moment-timezone';
+const moment = require('moment-timezone');
+
 async function handler(req, res) {
+
   try {
+    
+    // const { booking } = req.body;
+    // console.log('tryBooking', booking)
     const connection = await connect();
-    // const { bookingId , room , space ,bookingBy ,date , fromTime , toTime } = req.body;
 
-    // await createBooking(connection,bookingId , room , space ,bookingBy ,date , fromTime , toTime);
-    const { booking } = req.body
-    for(let i = 0 ; i<= booking.length ; i++){
-      if(booking[i] && booking[i].Id){
-        const formattedDate = moment(booking[i].BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-
-        await createBooking(
-          connection,
-          {
-            bookingId :booking[i].Id,
-             room: booking[i].Title , 
-             space:  booking[i].Space ,
-             bookingBy: booking[i].BookedBy,
-             date:  formattedDate, 
-             fromTime :booking[i].FromTime , 
-             toTime:booking[i].ToTime
-
-          }
-          );
-
-      }else{
-        console.log("Invalid booking element:", booking[i]);
+    for (const currentBooking of req.body) {
+      if (currentBooking && currentBooking.Id) {
+        const formattedDate = moment(currentBooking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
+        await createBooking(connection, {
+          bookingId: currentBooking.Id,
+          room: currentBooking.Title,
+          space: currentBooking.Space,
+          bookingBy: currentBooking.BookedBy,
+          date: formattedDate,
+          fromTime: currentBooking.FromTime,
+          toTime: currentBooking.ToTime
+        });
+      } else {
+        console.log("Invalid booking element:", currentBooking);
       }
-      
-
-
     }
 
     await disconnect(connection);
@@ -40,7 +32,6 @@ async function handler(req, res) {
     return res.status(201).json({
       success: true,
       code: 201,
-     
     });
   } catch (error) {
     return res.status(500).json({
@@ -50,5 +41,5 @@ async function handler(req, res) {
     });
   }
 }
-// module.exports = handler;
+
 export default handler;

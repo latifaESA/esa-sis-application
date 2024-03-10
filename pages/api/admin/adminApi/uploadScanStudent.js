@@ -29,18 +29,19 @@ import PromotionMajorExist from "./isPromotionToMajor";
 import DataSettings from "../../controller/getDataSettings";
 
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 async function handler(req, res) {
+  console.log('wslllllllllllllllllll')
   try {
     // const message = '';
-    // if (req.method !== "POST") {
-    //   return res.status(400).send({ message: `${req.method} not supported` });
-    // }
+    if (req.method !== "PATCH") {
+      return res.status(400).send({ message: `${req.method} not supported` });
+    }
 
     const session = await getServerSession(req, res, authOptions);
 

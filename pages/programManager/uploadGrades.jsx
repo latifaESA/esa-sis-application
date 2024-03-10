@@ -7,7 +7,7 @@ import axios from "axios";
 import DropZone from "../../components/UploadDocuments/DropZone";
 import uploadDocReducer from "../../components/UploadDocuments/reducers/uploadDocReducer";
 
-export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF, showAllEXED, clickUpload , majors}) {
+export default function UploadGrades({ setClickUpload, showAll, showAllGMP, showAllRTF, showAllEXED, clickUpload, majors }) {
 
     const { data: session } = useSession();
     const [confirmOpenMessage, setConfirmOpenMessage] = useState(false);
@@ -132,7 +132,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                 // Some template fields are missing
                 return false;
             }
-        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'Digital Transformation'||majors === 'EXED-Digital Transformation') {
+        } else if (SecondMajorWord === 'Digital Transformation in Financial Services' || SecondMajorWord === 'Digital Transformation' || majors === 'Digital Transformation' || majors === 'EXED-Digital Transformation') {
             const templateFields = ['StudentID', 'FamilyName', 'FirstName', 'Promotion', 'CertificateName', 'TaskName', 'Year', 'GradeOver30', 'GradeOver20']
 
 
@@ -520,7 +520,6 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
             setMessages("Something went wrong. Please try again later.");
         }
     };
-
     const handleAddRTF = async () => {
 
         try {
@@ -596,21 +595,23 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
 
 
 
+
     return (
         <>
-            {confirmOpenMessage && (
-                <NotificatonMessage
-                    handleOpenNotificatonMessages={handleOpenNotificatonMessages}
-                    handleCloseNotificatonMessages={handleCloseNotificatonMessages}
-                    messages={messages}
-                />
-            )}
+
 
             {session?.user.role === "2" || session?.user.role === "3" ? (
                 <>
                     <div
                         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                     >
+                        {confirmOpenMessage && (
+                            <NotificatonMessage
+                                handleOpenNotificatonMessages={handleOpenNotificatonMessages}
+                                handleCloseNotificatonMessages={handleCloseNotificatonMessages}
+                                messages={messages}
+                            />
+                        )}
                         <div className="relative w-3/4  my-6 mx-auto max-w-3xl">
                             {/*content*/}
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -662,7 +663,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                                                         onClick={
                                                             isExeMajor && SecondMajorWord === 'GMP' || session.user?.majorName === 'EXED-GMP' ?
                                                                 handleAddGMP :
-                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || session.user?.majorName === 'EXED-Digital Transformation in Financial Services' || majors==='EXED-Digital Transformation' || majors==='EXED-Digital Transformation in Financial Services' ?
+                                                                isExeMajor && SecondMajorWord === 'Digital Transformation in Financial Services' || session.user?.majorName === 'EXED-Digital Transformation in Financial Services' || majors === 'EXED-Digital Transformation' || majors === 'EXED-Digital Transformation in Financial Services' ?
                                                                     handleAddRTF
                                                                     : isExeMajor ? handleAddEXED : handleAdd
                                                         }

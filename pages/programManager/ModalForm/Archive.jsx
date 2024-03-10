@@ -31,6 +31,7 @@ export default function Archive({
     fileList: [],
     totalSize: 0,
   });
+
   const handleOpenNotificatonMessages = () => {
     setConfirmOpenMessage(true);
   };
@@ -68,6 +69,7 @@ export default function Archive({
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
       // // console.log('uploaddata', uploadPhotoData.fileList[0].name);
+      console.log('uploadphoto' , uploadPhotoData.fileList[0])
 
       // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {

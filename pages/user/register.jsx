@@ -140,7 +140,7 @@ export default function LoginScreen() {
             error: `${getError(err)}`,
           })
         );
-        await axios.put("/api/logger/sendErrorToLogger", {
+        await axios.post("/api/logger/sendErrorToLogger", {
           data: encryptedBody,
         });
         // await axios.post(

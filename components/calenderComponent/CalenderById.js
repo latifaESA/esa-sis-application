@@ -132,6 +132,35 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   };
 
+  const createBooking = async (data) => {
+    try {
+      const payload = data.map(item => ({
+        BookedBy: item.BookedBy,
+        BookingDate: item.BookingDate,
+        BookingDay: item.BookingDay,
+        FromTime: item.FromTime,
+        ToTime: item.ToTime,
+        Space: item.Space,
+        Title: item.Title,
+        Id: item.Id
+      }));
+  
+      await fetch('/api/pmApi/createBooking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (error) {
+      return error;
+    }
+  };
+  
+  
+
+
+
   const getRoomBooking = async () => {
     try {
       const accessToken = await getSharePointToken();
@@ -148,35 +177,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       });
 
       const data = await response.json();
-      await axios.post('/api/pmApi/createBooking', {
-        booking: data.d.results
-      })
-      // if (data.d.results.length > 0) {
-      //   const start = new Date().getMilliseconds()
-      //   for (const booking of data.d.results) {
-      //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
+      await createBooking(data.d.results)
 
-
-      // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-
-
-      //     // Make the API call
-      //     await axios.post('/api/pmApi/createBooking', {
-      //       bookingId: booking.ID,
-      //       room: booking.Title,
-      //       space: booking.Space,
-      //       bookingBy: booking.BookedBy,
-      //       date: formattedDate,
-      //       fromTime: booking.FromTime,
-      //       toTime: booking.ToTime,
-      //     });
-      //     // console.log(result);
-      //   }
-      //   const end = new Date().getMilliseconds() - start
-      //   console.log('end', end)
-      // }
-
-      // return { ok: true, result: data };
 
     } catch (error) {
       console.error('Error checking room availability in SharePoint:', error.message);
@@ -184,6 +186,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return { ok: false, result: false };
     }
   };
+
+
+
   const getZoomToken = async () => {
     try {
       const response = await fetch('/api/zoom_api/getZoomAccessToken', {
@@ -306,17 +311,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
   const handleUpdateZoomOnlineSchedule = async (zoomId, zoomUrl, attendanceID) => {
     try {
-
       await axios.post(`/api/pmApi/updateScheduleMeet`, {
-        zoom_id: zoomId,
+        zoom_id: zoomId.toString(), // Convert to string explicitly
         zoom_url: zoomUrl,
         attendance_id: attendanceID
-      })
-
+      });
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  };
 
   const handleDeleteZoom = async (zoom_id) => {
     try {
@@ -1317,7 +1320,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
-          await handleSharePointBookingRoom(theDate, attendanceData.data.data)
+          await handleSharePointBookingRoom(theDate, attendanceData.data.data , courseName)
           await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
@@ -1698,7 +1701,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         );
         if (data.success) {
 
-          await handleSharePointBookingRoom(theDate, attendanceId)
+          await handleSharePointBookingRoom(theDate, attendanceId , courseName)
           await handleUpdateGoogleCalender(schedData, studentGoogle ,roomName , building)
 
           await handleDeleteZoom(zoom_id)
@@ -1793,7 +1796,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
 
-  const handleSharePointBookingRoom = async (date, attendance_id) => {
+  const handleSharePointBookingRoom = async (date, attendance_id , courseName) => {
     try {
       const accessToken = await getSharePointToken();
       const dates = new Date(date);
@@ -1833,6 +1836,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
+          Description:`${courseName}`
         }),
       });
 

@@ -18,6 +18,8 @@ export const config = {
 };
 
 async function handler(req, res) {
+
+  console.log('wslll')
   try {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
@@ -35,6 +37,7 @@ async function handler(req, res) {
     const readFile = (file, saveLocally, place) => {
       const options = {};
       if (saveLocally) {
+        console.log('wsll')
         options.uploadDir = place;
 
         // eslint-disable-next-line no-unused-vars

@@ -64,7 +64,7 @@ export const Navbar = () => {
         info: "signout navbar",
       })
     );
-    await axios.put("/api/logger/sendInfoToLogger", {
+    await axios.post("/api/logger/sendInfoToLogger", {
       data: encryptedEmail,
     });
 
@@ -159,7 +159,14 @@ export const Navbar = () => {
     <>
       {/* <ToastContainer position="bottom-center" limit={1} /> */}
       <header>
+
         <nav className="w-full bg-white shadow-md">
+        <Link
+                          href="/privacy-policy"
+                          className="p-2 font-bold uppercase hover:text-xl"
+                        >
+                          here
+                        </Link>
           <div className="justify-between px-4 mx-auto md:items-center md:flex md:px-8">
             <div>
               <div className="flex items-center justify-between  md:block">
@@ -231,6 +238,7 @@ export const Navbar = () => {
                       ) : session?.user ? (
                         <>
                           <div className="flex justify-center">
+
                             <Image
                               src={
                                 userState.user.profileUrl &&
@@ -243,6 +251,7 @@ export const Navbar = () => {
                               height={70}
                               className="w-[70px] h-[70px] rounded-full"
                             ></Image>
+
                           </div>
                           <Menu as="div" className="relative inline-block">
                             <Menu.Button className="text-blue-800 uppercase font-bold hover:text-xl">

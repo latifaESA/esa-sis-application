@@ -51,7 +51,7 @@ const RequestList = ({ users, setUsers }) => {
     };
     // console.log("sendData", sendData);
     axios
-      .put(
+      .post(
         '/api/pmApi/updateReqStatus',
         sendData
         // {

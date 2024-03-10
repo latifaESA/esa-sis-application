@@ -1,6 +1,7 @@
 const { getAttendanceByCTD } = require("../../controller/queries");
 
 const attendanceExist = async( connection ,teacher_id , course_id , attendance_date)=>{
+    console.log('wsllllllllllllll')
     try {
 
     const exist = await getAttendanceByCTD(connection ,teacher_id , course_id , attendance_date)

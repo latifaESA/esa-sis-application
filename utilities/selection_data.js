@@ -2895,8 +2895,8 @@ const selection_data = {
   where_going_after_save_en: '/user/login',
   where_going_after_save_fr: '/fr/user/login',
   going_to_external_URL: false,
-  going_to_external_URL_after_save_en: 'https://www.esa.edu.lb/english/home',
-  going_to_external_URL_after_save_fr: 'https://www.esa.edu.lb/french/home',
+  // going_to_external_URL_after_save_en: 'https://www.esa.edu.lb/english/home',
+  // going_to_external_URL_after_save_fr: 'https://www.esa.edu.lb/french/home',
 
   where_going_after_submit: '/',
   // where_going_after_submit: '/user/login',

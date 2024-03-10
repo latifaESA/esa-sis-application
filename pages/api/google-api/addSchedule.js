@@ -1,9 +1,9 @@
 import { google } from 'googleapis';
 import axios from 'axios';
-
 import { env } from "process";
 
 export default async function handler(req, res) {
+  console.log('body' , req.body)
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -15,7 +15,12 @@ export default async function handler(req, res) {
       let success = false; // Flag to track overall success
 
       for (let i = 0; i < access_Token.length; i++) {
-        const oauth2Client = new google.auth.OAuth2();
+        const oauth2Client = new google.auth.OAuth2({
+          clientId: '488510538109-36i4ol70jivfrtcu31upbmld812klgr7.apps.googleusercontent.com',
+          clientSecret: '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',
+          redirectUri: 'https://esasis.esa.edu.lb/student/schedule/',
+          scopes: ['https://www.googleapis.com/auth/calendar'],
+        });
         const access_token = access_Token[i].access_token;
 
         oauth2Client.setCredentials({ access_token });

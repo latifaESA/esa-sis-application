@@ -8,16 +8,11 @@ import  moment from 'moment-timezone'
 async function handler(req, res) {
 
   try {
-    const connection = await connect();
-   
+    const connection = await connect();   
     const { teacher_id, course_id, major_id, attendance_date  ,fromTime,
       toTime,
       room  } = req.body;
-      console.log(teacher_id, course_id, major_id, attendance_date  ,fromTime,
-        toTime,
-        room  )
-        console.log(teacher_id.length)
-        console.log(course_id.length)
+
     if (teacher_id === "" || course_id === "") {
       return res.status(200).json({
         code: 200,
@@ -57,37 +52,47 @@ async function handler(req, res) {
     
 
     const teacherOccupied = await OccupiedTeacher(connection, attendance_date, teacher_id, fromTime, toTime)
-
-    const roomOccupied = await OccupiedRoom(connection, attendance_date,
+    await disconnect(connection);
+    if (teacherOccupied) {
+      return res.status(200).json({
+          success: false,
+          code: 200,
+          message: `Teacher Not Available ${date_time} from ${from_time} to ${to_time} `
+      })
+  }
+    if(room !==''){
+      const roomOccupied = await OccupiedRoom(connection, attendance_date,
         fromTime,
         toTime,
         room)
+        console.log('roomOccupied' , roomOccupied)
+        await disconnect(connection);
+        if (roomOccupied) {
+          return res.status(200).json({
+              success: false,
+              code: 200,
+              message: `Room Not Available ${date_time} from ${from_time} to ${to_time} `
+          })
+    }
+
+
         
-    if (roomOccupied) {
-        return res.status(400).json({
-            success: false,
-            code: 400,
-            message: `Room Not Available ${date_time} from ${from_time} to ${to_time} `
-        })
+ 
     }
-    if (teacherOccupied) {
-        return res.status(400).json({
-            success: false,
-            code: 400,
-            message: `Teacher Not Available ${date_time} from ${from_time} to ${to_time} `
-        })
-    }
+
     const exist = await attendanceExist(
       connection,
       teacher_id,
       course_id,
       date
     );
+
     const date_exist = date.split('T')[0]
 
     if (exist) {
-      return res.status(400).json({
-        code: 400,
+      console.log('exist' , exist)
+      return res.status(200).json({
+        code: 200,
         success: false,
         message: `Scheduled Already Exist ${date_exist}!`,
       });

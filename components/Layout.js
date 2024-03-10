@@ -11,6 +11,7 @@ import { Navbar } from './Navbar';
 // import selection_data from '../utilities/selection_data';
 import { DefaultSeo } from 'next-seo';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useSelector } from 'react-redux';
 
 export default function Layout({ children, title }) {
@@ -55,9 +56,9 @@ export default function Layout({ children, title }) {
     }
     case session?.user.major ===
       'MSM (Mastère de Spécialisation en Marketing et Communication)': {
-      pagetitle = pagetitle + '-' + session?.user.major;
-      description = `<p>The Specialized Master in Marketing and Communication is a program that combines marketing/communication and management, in order to equip students with the skills and knowledge to succeed an international, cutting-edge career in marketing. The program offers students the opportunity to master and deepen the knowledge of the necessary theories and tools for the evolution of your functions.</p>`;
-      og_description = `
+        pagetitle = pagetitle + '-' + session?.user.major;
+        description = `<p>The Specialized Master in Marketing and Communication is a program that combines marketing/communication and management, in order to equip students with the skills and knowledge to succeed an international, cutting-edge career in marketing. The program offers students the opportunity to master and deepen the knowledge of the necessary theories and tools for the evolution of your functions.</p>`;
+        og_description = `
         <h3> Objectives</h3>
         <p>The Specialized Master in Marketing and Communication is a program that combines marketing/communication and management, in order to equip students with the skills and knowledge to succeed an international, cutting-edge career in marketing. The program offers students the opportunity to master and deepen the knowledge of the necessary theories and tools for the evolution of your functions.</p>
         
@@ -74,18 +75,18 @@ export default function Layout({ children, title }) {
             <li>Specialized Executive Master in Marketing and Communication from ESCP Europe</li>
         </ul> `;
 
-      URL =
-        'https://www.esa.edu.lb/english/mastere-de-specialisation-en-marketing-et-communication/mastere-de-specialisation-en-marketing-et-communication';
-      LogoURL =
-        'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/msm_yurwon.png';
+        URL =
+          'https://www.esa.edu.lb/english/mastere-de-specialisation-en-marketing-et-communication/mastere-de-specialisation-en-marketing-et-communication';
+        LogoURL =
+          'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/msm_yurwon.png';
 
-      break;
-    }
+        break;
+      }
     case session?.user.major ===
       'EMFM (Executive Master in Financial Management)': {
-      pagetitle = pagetitle + '-' + session?.user.major;
-      description = `<p>Deliver to professionals working in finance comprehensive knowledge and skills to master the techniques and tools of finance management, with a balance between corporate finance, investment, and financial markets subjects.</p> `;
-      og_description = `
+        pagetitle = pagetitle + '-' + session?.user.major;
+        description = `<p>Deliver to professionals working in finance comprehensive knowledge and skills to master the techniques and tools of finance management, with a balance between corporate finance, investment, and financial markets subjects.</p> `;
+        og_description = `
         <h3> Objectives</h3>
         <p>Deliver to professionals working in finance comprehensive knowledge and skills to master the techniques and tools of finance management, with a balance between corporate finance, investment, and financial markets subjects. </p>
         
@@ -104,18 +105,18 @@ export default function Layout({ children, title }) {
         <ul>
             <li>The Executive Master in Financial Management is a co-branded degree, delivered jointly by ESA Business School and SDA Bocconi School of Management.</li>
         </ul> `;
-      URL =
-        'https://www.esa.edu.lb/english/executive-master-in-financial-management';
-      LogoURL =
-        'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/emfm_essvvs.png';
+        URL =
+          'https://www.esa.edu.lb/english/executive-master-in-financial-management';
+        LogoURL =
+          'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/emfm_essvvs.png';
 
-      break;
-    }
+        break;
+      }
     case session?.user.major ===
       'MEMS (Master Executif en Management de la Santé)': {
-      pagetitle = pagetitle + '-' + session?.user.major;
-      description = `<p>The Executive Masters in Healthcare Management aims to train experts on the evaluation of health actions and the steering of organizations and projects in the health, social and hospital sector.</p>`;
-      og_description = `
+        pagetitle = pagetitle + '-' + session?.user.major;
+        description = `<p>The Executive Masters in Healthcare Management aims to train experts on the evaluation of health actions and the steering of organizations and projects in the health, social and hospital sector.</p>`;
+        og_description = `
         <h3> Objectives</h3>
         <p>The Executive Masters in Healthcare Management aims to train experts on the evaluation of health actions and the steering of organizations and projects in the health, social and hospital sector.</p>
        
@@ -131,13 +132,13 @@ export default function Layout({ children, title }) {
             <li>Executive Masters in Healthcare Management from the ESA</li>
             <li>Master 2 "AMES" – Analysis and management of healthcare institutions, delivered by Université de Paris Cité, state diploma</li>
         </ul> `;
-      URL =
-        'https://www.esa.edu.lb/english/program/master-executif-en-management-de-la-sante';
-      LogoURL =
-        'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/mems_qalxgn.png';
+        URL =
+          'https://www.esa.edu.lb/english/program/master-executif-en-management-de-la-sante';
+        LogoURL =
+          'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418103/esaonlineapp/SEO/mems_qalxgn.png';
 
-      break;
-    }
+        break;
+      }
     case session?.user.major === 'MENT (Masters in Entrepreneurship)': {
       pagetitle = pagetitle + '-' + session?.user.major;
       description = `<p>The Master’s degree in Entrepreneurship enables you to acquire the necessary knowledge and tools to develop an expertise and a global overview on entrepreneurship.</p>
@@ -168,9 +169,9 @@ export default function Layout({ children, title }) {
     }
     case session?.user.major ===
       'MIAD (Master in International Affairs and Diplomacy)': {
-      pagetitle = pagetitle + '-' + session?.user.major;
-      description = `<p>ESA’s Masters in International Affairs and Diplomacy is aimed at students who wish to deepen their knowledge in the field of international affairs and who are interested in careers in diplomacy.</p>`;
-      og_description = `
+        pagetitle = pagetitle + '-' + session?.user.major;
+        description = `<p>ESA’s Masters in International Affairs and Diplomacy is aimed at students who wish to deepen their knowledge in the field of international affairs and who are interested in careers in diplomacy.</p>`;
+        og_description = `
         <h3> Objectives</h3>
         <p>ESA’s Masters in International Affairs and Diplomacy is aimed at students who wish to deepen their knowledge in the field of international affairs and who are interested in careers in diplomacy.</p>
         <p>ESA's Masters in International Affairs and Diplomacy aims to train students in the culture of diplomacy and field practices, know-how, fundamental theoretical knowledge, and language elements of international business.</p>
@@ -183,12 +184,12 @@ export default function Layout({ children, title }) {
 
         <h3>DURATION</h3>
         <p>12 months</p> `;
-      URL =
-        'https://www.esa.edu.lb/english/master-in-international-affairs-and-diplomacy';
-      LogoURL =
-        'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418104/esaonlineapp/SEO/miad_ikxbx6.png';
-      break;
-    }
+        URL =
+          'https://www.esa.edu.lb/english/master-in-international-affairs-and-diplomacy';
+        LogoURL =
+          'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418104/esaonlineapp/SEO/miad_ikxbx6.png';
+        break;
+      }
     case session?.user.major === 'MIM (International Masters In Management)': {
       pagetitle = pagetitle + '-' + session?.user.major;
       description = `<p>This program is intended for high-potential students who wish to deepen their knowledge in international management. A panel of specializations offered in the second year will allow them to go deeper in the field of their choice, to complete the knowledge acquired in the first year and to give them the necessary tools to become tomorrow's leaders and entrepreneurs. </p>`;
@@ -269,9 +270,9 @@ export default function Layout({ children, title }) {
     }
     case session?.user.major ===
       'EMBA (Executive Masters in Business Administration)': {
-      pagetitle = pagetitle + '-' + session?.user.major;
-      description = `<p>The EMBA allows executives and managers to grasp the different dynamics of the business world today. This program allows students to acquire complete mastery of the management tools and concepts. It provides real insight into the strategic layer of business, where leadership and decision-making are at the heart of the process.</p>`;
-      og_description = `
+        pagetitle = pagetitle + '-' + session?.user.major;
+        description = `<p>The EMBA allows executives and managers to grasp the different dynamics of the business world today. This program allows students to acquire complete mastery of the management tools and concepts. It provides real insight into the strategic layer of business, where leadership and decision-making are at the heart of the process.</p>`;
+        og_description = `
         <h3> Objectives</h3>
         <p>The EMBA allows executives and managers to grasp the different dynamics of the business world today. This program allows students to acquire complete mastery of the management tools and concepts. It provides real insight into the strategic layer of business, where leadership and decision-making are at the heart of the process.</p>
         
@@ -285,11 +286,11 @@ export default function Layout({ children, title }) {
             <li>Executive MBA from the ESA Business School</li>
             <li>Executive MBA from ESCP Business School</li>
         </ul> `;
-      URL = 'https://www.esa.edu.lb/executivemba';
-      LogoURL =
-        'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418104/esaonlineapp/SEO/emba_xgdmzb.png';
-      break;
-    }
+        URL = 'https://www.esa.edu.lb/executivemba';
+        LogoURL =
+          'https://res.cloudinary.com/ds6avfn6i/image/upload/v1675418104/esaonlineapp/SEO/emba_xgdmzb.png';
+        break;
+      }
   }
 
   return (
@@ -327,11 +328,10 @@ export default function Layout({ children, title }) {
           images: [
             {
               url: `${LogoURL}`,
-              alt: `${
-                session?.user.major
+              alt: `${session?.user.major
                   ? session?.user.major
                   : 'ESA BUSINESS SCHOOL - SIS Application'
-              }`,
+                }`,
             },
           ],
         }}
@@ -345,19 +345,24 @@ export default function Layout({ children, title }) {
         }}
       />
 
-      <Head>
-        <title>
-          {title ? title + '- ESA SIS Application' : 'ESA SIS Application'}
-        </title>
-
-        {/* <meta name="description" content="ESA SIS Application Website" /> */}
-        {/* <link rel='icon' href={appState.appVar.esa_logo} /> */}
-        {/* <link rel="icon" href="/public/esa.ico" /> */}
-      </Head>
       <div>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <Head>
+          <title>
+            {title ? title + '- ESA SIS Application' : 'ESA SIS Application'}
+          </title>
+          {/* Other head elements */}
+        </Head>
+        <div>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </div>
+        <footer>
+          {/* Other footer content */}
+          <Link href="/privacy-policy.txt">
+            <a>Privacy Policy</a>
+          </Link>
+        </footer>
       </div>
     </>
   );

@@ -77,6 +77,7 @@ async function newEmailToken(connection, userid) {
     UPDATE users
     SET token = '${emailToken}'
     WHERE userid = '${userid}'`;
+    console.log('query' , query)
 
     const result = await connection.query(query);
     return result;
@@ -89,7 +90,7 @@ async function UpdateToken(connection, emailToken) {
   try {
     let UserData = await executeQuery(
       connection,
-      "UPDATE users set token=null where token=?;",
+      "UPDATE users set token=null where token=?",
       [emailToken]
     );
 
@@ -117,6 +118,7 @@ async function newpassword(connection, email, newPassword) {
     UPDATE users
     SET userpassword = '${password}'
     WHERE userid = '${email}'`;
+    console.log('test',query)
 
     const result = await connection.query(query);
     return result;
@@ -254,16 +256,18 @@ async function createSchedule(
 }
 
 async function updateZoomInfo(connection, tmpscheduleIds, meetingIds, zoomUrls) {
+  console.log('query' , tmpscheduleIds, meetingIds, zoomUrls)
   try {
 
 
     const query = `
         UPDATE tmpschedule
         SET
-          zoom_meeting_id = '${meetingIds}',
+          zoom_meeting_id =${meetingIds},
           zoom_url = '${zoomUrls}'
-        WHERE tmpschedule_id = '${tmpscheduleIds}';
+        WHERE tmpschedule_id = ${tmpscheduleIds};
       `;
+      console.log(query)
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -3739,10 +3743,20 @@ async function uploadStudentFinancial(
     console.log("error in the query file : ", error); return;
   }
 }
+async function findUserRole(connection , userid){
+  try {
+    const query = `SELECT * FROM users WHERE userid= '${userid}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    return error
+  }
+}
 
 /* End Postegresql */
 
 module.exports = {
+  findUserRole,
   deleteGoogleEventDetails,
   insertGoogleEventDetails,
   ExistGradesStudent,

@@ -98,8 +98,7 @@ async function handler(req, res) {
       message: message,
     });
   } else {
-    console.log("ana bel else");
-    console.log(id);
+
     const existingUserEmail = await findDataForResetPassword(
       connection,
       "users",
@@ -109,6 +108,8 @@ async function handler(req, res) {
       "userid",
       id
     );
+    console.log('user' , existingUserEmail)
+
     // console.log("this is existing email user smthng");
     // console.log(existingUserEmail.rows[0]);
     const existingUserToken = await findDataForResetPassword(
@@ -133,6 +134,7 @@ async function handler(req, res) {
       "userid",
       id
     );
+    console.log('programmanger' , existingPMEmail.rows[0].pm_email)
 
     const existingPMToken = await findDataForResetPassword(
       connection,
@@ -193,297 +195,96 @@ async function handler(req, res) {
 
     // FIXME: Verify the emailToken validation (time validation)
     // Email Verification
-    // if (existingUserToken !== null) {
-    console.log("=====u=u=u=u=u=u=u=u=u=u=u=u=u=u=u====");
-    console.log(
-      (existingUserEmail.rows[0] != null &&
-        existingUserEmail.rows[0].userid != null) &
-        (existingUserToken.rows[0] != null)
-    );
-    console.log("====p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=p=");
-    console.log(
-      (existingPMEmail.rows[0] != null &&
-        existingPMEmail.rows[0].pm_id != null) & existingPMToken.rows[0]
-    );
-    console.log("====a=a=a=a=a=a=a=a=aa=a=a=a=a=a==");
-    console.log(
-      (existingAdminEmail.rows[0] != null &&
-        existingAdminEmail.rows[0].adminid != null) &
-        (existinAdminToken.rows[0] != null)
-    );
-    console.log(existingAdminEmail.rows[0] != null);
-    console.log(existingAdminEmail.rows[0].adminid != null);
-    console.log(existinAdminToken.rows[0] != null);
-    if (
-      existingUserEmail.rows[0] != null &&
-      existingUserEmail.rows[0].userid != null &&
-      existingUserToken.rows[0] != null
-    ) {
-      console.log("this is adminid inside the user section");
-      console.log(existingAdminEmail.rows[0].adminid);
-      if (
-        existingUserEmail.rows[0].email != null &&
-        existingUserToken.rows[0].token != null
-      ) {
-        const role = existingUserToken.rows[0].role;
-        const newPassword = generatPassword(8);
-        const userid = existingUserEmail.rows[0].userid;
-        // // console.log('newPassword=', newPassword);
-        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
-        // existingUserToken.password = bcryptjs.hashSync(newPassword);
-        // await existingUserToken.save();
-        // if (existingUserToken.isVerified)
-        await UpdateToken(connection, emailToken);
-
-        await newpassword(
-          connection,
-          existingUserToken.rows[0].userid,
-          newPassword
-        );
-        const encryptedQuery = encodeURIComponent(
-          encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-          )
-        );
-        res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-        });
-        res.end();
-        await disconnect(connection);
-        sis_app_logger.info(
-          `${new Date()}=${role.role}=password reseted=${email}=${
-            userAgentinfo.os.family
-          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-            userAgentinfo.source
-          }=${userAgentinfo.device.family}`
-        );
-        return;
-      } else {
+    console.log('existingPMEmail' , existingUserEmail.rows[0].email == null)
+   if( existingUserEmail.rows[0].role === 1){
+    
+      console.log("usser student")
         if (
           existingUserEmail.rows[0].email != null &&
           existingUserToken.rows[0].token != null
         ) {
           const role = existingUserToken.rows[0].role;
+          const newPassword = generatPassword(8);
+          const userid = existingUserEmail.rows[0].userid;
+          // // console.log('newPassword=', newPassword);
+          //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
+          // existingUserToken.password = bcryptjs.hashSync(newPassword);
+          // await existingUserToken.save();
+          // if (existingUserToken.isVerified)
+          await UpdateToken(connection, emailToken);
+  
+          await newpassword(
+            connection,
+            existingUserToken.rows[0].userid,
+            newPassword
+          );
+          const encryptedQuery = encodeURIComponent(
+            encrypt(
+              JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
+            )
+          );
           res.writeHead(302, {
-            Location: `${protocol}://${req.headers.host}/user/login`,
-            // TODO: change the location to the next link Signin after go to home or to filling application
-            // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
+            Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
+            // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
           });
           res.end();
+          await disconnect(connection);
           sis_app_logger.info(
-            `${new Date()}=${role.role}=password already reseted=${email}=${
+            `${new Date()}=${role.role}=password reseted=${email}=${
               userAgentinfo.os.family
             }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
               userAgentinfo.source
             }=${userAgentinfo.device.family}`
           );
           return;
+        } else {
+          if (
+            existingUserEmail.rows[0].email != null &&
+            existingUserToken.rows[0].token != null
+          ) {
+            const role = existingUserToken.rows[0].role;
+            res.writeHead(302, {
+              Location: `${protocol}://${req.headers.host}/user/login`,
+              // TODO: change the location to the next link Signin after go to home or to filling application
+              // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
+            });
+            res.end();
+            sis_app_logger.info(
+              `${new Date()}=${role.role}=password already reseted=${email}=${
+                userAgentinfo.os.family
+              }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                userAgentinfo.source
+              }=${userAgentinfo.device.family}`
+            );
+            return;
+          }
+          if (existingUserEmail.rows[0].email == null) {
+            res.writeHead(302, {
+              Location: `${protocol}://${
+                req.headers.host
+              }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
+            });
+            res.end();
+            // sis_app_logger.info(
+            //   `${new Date()}=---=no account for reset password=${email}=${
+            //     userAgentinfo.os.family
+            //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+            //     userAgentinfo.source
+            //   }=${userAgentinfo.device.family}`
+            // );
+            sis_app_logger.error(
+              `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
+                userAgentinfo.os.family
+              }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+                userAgentinfo.source
+              }=${userAgentinfo.device.family}`
+            );
+          }
         }
-        if (existingUserEmail.rows[0].email == null) {
-          res.writeHead(302, {
-            Location: `${protocol}://${
-              req.headers.host
-            }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
-          });
-          res.end();
-          // sis_app_logger.info(
-          //   `${new Date()}=---=no account for reset password=${email}=${
-          //     userAgentinfo.os.family
-          //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-          //     userAgentinfo.source
-          //   }=${userAgentinfo.device.family}`
-          // );
-          sis_app_logger.error(
-            `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
-              userAgentinfo.os.family
-            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-              userAgentinfo.source
-            }=${userAgentinfo.device.family}`
-          );
-        }
-      }
-    } else if (
-      (existingPMEmail.rows[0] != null &&
-        existingPMEmail.rows[0].pm_id != null) &
-      (existingPMToken.rows[0] != null)
-    ) {
-      console.log("this is adminid inside the pm section");
-      console.log(existingAdminEmail.rows[0].adminid);
-      // program manager
-      if (
-        existingPMEmail.rows[0].pm_email != null &&
-        existingPMToken.rows[0].token != null
-      ) {
-        const role = existingPMToken.rows[0].role;
-        const newPassword = generatPassword(8);
-        const userid = existingPMEmail.rows[0].userid;
-        // // console.log('newPassword=', newPassword);
-        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
-        // existingUserToken.password = bcryptjs.hashSync(newPassword);
-        // await existingUserToken.save();
-        // if (existingUserToken.isVerified)
-        await UpdateToken(connection, emailToken);
+      
+   }else if( existingUserEmail.rows[0].role===0){
 
-        await newpassword(
-          connection,
-          existingPMToken.rows[0].userid,
-          newPassword
-        );
-        const encryptedQuery = encodeURIComponent(
-          encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-          )
-        );
-        res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-        });
-        res.end();
-        await disconnect(connection);
-        sis_app_logger.info(
-          `${new Date()}=${role.role}=password reseted=${email}=${
-            userAgentinfo.os.family
-          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-            userAgentinfo.source
-          }=${userAgentinfo.device.family}`
-        );
-        return;
-      } else {
-        if (
-          existingPMEmail.rows[0].pm_email != null &&
-          existingPMToken.rows[0].token != null
-        ) {
-          const role = existingPMToken.rows[0].role;
-          res.writeHead(302, {
-            Location: `${protocol}://${req.headers.host}/user/login`,
-            // TODO: change the location to the next link Signin after go to home or to filling application
-            // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
-          });
-          res.end();
-          sis_app_logger.info(
-            `${new Date()}=${role.role}=password already reseted=${email}=${
-              userAgentinfo.os.family
-            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-              userAgentinfo.source
-            }=${userAgentinfo.device.family}`
-          );
-          return;
-        }
-        if (existingPMEmail.rows[0].pm_email == null) {
-          res.writeHead(302, {
-            Location: `${protocol}://${
-              req.headers.host
-            }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
-          });
-          res.end();
-          // sis_app_logger.info(
-          //   `${new Date()}=---=no account for reset password=${email}=${
-          //     userAgentinfo.os.family
-          //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-          //     userAgentinfo.source
-          //   }=${userAgentinfo.device.family}`
-          // );
-          sis_app_logger.error(
-            `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
-              userAgentinfo.os.family
-            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-              userAgentinfo.source
-            }=${userAgentinfo.device.family}`
-          );
-        }
-      }
-    } else if (
-      (existingPMAssistanceEmail.rows[0] != null &&
-        existingPMAssistanceEmail.rows[0].pm_ass_id != null) &
-      (existingPMAssistanceToken.rows[0] != null)
-    ) {
-      console.log("this is adminid inside the pm ass section");
-      console.log(existingAdminEmail.rows[0].adminid);
-      // program manager assistance
-      if (
-        existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
-        existingPMAssistanceToken.rows[0].token != null
-      ) {
-        const role = existingPMAssistanceToken.rows[0].role;
-        const newPassword = generatPassword(8);
-        const userid = existingPMAssistanceEmail.rows[0].userid;
-        // // console.log('newPassword=', newPassword);
-        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
-        // existingUserToken.password = bcryptjs.hashSync(newPassword);
-        // await existingUserToken.save();
-        // if (existingUserToken.isVerified)
-        await UpdateToken(connection, emailToken);
-
-        await newpassword(
-          connection,
-          existingPMAssistanceToken.rows[0].userid,
-          newPassword
-        );
-        const encryptedQuery = encodeURIComponent(
-          encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-          )
-        );
-        res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-        });
-        res.end();
-        await disconnect(connection);
-        sis_app_logger.info(
-          `${new Date()}=${role.role}=password reseted=${email}=${
-            userAgentinfo.os.family
-          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-            userAgentinfo.source
-          }=${userAgentinfo.device.family}`
-        );
-        return;
-      } else {
-        if (
-          existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
-          existingPMAssistanceToken.rows[0].token != null
-        ) {
-          const role = existingPMAssistanceToken.rows[0].role;
-          res.writeHead(302, {
-            Location: `${protocol}://${req.headers.host}/user/login`,
-            // TODO: change the location to the next link Signin after go to home or to filling application
-            // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
-          });
-          res.end();
-          sis_app_logger.info(
-            `${new Date()}=${role.role}=password already reseted=${email}=${
-              userAgentinfo.os.family
-            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-              userAgentinfo.source
-            }=${userAgentinfo.device.family}`
-          );
-          return;
-        }
-        if (existingPMAssistanceEmail.rows[0].pm_ass_email == null) {
-          res.writeHead(302, {
-            Location: `${protocol}://${
-              req.headers.host
-            }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
-          });
-          res.end();
-          // sis_app_logger.info(
-          //   `${new Date()}=---=no account for reset password=${email}=${
-          //     userAgentinfo.os.family
-          //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-          //     userAgentinfo.source
-          //   }=${userAgentinfo.device.family}`
-          // );
-          sis_app_logger.error(
-            `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
-              userAgentinfo.os.family
-            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
-              userAgentinfo.source
-            }=${userAgentinfo.device.family}`
-          );
-        }
-      }
-    } else if (
+    if (
       (existingAdminEmail.rows[0] != null &&
         existingAdminEmail.rows[0].adminid != null) &
       (existinAdminToken.rows[0] != null)
@@ -557,6 +358,7 @@ async function handler(req, res) {
           return;
         }
         if (existingAdminEmail.rows[0].adminemail == null) {
+          console.log('pm headeradmin' , existingPMEmail.rows[0].pm_email)
           res.writeHead(302, {
             Location: `${protocol}://${
               req.headers.host
@@ -580,6 +382,198 @@ async function handler(req, res) {
         }
       }
     }
+   }else if( existingUserEmail.rows[0].role === 2){
+     if (
+      (existingPMEmail.rows[0] != null &&
+        existingPMEmail.rows[0].pm_id != null) &
+      (existingPMToken.rows[0] != null)
+    ) {
+      console.log('existingPMToken')
+ 
+      // program manager
+      if (
+        existingPMEmail.rows[0].pm_email != null &&
+        existingPMToken.rows[0].token != null
+      ) {
+      
+        const role = existingPMToken.rows[0].role;
+        const newPassword = generatPassword(8);
+        const userid = existingPMEmail.rows[0].userid;
+        // // console.log('newPassword=', newPassword);
+        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
+        // existingUserToken.password = bcryptjs.hashSync(newPassword);
+        // await existingUserToken.save();
+        // if (existingUserToken.isVerified)
+        await UpdateToken(connection, emailToken);
+
+        await newpassword(
+          connection,
+          existingPMToken.rows[0].userid,
+          newPassword
+        );
+        const encryptedQuery = encodeURIComponent(
+          encrypt(
+            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
+          )
+        );
+        res.writeHead(302, {
+          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
+          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
+        });
+        res.end();
+        await disconnect(connection);
+        sis_app_logger.info(
+          `${new Date()}=${role.role}=password reseted=${email}=${
+            userAgentinfo.os.family
+          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+            userAgentinfo.source
+          }=${userAgentinfo.device.family}`
+        );
+        return;
+      } else {
+        if (
+          existingPMEmail.rows[0].pm_email != null &&
+          existingPMToken.rows[0].token != null
+        ) {
+          const role = existingPMToken.rows[0].role;
+          res.writeHead(302, {
+            Location: `${protocol}://${req.headers.host}/user/login`,
+            // TODO: change the location to the next link Signin after go to home or to filling application
+            // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
+          });
+          res.end();
+          sis_app_logger.info(
+            `${new Date()}=${role.role}=password already reseted=${email}=${
+              userAgentinfo.os.family
+            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+              userAgentinfo.source
+            }=${userAgentinfo.device.family}`
+          );
+          return;
+        }
+        if (existingPMEmail.rows[0].pm_email == null) {
+
+          console.log('pm header' , existingPMEmail.rows[0].pm_email)
+          res.writeHead(302, {
+            Location: `${protocol}://${
+              req.headers.host
+            }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
+          });
+          res.end();
+          // sis_app_logger.info(
+          //   `${new Date()}=---=no account for reset password=${email}=${
+          //     userAgentinfo.os.family
+          //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+          //     userAgentinfo.source
+          //   }=${userAgentinfo.device.family}`
+          // );
+          sis_app_logger.error(
+            `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
+              userAgentinfo.os.family
+            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+              userAgentinfo.source
+            }=${userAgentinfo.device.family}`
+          );
+        }
+      }
+    }
+
+   }else if(existingUserEmail.rows[0].role === 3){
+     if (
+      (existingPMAssistanceEmail.rows[0] != null &&
+        existingPMAssistanceEmail.rows[0].pm_ass_id != null) &
+      (existingPMAssistanceToken.rows[0] != null)
+    ) {
+      console.log("this is adminid inside the pm ass section");
+      console.log(existingAdminEmail.rows[0].adminid);
+      // program manager assistance
+      if (
+        existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
+        existingPMAssistanceToken.rows[0].token != null
+      ) {
+        const role = existingPMAssistanceToken.rows[0].role;
+        const newPassword = generatPassword(8);
+        const userid = existingPMAssistanceEmail.rows[0].userid;
+        // // console.log('newPassword=', newPassword);
+        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
+        // existingUserToken.password = bcryptjs.hashSync(newPassword);
+        // await existingUserToken.save();
+        // if (existingUserToken.isVerified)
+        await UpdateToken(connection, emailToken);
+
+        await newpassword(
+          connection,
+          existingPMAssistanceToken.rows[0].userid,
+          newPassword
+        );
+        const encryptedQuery = encodeURIComponent(
+          encrypt(
+            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
+          )
+        );
+        res.writeHead(302, {
+          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
+          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
+        });
+        res.end();
+        await disconnect(connection);
+        sis_app_logger.info(
+          `${new Date()}=${role.role}=password reseted=${email}=${
+            userAgentinfo.os.family
+          }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+            userAgentinfo.source
+          }=${userAgentinfo.device.family}`
+        );
+        return;
+      } else {
+        if (
+          existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
+          existingPMAssistanceToken.rows[0].token != null
+        ) {
+          const role = existingPMAssistanceToken.rows[0].role;
+          res.writeHead(302, {
+            Location: `${protocol}://${req.headers.host}/user/login`,
+            // TODO: change the location to the next link Signin after go to home or to filling application
+            // Location: `${proto}://${req.headers.host}/api/user/signin?email=${email}&password=${password}`,
+          });
+          res.end();
+          sis_app_logger.info(
+            `${new Date()}=${role.role}=password already reseted=${email}=${
+              userAgentinfo.os.family
+            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+              userAgentinfo.source
+            }=${userAgentinfo.device.family}`
+          );
+          return;
+        }
+        if (existingPMAssistanceEmail.rows[0].pm_ass_email == null) {
+          console.log('pm ass' , existingPMEmail.rows[0].pm_email)
+          res.writeHead(302, {
+            Location: `${protocol}://${
+              req.headers.host
+            }/user/message/message?message=${"Account Not Found, Please Register in new account!"}&email=${email}`,
+          });
+          res.end();
+          // sis_app_logger.info(
+          //   `${new Date()}=---=no account for reset password=${email}=${
+          //     userAgentinfo.os.family
+          //   }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+          //     userAgentinfo.source
+          //   }=${userAgentinfo.device.family}`
+          // );
+          sis_app_logger.error(
+            `${new Date()}=From resetpassword page,Account Not Found=1=${email}=no account for reset password=${
+              userAgentinfo.os.family
+            }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
+              userAgentinfo.source
+            }=${userAgentinfo.device.family}`
+          );
+        }
+      }
+    } 
+   }
+ 
+
 
     //await db.disconnect();
     await disconnect(connection);
