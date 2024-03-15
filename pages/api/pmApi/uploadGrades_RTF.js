@@ -3,13 +3,13 @@ import fs from "fs";
 import path from "path";
 import axios from 'axios';
 
-import { getServerSession } from "next-auth/next";
+// import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
 const { uploadGradesRTF } = require("../controller/queries");
 
 import xlsx from "xlsx";
 import { env } from 'process';
-import { authOptions } from "../auth/[...nextauth]";
+// import { authOptions } from "../auth/[...nextauth]";
 import SendEmail from "./emailGrade";
 import gradeExistsDT from "./exist/ExistDTGrade";
 
@@ -28,18 +28,11 @@ async function handler(req, res) {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
-    const session = await getServerSession(req, res, authOptions);
+    // const session = await getServerSession(req, res, authOptions);
 
-    if (!session) {
-      return res.status(401).send({ message: "Signin Required To Save Data" });
-    }
-    const allowedFileTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-
-    // Check if the uploaded file's MIME type is allowed
-    if (!allowedFileTypes.includes(files.uploadedFile.type)) {
-      return res.status(201).json({ error: 'Only Excel files are allowed.' });
-    }
-
+    // if (!session) {
+    //   return res.status(401).send({ message: "Signin Required To Save Data" });
+    // }
 
     const readFile = (file, saveLocally, place) => {
       const options = {};
@@ -50,7 +43,8 @@ async function handler(req, res) {
         options.filename = (name, ext, path1, form) => {
 
           if (
-            path1.mimetype === "application/pdf"
+            path1.mimetype ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           ) {
             let sourceDir = fs.readdirSync(place);
 
@@ -150,7 +144,6 @@ async function handler(req, res) {
         message: "Excel file is empty. No data to upload.",
       });
     }
-    
 
     const connection = await connect();
     const processedRows = []
@@ -167,14 +160,14 @@ async function handler(req, res) {
         //     message: `No data was uploaded due to missing required information.`
         //   })
         // }
-
-        const exist = await gradeExistsDT(connection, row.StudentID, row.CertificateName, row.TaskName)
-
+        
+        const exist = await gradeExistsDT(connection ,row.StudentID ,row.CertificateName , row.TaskName)
+    
         if (exist) {
           return res.status(200).json({
-            success: true,
-            status: 200,
-            message: `${row.FirstName} ${row.FamilyName} Grade Already Exist !`
+            success :true,
+            status : 200,
+            message:`${row.FirstName} ${row.FamilyName} Grade Already Exist !`
           })
         }
 
@@ -202,48 +195,48 @@ async function handler(req, res) {
     // Send email using the last processed row outside the loop
     if (processedRows.length > 0) {
       const lastProcessedRow = processedRows[processedRows.length - 1];
-
+    
       // Assuming fields.studentInfo is a JSON string
       const recipientInfoString = fields.studentInfo;
-
+    
       // Parse the JSON string into an array of objects
       const recipientInfoArray = JSON.parse(recipientInfoString);
 
-
+    
       // Assuming recipientInfoArray is an array of objects with the specified properties
       for (const recipientInfo of recipientInfoArray) {
-        try {
+        try {   
           // Assuming the SendEmail function requires the recipient's email, first name, and last name
           await SendEmail(
-            lastProcessedRow.CertificateName,
-            recipientInfo.email,
-            recipientInfo.firstName,
-            recipientInfo.lastName,
+             lastProcessedRow.CertificateName,
+              recipientInfo.email,
+             recipientInfo.firstName,
+             recipientInfo.lastName,
           );
-          await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`, {
-            receiverIds: [recipientInfo.studentID],
-            senderId: recipientInfo.pm_id,
-            content: '<!DOCTYPE html>' +
-              '<html><head><title>Grades</title>' +
-              '</head><body><div>' +
-              `<div style="text-align: center;">
+          await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`,{
+            receiverIds:[recipientInfo.studentID], 
+            senderId:recipientInfo.pm_id, 
+            content:'<!DOCTYPE html>' +
+            '<html><head><title>Grades</title>' +
+            '</head><body><div>' +
+            `<div style="text-align: center;">
                </div>` +
-              `</br>` +
-              `<p>Dear <span style="font-weight: bold">${recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
-              `<p>We trust this email finds you well.</p> ` +
-              `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
-              // `<p> Please login using the below credentials:</p>` +
-              // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
-              // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
-
-              `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
-              `<p>
+            `</br>` +
+            `<p>Dear <span style="font-weight: bold">${recipientInfo.firstName} ${recipientInfo.lastName}</span>,</p>` +
+            `<p>We trust this email finds you well.</p> ` +
+            `<p>We would like to inform you that your most recent grade for <span style="font-weight: bold"> ${lastProcessedRow.CertificateName}</span> has been updated on the Student Information System <span style="font-weight: bold"> (SIS)</span>. </p>` +
+            // `<p> Please login using the below credentials:</p>` +
+            // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
+            // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
+      
+            `<p>To review the details of this update, please log in to the SIS portal using your credentials and navigate to the <span style="font-weight: bold">"Grades" </span> section.</p>` +
+            `<p>
             Should you have any inquiries or require further clarification regarding the updated grade, do not hesitate to contact your program manager.</p>` +
-              `<p>Best regards,</p> ` +
-              `<p>ESA Business School</p> ` +
-
-              '</div></body></html>',
-            subject: 'Student Grades'
+            `<p>Best regards,</p> ` +
+            `<p>ESA Business School</p> ` +
+      
+            '</div></body></html>',
+             subject:'Student Grades'
           })
 
         } catch (error) {
@@ -253,7 +246,6 @@ async function handler(req, res) {
     }
     
 
-
     // Close the database connection after all operations
     await disconnect(connection);
 
@@ -262,7 +254,6 @@ async function handler(req, res) {
       code: 201,
       message: `Grades Uploaded Successfully!`,
     });
-    
 
 
 

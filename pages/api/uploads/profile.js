@@ -31,7 +31,7 @@ async function handler(req, res) {
   if (!session) {
     return res.status(200).send({ message: "Signin Required To Save Data" });
   }
-  const { user } = session;
+  // const { user } = session;
 
   // console.log('user from profile: ', user);
   // console.log('userId from profile: ', user.userid);
