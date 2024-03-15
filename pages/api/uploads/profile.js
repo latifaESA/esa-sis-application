@@ -21,6 +21,7 @@ export const config = {
 };
 
 async function handler(req, res) {
+  console.log('wsllll')
   if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
@@ -28,7 +29,7 @@ async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).send({ message: "Signin Required To Save Data" });
+    return res.status(200).send({ message: "Signin Required To Save Data" });
   }
   const { user } = session;
 
@@ -44,7 +45,7 @@ async function handler(req, res) {
         if (
           path1.mimetype === "image/png" ||
           path1.mimetype === "image/jpeg" ||
-          path1.mimetype === "image/jpg"
+          path1.mimetype === "image/jpg" 
         ) {
           let sourceDir = fs.readdirSync(place);
 
@@ -60,7 +61,7 @@ async function handler(req, res) {
         } else {
           return res
             .status(200)
-            .send({ status: 401, message: "file was not accepted" });
+            .send({ status: 200, message: "file was not accepted" });
         }
       };
     }
@@ -88,7 +89,7 @@ async function handler(req, res) {
     localDiskPath,
     "sis-application-data",
     "Users",
-    `${user.userid}`,
+    `PM3133`,
     "photo"
   );
 
@@ -103,7 +104,7 @@ async function handler(req, res) {
   // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
 
   return res.status(200).send({
-    secure_url: `${env.NEXTAUTH_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
+    secure_url: `${env.NEXTAUTH_URL}file/sis/Users/PM3133/photo/${allimages[0]}`,
   });
 
   }catch(error){

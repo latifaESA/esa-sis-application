@@ -16,6 +16,7 @@ export default async function handler(req, res) {
   }
   try{
   const encryptedBody = req.body.data;
+  console.log('encrypt' , encryptedBody)
   // // console.log(encryptedBody);
   const { email, role, info } = JSON.parse(decrypt(encryptedBody));
   const userAgent = req.headers["user-agent"];

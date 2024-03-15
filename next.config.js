@@ -1,6 +1,10 @@
 const nextTranslate = require('next-translate');
 
 const nextConfig = {
+
+  reactStrictMode: true,
+
+
   images: {
     deviceSizes: [320, 420, 768, 1024, 1200],
     domains: ['localhost', 'res.cloudinary.com', 'esasis.esa.edu.lb'],

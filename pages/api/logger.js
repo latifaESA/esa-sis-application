@@ -142,7 +142,7 @@ const sis_app_logger = {
     });
   }
 };
-module.exports = sis_app_logger;
+export default sis_app_logger;
 // }catch(error){
 //   console.log('the error is in logger.js in api : ', error)
 // }
