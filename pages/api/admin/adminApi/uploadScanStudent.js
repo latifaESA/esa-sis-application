@@ -39,7 +39,7 @@ async function handler(req, res) {
   console.log('wslllllllllllllllllll')
   try {
     // const message = '';
-    if (req.method !== "PATCH") {
+    if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
 
