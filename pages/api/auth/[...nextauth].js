@@ -710,12 +710,7 @@ export const authOptions = {
             } else {
               // if the password is incorrect then send this message
               message = 'Invalid Password';
-              sis_app_logger.error(
-                `${new Date()}=From nextauth signin=---=${req.body.userid
-                }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major
-                }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
-                }`
-              );
+ 
             }
           } else {
             message = 'user does not exist';
@@ -725,11 +720,6 @@ export const authOptions = {
         else {
           // console.log('connection to DB unsucces nextauth signin');
           message = connection.message;
-          sis_app_logger.error(
-            `${new Date()}=From nextauth signin,connection unsuccess=---=${req.body.email
-            }=${message}=${userAgentinfo.os.family}=${userAgentinfo.os.major}=${userAgentinfo.family
-            }=${userAgentinfo.source}=${userAgentinfo.device.family}`
-          );
         }
 
         await disconnect(connection);

@@ -64,9 +64,11 @@ export const Navbar = () => {
         info: "signout navbar",
       })
     );
+    console.log('enc' , encryptedEmail)
     await axios.post("/api/logger/sendInfoToLogger", {
       data: encryptedEmail,
     });
+    
 
     // if (!selection_data.going_to_external_URL) {
     //   if (router.locale === 'fr') {

@@ -191,6 +191,8 @@ console.log('session?.user  : ', session?.user)
     try {
       setErrorMessage("");
       dispatch(loginRequest());
+      console.log('password' , password)
+      console.log('userid' , userid)
       const result = await signIn("credentials", {
         redirect: false,
         userid,
@@ -222,11 +224,13 @@ console.log('session?.user  : ', session?.user)
       } else {
         // // console.log(result.error);
         dispatch(loginFailed(result.error));
+        console.log('errormesage' , errorMessage)
         setErrorMessage(result.error);
       }
     } catch (err) {
       // console.log(err);
       setErrorMessage(getError(err));
+       console.log('erroemeage catch' , getError(err))
       const encryptedBody = encrypt(
         JSON.stringify({
           userid: userid,

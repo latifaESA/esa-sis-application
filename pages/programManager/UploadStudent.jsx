@@ -224,7 +224,7 @@ export default function UploadStudent({setOpenUpload}) {
                     }
     
                     // Add student data as JSON string
-                    formData.append('studentData', JSON.stringify(studentData));
+                    formData.append('file', JSON.stringify(studentData));
     
                     try {
                         const response = await axios.post('/api/admin/adminApi/uploadScanStudent', formData);

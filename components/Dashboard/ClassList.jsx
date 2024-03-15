@@ -705,7 +705,7 @@ const ClassList = ({ users, allCourse }) => {
     }
   };
 
-  const handleSharePointBookingRoom = async (week, attendance_id,courseName, currentIndex) => {
+  const handleSharePointBookingRoom = async (week, attendance_id, courseName, currentIndex) => {
     try {
         const accessToken = await getSharePointToken();
 
@@ -718,12 +718,9 @@ const ClassList = ({ users, allCourse }) => {
             const fromTimeSplit = fromTime.split('+')[0];
             const toTimeSplit = toTime.split('+')[0];
 
-            // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-            const utcOffset = 4; // Change this value if daylight saving time is not in effect
-
-            // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-            const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-            const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+            // Convert the local time to UTC
+            const fromTimesUTC = moment(`${formattedDate}T${fromTimeSplit}`).toISOString();
+            const toTimesUTC = moment(`${formattedDate}T${toTimeSplit}`).toISOString();
 
             const apiUrl =
                 "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
@@ -744,9 +741,9 @@ const ClassList = ({ users, allCourse }) => {
                     BookedBy: `${session.user?.name}`,
                     BookingDate: week[currentIndex],
                     BookingDay: `${formattedBookingDay}`,
-                    FromTime: fromTimes,
-                    ToTime: toTimes,
-                    Description:`${courseName}`
+                    FromTime: fromTimesUTC, // Use UTC time
+                    ToTime: toTimesUTC, // Use UTC time
+                    Description: `${courseName}`
                 })
             });
 
@@ -771,6 +768,7 @@ const ClassList = ({ users, allCourse }) => {
         console.error("Error submitting booking to SharePoint:", error.message);
     }
 };
+
 
 
   const handleShowAll = async (tmpclass_id) => {
