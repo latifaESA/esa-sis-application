@@ -2929,10 +2929,10 @@ const selection_data = {
   // upload_file_total_size: [10 * 1024 * 1024],
   // upload_file_total_number: [10],
   upload_photo_type: '.png, .jpg, .jpeg',
-  upload_file_type: '.pdf, .png, .jpg, .jpeg , .xlsx',
+  upload_file_type: '.pdf, .png, .jpg, .jpeg , .xlsx ,.csv',
   // upload_file_type: '.pdf, .png, .jpg, .jpeg,.doc,.docx',
   upload_photo_allowedExtensions: /(\.jpg|\.jpeg|\.png)$/i,
-  upload_file_allowedExtensions: /(\.jpg|\.jpeg|\.png|\.pdf|\.xlsx)$/i,
+  upload_file_allowedExtensions: /(\.jpg|\.jpeg|\.png|\.pdf|\.xlsx|\.csv)$/i,
   // upload_file_allowedExtensions: /(\.jpg|\.jpeg|\.png|\.pdf|\.doc|\.docx)$/i,
 
   upload_file_mimetype: ['image', 'pdf', 'officedocument', 'msword'],

@@ -86,7 +86,7 @@ const TeachersList = ({ users, setUsers }) => {
       status: status,
     };
     axios
-      .put(
+      .post(
         '/api/admin/adminApi/updateStudent',
         sendData
         // {

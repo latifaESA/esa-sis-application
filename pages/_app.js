@@ -17,18 +17,13 @@ import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Cookies from "js-cookie";
 import Head from "next/head";
 
-function componentDidMount() {
-  process.on('uncaughtException', function (exception) {
-    console.log('uncaughtException',exception);
-    
-  });
-}
+
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const persistor = store.__persisitor;
 
-  componentDidMount(); // Call componentDidMount when component mounts
+
 
   if (Component.getLayout) {
     return (
