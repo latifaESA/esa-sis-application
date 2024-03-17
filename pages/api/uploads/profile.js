@@ -86,7 +86,7 @@ async function handler(req, res) {
   let allimages = fs.readdirSync(directory);
   
   return res.status(200).send({
-    secure_url: `${env.NEXTAUTH_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
+    secure_url: `${env.NEXTAUTH_URL}/file/sis/Users/${user.userid}/photo/${allimages[0]}`,
   });
 }
 
