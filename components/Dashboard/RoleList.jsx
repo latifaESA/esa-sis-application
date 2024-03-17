@@ -24,7 +24,7 @@ const RoleList = () => {
     fetchCertificate();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [certificate]);
+  }, []);
 
   const fetchCertificate = async () => {
     try {

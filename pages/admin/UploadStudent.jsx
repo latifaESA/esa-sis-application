@@ -102,7 +102,7 @@ export default function UploadCourses() {
             if (uploadPhotoData.fileList.length !== 0) {
                 setIsClick(true);
                 const formData = new FormData();
-                formData.append('files', uploadPhotoData.fileList[0]);
+                formData.append('file', uploadPhotoData.fileList[0]);
                 const file = uploadPhotoData.fileList[0];
                 const reader = new FileReader();
     
@@ -257,17 +257,19 @@ export default function UploadCourses() {
     
                     if (isValidHeaders) {
                         try {
-                            try {
-                                await axios.post('/api/admin/adminApi/uploadScanStudent', formData);
-                            } catch (error) {
-                                console.error("API Error:", error);
+                            // try {
+                            //     await axios.post('/api/admin/adminApi/uploadScanStudent', formData);
+                            // } catch (error) {
+                            //     console.error("API Error:", error);
     
-                            }
+                            // }
     
-                            const data = await axios.post(
-                                '/api/admin/adminApi/uploadScanStudent',
-                                studentData,
-                            );
+                            // const data = await axios.post(
+                            //     '/api/admin/adminApi/uploadScanStudent',
+                            //     studentData,
+                            // );
+                            const data = await axios.post('/api/admin/adminApi/uploadScanStudent', 
+                            formData);
     
                             if (data.data.success === true) {
                                 setIsClick(false);
