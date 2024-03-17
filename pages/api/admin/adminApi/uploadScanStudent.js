@@ -322,7 +322,7 @@ async function handler(req, res) {
             dateofBirth.setDate(dateofBirth.getDate() + 1);
 
             // Get the date string without the time component
-            const modifiedDate = dateofBirth.toISOString().split('T')[0];
+           dateofBirth.toISOString().split('T')[0];
 
          
 
@@ -391,7 +391,7 @@ async function handler(req, res) {
                 maidename: student['maidename'],
                 mothername: student['MotherName'],
                 gender: student['Gender(required)'],
-                dateofbirth: modifiedDate,
+                dateofbirth: dateofBirth,
                 countryofbirth: student['CountryOfBirth'],
                 placeofbirth: student['PlaceOfBirth'],
                 registernumber: student['RegisterNumber'],

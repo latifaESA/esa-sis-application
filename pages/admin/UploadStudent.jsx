@@ -178,7 +178,7 @@ export default function UploadCourses() {
                     }
     
                     const response = await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
-                    const studentData = [];
+                    // const studentData = [];
                    
                     for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                         const record = records[rowIndex];
@@ -201,58 +201,58 @@ export default function UploadCourses() {
                                     setMessages(`Error File: File is empty`);
                                     return;
                                 }
-                        const student_id = generateID(year, response.data.data[0].major_id);
-                        const userpassword = generateRandomPassword(8);
+                        // const student_id = generateID(year, response.data.data[0].major_id);
+                        // const userpassword = generateRandomPassword(8);
                      
-                            const studentDataArray = {
-                                student_id,
-                                userpassword,
-                                Title: record[9],
-                                StudentFirstName: record[0],
-                                FatherName: record[12],
-                                StudentLastName: record[1],
-                                Promotion: record[5],
-                                MajorName:record[6],
-                                AcademicYear: record[4],
-                                maidename: record[14],
-                                MotherName: record[13],
-                                Gender: record[2],
-                                DateOfBirth: record[3],
-                                CountryOfBirth: record[15],
-                                PlaceOfBirth: record[16],
-                                RegisterNumber: record[17],
-                                MartialStatus: record[18],
-                                FirstNationality: record[19],
-                                SecondNationality: record[20],
-                                EmergencePrefix: record[34],
-                                EmergenceFirstName: record[35],
-                                EmergenceMiddleName: record[36],
-                                EmergenceLastName: record[37],
-                                EmergencePhoneNumber: record[38],
-                                EmergenceRelationShip: record[39],
-                                EmergenceMedicalHealth: record[40],
-                                EmergenceDisease: record[41],
-                                Degree: record[28],
-                                Series: record[29],
-                                DateObtain: record[30],
-                                EducationCountry: record[31],
-                                Establishment: record[32],
-                                otherEstablishment: record[33],
-                                Email: record[7],
-                                SecondEmail: record[10],
-                                MobileNumber: record[8],
-                                LandLineNumber: record[11],
-                                Country: record[21],
-                                Region: record[22],
-                                City: record[23],
-                                Street: record[24],
-                                Building: record[25],
-                                Floor: record[26],
-                                Postal: record[27],
-                                PimsId: record[9]
-                            };
+                        //     const studentDataArray = {
+                        //         student_id,
+                        //         userpassword,
+                        //         Title: record[9],
+                        //         StudentFirstName: record[0],
+                        //         FatherName: record[12],
+                        //         StudentLastName: record[1],
+                        //         Promotion: record[5],
+                        //         MajorName:record[6],
+                        //         AcademicYear: record[4],
+                        //         maidename: record[14],
+                        //         MotherName: record[13],
+                        //         Gender: record[2],
+                        //         DateOfBirth: record[3],
+                        //         CountryOfBirth: record[15],
+                        //         PlaceOfBirth: record[16],
+                        //         RegisterNumber: record[17],
+                        //         MartialStatus: record[18],
+                        //         FirstNationality: record[19],
+                        //         SecondNationality: record[20],
+                        //         EmergencePrefix: record[34],
+                        //         EmergenceFirstName: record[35],
+                        //         EmergenceMiddleName: record[36],
+                        //         EmergenceLastName: record[37],
+                        //         EmergencePhoneNumber: record[38],
+                        //         EmergenceRelationShip: record[39],
+                        //         EmergenceMedicalHealth: record[40],
+                        //         EmergenceDisease: record[41],
+                        //         Degree: record[28],
+                        //         Series: record[29],
+                        //         DateObtain: record[30],
+                        //         EducationCountry: record[31],
+                        //         Establishment: record[32],
+                        //         otherEstablishment: record[33],
+                        //         Email: record[7],
+                        //         SecondEmail: record[10],
+                        //         MobileNumber: record[8],
+                        //         LandLineNumber: record[11],
+                        //         Country: record[21],
+                        //         Region: record[22],
+                        //         City: record[23],
+                        //         Street: record[24],
+                        //         Building: record[25],
+                        //         Floor: record[26],
+                        //         Postal: record[27],
+                        //         PimsId: record[9]
+                        //     };
     
-                            studentData.push(studentDataArray);    
+                        //     studentData.push(studentDataArray);    
                     }
     
                     if (isValidHeaders) {

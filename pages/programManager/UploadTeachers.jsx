@@ -118,7 +118,7 @@ export default function UploadTeachers({setOpenUpload}) {
         setIsClick(true);
 
         const formData = new FormData();
-        formData.append("files", uploadPhotoData.fileList[0]);
+        formData.append("file", uploadPhotoData.fileList[0]);
 
         const file = uploadPhotoData.fileList[0];
         const reader = new FileReader();
@@ -154,25 +154,23 @@ export default function UploadTeachers({setOpenUpload}) {
           // }
 
 
-          const teacherDataArray = [];
-          for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
-            const record = records[rowIndex];
-            const teacher_id = generateID(5);
-           
+          // const teacherDataArray = [];
+          // for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
+          //   const record = records[rowIndex];
+          //   const teacher_id = generateID(5);
 
-            const teacherData = {
-              teacher_id,
-              firstName: record[0], // Assuming FirstName is in the first column
-              lastName: record[1], // Assuming LastName is in the second column
-              email: record[2], // Assuming Email is in the third column
-              mobile:record[3]
-              // ... (other data)
-            };
+          //   // const teacherData = {
+          //   //   teacher_id,
+          //   //   firstName: record[0], // Assuming FirstName is in the first column
+          //   //   lastName: record[1], // Assuming LastName is in the second column
+          //   //   email: record[2], // Assuming Email is in the third column
+          //   //   mobile:record[3]
+              
+          //   // };
 
+          //   // teacherDataArray.push(teacherData);
+          // }
 
-            teacherDataArray.push(teacherData);
-          }
-          
           if (isValidHeaders) {
             // Proceed with uploading and other actions
             try {
@@ -185,24 +183,31 @@ export default function UploadTeachers({setOpenUpload}) {
               }
               for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                 const record = records[rowIndex];
+                console.log('record' , record)
                
-                if (record[0] === '' || record[1] === '' || record[2] === '' ||
-                  record[0] === undefined || record[1] === undefined || record[2] === undefined ) {
+                if (record[0] === '' || record[1] === '' || record[2] === '' || record[3]==='' ||
+                  record[0] === undefined || record[1] === undefined 
+                  || record[2] === undefined 
+                  || record[3]=== undefined) {
+                    console.log('test' ,record[0] === '' || record[1] === '' || record[2] === '' || record[3]==='' ||
+                    record[0] === undefined || record[1] === undefined 
+                    || record[2] === undefined 
+                    || record[3]=== undefined )
                   setIsClick(false);
                   setConfirmOpenMessage(true);
                   setMessages("No data was uploaded due to missing required information.");
                   return;
                 }
               }
-              await axios.post(
+              const response = await axios.post(
                 "/api/admin/adminApi/uploadTeacher",
                 formData
               );
 
-              const response = await axios.post(
-                "/api/admin/adminApi/uploadTeacher",
-                teacherDataArray
-              );
+              // const response = await axios.post(
+              //   "/api/admin/adminApi/uploadTeacher",
+              //   teacherDataArray
+              // );
 
               if (response.data.success === true) {
                 setConfirmOpenMessage(true);
