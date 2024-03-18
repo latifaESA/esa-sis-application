@@ -7,13 +7,13 @@ import axios from 'axios';
 
 import DropZone from '../../components/UploadDocuments/DropZone';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
-function generateID(academicYear, majorId) {
-    let academic_year = academicYear;
-    let major_id = majorId;
-    const randomDigits = Math.floor(Math.random() * 10000)
+// function generateID(academicYear, majorId) {
+//     let academic_year = academicYear;
+//     let major_id = majorId;
+//     const randomDigits = Math.floor(Math.random() * 10000)
 
-    return academic_year + major_id + randomDigits
-}
+//     return academic_year + major_id + randomDigits
+// }
 
 export default function UploadStudent({setOpenUpload}) {
    
@@ -47,17 +47,17 @@ export default function UploadStudent({setOpenUpload}) {
         // setMajorId('')
         setConfirmOpenMessage(false)
     }
-    function generateRandomPassword(length = 8) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let password = '';
+    // function generateRandomPassword(length = 8) {
+    //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    //     let password = '';
 
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            password += characters.charAt(randomIndex);
-        }
+    //     for (let i = 0; i < length; i++) {
+    //         const randomIndex = Math.floor(Math.random() * characters.length);
+    //         password += characters.charAt(randomIndex);
+    //     }
 
-        return password;
-    }
+    //     return password;
+    // }
     const validateColumnHeaders = (columnA) => {
         const templateFields = [
             'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
@@ -179,12 +179,12 @@ export default function UploadStudent({setOpenUpload}) {
                         setMessages(`No data was uploaded due to missing MajorName.`);
                     }
     
-                    const response = await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
+                    // const response = await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
                     // const studentData = [];
                    
                     for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                         const record = records[rowIndex];
-                        const year = record[4];
+                        // const year = record[4];
                         if(record[0]=== undefined || record[1] === undefined 
                             || record[2] === undefined || record[3] === undefined 
                             || record[4] === undefined || record[5] === undefined || record[7] === undefined 

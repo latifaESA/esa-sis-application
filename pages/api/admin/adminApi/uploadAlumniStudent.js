@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";
+// import path from "path";
 import multer from "multer";
 import csv from "csv-parser";
 import { getServerSession } from "next-auth/next";
@@ -9,7 +9,7 @@ const {
   getMajor
 } = require("../../controller/queries");
 
-import xlsx from "xlsx";
+// import xlsx from "xlsx";
 import { authOptions } from "../../auth/[...nextauth]";
 
 export const config = {

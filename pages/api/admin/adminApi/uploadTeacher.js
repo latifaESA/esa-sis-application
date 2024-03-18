@@ -6,6 +6,7 @@ const { connect, disconnect } = require("../../../../utilities/db");
 const { uploadTeacher } = require("../../controller/queries");
 import teacherExist from "./ExistTeacher";
 import { authOptions } from "../../auth/[...nextauth]";
+import iconv from "iconv-lite";
 
 export const config = {
   api: {
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-function generateID(prefix) {
+function generateID() {
   const randomDigits = Math.floor(Math.random() * 10000).toString();
   return randomDigits;
 }
@@ -60,6 +61,8 @@ async function handler(req, res) {
         return new Promise((resolve, reject) => {
           const results = [];
           fs.createReadStream(filePath)
+            .pipe(iconv.decodeStream("win1252")) // Specify the input encoding, such as "win1252" for Windows-1252
+            .pipe(iconv.encodeStream("utf8")) // Convert to UTF-8 encoding
             .pipe(csv())
             .on("data", (data) => results.push(data))
             .on("end", () => {
@@ -74,47 +77,49 @@ async function handler(req, res) {
 
       const connection = await connect();
       let countSaved = 0;
-      let idx = 0;
+      // let idx = 0;
 
       for (const row of fields) {
         try {
-          const teacherArray = Object.values({row});
+          const teacherArray = Object.values({ row });
 
           const uploadPromises = teacherArray.map(async (teacher) => {
-            console.log('teacher' , teacher)
-            const teacherId = generateID(5);
+            console.log("teacher", teacher);
+            const teacherId = generateID();
 
-            const exist = await teacherExist(connection, teacher['Email']);
+            const exist = await teacherExist(connection, teacher["Email"]);
 
             if (exist) {
               return res.status(200).json({
                 success: true,
                 code: 200,
-                message: `Teachers Already Exist! ${countSaved === 0 ? 'No Teachers Saved' : `${countSaved} Teachers Saved`}`
+                message: `Teachers Already Exist! ${
+                  countSaved === 0 ? "No Teachers Saved" : `${countSaved} Teachers Saved`
+                }`,
               });
             }
 
             if (
-              teacher['FirstName'] === undefined ||
-              teacher['LastName'] === undefined ||
-              teacher['Email'] === undefined ||
-              teacher['FirstName'] === '' ||
-              teacher['LastName'] === '' ||
-              teacher['Email'] === ''
+              teacher["FirstName"] === undefined ||
+              teacher["LastName"] === undefined ||
+              teacher["Email"] === undefined ||
+              teacher["FirstName"] === "" ||
+              teacher["LastName"] === "" ||
+              teacher["Email"] === ""
             ) {
               return res.status(400).json({
                 success: false,
                 code: 400,
-                message: `No data was uploaded due to missing required information.`
+                message: `No data was uploaded due to missing required information.`,
               });
             }
 
             const response = await uploadTeacher(connection, {
               teacher_id: teacherId,
-              teacher_firstname: teacher['FirstName'],
-              teacher_mail: teacher['Email'],
-              teacher_lastname: teacher['LastName'],
-              teacher_mobile: teacher['MobileNumber']
+              teacher_firstname: teacher["FirstName"],
+              teacher_mail: teacher["Email"],
+              teacher_lastname: teacher["LastName"],
+              teacher_mobile: teacher["MobileNumber"],
             });
 
             countSaved++; // Increment the count of saved records
