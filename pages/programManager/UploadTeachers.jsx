@@ -56,12 +56,12 @@ export default function UploadTeachers({setOpenUpload}) {
       return false;
     }
   };
-  function generateID(prefix) {
-    prefix.length;
-    const randomDigits = Math.floor(Math.random() * 10000).toString();
+  // function generateID(prefix) {
+  //   prefix.length;
+  //   const randomDigits = Math.floor(Math.random() * 10000).toString();
 
-    return randomDigits;
-  }
+  //   return randomDigits;
+  // }
   // useEffect(() => {
   //   if (uploadPhotoData.fileList.length !== 0) {
   //     const handleUpload = async () => {

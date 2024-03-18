@@ -1,12 +1,11 @@
 import fs from "fs";
-import path from "path";
-import { getServerSession } from "next-auth/next";
+// import { getServerSession } from "next-auth/next";
 import { connect, disconnect } from "../../../../utilities/db";
 import { getMajor, CreateCourse } from "../../controller/queries";
-import xlsx from "xlsx";
 import multer from "multer";
 import CourseExist from "../../pmApi/exist/getCourses";
-import csv from "csv-parser";
+import * as csv from "fast-csv";
+import iconv from "iconv-lite";
 
 export const config = {
   api: {
@@ -24,7 +23,7 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    console.log(file.originalname)
+    console.log(file.originalname);
     const fileName = `${Date.now()}_${file.originalname}`;
     cb(null, fileName);
   },
@@ -32,17 +31,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
-
 async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
-    // const session = await getServerSession(req, res);
-    // if (!session) {
-    //   return res.status(401).send({ message: "Signin Required To Save Data" });
-    // }
 
     upload.single("file")(req, res, async (err) => {
       if (err) {
@@ -56,81 +49,85 @@ async function handler(req, res) {
 
       const { file } = req;
 
-      const readFile = (filePath) => {
-        return new Promise((resolve, reject) => {
-          const results = [];
-          fs.createReadStream(filePath)
-            .pipe(csv())
-            .on("data", (data) => results.push(data))
-            .on("end", () => {
-              resolve({ fields: results });
-            })
-            .on("error", (error) => {
-              reject(error);
-            });
-        });
-      };
-
-
-      const { fields } = await readFile(file.path);
-
-      const connection = await connect();
-      let countSaved = 0; // Add a variable to track the number of records saved
-  
-      for (const row of fields) {
-        console.log('row', row.CourseID)
-        try {
-          const major = await getMajor(connection, row.MajorName);
-          if (!major || major.rows.length === 0) {
-            console.error(`Major not found for row: `, row);
-            continue; // Skip this row if the major is not found
-          }
-  
-          const majorid = major.rows[0].major_id;
-         
-          if(row.CourseID === undefined || row.CourseName === undefined || row.MajorName === undefined 
-            || row.CourseCredit === undefined || row.CourseType === undefined || row.CourseID === '' || row.MajorName=== ''|| row.CourseName === '' 
-            || row.CourseCredit === '' || row.CourseType === ''){
-              return res.status(400).json({
-                success:false ,
-                code : 400,
-                message:`No data was uploaded due to missing required information.`
-              })
-            }
-            const exist = await CourseExist(connection , row.CourseID , majorid)
-       
-            if(exist){
-              return res.status(400).json({
-                success:false ,
-                code : 400,
-                message:`Courses Already Exist! ${countSaved === 0 ? 'No Courses Saved' : `${countSaved} Courses Saved`} `
-              })
-            }
-          const response = await CreateCourse(connection, {
-            course_id: row.CourseID,
-            course_name: row.CourseName,
-            course_credit: row.CourseCredit,
-            course_type: row.CourseType,
-            major_id: majorid,
+      const fields = [];
+      fs.createReadStream(file.path)
+        .pipe(iconv.decodeStream("win1252")) // Specify the input encoding, such as "win1252" for Windows-1252
+        .pipe(iconv.encodeStream("utf8")) // Convert to UTF-8 encoding
+        .pipe(csv.parse({ headers: true })) // Parse CSV with correct encoding
+        .on("error", (error) => {
+          console.error("Error parsing CSV:", error);
+          return res.status(500).json({
+            success: false,
+            code: 500,
+            message: "An error occurred while parsing the CSV file.",
+            error: error.message,
           });
-          if (response) {
-            countSaved++; // Increment the count of saved records
-          } else {
-            console.error(`Failed to save row: `, row);
-          }
-        } catch (error) {
-          console.error(`Error while processing row: `, row, "\nError: ", error);
-        }
-      }
-  
-      // Close the database connection after all operations
-      await disconnect(connection);
+        })
+        .on("data", (row) => {
+          fields.push(row);
+        })
+        .on("end", async () => {
+          // console.log("Raw Data from CSV:", fields); // Log raw data to check encoding
 
-      return res.status(201).json({
-        success: true,
-        code: 201,
-        message: `Course Uploaded Successfully!${countSaved} Course Saved`,
-      });
+          console.log('json', JSON.stringify(fields))
+
+          const connection = await connect();
+          let countSaved = 0;
+
+          for (const row of fields) {
+            try {
+              const major = await getMajor(connection, row.MajorName);
+              if (!major || major.rows.length === 0) {
+                continue; // Skip if major not found
+              }
+
+              const majorid = major.rows[0].major_id;
+
+              // Check for required fields
+              if (!row.CourseID || !row.CourseName || !row.MajorName || !row.CourseCredit || !row.CourseType) {
+                return res.status(400).json({
+                  success: false,
+                  code: 400,
+                  message: "No data was uploaded due to missing required information.",
+                });
+              }
+
+              // Check if course already exists
+              const exist = await CourseExist(connection, row.CourseID, majorid);
+              if (exist) {
+                return res.status(400).json({
+                  success: false,
+                  code: 400,
+                  message: `Courses already exist! ${countSaved === 0 ? 'No courses saved' : `${countSaved} courses saved`}`,
+                });
+              }
+
+              // Create new course
+              const response = await CreateCourse(connection, {
+                course_id: row.CourseID,
+                course_name: row.CourseName,
+                course_credit: row.CourseCredit,
+                course_type: row.CourseType,
+                major_id: majorid,
+              });
+              if (response) {
+                countSaved++;
+              } else {
+                console.error("Failed to save row:", row);
+              }
+            } catch (error) {
+              console.error("Error while processing row:", row, "\nError:", error);
+            }
+          }
+
+          await disconnect(connection);
+
+          return res.status(201).json({
+            success: true,
+            code: 201,
+            message: `Courses uploaded successfully! ${countSaved} courses saved`,
+          });
+        });
     });
   } catch (error) {
     return res.status(500).json({

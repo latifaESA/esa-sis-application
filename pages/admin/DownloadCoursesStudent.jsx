@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import axios from 'axios';
 import Select from 'react-select';
-import ExcelJS from 'exceljs';
-import Papa from 'papaparse';
+// import ExcelJS from 'exceljs';
+// import Papa from 'papaparse';
 export default function DownloadCourseStudent() {
   const { data: session } = useSession();
   const [Data, setData] = useState([]);
@@ -91,33 +91,38 @@ const [DataCourseType, setDataCourseType] = useState([]);
       ['', '', '', ''],
     ]);
 
+    const columnWidths = calculateColumnWidths(data2);
+    console.log('columnWidths' , columnWidths)
     const worksheet = XLSX.utils.aoa_to_sheet(data2);
-    const columnWidths = calculateColumnWidths(worksheet);
-
-    // Apply column widths to the worksheet
     worksheet['!cols'] = columnWidths;
 
     const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    console.log('csvContent' , csvContent.length)
+    
     const csvBlob = new Blob([csvContent], { type: 'text/csv' });
     saveAs(csvBlob, 'Teacher.csv');
   };
 
-  const calculateColumnWidths = (worksheet) => {
-    const columnWidths = worksheet['!cols'] || [];
-    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
-    if (!Array.isArray(headerRow)) {
-      return columnWidths;
-    }
 
-    headerRow.forEach((cell, colIndex) => {
-      const content = cell?.w || '';
-      const contentWidth = content.length * 7; // Adjust the multiplier as needed
-      const defaultWidth = 10; // Set a default width if content width is smaller
-      columnWidths[colIndex] = { wch: Math.max(defaultWidth, contentWidth) };
+  const calculateColumnWidths = (data) => {
+    const columnWidths = data[0].map((col, colIndex) => {
+        // Set a default width for each column
+        let maxContentWidth = 20; // Default width
+
+        // Iterate through each row to find the maximum content width in the column
+        data.forEach((row) => {
+            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+            const words = cellContent.split(''); // Split the content into words
+            const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), ''); // Find the longest word
+            const contentWidth = longestWord.length * 7; // Adjust the multiplier as needed
+            maxContentWidth = Math.max(maxContentWidth, contentWidth);
+        });
+
+        return { wch: maxContentWidth };
     });
 
     return columnWidths;
-  };
+}
 
 
   const createCSVTemplateCourse = async () => {
@@ -130,38 +135,30 @@ const [DataCourseType, setDataCourseType] = useState([]);
       const courseTypeOptions = DataCourseType.map(course => course.course_type);
   
       // Add data row with selected major and note about available options
-      csvContent.push(['', '', '', `${courseTypeOptions.join(',')}`, majors[0]]);
+      csvContent.push(['', '', '', '', majors[0]]);
   
       // Generate CSV content
-      const csvRows = csvContent.map(row => row.join(',')).join('\n');
-  
-      // Add data validation rule for the CourseType column
-
+      const csvRows = courseTypeOptions.map(row => row.join(',')).join('\n');
   
       // Generate CSV file
       const csvBlob = new Blob([csvRows], { type: 'text/csv' });
       saveAs(csvBlob, 'course.csv');
   };
+  
 
   const createCSVStudentAlumni = () => {
     const data2 = headerAluminStudent.concat([
       ['', '', '', '', '', majors, 'Alumni', '', '', ''],
     ]);
 
+    const columnWidths = calculateColumnWidths(data2);
+
     const worksheet = XLSX.utils.aoa_to_sheet(data2);
-    const columnWidths = calculateColumnWidths(worksheet);
-
-    // Apply column widths to the worksheet
     worksheet['!cols'] = columnWidths;
-
     const csvContent = XLSX.utils.sheet_to_csv(worksheet);
     const csvBlob = new Blob([csvContent], { type: 'text/csv' });
     saveAs(csvBlob, 'Student Alumni.csv');
   };
-
-
-
-
 
   return (
     <>

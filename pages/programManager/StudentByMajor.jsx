@@ -175,7 +175,7 @@ export default function StudentByMajor() {
   // };
 
   const createCSVTemplateStudent = () => {
-    const majors = session.user?.majorName
+    // const majors = session.user?.majorName
     const data2 = headerStudent.concat([
       ['', '', '', '', '', promotionsName, majors, '', '','', '', '', '', '', '', '', '', '', '', '', '',
   
