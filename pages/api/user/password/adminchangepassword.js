@@ -46,7 +46,7 @@ async function handler(req, res) {
   const regularExpression =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/;
   if (!regularExpression.test(password)) {
-    res.status(422).json({
+    res.status(200).json({
       message: "Validation ERROR When Trying Update User Password",
     });
     return;

@@ -66,18 +66,25 @@ const CourseSchedule = () => {
           major_id,
           promotion,
         });
+        console.log('data', data.data.data)
         const formattedEvents = data.data.data.map((event) => {
-          const startDateTime = new Date(
-            `${event.day.split('T')[0]} ${event.from_time}`
-          );
-          startDateTime.setDate(startDateTime.getDate());
-          const endDateTime = new Date(
-            `${event.day.split('T')[0]} ${event.to_time}`
-          );
-          endDateTime.setDate(endDateTime.getDate());
+          // Parse the date and time strings
+          const startDateTime = new Date(event.day);
+          const endDateTime = new Date(event.day);
+    
+          // Adjust the start and end time based on the event's time zone offset
+          const fromTimeParts = event.from_time.split(':');
+          const toTimeParts = event.to_time.split(':');
+          startDateTime.setHours(Number(fromTimeParts[0]));
+          startDateTime.setMinutes(Number(fromTimeParts[1]));
+          startDateTime.setSeconds(Number(fromTimeParts[2].split('+')[0]));
+          endDateTime.setHours(Number(toTimeParts[0]));
+          endDateTime.setMinutes(Number(toTimeParts[1]));
+          endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
+    
           let title = [];
           let url = '';
-
+    
           if (event.is_online === true) {
             title = [`C-${event.course_name}`, `T-${event.teacher_fullname}`, `join to meeting`];
             url = event.zoom_url;
@@ -89,7 +96,7 @@ const CourseSchedule = () => {
               `R-${event.room_name}`,
             ];
           }
-
+    
           return {
             title: title.join(','),
             start: startDateTime,
@@ -98,23 +105,29 @@ const CourseSchedule = () => {
             url: url,
           };
         });
-
+    
         const formattedEventsGoogle = data.data.data.map((event) => {
+          // Parse the date and time strings
           const startDateTime = new Date(event.day);
-          startDateTime.setHours(Number(event.from_time.split(':')[0]));
-          startDateTime.setMinutes(Number(event.from_time.split(':')[1]));
-
           const endDateTime = new Date(event.day);
-          endDateTime.setHours(Number(event.to_time.split(':')[0]));
-          endDateTime.setMinutes(Number(event.to_time.split(':')[1]));
-
+    
+          // Adjust the start and end time based on the event's time zone offset
+          const fromTimeParts = event.from_time.split(':');
+          const toTimeParts = event.to_time.split(':');
+          startDateTime.setHours(Number(fromTimeParts[0]));
+          startDateTime.setMinutes(Number(fromTimeParts[1]));
+          startDateTime.setSeconds(Number(fromTimeParts[2].split('+')[0]));
+          endDateTime.setHours(Number(toTimeParts[0]));
+          endDateTime.setMinutes(Number(toTimeParts[1]));
+          endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
+    
           const title = [
             `C-${event.course_name}`,
             `T-${event.teacher_fullname}`,
             `B-${event.room_building}`,
             `R-${event.room_name}`,
           ].map((line) => line + '\n');
-
+    
           return {
             summary: title.join(','),
             start: {
@@ -126,12 +139,13 @@ const CourseSchedule = () => {
           };
         });
         setEvent(formattedEventsGoogle);
-
+    
         setEvents(formattedEvents);
       } catch (error) {
         console.error(error);
       }
     };
+    
     fetchSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
