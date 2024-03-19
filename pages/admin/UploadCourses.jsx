@@ -69,7 +69,7 @@ export default function UploadCourses() {
    
   };
   
-  // ...
+  
   
   const handleAdd = async () => {
     try {
