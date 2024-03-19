@@ -18,7 +18,7 @@ import {
 const CourseSchedule = () => {
   const { data: session } = useSession();
   const [events, setEvents] = useState([]);
-  // const [event, setEvent] = useState([]);
+  const [event, setEvent] = useState([]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -99,33 +99,33 @@ const CourseSchedule = () => {
           };
         });
 
-        // const formattedEventsGoogle = data.data.data.map((event) => {
-        //   const startDateTime = new Date(event.day);
-        //   startDateTime.setHours(Number(event.from_time.split(':')[0]));
-        //   startDateTime.setMinutes(Number(event.from_time.split(':')[1]));
+        const formattedEventsGoogle = data.data.data.map((event) => {
+          const startDateTime = new Date(event.day);
+          startDateTime.setHours(Number(event.from_time.split(':')[0]));
+          startDateTime.setMinutes(Number(event.from_time.split(':')[1]));
 
-        //   const endDateTime = new Date(event.day);
-        //   endDateTime.setHours(Number(event.to_time.split(':')[0]));
-        //   endDateTime.setMinutes(Number(event.to_time.split(':')[1]));
+          const endDateTime = new Date(event.day);
+          endDateTime.setHours(Number(event.to_time.split(':')[0]));
+          endDateTime.setMinutes(Number(event.to_time.split(':')[1]));
 
-        //   const title = [
-        //     `C-${event.course_name}`,
-        //     `T-${event.teacher_fullname}`,
-        //     `B-${event.room_building}`,
-        //     `R-${event.room_name}`,
-        //   ].map((line) => line + '\n');
+          const title = [
+            `C-${event.course_name}`,
+            `T-${event.teacher_fullname}`,
+            `B-${event.room_building}`,
+            `R-${event.room_name}`,
+          ].map((line) => line + '\n');
 
-        //   return {
-        //     summary: title.join(','),
-        //     start: {
-        //       dateTime: startDateTime.toISOString(),
-        //     },
-        //     end: {
-        //       dateTime: endDateTime.toISOString(),
-        //     },
-        //   };
-        // });
-        // setEvent(formattedEventsGoogle);
+          return {
+            summary: title.join(','),
+            start: {
+              dateTime: startDateTime.toISOString(),
+            },
+            end: {
+              dateTime: endDateTime.toISOString(),
+            },
+          };
+        });
+        setEvent(formattedEventsGoogle);
 
         setEvents(formattedEvents);
       } catch (error) {
@@ -146,31 +146,31 @@ const CourseSchedule = () => {
         user_id: session.user?.userid,
       });
 
-      // // Create an array to store the promises of adding events
-      // const addEventPromises = event.map(async (evt) => {
-      //   // Make a request to add the event to Google Calendar using the access token
-      //   const response = await axios.post('/api/user/google-event', {
-      //     accessToken: access_Token,
-      //     event: evt,
-      //   });
+      // Create an array to store the promises of adding events
+      const addEventPromises = event.map(async (evt) => {
+        // Make a request to add the event to Google Calendar using the access token
+        const response = await axios.post('/api/user/google-event', {
+          accessToken: access_Token,
+          event: evt,
+        });
 
-      //   console.log('Event added to Google Calendar:', response.data);
+        console.log('Event added to Google Calendar:', response.data);
 
-      //   return response.data.redirectUrl;
-      // });
+        return response.data.redirectUrl;
+      });
 
-      // // Wait for all promises to resolve using Promise.all
-      // const redirectUrls = await Promise.all(addEventPromises);
+      // Wait for all promises to resolve using Promise.all
+      const redirectUrls = await Promise.all(addEventPromises);
 
-      // // Create a Google Calendar URL that includes all the events
-      // let googleCalendarUrl = 'https://calendar.google.com/calendar/r/month?';
+      // Create a Google Calendar URL that includes all the events
+      let googleCalendarUrl = 'https://calendar.google.com/calendar/r/month?';
 
-      // for (const redirectUrl of redirectUrls) {
-      //   googleCalendarUrl += `src=${encodeURIComponent(redirectUrl)}&`;
-      // }
+      for (const redirectUrl of redirectUrls) {
+        googleCalendarUrl += `src=${encodeURIComponent(redirectUrl)}&`;
+      }
 
-      // // Open the Google Calendar URL in a single tab
-      // window.open(googleCalendarUrl, '_blank');
+      // Open the Google Calendar URL in a single tab
+      window.open(googleCalendarUrl, '_blank');
     } catch (error) {
       console.error('Error adding events to Google Calendar:', error);
     }

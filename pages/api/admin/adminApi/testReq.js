@@ -58,13 +58,27 @@ const SendEmailTo = async (
       `<p>Dear <span style="font-weight: bold"> ${pm_firstName} ${pm_lastname}</span>,</p>` +
       `</br>` +
       `<p>We have received a request for an academic transcript for ${student_name}, who is enrolled in the ${major} program. The details are provided below:</p>
+      ${!major.includes('EXED') ? `  
        <ul>
+      <li>Student ID: ${student_id}</li>
+      <li>Email Address: ${student_email}</li>
+      <li>GPA: ${gpa}</li>
+
+      
+      <li>Promotion: ${promotion} </li>
+      <li>Reason for Request: ${reason}</li>
+      </ul>`:
+        ` 
+        <ul>
        <li>Student ID: ${student_id}</li>
-       <li>Email Address: ${student_email}</li>
-       <li>GPA : ${gpa}</li>
+       <li>Email Address: ${student_email}</li> 
        <li>Promotion: ${promotion} </li>
        <li>Reason for Request: ${reason}</li>
-       </ul>` +
+       </ul>`
+    
+    
+    }
+    ` +
       `<p>Thank you.</p> ` +
       `</br>` +
       `<p>Best Regards,</p> ` +
