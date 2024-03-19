@@ -45,7 +45,7 @@ const StudentsListResetPassword = ({ users }) => {
     // alert('the password changed successfully')
     setLoading(true);
     try {
-      const result = await axios.put('/api/user/password/adminchangepassword', {
+      const result = await axios.post('/api/user/password/adminchangepassword', {
         userid: id,
         password: newPass,
       });

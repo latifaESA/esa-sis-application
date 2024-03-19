@@ -31,6 +31,7 @@ export default function Archive({
     fileList: [],
     totalSize: 0,
   });
+
   const handleOpenNotificatonMessages = () => {
     setConfirmOpenMessage(true);
   };
@@ -68,6 +69,7 @@ export default function Archive({
   useEffect(() => {
     if (uploadPhotoData.fileList.length !== 0) {
       // // console.log('uploaddata', uploadPhotoData.fileList[0].name);
+      console.log('uploadphoto' , uploadPhotoData.fileList[0])
 
       // setupdateProfileButtonDisable(true);
       const handleUpload = async () => {
@@ -115,9 +117,9 @@ export default function Archive({
   const handleFile = async () => {
     try {
       const url = docUrl;
-      console.log('att', attendance)
+      console.log('att', attendance[0].attendance_id)
       const attendance_id = attendance[0].attendance_id;
-      const { data } = await axios.put("/api/pmApi/updateURL", {
+      const { data } = await axios.post("/api/pmApi/updateURL", {
         url,
         attendance_id,
       });

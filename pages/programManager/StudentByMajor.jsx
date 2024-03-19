@@ -174,28 +174,25 @@ export default function StudentByMajor() {
   //   saveAs(excelBlob, 'course.xlsx');
   // };
 
-  const createExcelTemplateStudent = () => {
- 
+  const createCSVTemplateStudent = () => {
+    // const majors = session.user?.majorName
     const data2 = headerStudent.concat([
-        ['', '', '', '', '', promotionsName, majors, '','', '', '', '', '', '', '', '', '', '', '', '', '',
-
-            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-
-            '', '', ''], // MajorName data
-    ])
-
-    const columnWidths = calculateColumnWidths(data2);
+      ['', '', '', '', '', promotionsName, majors, '', '','', '', '', '', '', '', '', '', '', '', '', '',
+  
+        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+  
+        '', '', ''],
+    ]);
+  
     const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    const columnWidths = calculateColumnWidths(worksheet);
+  
+    // Apply column widths to the worksheet
     worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Student');
-
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(excelBlob, 'student.xlsx');
+  
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'student.csv');
   };
 
 
@@ -470,7 +467,7 @@ export default function StudentByMajor() {
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
-                  onClick={createExcelTemplateStudent}
+                  onClick={createCSVTemplateStudent}
                 >
                   Student Template
                 </button>

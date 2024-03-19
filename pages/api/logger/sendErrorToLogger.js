@@ -11,12 +11,13 @@ import sis_app_logger from "../logger";
 import useragent from "useragent";
 
 export default async function handler(req, res) {
-  if (req.method !== "PUT") {
+  if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   try{
   const encryptedBody = req.body.data;
   // // console.log(encryptedBody);
+  console.log('enc' . encryptedBody)
   const { email, role, info, error } = JSON.parse(decrypt(encryptedBody));
   const userAgent = req.headers["user-agent"];
   const userAgentinfo = useragent.parse(userAgent);

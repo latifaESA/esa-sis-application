@@ -57,7 +57,7 @@ export default function AuthError(statusCode) {
         }`,
       })
     );
-    await axios.put("/api/logger/sendWarnToLogger", {
+    await axios.post("/api/logger/sendWarnToLogger", {
       data: encryptedBody,
     });
   };

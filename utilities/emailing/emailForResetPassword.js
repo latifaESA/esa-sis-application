@@ -20,8 +20,7 @@ async function EmailForResetPassword({
   idForRes,
   router,
 }) {
-  console.log("resetemail");
-  console.log(idForRes);
+
   // console.log(emailToken)
   // console.log(ID)
   // console.log(email)
@@ -75,45 +74,24 @@ async function EmailForResetPassword({
       cid: "esalogo",
     },
   ];
-  // console.log('this attachments')
-  // console.log(attachments)
-  const emailBody =
-    "<!DOCTYPE html>" +
-    "<html><head><title>Appointment</title>" +
-    "</head><body><div>" +
-    // FIXME: Commented to deploy on VERCEL
-    `<div style="text-align: center;">
-        <img src="cid:esalogo" alt="" width = "120">
-        </div>` +
-    // `<p>Dear <span style="font-weight: bold"> ${lname} ${fname}</span>,</p>` +
-    `<p>Application ID: <span style="font-weight: bold"> ${ID}</span>,</p>` +
-    `</br>` +
-    `<p>We have received a password reset request for your SIS Application at ESA Business School.</p>
-        <p>To confirm this request, and set a new password for your account, please click on the following link: </p>` +
-    `<div style="text-align: center;"> 
-        <a href=${link} target="_blank" style="padding: 8px 12px; border: 1px solid #ED2939;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #0c0c0c;text-decoration: none;font-weight:bold;display: inline-block;">
-       Reset Password             
-        </a>
-        </div>` +
-    `</br>` +
-    `<p> <span style="font-weight: bold">(This link is valid for 30 minutes from the time this reset was first requested)</span> </p> ` +
-    `</br>` +
-    `<p>For further assistance, you may contact us on the following email:  ${itServiceDeskEmail}.</p> ` +
-    `</br>` +
-    `<p>Best Regards,</p> ` +
-    `<p>The Admissions Department </p> ` +
-    `<p> +961 3 394 584 | WhatsApp or Phone Call </p> ` +
-    "</div></body></html>";
-  const payload = JSON.stringify({
+
+
+
+
+
+const payload = JSON.stringify({
     from: fromEmail,
     to: idForRes,
     cc: ccEmail,
-    // bcc: bccEmail,
     subject: subject,
-    emailBody: emailBody,
+    ID:ID,
+    itServiceDeskEmail:itServiceDeskEmail,
+    link:link,
+    // emailBody: emailBody,
     attachments: attachments,
     purpose: "reset password",
-  });
+});
+
   // Encrypt the data before sending in the body
   // end-to-end encryption for query parameters
   const encryptedBody = JSON.stringify({ data: encrypt(payload) });
@@ -121,7 +99,7 @@ async function EmailForResetPassword({
   await fetch("/api/emailing/sendEmail", {
     method: "POST",
     headers: {
-      Accept: "application/json, text/plain, */*",
+      // Accept: "application/json, text/plain, */*",
       "Content-Type": "application/json",
     },
     body: encryptedBody,
@@ -144,9 +122,9 @@ async function EmailForResetPassword({
     res.status === 200
       ? router.push("/user/password/sentEmailAlert")
       : // FIXME: if (res.status!==200) I Suggest To send an message to the admin content the ID
-        router.push(
-          `/user/message/messageEmailingService?title=${title}&message=${message}&instructions=${instructions}&email=${email}`
-        );
+      router.push(
+        `/user/message/messageEmailingService?title=${title}&message=${message}&instructions=${instructions}&email=${email}`
+      );
   });
   // End send email
 }

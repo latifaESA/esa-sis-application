@@ -177,7 +177,7 @@ const CourseSchedule = () => {
   };
   const exchangeCodeForTokens = async (authorizationCode) => {
     try {
-      const response = await fetch('/api/google-api/token', {
+        const response = await fetch('/api/google-api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -187,8 +187,6 @@ const CourseSchedule = () => {
 
       const { data } = await response.json();
       await SaveRefreshToken(data.refresh_token)
-      console.log('access_token' , data.access_token)
-      console.log('refresh token' , data.refresh_token)
       // Handle the tokens
   
     } catch (error) {
@@ -212,6 +210,7 @@ const CourseSchedule = () => {
         <GoogleLogin
           onSuccess={() => {
             try {
+              console.log('wslllllllllllllllllllllllll')
               login();
             } catch (error) {
               console.error('Error obtaining the access token:', error);
@@ -253,7 +252,7 @@ const CourseSchedule = () => {
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId="748431984812-251tnvfcugl1c3uns4h751pr3119oktc.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="488510538109-36i4ol70jivfrtcu31upbmld812klgr7.apps.googleusercontent.com">
       <CourseSchedule />
     </GoogleOAuthProvider>
   );

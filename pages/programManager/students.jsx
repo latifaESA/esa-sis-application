@@ -74,17 +74,20 @@ export default function Students() {
   };
 
 
-  const calculateColumnWidths = (data) => {
-    const columnWidths = data[0].map((col, colIndex) => {
-      const maxContentWidth = data.reduce((max, row) => {
-        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-        const contentWidth = cellContent.length;
-        return Math.max(max, contentWidth);
-      }, col.length);
-      
-      return { wch: maxContentWidth };
+  const calculateColumnWidths = (worksheet) => {
+    const columnWidths = worksheet['!cols'] || [];
+    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
+    if (!Array.isArray(headerRow)) {
+      return columnWidths;
+    }
+  
+    headerRow.forEach((cell, colIndex) => {
+      const content = cell?.w || '';
+      const contentWidth = content.length * 7; // Adjust the multiplier as needed
+      const defaultWidth = 10; // Set a default width if content width is smaller
+      columnWidths[colIndex] = { wch: Math.max(defaultWidth, contentWidth) };
     });
-
+  
     return columnWidths;
   };
 
@@ -123,28 +126,25 @@ export default function Students() {
     }
   }
   
-  const createExcelTemplateStudent = () => {
+  const createCSVTemplateStudent = () => {
     const majors = session.user?.majorName
     const data2 = headerStudent.concat([
-        ['', '', '', '', '', promotionsName, majors, '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-
-            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-
-            '', '', ''], // MajorName data
-    ])
-
-    const columnWidths = calculateColumnWidths(data2);
+      ['', '', '', '', '', promotionsName, majors, '', '','', '', '', '', '', '', '', '', '', '', '', '',
+  
+        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+  
+        '', '', ''],
+    ]);
+  
     const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    const columnWidths = calculateColumnWidths(worksheet);
+  
+    // Apply column widths to the worksheet
     worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Student');
-
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(excelBlob, 'student.xlsx');
+  
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'student.csv');
   };
 
   useEffect(()=>{
@@ -405,7 +405,7 @@ export default function Students() {
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
-                  onClick={createExcelTemplateStudent}
+                  onClick={createCSVTemplateStudent}
                 >
                   Student Template
                 </button>

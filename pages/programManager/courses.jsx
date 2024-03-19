@@ -10,7 +10,8 @@ import axios from 'axios';
 // import * as XLSX from 'xlsx';
 import UploadCourses from './UploadCourses';
 import { saveAs } from 'file-saver';
-import ExcelJS from 'exceljs';
+import * as XLSX from 'xlsx';
+// import ExcelJS from 'exceljs';
 
 export default function Courses() {
   const { data: session } = useSession();
@@ -25,12 +26,14 @@ export default function Courses() {
   const [type, setType] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
   const [DataCourseType, setDataCourseType] = useState([]);
+  console.log(DataCourseType)
 
 
 
   const redirect = () => {
     router.push('/AccessDenied');
   };
+  const headerCourse = [['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']]
 
   const handleUpload = () => {
     setOpenUpload(true)
@@ -127,48 +130,93 @@ export default function Courses() {
 
   //   return columnWidths;
   // };
-  const createExcelTemplateCourse = async () => {
-    if (!Array.isArray(DataCourseType) || DataCourseType.length === 0) {
-        console.error("DataCourseType is empty or not an array");
-        return;
-    }
+//   const createExcelTemplateCourse = async () => {
+//     if (!Array.isArray(DataCourseType) || DataCourseType.length === 0) {
+//         console.error("DataCourseType is empty or not an array");
+//         return;
+//     }
 
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Course');
+//     const workbook = new ExcelJS.Workbook();
+//     const sheet = workbook.addWorksheet('Course');
 
-    // Add header row
-   sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+//     // Add header row
+//    sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
 
-    // Define the list of valid CourseType options
-    const courseTypeOptions = DataCourseType.map(course => course.course_type);
+//     // Define the list of valid CourseType options
+//     const courseTypeOptions = DataCourseType.map(course => course.course_type);
 
-    // Add data row with selected major
-   sheet.addRow(['', '', '', '', session.user?.majorName]);
+//     // Add data row with selected major
+//    sheet.addRow(['', '', '', '', session.user?.majorName]);
 
-    // Set default column widths
-    sheet.columns.forEach((column, index) => {
-        if (index === 4) {
-            column.width = 38; // Set a larger width for the last column
-        } else {
-            column.width = 15; // Set default width for other columns
-        }
-    });
+//     // Set default column widths
+//     sheet.columns.forEach((column, index) => {
+//         if (index === 4) {
+//             column.width = 38; // Set a larger width for the last column
+//         } else {
+//             column.width = 15; // Set default width for other columns
+//         }
+//     });
 
-    // Apply data validation to all cells in the "CourseType" column
-    const courseTypeColumn = sheet.getColumn('D');
-    courseTypeColumn.eachCell((cell, rowNumber) => {
-        if (rowNumber > 1) { // Skip header row
-            cell.dataValidation = {
-                type: 'list',
-                formulae: [`"${courseTypeOptions.join(',')}"`], // Apply the dropdown list to each cell in the "CourseType" column
-            };
-        }
-    });
+//     // Apply data validation to all cells in the "CourseType" column
+//     const courseTypeColumn = sheet.getColumn('D');
+//     courseTypeColumn.eachCell((cell, rowNumber) => {
+//         if (rowNumber > 1) { // Skip header row
+//             cell.dataValidation = {
+//                 type: 'list',
+//                 formulae: [`"${courseTypeOptions.join(',')}"`], // Apply the dropdown list to each cell in the "CourseType" column
+//             };
+//         }
+//     });
 
-    // Generate Excel file
-    const buffer = await workbook.xlsx.writeBuffer();
-    const excelBlob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(excelBlob, 'course.xlsx');
+//     // Generate Excel file
+//     const buffer = await workbook.xlsx.writeBuffer();
+//     const excelBlob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+//     saveAs(excelBlob, 'course.xlsx');
+// };
+
+const calculateColumnWidths = (data) => {
+  if (!Array.isArray(data) || data.length === 0) {
+      return []; // Return an empty array if data is not valid
+  }
+
+  const columnWidths = data[0].map((col, colIndex) => {
+      // Set a default width for each column
+      let maxContentWidth = 20; // Default width
+
+      // Iterate through each row to find the maximum content width in the column
+      data.forEach((row) => {
+          if (Array.isArray(row) && colIndex < row.length) {
+              const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+              const words = cellContent.split(''); // Split the content into words
+              const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), ''); // Find the longest word
+              const contentWidth = longestWord.length * 7; // Adjust the multiplier as needed
+              maxContentWidth = Math.max(maxContentWidth, contentWidth);
+          }
+      });
+
+      return { wch: maxContentWidth };
+  });
+
+  return columnWidths;
+};
+
+
+const createCSVTemplateCourse = () => {
+  const majors = session.user?.majorName
+  const data2 = headerCourse.concat([
+    ['', '', '', '', majors],
+  ]);
+
+  const columnWidths = calculateColumnWidths(data2);
+  console.log('columnWidths' , columnWidths)
+  const worksheet = XLSX.utils.aoa_to_sheet(data2);
+  worksheet['!cols'] = columnWidths;
+
+  const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+  console.log('csvContent' , csvContent.length)
+  
+  const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+  saveAs(csvBlob, 'Course.csv');
 };
 
 
@@ -270,7 +318,7 @@ export default function Courses() {
                   <button
                     className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                     type="button"
-                    onClick={createExcelTemplateCourse}
+                    onClick={createCSVTemplateCourse}
                   >
                     Course Template
                   </button>

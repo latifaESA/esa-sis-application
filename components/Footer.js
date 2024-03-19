@@ -14,6 +14,7 @@ export const Footer = () => {
   return (
     <footer className='text-center h-10 shadow-inner'>
       <div className='flex justify-center align-middle items-center p-2'>
+        
         <p>© {date} ESA Business School</p>
       </div>
     </footer>

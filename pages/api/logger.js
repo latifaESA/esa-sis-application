@@ -8,11 +8,11 @@
 // import selection_data from '../../utilities/selection_data';
 // const fetch = require('node-fetch');
 // const { env } = require('process');
-const winston = require('winston');
+const winston = require('winston')
 const winstonDaily = require('winston-daily-rotate-file');
 // import decrypt from '../../utilities/encrypt_decrypt/decryptText';
 
-try{
+// try{
 // Fetching the logger_max_file_size and logger_expiry_day from the API
 let maxSize, maxFiles;
 maxSize = '20m';
@@ -142,8 +142,8 @@ const sis_app_logger = {
     });
   }
 };
-module.exports = sis_app_logger;
-}catch(error){
-  console.log('the error is in logger.js in api : ', error)
-}
+export default sis_app_logger;
+// }catch(error){
+//   console.log('the error is in logger.js in api : ', error)
+// }
 

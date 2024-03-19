@@ -41,7 +41,7 @@ export default function UploadTeacher() {
     setConfirmOpenMessage(false);
   };
   const validateColumnHeaders = (columnA) => {
-    const templateFields = ['StudentID' , 'Status' , 'GraduatedYear']; // Replace with your actual template fields
+    const templateFields = ['StudentID', 'FirstName', 'LastName', 'Promotion', 'AcademicYear', 'Major', 'Status', 'GraduatedYear', 'Email', 'PhoneNumber']; // Replace with your actual template fields
 
     // Check if all template fields exist in columnA
     const missingFields = templateFields.filter(
@@ -63,7 +63,7 @@ export default function UploadTeacher() {
         setIsClick(true);
 
         const formData = new FormData();
-        formData.append("files", uploadPhotoData.fileList[0]);
+        formData.append("file", uploadPhotoData.fileList[0]);
            console.log("formdata" , formData)
         const file = uploadPhotoData.fileList[0];
         const reader = new FileReader();

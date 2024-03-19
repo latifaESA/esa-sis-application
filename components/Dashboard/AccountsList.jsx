@@ -103,7 +103,7 @@ const TeachersList = ({ users, setUsers }) => {
       note: 'test',
     };
     axios
-      .put(
+      .post(
         '/api/admin/adminApi/updatePm',
         sendData
         // {

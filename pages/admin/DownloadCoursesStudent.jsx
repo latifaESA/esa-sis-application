@@ -7,25 +7,20 @@ import { useRouter } from "next/router";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import axios from 'axios';
 import Select from 'react-select';
-import ExcelJS from 'exceljs';
-
+// import ExcelJS from 'exceljs';
+// import Papa from 'papaparse';
 export default function DownloadCourseStudent() {
   const { data: session } = useSession();
   const [Data, setData] = useState([]);
-  const [DataCourseType, setDataCourseType] = useState([]);
+const [DataCourseType, setDataCourseType] = useState([]);
   const [majors, setMajors] = useState([]);
-  // const [courseType, setCourseType] = useState([]);
   const [isSelected, setSelected] = useState(false);
   const router = useRouter();
-
-  // const headerCourse = [
-  //   ['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName'],
-  // ];
 
   const headerStudent = [
     [
       'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
-      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)','MobileNumber(required)', 'PimsId', 'Title','SecondEmail', 'LandLineNumber',
+      'AcademicYear(required)', 'Promotion(required,e.g:promo(promoNumber))', 'MajorName', 'Email(required)', 'MobileNumber(required)', 'PimsId', 'Title', 'SecondEmail', 'LandLineNumber',
       'FatherName', 'MotherName', 'maidename', 'CountryOfBirth', 'PlaceOfBirth', 'RegisterNumber', 'MartialStatus',
       'FirstNationality', 'SecondNationality', 'Country', 'Region', 'City', 'Street', 'Building', 'Floor', 'Postal',
       'Degree', 'Series', 'DateObtain', 'EducationCountry', 'Establishment', 'otherEstablishment',
@@ -34,9 +29,9 @@ export default function DownloadCourseStudent() {
     ],
   ];
 
-  const headerTeacher = [['FirstName' , 'LastName' , 'Email' , 'MobileNumber']];
-  const headerAluminStudent = [['StudentID' ,'FirstName', 'LastName','Promotion', 'AcademicYear','Major','Status' , 'GraduatedYear' , 'Email' , 'PhoneNumber']];
-
+  const headerTeacher = [['FirstName', 'LastName', 'Email', 'MobileNumber']];
+  const headerAluminStudent = [['StudentID', 'FirstName', 'LastName', 'Promotion', 'AcademicYear', 'Major', 'Status', 'GraduatedYear', 'Email', 'PhoneNumber']];
+  const headerCourse = [['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']]
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -65,137 +60,133 @@ export default function DownloadCourseStudent() {
     fetchCourseType();
   }, []);
 
-  const calculateColumnWidths = (data) => {
-    const columnWidths = data[0].map((col, colIndex) => {
-      const maxContentWidth = data.reduce((max, row) => {
-        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-        const contentWidth = cellContent.length;
-        return Math.max(max, contentWidth);
-      }, col.length);
-      
-      return { wch: maxContentWidth };
-    });
-
-    return columnWidths;
-  };
-
   const handleMajor = (selectedOption) => {
     const selectedName = selectedOption.label;
     setMajors([selectedName]);
     setSelected(true);
   };
 
-  // const handleCourseType = (selectedOption) => {
-  //   const selectedName = selectedOption.label;
-  //   setCourseType([selectedName]);
-  //   setSelected(true);
-  // };
-  
-  const createExcelTemplateCourse = async () => {
-    if (!Array.isArray(DataCourseType) || DataCourseType.length === 0) {
-        console.error("DataCourseType is empty or not an array");
-        return;
+  const createCSVTemplateStudent = () => {
+    const data2 = headerStudent.concat([
+      ['', '', '', '', '', '', majors, '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+
+        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+
+        '', '', ''], // MajorName data
+    ]);
+
+    const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    const columnWidths = calculateColumnWidths(worksheet);
+
+    // Apply column widths to the worksheet
+    worksheet['!cols'] = columnWidths;
+
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'student.csv');
+  };
+
+  const createCSVTemplateTeacher = () => {
+    const data2 = headerTeacher.concat([
+      ['', '', '', ''],
+    ]);
+
+    const columnWidths = calculateColumnWidths(data2);
+    console.log('columnWidths' , columnWidths)
+    const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    worksheet['!cols'] = columnWidths;
+
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    console.log('csvContent' , csvContent.length)
+    
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'Teacher.csv');
+  };
+
+ console.log(DataCourseType)
+
+const calculateColumnWidths = (data) => {
+    if (!Array.isArray(data) || data.length === 0) {
+        return []; // Return an empty array if data is not valid
     }
 
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Course');
+    const columnWidths = data[0].map((col, colIndex) => {
+        // Set a default width for each column
+        let maxContentWidth = 20; // Default width
 
-    // Add header row
-   sheet.addRow(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+        // Iterate through each row to find the maximum content width in the column
+        data.forEach((row) => {
+            if (Array.isArray(row) && colIndex < row.length) {
+                const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+                const words = cellContent.split(''); // Split the content into words
+                const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), ''); // Find the longest word
+                const contentWidth = longestWord.length * 7; // Adjust the multiplier as needed
+                maxContentWidth = Math.max(maxContentWidth, contentWidth);
+            }
+        });
 
-    // Define the list of valid CourseType options
-    const courseTypeOptions = DataCourseType.map(course => course.course_type);
-
-    // Add data row with selected major
-   sheet.addRow(['', '', '', '', majors[0]]);
-
-    // Set default column widths
-    sheet.columns.forEach((column, index) => {
-        if (index === 4) {
-            column.width = 38; // Set a larger width for the last column
-        } else {
-            column.width = 15; // Set default width for other columns
-        }
+        return { wch: maxContentWidth };
     });
 
-    // Apply data validation to all cells in the "CourseType" column
-    const courseTypeColumn = sheet.getColumn('D');
-    courseTypeColumn.eachCell((cell, rowNumber) => {
-        if (rowNumber > 1) { // Skip header row
-            cell.dataValidation = {
-                type: 'list',
-                formulae: [`"${courseTypeOptions.join(',')}"`], // Apply the dropdown list to each cell in the "CourseType" column
-            };
-        }
-    });
+    return columnWidths;
+};
 
-    // Generate Excel file
-    const buffer = await workbook.xlsx.writeBuffer();
-    const excelBlob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(excelBlob, 'course.xlsx');
+const createCSVTemplateCourse = () => {
+  const data2 = headerCourse.concat([
+    ['', '', '', '', majors],
+  ]);
+
+  const columnWidths = calculateColumnWidths(data2);
+  console.log('columnWidths' , columnWidths)
+  const worksheet = XLSX.utils.aoa_to_sheet(data2);
+  worksheet['!cols'] = columnWidths;
+
+  const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+  console.log('csvContent' , csvContent.length)
+  
+  const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+  saveAs(csvBlob, 'Course.csv');
 };
 
 
 
+// const createCSVTemplateCourse = async () => {
+//   const csvContent = [];
+
+//   // Add header row
+//   csvContent.push(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+
+//   // Define the list of valid CourseType options
+//   // const courseTypeOptions = DataCourseType.map(course => course.course_type);
+
+//   // Add data row with selected major and note about available options
+//   csvContent.concat(['', '', '', '', majors[0]]);
+
+//   // Generate CSV content
+//   // const csvRows = csvContent.map(row => row.join(',')).join('\n');
+
+//   // Add data validation rule for the CourseType column
 
 
-  const createExcelTemplateStudent = () => {
-    const data2 = headerStudent.concat([
-        ['', '', '', '', '', '', majors, '', '','', '', '', '', '', '', '', '', '', '', '', '',
+//   // Generate CSV file
+//   const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+//   saveAs(csvBlob, 'course.csv');
+// };
+  
 
-            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-
-            '', '', ''], // MajorName data
-    ])
+  const createCSVStudentAlumni = () => {
+    const data2 = headerAluminStudent.concat([
+      ['', '', '', '', '', majors, 'Alumni', '', '', ''],
+    ]);
 
     const columnWidths = calculateColumnWidths(data2);
+
     const worksheet = XLSX.utils.aoa_to_sheet(data2);
     worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Student');
-
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(excelBlob, 'student.xlsx');
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'Student Alumni.csv');
   };
-  
-  const createExcelTemplateTeacher = () => {
- 
-   const columnWidths = calculateColumnWidths(headerTeacher);
-    const worksheet = XLSX.utils.aoa_to_sheet(headerTeacher);
-    worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Teacher');
-
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(excelBlob, 'Teacher.xlsx');
-  };
-  const createExcelTemplateAlumni = () => {
-    const data= headerAluminStudent.concat([
-      ['' ,'', '','', '',majors,'Alumni' , '' , '' , ''], // MajorName data
-  ])
-    const columnWidths = calculateColumnWidths(data);
-     const worksheet = XLSX.utils.aoa_to_sheet(data);
-     worksheet['!cols'] = columnWidths;
- 
-     const workbook = XLSX.utils.book_new();
- 
-     XLSX.utils.book_append_sheet(workbook, worksheet, 'Student Alumni');
- 
-     const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-     const excelBlob = new Blob([excelBuffer], {
-       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-     });
-     saveAs(excelBlob, 'AlumniStudent.xlsx');
-   };
 
   return (
     <>
@@ -207,28 +198,26 @@ export default function DownloadCourseStudent() {
           <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
             {isSelected ?
               <>
-                <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                  <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateCourse} />
+                                <div className="my-4 text-slate-500 text-lg leading-relaxed">
+                  <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createCSVTemplateCourse} />
                   <p className="pt-5 mb-10 font-bold">Download Course Template</p>
                 </div>
                 <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold  " style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateStudent} />
-                                <p className="pt-5 mb-10 font-bold">Download Student Template</p>
-                            </div>
-
+                  <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createCSVTemplateStudent} />
+                  <p className="pt-5 mb-10 font-bold">Download Student Template</p>
+                </div>
               </> :
               <>
-                <div className="my-4 text-slate-500 text-lg leading-relaxed">
+                              <div className="my-4 text-slate-500 text-lg leading-relaxed">
                   <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold hover:<small>please select major first</small>" style={{ width: '7rem', height: '7rem', cursor: 'not-allowed' }} />
                   <p className="pt-5 mb-10 font-bold">Download Course Template</p>
                 </div>
                 <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                                <FaCloudDownloadAlt className='hover:text-blue-600 hover:font-bold ' style={{ width: '7rem', height: '7rem', cursor: 'not-allowed' }} />
-                                <p className="pt-5 mb-10 font-bold">Download Student Template</p>
-                            </div>
-
-                        </>}
-
+                  <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold hover:<small>please select major first</small>" style={{ width: '7rem', height: '7rem', cursor: 'not-allowed' }} />
+                  <p className="pt-5 mb-10 font-bold">Download Student Template</p>
+                </div>
+              </>
+            }
             <div className="my-4 text-slate-500 text-lg leading-relaxed">
               <p className="pt-5 mb-10 font-bold">Select Major Name</p>
               <Select
@@ -239,30 +228,18 @@ export default function DownloadCourseStudent() {
                 className='place-items-center'
               />
             </div>
-            {/* <div className="my-4 text-slate-500 text-lg leading-relaxed">
-              <p className="pt-5 mb-10 font-bold">Select Course Type</p>
-              <Select
-                isMulti={false}
-                options={DataCourseType.map((course) => ({ value: course.course_type_id, label: course.course_type })).sort((a, b) => a.label.localeCompare(b.label))}
-                placeholder="Select a Course Type"
-                onChange={handleCourseType}
-                className='place-items-center'
-              />
-            </div> */}
             <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateTeacher} />
-                                <p className="pt-5 mb-10 font-bold">Download Teacher Template</p>
+              <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createCSVTemplateTeacher} />
+              <p className="pt-5 mb-10 font-bold">Download Teacher Template</p>
+            </div>
+            <div className="my-4 text-slate-500 text-lg leading-relaxed">
+              <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createCSVStudentAlumni} />
+              <p className="pt-5 mb-10 font-bold">Download Alumni Student Template</p>
+            </div>
+            
           </div>
-        
-                            <div className="my-4 text-slate-500 text-lg leading-relaxed">
-                                <FaCloudDownloadAlt className=" hover:text-blue-600 hover:font-bold" style={{ width: '7rem', height: '7rem', cursor: 'pointer' }} onClick={createExcelTemplateAlumni} />
-                                <p className="pt-5 mb-10 font-bold">Download  Alumin Student Template</p>
-                            </div>
-
-
-                </div>
-            </>) : (
-
+        </>
+      ) : (
         redirect()
       )}
     </>

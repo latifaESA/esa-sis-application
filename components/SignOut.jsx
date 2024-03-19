@@ -37,7 +37,7 @@ export const SignOut = () => {
                   info: 'user signout due to Browser problem',
                 })
               );
-              await axios.put('/api/logger/sendInfoToLogger', {
+              await axios.post('/api/logger/sendInfoToLogger', {
                 data: encryptedEmail,
               });
               // localStorage.clear();

@@ -144,12 +144,14 @@ export default function ProfileScreen() {
     setMessage("");
     //  // console.log('password==>',password)
     try {
-      const response = await axios.put("/api/user/updateProfile", {
+     
+      const response = await axios.post("/api/user/updateProfile", {
         fname,
         lname,
         password,
         profileUrl: userState.user.profileUrl,
       });
+     
 
       // // console.log(response.data)
       // // console.log('response.message=', response.data.message);

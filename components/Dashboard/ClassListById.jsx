@@ -474,13 +474,13 @@ const handleCloseNotificatonMessages = () => {
               
                     const response = await axios.post('/api/zoom_api/createZoom', payload);
              
-                      let payload1 = {
-                        tmpscheduleIds : data.scheduleId,
-                        meetingIds : response.data.data.id,
-                        zoomUrls : response.data.data.join_url
-                      }
-                      console.log('payload1' , payload1)
-                      let result = await axios.post("/api/zoom_api/updateScheduleZoom", payload1)
+            
+                  
+                      let result = await axios.post("/api/zoom_api/updateScheduleZoom", {
+                        tmpscheduleIds: data.scheduleId[0],
+                        meetingIds: response.data.data.id.toString(), // Convert to string explicitly
+                        zoomUrls: response.data.data.join_url
+                    })
                       await handleInsertGoogleEvent(attendance_date, fromTime, toTime, attendance_id, response.data.data.join_url)
 
                     if (schedulesCreated === totalSchedules && result.status === 201) {
@@ -513,7 +513,7 @@ const handleCloseNotificatonMessages = () => {
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
         
                   if (data.success) {
-                    await handleSharePointBookingRoom([weekDays[i]], [attendance_id], 0);
+                    await handleSharePointBookingRoom([weekDays[i]], [attendance_id],courseName ,0);
                     await handleInsertGoogleEventOnSite(attendance_date, fromTime, toTime, roomName, building, attendance_id)
 
                     deleteTable()
@@ -572,86 +572,104 @@ const getSharePointToken = async () => {
   }
 };
   
-  const handleSharePointBookingRoom = async (week, attendance_id, currentIndex) => {
-    try {
+const handleSharePointBookingRoom = async (week, attendance_id, courseName, currentIndex) => {
+  try {
       const accessToken = await getSharePointToken();
-      const bookingDay = new Date()
-      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-     
+
       if (currentIndex < week.length) {
+          const bookingDay = new Date();
+          const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+          const dates = new Date(week[currentIndex]);
 
-      const dates = new Date(week[currentIndex]);
-  
-      const formattedDate = moment(dates).format('YYYY-MM-DD');
-      const fromTimeSplit = fromTime.split('+')[0];
-      const toTimeSplit = toTime.split('+')[0];
-  
-      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 4; // Change this value if daylight saving time is not in effect
-  
-      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-  
-        const apiUrl =
-          "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-  
-        
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            Accept: "application/json;odata=verbose",
-            "Content-Type": "application/json;odata=verbose",
-            Authorization: `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            
-            __metadata: {
-              type: "SP.Data.BookingRoomListItem",
-            },
-            Title: `${roomName}`,
-            Space: `${building}`,
-            BookedBy: `${session.user?.name}`,
-            BookingDate: week[currentIndex], 
-            BookingDay:`${formattedBookingDay}`,
-            FromTime:fromTimes,
-            ToTime:toTimes,
-          }),
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-  
-        const data = await response.json();
-       
-  
-        // Log the ID of the newly added item
-        if (data && data.d && data.d.Id) {
-       
-  
-          // Update the SharePoint ID in the schedule
-           await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
-            sharepointId: data.d.Id,
-            attendanceId: attendance_id,
+          const formattedDate = moment(dates).format('YYYY-MM-DD');
+          const fromTimeSplit = fromTime.split('+')[0];
+          const toTimeSplit = toTime.split('+')[0];
+
+          // Convert the local time to UTC
+          const fromTimesUTC = moment(`${formattedDate}T${fromTimeSplit}`).toISOString();
+          const toTimesUTC = moment(`${formattedDate}T${toTimeSplit}`).toISOString();
+
+          const apiUrl =
+              "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+
+          const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: {
+                  Accept: "application/json;odata=verbose",
+                  "Content-Type": "application/json;odata=verbose",
+                  Authorization: `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                  __metadata: {
+                      type: "SP.Data.BookingRoomListItem"
+                  },
+                  Title: `${roomName}`,
+                  Space: `${building}`,
+                  BookedBy: `${session.user?.name}`,
+                  BookingDate: week[currentIndex],
+                  BookingDay: `${formattedBookingDay}`,
+                  FromTime: fromTimesUTC, // Use UTC time
+                  ToTime: toTimesUTC, // Use UTC time
+                  Description: `${courseName}`
+              })
           });
-          
-  
-          // Continue to the next date in the array
-          handleSharePointBookingRoom(week, attendance_id, currentIndex + 1);
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
-    }
-  };
 
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data && data.d && data.d.Id) {
+              // Update the SharePoint ID in the schedule
+              await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+                  sharepointId: data.d.Id,
+                  attendanceId: attendance_id
+              });
+
+              // Continue to the next date in the array
+              handleSharePointBookingRoom(week, attendance_id, currentIndex + 1);
+          }
+      }
+  } catch (error) {
+      console.error("Error submitting booking to SharePoint:", error.message);
+  }
+};
 const handleShowAll = async (tmpclass_id) => {
     console.log("tmpclass_id ==> ", tmpclass_id);
   };
   setTimeout(() => {
     setMessage("");
   }, selection_data.message_disapear_timing);
+
+
+
+  const createBooking = async (data) => {
+    try {
+      const payload = data.map(item => ({
+        BookedBy: item.BookedBy,
+        BookingDate: item.BookingDate,
+        BookingDay: item.BookingDay,
+        FromTime: item.FromTime,
+        ToTime: item.ToTime,
+        Space: item.Space,
+        Title: item.Title,
+        Id: item.Id
+      }));
+  
+      await fetch('/api/pmApi/createBooking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (error) {
+      return error;
+    }
+  };
+  
+  
 
 
 
@@ -671,35 +689,8 @@ const handleShowAll = async (tmpclass_id) => {
       });
 
       const data = await response.json();
-      await axios.post('/api/pmApi/createBooking', {
-        booking:data.d.results
-      })
-      // if (data.d.results.length > 0) {
-      //   const start = new Date().getMilliseconds()
-      //   for (const booking of data.d.results) {
-      //     // Format the date to 'YYYY-MM-DDT00:00:00Z'
+      await createBooking(data.d.results)
 
-
-          // const formattedDate = moment(booking.BookingDate).format('YYYY-MM-DDT00:00:00[Z]');
-
-
-      //     // Make the API call
-      //     await axios.post('/api/pmApi/createBooking', {
-      //       bookingId: booking.ID,
-      //       room: booking.Title,
-      //       space: booking.Space,
-      //       bookingBy: booking.BookedBy,
-      //       date: formattedDate,
-      //       fromTime: booking.FromTime,
-      //       toTime: booking.ToTime,
-      //     });
-      //     // console.log(result);
-      //   }
-      //   const end = new Date().getMilliseconds() - start
-      //   console.log('end', end)
-      // }
-
-      // return { ok: true, result: data };
 
     } catch (error) {
       console.error('Error checking room availability in SharePoint:', error.message);

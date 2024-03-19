@@ -28,6 +28,7 @@ import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
 // import selection_data from '../../../utilities/selection_data';
 
 const PreSignIn = () => {
+  console.log('presigin')
   const { data: session } = useSession();
   const router = useRouter();
   const { redirect } = router.query;

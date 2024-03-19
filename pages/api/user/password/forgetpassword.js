@@ -11,6 +11,7 @@
 import {
   findDataForResetPassword,
   newEmailToken,
+  findUserRole,
   // Userinfo,
   // UpdateData,
   // UpdateActivityTime,
@@ -21,6 +22,7 @@ import sis_app_logger from "../../../api/logger";
 import useragent from "useragent";
 
 async function handler(req, res) {
+ 
   if (req.method !== "POST") {
     return res
       .status(500)
@@ -28,7 +30,7 @@ async function handler(req, res) {
   }
   try{
   const { email } = req.body;
-  console.log(email, "email in forget password");
+
   // if (!email || !email.includes("@")) {
   //   res.status(422).json({
   //     message: "Validation error",
@@ -52,8 +54,12 @@ async function handler(req, res) {
       message: message,
     });
   } else {
-    console.log("start validation");
-    console.log("===============");
+
+    const userrole = await findUserRole(
+      connection,
+      email
+    );
+ 
 
     const validateUserEmail = await findDataForResetPassword(
       connection,
@@ -92,33 +98,41 @@ async function handler(req, res) {
       "userid",
       email
     );
-    // // console.log(validateUserEmail)
-    // const validateUserEmail = await UserProfile.findOne({ email });
-    // // console.log(validateUserEmail.rows[0].userid)
+
     if (
       validateUserEmail.rows[0] != null &&
-      validateUserEmail.rows[0].userid != null
+      validateUserEmail.rows[0].userid != null &&
+      validateUserEmail.rows[0].role === 1
+      
     ) {
       // Set the emailToken
-      console.log("inside if");
-      await newEmailToken(connection, validateUserEmail.rows[0].userid);
+
+  
+    await newEmailToken(connection, validateUserEmail.rows[0].userid);
+     
       //validateUserEmail.emailToken = crypto.randomBytes(64).toString('hex');
       //await validateUserEmail.save();
 
       // res.status(200).json('Email Verified Successfully.');
     } else if (
       validatePmEmail.rows[0] != null &&
-      validatePmEmail.rows[0].userid != null
+      validatePmEmail.rows[0].userid != null &&
+      validatePmEmail.rows[0].role === 2
+    
+     
     ) {
-      await newEmailToken(connection, validatePmEmail.rows[0].userid);
+     
+      await newEmailToken(connection, validatePmEmail.rows[0].userid );
     } else if (
       validatePmAssistanteEmail.rows[0] != null &&
       validatePmAssistanteEmail.rows[0].userid != null
+      &&  validatePmAssistanteEmail.rows[0].role===3
     ) {
       await newEmailToken(connection, validatePmAssistanteEmail.rows[0].userid);
     } else if (
       validateAdmin.rows[0] != null &&
       validateAdmin.rows[0].userid != null
+      &&  validateAdmin.rows[0].role===0
     ) {
       await newEmailToken(connection, validateAdmin.rows[0].userid);
     } else {
@@ -166,15 +180,19 @@ async function handler(req, res) {
       "userid",
       email
     );
-    console.log(userPminfo.rows[0]);
-    if (userinfo.rows[0] && userinfo.rows[0].userid != null) {
+   
+  
+    if (userinfo.rows[0] && userinfo.rows[0].userid != null 
+      && userrole.rows[0].role === 1) {
+     
       res.status(201).send({
         message: "Ready To send Reset Password Email",
         email: userinfo.rows[0].email,
         emailToken: userinfo.rows[0].token,
         ID: userinfo.rows[0].userid,
       });
-    } else if (userPminfo.rows[0] && userPminfo.rows[0].pm_id != null) {
+    } else if (userPminfo.rows[0] && userPminfo.rows[0].pm_id != null && userPminfo.rows[0].role===2) {
+      console.log('userPminfo.rows[0].role' ,userPminfo.rows[0].role)
       res.status(201).send({
         message: "Ready To send Reset Password Email",
         email: userPminfo.rows[0].pm_email,
@@ -184,6 +202,7 @@ async function handler(req, res) {
     } else if (
       userPmAssinfo.rows[0] &&
       userPmAssinfo.rows[0].pm_ass_id != null
+      && userrole.rows[0].role === 3 
     ) {
       res.status(201).send({
         message: "Ready To send Reset Password Email",
@@ -191,7 +210,7 @@ async function handler(req, res) {
         emailToken: userPmAssinfo.rows[0].token,
         ID: userPmAssinfo.rows[0].userid,
       });
-    } else if (admininfo.rows[0] && admininfo.rows[0].adminid != null) {
+    } else if (admininfo.rows[0] && admininfo.rows[0].adminid != null && userrole.rows[0].role===0) {
       console.log("seret bel else admin");
       res.status(201).send({
         message: "Ready To send Reset Password Email",

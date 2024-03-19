@@ -58,12 +58,14 @@ const ForgetPassword = () => {
       const res = await axios.post("/api/user/password/forgetpassword", {
         email,
       });
+      console.log('result' , res)
       console.log("res", res.data);
 
       // console.log("=======res.data======");
       // // console.log(errorMessage)
       // console.log(res.data);
       const emailToken = res.data.emailToken;
+      console.log('token',emailToken)
       // console.log("emailToken", emailToken);
       // const lname = res.data.lname;
       // const fname = res.data.fname;

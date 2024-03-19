@@ -41,7 +41,7 @@ export default function Modal({
       const attendance_id = event.attendance_id;
       const student_id = event.student_id;
 
-      const { data } = await axios.put('/api/pmApi/presentupdate', {
+      const { data } = await axios.post('/api/pmApi/presentupdate', {
         present,
         student_id,
         attendance_id,
@@ -76,7 +76,7 @@ export default function Modal({
         const row = attendance[i];
         if (row.isDirty) {
           const { student_id, attendance_id, present } = row;
-          const { data } = await axios.put('/api/pmApi/presentupdate', {
+          const { data } = await axios.post('/api/pmApi/presentupdate', {
             present,
             student_id,
             attendance_id,

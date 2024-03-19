@@ -6,13 +6,13 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 import DropZone from '../../components/UploadDocuments/DropZone';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
-function generateID(academicYear, majorId) {
-    let academic_year = academicYear;
-    let major_id = majorId;
-    const randomDigits = Math.floor(Math.random() * 10000)
+// function generateID(academicYear, majorId) {
+//     let academic_year = academicYear;
+//     let major_id = majorId;
+//     const randomDigits = Math.floor(Math.random() * 10000)
 
-    return academic_year + major_id + randomDigits
-}
+//     return academic_year + major_id + randomDigits
+// }
 
 export default function UploadCourses() {
 
@@ -45,17 +45,17 @@ export default function UploadCourses() {
         // setMajorId('')
         setConfirmOpenMessage(false)
     }
-    function generateRandomPassword(length = 8) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let password = '';
+    // function generateRandomPassword(length = 8) {
+    //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    //     let password = '';
 
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            password += characters.charAt(randomIndex);
-        }
+    //     for (let i = 0; i < length; i++) {
+    //         const randomIndex = Math.floor(Math.random() * characters.length);
+    //         password += characters.charAt(randomIndex);
+    //     }
 
-        return password;
-    }
+    //     return password;
+    // }
     const validateColumnHeaders = (columnA) => {
         const templateFields = [
             'StudentFirstName(required)', 'StudentLastName(required)', 'Gender(required)', 'DateOfBirth(required,e.g:(mm/dd/yyyy))',
@@ -102,7 +102,7 @@ export default function UploadCourses() {
             if (uploadPhotoData.fileList.length !== 0) {
                 setIsClick(true);
                 const formData = new FormData();
-                formData.append('files', uploadPhotoData.fileList[0]);
+                formData.append('file', uploadPhotoData.fileList[0]);
                 const file = uploadPhotoData.fileList[0];
                 const reader = new FileReader();
     
@@ -177,12 +177,12 @@ export default function UploadCourses() {
                         setMessages(`No data was uploaded due to missing MajorName.`);
                     }
     
-                    const response = await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
-                    const studentData = [];
+                    // await axios.post('/api/pmApi/getAllCourses', { table: 'major', Where: 'major_name', id: majorNameValue });
+                    // const studentData = [];
                    
                     for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                         const record = records[rowIndex];
-                        const year = record[4];
+                        // const year = record[4];
                         if(record[0]=== undefined || record[1] === undefined 
                             || record[2] === undefined || record[3] === undefined 
                             || record[4] === undefined || record[5] === undefined || record[7] === undefined 
@@ -201,73 +201,75 @@ export default function UploadCourses() {
                                     setMessages(`Error File: File is empty`);
                                     return;
                                 }
-                        const student_id = generateID(year, response.data.data[0].major_id);
-                        const userpassword = generateRandomPassword(8);
+                        // const student_id = generateID(year, response.data.data[0].major_id);
+                        // const userpassword = generateRandomPassword(8);
                      
-                            const studentDataArray = {
-                                student_id,
-                                userpassword,
-                                Title: record[9],
-                                StudentFirstName: record[0],
-                                FatherName: record[12],
-                                StudentLastName: record[1],
-                                Promotion: record[5],
-                                MajorName:record[6],
-                                AcademicYear: record[4],
-                                maidename: record[14],
-                                MotherName: record[13],
-                                Gender: record[2],
-                                DateOfBirth: record[3],
-                                CountryOfBirth: record[15],
-                                PlaceOfBirth: record[16],
-                                RegisterNumber: record[17],
-                                MartialStatus: record[18],
-                                FirstNationality: record[19],
-                                SecondNationality: record[20],
-                                EmergencePrefix: record[34],
-                                EmergenceFirstName: record[35],
-                                EmergenceMiddleName: record[36],
-                                EmergenceLastName: record[37],
-                                EmergencePhoneNumber: record[38],
-                                EmergenceRelationShip: record[39],
-                                EmergenceMedicalHealth: record[40],
-                                EmergenceDisease: record[41],
-                                Degree: record[28],
-                                Series: record[29],
-                                DateObtain: record[30],
-                                EducationCountry: record[31],
-                                Establishment: record[32],
-                                otherEstablishment: record[33],
-                                Email: record[7],
-                                SecondEmail: record[10],
-                                MobileNumber: record[8],
-                                LandLineNumber: record[11],
-                                Country: record[21],
-                                Region: record[22],
-                                City: record[23],
-                                Street: record[24],
-                                Building: record[25],
-                                Floor: record[26],
-                                Postal: record[27],
-                                PimsId: record[9]
-                            };
+                        //     const studentDataArray = {
+                        //         student_id,
+                        //         userpassword,
+                        //         Title: record[9],
+                        //         StudentFirstName: record[0],
+                        //         FatherName: record[12],
+                        //         StudentLastName: record[1],
+                        //         Promotion: record[5],
+                        //         MajorName:record[6],
+                        //         AcademicYear: record[4],
+                        //         maidename: record[14],
+                        //         MotherName: record[13],
+                        //         Gender: record[2],
+                        //         DateOfBirth: record[3],
+                        //         CountryOfBirth: record[15],
+                        //         PlaceOfBirth: record[16],
+                        //         RegisterNumber: record[17],
+                        //         MartialStatus: record[18],
+                        //         FirstNationality: record[19],
+                        //         SecondNationality: record[20],
+                        //         EmergencePrefix: record[34],
+                        //         EmergenceFirstName: record[35],
+                        //         EmergenceMiddleName: record[36],
+                        //         EmergenceLastName: record[37],
+                        //         EmergencePhoneNumber: record[38],
+                        //         EmergenceRelationShip: record[39],
+                        //         EmergenceMedicalHealth: record[40],
+                        //         EmergenceDisease: record[41],
+                        //         Degree: record[28],
+                        //         Series: record[29],
+                        //         DateObtain: record[30],
+                        //         EducationCountry: record[31],
+                        //         Establishment: record[32],
+                        //         otherEstablishment: record[33],
+                        //         Email: record[7],
+                        //         SecondEmail: record[10],
+                        //         MobileNumber: record[8],
+                        //         LandLineNumber: record[11],
+                        //         Country: record[21],
+                        //         Region: record[22],
+                        //         City: record[23],
+                        //         Street: record[24],
+                        //         Building: record[25],
+                        //         Floor: record[26],
+                        //         Postal: record[27],
+                        //         PimsId: record[9]
+                        //     };
     
-                            studentData.push(studentDataArray);    
+                        //     studentData.push(studentDataArray);    
                     }
     
                     if (isValidHeaders) {
                         try {
-                            try {
-                                await axios.post('/api/admin/adminApi/uploadScanStudent', formData);
-                            } catch (error) {
-                                console.error("API Error:", error);
+                            // try {
+                            //     await axios.post('/api/admin/adminApi/uploadScanStudent', formData);
+                            // } catch (error) {
+                            //     console.error("API Error:", error);
     
-                            }
+                            // }
     
-                            const data = await axios.post(
-                                '/api/admin/adminApi/uploadScanStudent',
-                                studentData,
-                            );
+                            // const data = await axios.post(
+                            //     '/api/admin/adminApi/uploadScanStudent',
+                            //     studentData,
+                            // );
+                            const data = await axios.post('/api/admin/adminApi/uploadScanStudent', 
+                            formData);
     
                             if (data.data.success === true) {
                                 setIsClick(false);

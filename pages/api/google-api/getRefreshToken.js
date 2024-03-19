@@ -1,7 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
 
-const CLIENT_ID = '748431984812-251tnvfcugl1c3uns4h751pr3119oktc.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
+const CLIENT_ID = '488510538109-36i4ol70jivfrtcu31upbmld812klgr7.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
 
 export default async function handler(req, res) {
   const { oldRefreshToken } = req.body;

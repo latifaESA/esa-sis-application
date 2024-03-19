@@ -1,11 +1,3 @@
-/*
- * Created By: Ali Mroueh
- * Project: Online Application
- * File: pages\api\uploads\profile.js
- * École Supérieure des Affaires (ESA)
- * Copyright (c) 2023 ESA
- */
-
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
@@ -24,7 +16,6 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
-  try{
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
@@ -32,40 +23,41 @@ async function handler(req, res) {
   }
   const { user } = session;
 
-  // console.log('user from profile: ', user);
-  // console.log('userId from profile: ', user.userid);
   const readFile = (file, saveLocally, place) => {
     const options = {};
     if (saveLocally) {
       options.uploadDir = place;
-
-      // eslint-disable-next-line no-unused-vars
-      options.filename = (name, ext, path1, form) => {
+      options.filename = (name, ext, path1) => {
         if (
           path1.mimetype === "image/png" ||
           path1.mimetype === "image/jpeg" ||
           path1.mimetype === "image/jpg"
         ) {
+          // Delete existing files in the directory except the new one
           let sourceDir = fs.readdirSync(place);
 
           sourceDir.forEach((file) => {
             const filePath = path.join(place, file);
             const stats = fs.statSync(filePath);
-            if (stats.isFile()) {
-              fs.unlinkSync(filePath);
-              // // console.log('Deleted file:', filePath);
+            if (stats.isFile() && filePath !== path1.path) {
+              try {
+                console.log('Attempting to delete file:', filePath);
+                fs.unlinkSync(filePath);
+                console.log('Deleted file:', filePath);
+              } catch (err) {
+                console.error('Error deleting file:', err);
+                // Log the error but continue with the loop
+              }
             }
           });
+
           return Date.now().toString() + "_" + path1.originalFilename;
         } else {
-          return res
-            .status(200)
-            .send({ status: 401, message: "file was not accepted" });
+          return res.status(400).send({ message: "File type not supported" });
         }
       };
     }
 
-    // options.maxFileSize = 4000 * 1024 * 1024;
     const form = formidable(options);
     return new Promise((resolve, reject) => {
       form.parse(file, (err, fields, files) => {
@@ -76,14 +68,6 @@ async function handler(req, res) {
   };
 
   const localDiskPath = path.parse(require("os").homedir()).root;
-  // const directory = path.join(
-  //   localDiskPath,
-  //   'esa-applicants-data',
-  //   'onlineUsers',
-  //   `${user.name}-${user._id}`,
-  //   'photo',
-  //   'profile'
-  // );
   const directory = path.join(
     localDiskPath,
     "sis-application-data",
@@ -96,21 +80,14 @@ async function handler(req, res) {
     fs.mkdirSync(directory, { recursive: true });
   }
 
-  await readFile(req, true, directory);
+  const test = await readFile(req, true, directory);
+  console.log('test', test);
 
-  let allimages = await fs.readdirSync(directory);
-  // Return a response
-  // return res.status(200).send({ secure_url: `${env.NEXTAUTH_URL}file/public/${user.name}-${user._id}/photo/profile/${allimages[0]}` });
-
+  let allimages = fs.readdirSync(directory);
+  
   return res.status(200).send({
-    secure_url: `${env.NEXTAUTH_URL}file/sis/Users/${user.userid}/photo/${allimages[0]}`,
+    secure_url: `${env.NEXTAUTH_URL}/file/sis/Users/${user.userid}/photo/${allimages[0]}`,
   });
-
-  }catch(error){
-    console.log('the error is in profile.js in uploads in api : ', error)
-    return
-  }
-  // return res.status(200).send(req)
 }
 
 export default handler;

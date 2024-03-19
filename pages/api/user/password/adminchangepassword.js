@@ -21,7 +21,7 @@ import sis_app_logger from "../../../api/logger";
 import useragent from "useragent";
 
 async function handler(req, res) {
-  if (req.method !== "PUT") {
+  if (req.method !== "POST") {
     return res.status(400).send({ message: `${req.method} not supported` });
   }
   try{

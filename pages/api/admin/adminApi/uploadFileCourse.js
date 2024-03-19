@@ -1,17 +1,11 @@
-import formidable from "formidable";
 import fs from "fs";
-import path from "path";
-
-import { getServerSession } from "next-auth/next";
-const { connect, disconnect } = require("../../../../utilities/db");
-const { getMajor, CreateCourse } = require("../../controller/queries");
-
-import xlsx from "xlsx";
-// import { env } from 'process';
-import { authOptions } from "../../auth/[...nextauth]";
+// import { getServerSession } from "next-auth/next";
+import { connect, disconnect } from "../../../../utilities/db";
+import { getMajor, CreateCourse } from "../../controller/queries";
+import multer from "multer";
 import CourseExist from "../../pmApi/exist/getCourses";
-
-
+import * as csv from "fast-csv";
+import iconv from "iconv-lite";
 
 export const config = {
   api: {
@@ -19,253 +13,121 @@ export const config = {
   },
 };
 
+const uploadDir = "C:/sis-application-data/sis-documents-Admin/course";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    console.log(file.originalname);
+    const fileName = `${Date.now()}_${file.originalname}`;
+    cb(null, fileName);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       return res.status(400).send({ message: `${req.method} not supported` });
     }
-    const session = await getServerSession(req, res, authOptions);
 
-    if (!session) {
-      return res.status(401).send({ message: "Signin Required To Save Data" });
-    }
+    upload.single("file")(req, res, async (err) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          code: 500,
+          message: "An error occurred while uploading the file.",
+          error: err.message,
+        });
+      }
 
-    // const { user } = session;
+      const { file } = req;
 
-    // const { formData, attendance } = req.body;
+      const fields = [];
+      fs.createReadStream(file.path)
+        .pipe(iconv.decodeStream("win1252")) // Specify the input encoding, such as "win1252" for Windows-1252
+        .pipe(iconv.encodeStream("utf8")) // Convert to UTF-8 encoding
+        .pipe(csv.parse({ headers: true })) // Parse CSV with correct encoding
+        .on("error", (error) => {
+          console.error("Error parsing CSV:", error);
+          return res.status(500).json({
+            success: false,
+            code: 500,
+            message: "An error occurred while parsing the CSV file.",
+            error: error.message,
+          });
+        })
+        .on("data", (row) => {
+          fields.push(row);
+        })
+        .on("end", async () => {
+          // console.log("Raw Data from CSV:", fields); // Log raw data to check encoding
 
-    // const readFile = (file, saveLocally, place) => {
-    //   const options = {};
-    //   if (saveLocally) {
-    //     options.uploadDir = place;
+          console.log('json', JSON.stringify(fields))
 
-    //     // eslint-disable-next-line no-unused-vars
-    //     options.filename = (name, ext, path1, form) => {
-    //       // // console.log("user",form)
+          const connection = await connect();
+          let countSaved = 0;
 
-    //       if (
-    //         // path1.mimetype === 'application/pdf' ||
-    //         // path1.mimetype === 'application/x-pdf' ||
-    //         // path1.mimetype === 'image/png' ||
-    //         // path1.mimetype === 'image/jpeg' ||
-    //         // path1.mimetype === 'image/jpg' ||
-    //         path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
-    //       ) {
-    //         let sourceDir = fs.readdirSync(place);
-
-    //         sourceDir.forEach((file) => {
-    //           const filePath = path.join(place, file);
-    //           const stats = fs.statSync(filePath);
-    //           if (stats.isFile()) {
-    //             // fs.unlinkSync(filePath);
-    //             // // console.log('Deleted file:', filePath);
-    //           }
-    //         });
-
-    //         const currentTimestamp = Date.now();
-    //         const filename = `${currentTimestamp}_${path1.originalFilename}`;
-
-    //         return (
-    //           // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
-    //           filename
-
-    //         );
-
-    //       } else {
-    //         return res
-    //           .status(200)
-    //           .send({ status: 401, message: 'file was not accepted' });
-    //       }
-    //     };
-    //   }
-
-    //   // options.maxFileSize = 4000 * 1024 * 1024;
-    //   const form = formidable(options);
-
-    //   return new Promise((resolve, reject) => {
-    //     form.parse(file, (err, fields, files) => {
-    //       if (err) reject(err);
-    //       resolve({ fields, files });
-    //     });
-    //   });
-    // };
-
-    // const { user } = session;
-
-    const readFile = (file, saveLocally, place) => {
-      const options = {};
-      if (saveLocally) {
-        options.uploadDir = place;
-
-        // eslint-disable-next-line no-unused-vars
-        options.filename = (name, ext, path1, form) => {
-          // // console.log("user",form)
-
-          if (
-            // path1.mimetype === "application/pdf" ||
-            // path1.mimetype === "application/x-pdf" ||
-            // path1.mimetype === "image/png" ||
-            // path1.mimetype === "image/jpeg" ||
-            // path1.mimetype === "image/jpg" ||
-            path1.mimetype ===
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          ) {
-            let sourceDir = fs.readdirSync(place);
-
-            sourceDir.forEach((file) => {
-              const filePath = path.join(place, file);
-              const stats = fs.statSync(filePath);
-              if (stats.isFile()) {
-                // fs.unlinkSync(filePath);
-                // // console.log('Deleted file:', filePath);
+          for (const row of fields) {
+            try {
+              const major = await getMajor(connection, row.MajorName);
+              if (!major || major.rows.length === 0) {
+                continue; // Skip if major not found
               }
-            });
 
-            const currentTimestamp = Date.now();
-            const filename = `${currentTimestamp}_${path1.originalFilename}`;
+              const majorid = major.rows[0].major_id;
 
-            return (
-              // 'attendance-' + Date.now().toString() + '_' + path1.originalFilename
-              filename
-            );
-          } else {
-            return res
-              .status(200)
-              .send({ status: 401, message: "file was not accepted" });
+              // Check for required fields
+              if (!row.CourseID || !row.CourseName || !row.MajorName || !row.CourseCredit || !row.CourseType) {
+                return res.status(200).json({
+                  success: true,
+                  code: 200,
+                  message: "No data was uploaded due to missing required information.",
+                });
+              }
+
+              // Check if course already exists
+              const exist = await CourseExist(connection, row.CourseID, majorid);
+              if (exist) {
+                return res.status(200).json({
+                  success: true,
+                  code: 200,
+                  message: `Courses already exist! ${countSaved === 0 ? 'No courses saved' : `${countSaved} courses saved`}`,
+                });
+              }
+
+              // Create new course
+              const response = await CreateCourse(connection, {
+                course_id: row.CourseID,
+                course_name: row.CourseName,
+                course_credit: row.CourseCredit,
+                course_type: row.CourseType,
+                major_id: majorid,
+              });
+              if (response) {
+                countSaved++;
+              } else {
+                console.error("Failed to save row:", row);
+              }
+            } catch (error) {
+              console.error("Error while processing row:", row, "\nError:", error);
+            }
           }
-        };
-      }
 
-      // options.maxFileSize = 4000 * 1024 * 1024;
-      const form = formidable(options);
+          await disconnect(connection);
 
-      return new Promise((resolve, reject) => {
-        form.parse(file, (err, fields, files) => {
-          if (err) reject(err);
-          resolve({ fields, files });
+          return res.status(201).json({
+            success: true,
+            code: 201,
+            message: `Courses uploaded successfully! ${countSaved} courses saved`,
+          });
         });
-      });
-    };
-
-    const localDiskPath = path.parse(require("os").homedir()).root;
-
-    const directory =
-      localDiskPath + "/sis-application-data/sis-documents-Admin/course";
-
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory, { recursive: true });
-    }
-    await readFile(req, true, directory);
-
-    let course_file = await fs.readdirSync(directory);
-
-    // Access the file path from the 'files' object
-    // const buffer = attendance_file.slice(-1)
-    // // console.log(directory)
-    if (!course_file) {
-      return res.status(400).json({
-        success: false,
-        code: 400,
-        message: "File path not provided.",
-      });
-    }
-
-    let course_files = await fs.readdirSync(directory);
-
-    const sortedFiles = course_files.slice().sort((fileA, fileB) => {
-      const getIntFromFilename = (filename) => {
-        const match = filename.match(/(\d+)/);
-        return match ? parseInt(match[0]) : 0;
-      };
-
-      const intA = getIntFromFilename(fileA);
-      const intB = getIntFromFilename(fileB);
-
-      return intA - intB;
-    });
-
-    // Get the latest file from the 'course_files' list
-    const latestFile = sortedFiles[sortedFiles.length - 1];
-
-    // Construct the full path of the latest file
-    const latestFilePath = path.join(directory, latestFile);
-
-    // Read the buffer from the latest file
-    const buffer = fs.readFileSync(latestFilePath);
-
-    // Read the file data and create the workbook
-    const workbook = xlsx.read(buffer, { type: "buffer" });
-
-    const sheetName = workbook.SheetNames[0];
-
-    const worksheet = workbook.Sheets[sheetName];
-
-    const data = xlsx.utils.sheet_to_json(worksheet);
-    if (data.length === 0) {
-      return res.status(400).json({
-        success: false,
-        code: 400,
-        message: "Excel file is empty. No data to upload.",
-      });
-    }
-
-    const connection = await connect();
-    let countSaved = 0; // Add a variable to track the number of records saved
-
-    for (const row of data) {
-      try {
-        const major = await getMajor(connection, row.MajorName);
-        if (!major || major.rows.length === 0) {
-          console.error(`Major not found for row: `, row);
-          continue; // Skip this row if the major is not found
-        }
-
-        const majorid = major.rows[0].major_id;
-       
-        if(row.CourseID === undefined || row.CourseName === undefined || row.MajorName === undefined 
-          || row.CourseCredit === undefined || row.CourseType === undefined || row.CourseID === '' || row.MajorName=== ''|| row.CourseName === '' 
-          || row.CourseCredit === '' || row.CourseType === ''){
-            return res.status(400).json({
-              success:false ,
-              code : 400,
-              message:`No data was uploaded due to missing required information.`
-            })
-          }
-          const exist = await CourseExist(connection , row.CourseID , majorid)
-     
-          if(exist){
-            return res.status(400).json({
-              success:false ,
-              code : 400,
-              message:`Courses Already Exist! ${countSaved === 0 ? 'No Courses Saved' : `${countSaved} Courses Saved`} `
-            })
-          }
-        const response = await CreateCourse(connection, {
-          course_id: row.CourseID,
-          course_name: row.CourseName,
-          course_credit: row.CourseCredit,
-          course_type: row.CourseType,
-          major_id: majorid,
-        });
-        if (response) {
-          countSaved++; // Increment the count of saved records
-        } else {
-          console.error(`Failed to save row: `, row);
-        }
-      } catch (error) {
-        console.error(`Error while processing row: `, row, "\nError: ", error);
-        return;
-      }
-    }
-
-    // Close the database connection after all operations
-    await disconnect(connection);
-
-    return res.status(201).json({
-      success: true,
-      code: 201,
-      message: `Course Uploaded Successfully! ${countSaved} Courses saved.`,
     });
   } catch (error) {
     return res.status(500).json({

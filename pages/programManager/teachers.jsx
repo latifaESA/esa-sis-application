@@ -43,41 +43,78 @@ export default function Students() {
         return "";
       };
 
-      const calculateColumnWidths = (data) => {
-        const columnWidths = data[0].map((col, colIndex) => {
-          const maxContentWidth = data.reduce((max, row) => {
-            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-            const contentWidth = cellContent.length;
-            return Math.max(max, contentWidth);
-          }, col.length);
+      // const calculateColumnWidths = (data) => {
+      //   const columnWidths = data[0].map((col, colIndex) => {
+      //     const maxContentWidth = data.reduce((max, row) => {
+      //       const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+      //       const contentWidth = cellContent.length;
+      //       return Math.max(max, contentWidth);
+      //     }, col.length);
           
-          return { wch: maxContentWidth };
-        });
+      //     return { wch: maxContentWidth };
+      //   });
     
-        return columnWidths;
-      };
+      //   return columnWidths;
+      // };
       
     
       const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
     
       const isExeMajor = firstMajorWord === "EXED";
-      const createExcelTemplateTeacher = () => {
+
+
+  // const createExcelTemplateTeacher = () => {
  
-        const columnWidths = calculateColumnWidths(headerTeacher);
-         const worksheet = XLSX.utils.aoa_to_sheet(headerTeacher);
-         worksheet['!cols'] = columnWidths;
+  //       const columnWidths = calculateColumnWidths(headerTeacher);
+  //        const worksheet = XLSX.utils.aoa_to_sheet(headerTeacher);
+  //        worksheet['!cols'] = columnWidths;
      
-         const workbook = XLSX.utils.book_new();
+  //        const workbook = XLSX.utils.book_new();
      
-         XLSX.utils.book_append_sheet(workbook, worksheet, 'Teacher');
+  //        XLSX.utils.book_append_sheet(workbook, worksheet, 'Teacher');
      
-         const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-         const excelBlob = new Blob([excelBuffer], {
-           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-         });
-         saveAs(excelBlob, 'Teacher.xlsx');
-       };
-       const handleUpload = ()=>{
+  //        const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+  //        const excelBlob = new Blob([excelBuffer], {
+  //          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //        });
+  //        saveAs(excelBlob, 'Teacher.xlsx');
+  //      };
+
+
+  const calculateColumnWidths = (worksheet) => {
+    const columnWidths = worksheet['!cols'] || [];
+    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
+    if (!Array.isArray(headerRow)) {
+      return columnWidths;
+    }
+  
+    headerRow.forEach((cell, colIndex) => {
+      const content = cell?.w || '';
+      const contentWidth = content.length * 7; // Adjust the multiplier as needed
+      const defaultWidth = 10; // Set a default width if content width is smaller
+      columnWidths[colIndex] = { wch: Math.max(defaultWidth, contentWidth) };
+    });
+  
+    return columnWidths;
+  };
+
+  const createCSVTemplateTeacher = () => {
+    const data2 = headerTeacher.concat([
+      ['', '', '', ''],
+    ]);
+
+    const worksheet = XLSX.utils.aoa_to_sheet(data2);
+    const columnWidths = calculateColumnWidths(worksheet);
+
+    // Apply column widths to the worksheet
+    worksheet['!cols'] = columnWidths;
+
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'Teacher.csv');
+  };
+  
+  const handleUpload = ()=>{
         setOpenUpload(true)
       }
 
@@ -223,7 +260,7 @@ export default function Students() {
                 <button
                   className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                   type="button"
-                  onClick={createExcelTemplateTeacher}
+                  onClick={createCSVTemplateTeacher}
                 >
                   Teacher Template
                 </button>
