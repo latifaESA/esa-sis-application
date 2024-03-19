@@ -151,9 +151,9 @@ async function handler(req, res) {
         if (row.StudentID === undefined || row.StudentFirstName === undefined || row.CourseID === undefined
           || row.StudentLastName === undefined || row.StudentID === '' || row.CourseID === '' || row.Grade === undefined || row.StudentFirstName === ''
           || row.StudentLastName === '' || row.Grade === '' || row.TaskName === '' || row.TaskName === undefined) {
-          return res.status(400).json({
-            success: false,
-            code: 400,
+          return res.status(200).json({
+            success: true,
+            code: 200,
             message: `No data was uploaded due to missing required information.`
           })
         }
