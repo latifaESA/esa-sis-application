@@ -27,6 +27,7 @@ import StudentExist from "./studentExist";
 import PromotionExist from "./promotionExist";
 import PromotionMajorExist from "./isPromotionToMajor";
 import DataSettings from "../../controller/getDataSettings";
+// import ClassNameGenerator from "@mui/utils/ClassNameGenerator";
 
 function generateID(academicYear, majorId) {
   let academic_year = academicYear;
@@ -141,9 +142,9 @@ async function handler(req, res) {
 
         // Check if the necessary fields exist in the field object
         if (!field['Promotion(required,e.g:promo(promoNumber))']) {
-          return res.status(400).json({
-            code: 400,
-            success: false,
+          return res.status(200).json({
+            code: 200,
+            success: true,
             message: `Promotion field is required`,
           });
         }
@@ -167,19 +168,19 @@ async function handler(req, res) {
         const promotion_exist = await PromotionExist(connection, promotion_name);
 
         if (!promotion_exist) {
-          return res.status(400).json({
-            code: 400,
-            success: false,
+          return res.status(200).json({
+            code: 200,
+            success: true,
             message: `Promotion ${promotion_name} not Found`,
           });
         }
 
         const major_exist = await PromotionMajorExist(connection, promotion_name, majorid);
-
+        console.log("promotionmajor" ,major_exist )
         if (!major_exist) {
-          return res.status(400).json({
-            success: false,
-            code: 400,
+          return res.status(200).json({
+            success: true,
+            code: 200,
             message: `Promotion ${promotion_name} not in major ${field.MajorName}`,
           });
         }
@@ -292,9 +293,9 @@ async function handler(req, res) {
             || field['Gender(required)'] === ''
             || field['StudentLastName(required)'] === ''
             || field['DateOfBirth(required,e.g:(mm/dd/yyyy))'] === '') {
-            return res.status(400).json({
-              success: false,
-              code: 400,
+            return res.status(200).json({
+              success: true,
+              code: 200,
               message: `No data was uploaded due to missing required information.`
             })
           }

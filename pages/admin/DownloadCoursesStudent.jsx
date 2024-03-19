@@ -31,7 +31,7 @@ const [DataCourseType, setDataCourseType] = useState([]);
 
   const headerTeacher = [['FirstName', 'LastName', 'Email', 'MobileNumber']];
   const headerAluminStudent = [['StudentID', 'FirstName', 'LastName', 'Promotion', 'AcademicYear', 'Major', 'Status', 'GraduatedYear', 'Email', 'PhoneNumber']];
-
+  const headerCourse = [['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']]
   const redirect = () => {
     router.push("/AccessDenied");
   };
@@ -103,47 +103,75 @@ const [DataCourseType, setDataCourseType] = useState([]);
     saveAs(csvBlob, 'Teacher.csv');
   };
 
+ console.log(DataCourseType)
 
-  const calculateColumnWidths = (data) => {
+const calculateColumnWidths = (data) => {
+    if (!Array.isArray(data) || data.length === 0) {
+        return []; // Return an empty array if data is not valid
+    }
+
     const columnWidths = data[0].map((col, colIndex) => {
         // Set a default width for each column
         let maxContentWidth = 20; // Default width
 
         // Iterate through each row to find the maximum content width in the column
         data.forEach((row) => {
-            const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-            const words = cellContent.split(''); // Split the content into words
-            const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), ''); // Find the longest word
-            const contentWidth = longestWord.length * 7; // Adjust the multiplier as needed
-            maxContentWidth = Math.max(maxContentWidth, contentWidth);
+            if (Array.isArray(row) && colIndex < row.length) {
+                const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
+                const words = cellContent.split(''); // Split the content into words
+                const longestWord = words.reduce((a, b) => (a.length > b.length ? a : b), ''); // Find the longest word
+                const contentWidth = longestWord.length * 7; // Adjust the multiplier as needed
+                maxContentWidth = Math.max(maxContentWidth, contentWidth);
+            }
         });
 
         return { wch: maxContentWidth };
     });
 
     return columnWidths;
-}
+};
+
+const createCSVTemplateCourse = () => {
+  const data2 = headerCourse.concat([
+    ['', '', '', '', majors],
+  ]);
+
+  const columnWidths = calculateColumnWidths(data2);
+  console.log('columnWidths' , columnWidths)
+  const worksheet = XLSX.utils.aoa_to_sheet(data2);
+  worksheet['!cols'] = columnWidths;
+
+  const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+  console.log('csvContent' , csvContent.length)
+  
+  const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+  saveAs(csvBlob, 'Course.csv');
+};
 
 
-  const createCSVTemplateCourse = async () => {
-      const csvContent = [];
-  
-      // Add header row
-      csvContent.push(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
-  
-      // Define the list of valid CourseType options
-      const courseTypeOptions = DataCourseType.map(course => course.course_type);
-  
-      // Add data row with selected major and note about available options
-      csvContent.push(['', '', '', '', majors[0]]);
-  
-      // Generate CSV content
-      const csvRows = courseTypeOptions.map(row => row.join(',')).join('\n');
-  
-      // Generate CSV file
-      const csvBlob = new Blob([csvRows], { type: 'text/csv' });
-      saveAs(csvBlob, 'course.csv');
-  };
+
+// const createCSVTemplateCourse = async () => {
+//   const csvContent = [];
+
+//   // Add header row
+//   csvContent.push(['CourseID', 'CourseName', 'CourseCredit', 'CourseType', 'MajorName']);
+
+//   // Define the list of valid CourseType options
+//   // const courseTypeOptions = DataCourseType.map(course => course.course_type);
+
+//   // Add data row with selected major and note about available options
+//   csvContent.concat(['', '', '', '', majors[0]]);
+
+//   // Generate CSV content
+//   // const csvRows = csvContent.map(row => row.join(',')).join('\n');
+
+//   // Add data validation rule for the CourseType column
+
+
+//   // Generate CSV file
+//   const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+//   saveAs(csvBlob, 'course.csv');
+// };
   
 
   const createCSVStudentAlumni = () => {
