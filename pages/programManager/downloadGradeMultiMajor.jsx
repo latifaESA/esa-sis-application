@@ -274,20 +274,12 @@ export default function DownloadGradeMultiMajor({ setClickDownload, majorId, maj
     }
 
     const columnWidths = calculateColumnWidths(data);
+
     const worksheet = XLSX.utils.aoa_to_sheet(data);
     worksheet['!cols'] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Grade');
-
-    const excelBuffer = XLSX.write(workbook, {
-      type: 'array',
-      bookType: 'xlsx',
-    });
-    const excelBlob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(excelBlob, 'grade.xlsx');
+    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    saveAs(csvBlob, 'Grade.csv');
   };
 
 
