@@ -127,6 +127,7 @@ export default async function handler(req, res) {
   //     .status(401)
   //     .send({ message: "Signin Required To View your financial data ." });
   // }
+  const pims_ip = process.env.PMIS_IP
   try {
     let {pimsID} = req.body;
         const credentialsXml = 
@@ -140,11 +141,11 @@ export default async function handler(req, res) {
           },
           timeout: 10000 // Set timeout to 10 seconds (adjust as needed)
         };
-        let token = await axios.post('http://localhost:8075/login', credentialsXml, axiosConfig)
+        let token = await axios.post(`${pims_ip}/login`, credentialsXml, axiosConfig)
           // console.log(token)
         if(token.status === 200){
             // recieve financial data
-            let {data} = await axios.get(`http://localhost:8075/statement?token=${token.data}&auxiliary=${pimsID}&curr=<ALL>`);
+            let {data} = await axios.get(`${pims_ip}/statement?token=${token.data}&auxiliary=${pimsID}&curr=<ALL>`);
             // console.log('the data is : ', data)
             parseString(data, (err, result) => {
               if (err) {
@@ -167,7 +168,7 @@ export default async function handler(req, res) {
   } catch (error) {
     if (error.response && error.response.data) {
       const errorMessage = error.response.status;
-      console.log('the status code in pims : ', errorMessage)
+      // console.log('the status code in pims : ', errorMessage)
       if (errorMessage === 400){
     return res.status(500).send({ error: "Your pims Id is not existing in Pims database" });
       }

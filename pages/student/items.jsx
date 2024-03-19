@@ -48,7 +48,7 @@ export default function Items() {
 
   return (
     <>
-      {theError.length >0 ? 
+      {theError?.length >0 ? 
       <div className='text-center bg-red-400 text-white rounded p-2'>
         {theError}
       </div>
