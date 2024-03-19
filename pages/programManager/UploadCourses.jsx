@@ -122,7 +122,7 @@ export default function UploadCourses({setOpenUpload}) {
     
           // All validation checks passed, proceed with API call
           const formData = new FormData();
-          formData.append("files", file);
+          formData.append("file", file);
     
           try {
             const { data } = await axios.post(
@@ -149,7 +149,6 @@ export default function UploadCourses({setOpenUpload}) {
         setMessages("Something went wrong. Please try again later.");
       }
     };
-    
 
     return (
         <>

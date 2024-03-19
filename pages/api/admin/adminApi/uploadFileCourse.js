@@ -85,9 +85,9 @@ async function handler(req, res) {
 
               // Check for required fields
               if (!row.CourseID || !row.CourseName || !row.MajorName || !row.CourseCredit || !row.CourseType) {
-                return res.status(400).json({
-                  success: false,
-                  code: 400,
+                return res.status(200).json({
+                  success: true,
+                  code: 200,
                   message: "No data was uploaded due to missing required information.",
                 });
               }
@@ -95,9 +95,9 @@ async function handler(req, res) {
               // Check if course already exists
               const exist = await CourseExist(connection, row.CourseID, majorid);
               if (exist) {
-                return res.status(400).json({
-                  success: false,
-                  code: 400,
+                return res.status(200).json({
+                  success: true,
+                  code: 200,
                   message: `Courses already exist! ${countSaved === 0 ? 'No courses saved' : `${countSaved} courses saved`}`,
                 });
               }
