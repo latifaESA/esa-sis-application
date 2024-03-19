@@ -267,7 +267,9 @@ export default function AdminTopBar({ showNav, setShowNav }) {
                             badgeContent={appState.notificationBill}
                             color="warning"
                           >
+                          <Link href="/student/notification">
                             <BellIcon className="h-6 w-6" />
+                          </Link>
                           </Badge>
                         </Popover.Button>
                         <Transition

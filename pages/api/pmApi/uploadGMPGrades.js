@@ -44,7 +44,7 @@ async function handler(req, res) {
 
           if (
             path1.mimetype ===
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            'text/csv'
           ) {
             let sourceDir = fs.readdirSync(place);
 

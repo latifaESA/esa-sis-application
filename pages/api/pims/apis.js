@@ -120,14 +120,14 @@ import { parseString } from 'xml2js';
   // Sample XML data
 
 export default async function handler(req, res) {
-
+  const pims_ip = process.env.PMIS_IP
   // const session = await getServerSession(req, res, authOptions);
   // if (!session) {
   //   return res
   //     .status(401)
   //     .send({ message: "Signin Required To View your financial data ." });
   // }
-  const pims_ip = process.env.PMIS_IP
+  // const pims_ip = process.env.PMIS_IP
   try {
     let {pimsID} = req.body;
         const credentialsXml = 
@@ -168,7 +168,10 @@ export default async function handler(req, res) {
   } catch (error) {
     if (error.response && error.response.data) {
       const errorMessage = error.response.status;
-      // console.log('the status code in pims : ', errorMessage)
+// <<<<<<< HEAD
+//       // console.log('the status code in pims : ', errorMessage)
+// =======
+// >>>>>>> 8770ee1c09f559de30b58ec6e847ade5fc85091a
       if (errorMessage === 400){
     return res.status(500).send({ error: "Your pims Id is not existing in Pims database" });
       }
