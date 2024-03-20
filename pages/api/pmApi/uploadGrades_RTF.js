@@ -43,6 +43,7 @@ async function handler(req, res) {
         options.filename = (name, ext, path1, form) => {
 
           if (
+            path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             path1.mimetype ===
             'text/csv'
           ) {

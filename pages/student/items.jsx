@@ -23,14 +23,16 @@ export default function Items() {
         let body = {pimsID : session?.user.pimsId}
       let result = await axios.post('/api/pims/apis', body)
       console.log('the result of pims : ', result)
-      setPaymentInfo(result.data.statements.STATEMENT)
-      console.log(result.data.statements.STATEMENT)
-      console.log('THE ZERO : ',result.data.statements.STATEMENT[0].XACTS)
+      if(result?.data?.code === 200){
+      setPaymentInfo(result?.data?.statements?.STATEMENT)
       setTheError('')
+      }else{
+        setTheError(result?.data?.error)
+      }
       return
       }catch (error){
-        console.log('the error in requesting pims data is : ', error.response.data.error)
-        setTheError(error.response.data.error)
+        console.log('the error in requesting pims data is : ', error?.response?.data?.error)
+        setTheError(error?.response?.data?.error)
         return;
       }
     }

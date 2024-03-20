@@ -121,13 +121,7 @@ import { parseString } from 'xml2js';
 
 export default async function handler(req, res) {
   const pims_ip = process.env.PMIS_IP
-  // const session = await getServerSession(req, res, authOptions);
-  // if (!session) {
-  //   return res
-  //     .status(401)
-  //     .send({ message: "Signin Required To View your financial data ." });
-  // }
-  // const pims_ip = process.env.PMIS_IP
+
   try {
     let {pimsID} = req.body;
         const credentialsXml = 
@@ -142,7 +136,7 @@ export default async function handler(req, res) {
           timeout: 10000 // Set timeout to 10 seconds (adjust as needed)
         };
         let token = await axios.post(`${pims_ip}/login`, credentialsXml, axiosConfig)
-          // console.log(token)
+          console.log("token  :  ",token)
         if(token.status === 200){
             // recieve financial data
             let {data} = await axios.get(`${pims_ip}/statement?token=${token.data}&auxiliary=${pimsID}&curr=<ALL>`);
@@ -150,7 +144,8 @@ export default async function handler(req, res) {
             parseString(data, (err, result) => {
               if (err) {
                 // console.error('Error parsing XML:', err);
-                res.status(500).json({ error: 'Error parsing XML' });
+                // res.status(500).json({ error: 'Error parsing XML' });
+                res.status(200).json({code: 500, error: 'Error parsing XML' });
                 return;
               }
           
@@ -158,12 +153,13 @@ export default async function handler(req, res) {
               const statements = result.STATEMENTS;
           
               // Respond with the parsed data
-              res.status(200).json({ statements });
+              res.status(200).json({code: 200, statements });
             });
 
         }else{
             // console.log({message: "No token recieved."})
-            return res.status('401').send({message: "No token recieved ."})
+            // return res.status('401').send({message: "No token recieved ."})
+            return res.status(200).send({code: 401,message: "No token recieved ."})
         }
   } catch (error) {
     if (error.response && error.response.data) {
@@ -173,14 +169,16 @@ export default async function handler(req, res) {
 // =======
 // >>>>>>> 8770ee1c09f559de30b58ec6e847ade5fc85091a
       if (errorMessage === 400){
-    return res.status(500).send({ error: "Your pims Id is not existing in Pims database" });
+    // return res.status(500).send({ error: "Your pims Id is not existing in Pims database" });
+    return res.status(200).send({code: 500, error: "Your pims Id is not existing in Pims database" });
       }
       // You can handle the error message here as needed
     } else {
       // Handle other types of errors
       console.error('An unexpected error occurred:', error);
     }
-    return res.status(500).send({ error: 'The pims server is shutdown.' });
+    // return res.status(500).send({ error: 'The pims server is shutdown.' });
+    return res.status(200).send({code: 500, error: 'The pims server is shutdown.' });
   }
 
 //   try{
