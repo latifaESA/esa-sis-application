@@ -3752,10 +3752,52 @@ async function findUserRole(connection , userid){
     return error
   }
 }
+async function teacherReport(connection, teacher_ids, pmMajor) {
+  try {
+      let query = `
+          SELECT tmpschedule.* ,tmpclass.teacher_id , 
+          teachers.teacher_firstname , 
+          teachers.teacher_lastname ,
+          courses.course_name,
+          rooms.room_name,
+          rooms.room_building,
+          tmpclass.promotion
+          FROM tmpschedule 
+          LEFT JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id 
+          LEFT JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id 
+          LEFT JOIN courses ON tmpclass.course_id = courses.course_id
+          LEFT JOIN rooms ON tmpschedule.room = rooms.room_id
+          WHERE `;
+
+      if (Array.isArray(teacher_ids) && teacher_ids.length > 0) {
+          query += '(';
+          for (let i = 0; i < teacher_ids.length; i++) {
+              query += `tmpclass.teacher_id = '${teacher_ids[i]}'`;
+              if (i !== teacher_ids.length - 1) {
+                  query += ' OR ';
+              }
+          }
+          query += ')';
+      } else {
+          query += `tmpclass.teacher_id = '${teacher_ids}'`;
+      }
+
+      // Add the pm_id = PMmajor condition for all cases
+      query += ` AND tmpclass.pm_id = '${pmMajor}'`;
+
+      const res = await connection.query(query);
+      return res;
+  } catch (error) {
+      return error;
+  }
+}
+
+
 
 /* End Postegresql */
 
 module.exports = {
+  teacherReport,
   findUserRole,
   deleteGoogleEventDetails,
   insertGoogleEventDetails,
