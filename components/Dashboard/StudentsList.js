@@ -391,31 +391,7 @@ const StudentsList = ({ users }) => {
       width: 150,
       editable:true
     },
-    {
-      field: "action",
-      headerName: "Action",
-      width: `${session.user.role === "0" ? 350 : 150}`,
-      headerAlign: "center",
-      align: "center",
-      sortable: false,
-      renderCell: (params) => (
-        <div className="flex gap-2">
-          <button
-            className="primary-button hover:text-white"
-            onClick={() => {
-              // console.log(params.row);
-              setStatusEdit(params.row.status)
-              setMobileNumber(params.row.mobile_number)
-              setEmail(params.row.email)
-              sendDataToModal(params.row);
-            }}
-            type="button"
-          >
-            Save
-          </button>
-        </div>
-      ),
-    },
+
   ];
 
   // Create a new columns array based on the conditions
@@ -429,8 +405,60 @@ const StudentsList = ({ users }) => {
           align: "center",
           width: 150,
         },
+        {
+          field: "action",
+          headerName: "Action",
+          width: `${session.user.role === "0" ? 350 : 150}`,
+          headerAlign: "center",
+          align: "center",
+          sortable: false,
+          renderCell: (params) => (
+            <div className="flex gap-2">
+              <button
+                className="primary-button hover:text-white"
+                onClick={() => {
+                  // console.log(params.row);
+                  setStatusEdit(params.row.status)
+                  setMobileNumber(params.row.mobile_number)
+                  setEmail(params.row.email)
+                  sendDataToModal(params.row);
+                }}
+                type="button"
+              >
+                Save
+              </button>
+            </div>
+          ),
+        },
       ]
-    : commonColumns; // Exclude "graduated_year" column
+    : [...commonColumns ,
+    
+      {
+        field: "action",
+        headerName: "Action",
+        width: `${session.user.role === "0" ? 350 : 150}`,
+        headerAlign: "center",
+        align: "center",
+        sortable: false,
+        renderCell: (params) => (
+          <div className="flex gap-2">
+            <button
+              className="primary-button hover:text-white"
+              onClick={() => {
+                // console.log(params.row);
+                setStatusEdit(params.row.status)
+                setMobileNumber(params.row.mobile_number)
+                setEmail(params.row.email)
+                sendDataToModal(params.row);
+              }}
+              type="button"
+            >
+              Save
+            </button>
+          </div>
+        ),
+      },
+    ]; // Exclude "graduated_year" column
 
   // Now the "columns" array will only include "graduated_year" for users with valid statuses
 

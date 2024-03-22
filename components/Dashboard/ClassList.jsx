@@ -442,7 +442,7 @@ const ClassList = ({ users, allCourse }) => {
 
               const attendance_id = data3.data.data;
               createdAttendanceIds.push(attendance_id);
-              
+
 
               if (data3.data.code === 201) {
 
@@ -463,13 +463,13 @@ const ClassList = ({ users, allCourse }) => {
                   return;
                 }
 
-              }else if(data3.data.code === 200){
+              } else if (data3.data.code === 200) {
                 setConfirmOccupied(true);
                 setMessages(data3.data.message);
               }
               // }
             } catch (error) {
-              
+
               if (error.response && error.response.data.success === false) {
                 setConfirmOccupied(true);
                 setMessages(error.response.data.message);
@@ -535,23 +535,23 @@ const ClassList = ({ users, allCourse }) => {
                       minDuration: minutesDifference
                     };
 
-                    const response = await axios.post('/api/zoom_api/createZoom',payload);
-                    console.log('response',response)
+                    const response = await axios.post('/api/zoom_api/createZoom', payload);
+                    console.log('response', response)
 
                     let payload1 = {
                       tmpscheduleIds: data.scheduleId,
                       meetingIds: response.data.data.id,
                       zoomUrls: response.data.data.join_url
                     }
-                    console.log('payload',payload1)
-                    
-                
+                    console.log('payload', payload1)
+
+
                     let result = await axios.post("/api/zoom_api/updateScheduleZoom", {
                       tmpscheduleIds: data.scheduleId[0],
                       meetingIds: response.data.data.id.toString(), // Convert to string explicitly
                       zoomUrls: response.data.data.join_url
-                  })
-                  
+                    })
+
                     await handleInsertGoogleEvent(attendance_date, fromTime, toTime, attendance_id, response.data.data.join_url)
                     if (schedulesCreated === totalSchedules && result.status === 201) {
                       // update the schedule
@@ -630,7 +630,7 @@ const ClassList = ({ users, allCourse }) => {
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
 
                   if (data.success) {
-                    await handleSharePointBookingRoom([weekDays[i]], [attendance_id] ,courseName, 0);
+                    await handleSharePointBookingRoom([weekDays[i]], [attendance_id], courseName, 0);
                     await handleInsertGoogleEventOnSite(attendance_date, fromTime, toTime, roomName, building, attendance_id)
                     deleteTable()
                     schedulesCreated++;
@@ -707,67 +707,67 @@ const ClassList = ({ users, allCourse }) => {
 
   const handleSharePointBookingRoom = async (week, attendance_id, courseName, currentIndex) => {
     try {
-        const accessToken = await getSharePointToken();
+      const accessToken = await getSharePointToken();
 
-        if (currentIndex < week.length) {
-            const bookingDay = new Date();
-            const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-            const dates = new Date(week[currentIndex]);
+      if (currentIndex < week.length) {
+        const bookingDay = new Date();
+        const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+        const dates = new Date(week[currentIndex]);
 
-            const formattedDate = moment(dates).format('YYYY-MM-DD');
-            const fromTimeSplit = fromTime.split('+')[0];
-            const toTimeSplit = toTime.split('+')[0];
+        const formattedDate = moment(dates).format('YYYY-MM-DD');
+        const fromTimeSplit = fromTime.split('+')[0];
+        const toTimeSplit = toTime.split('+')[0];
 
-            // Convert the local time to UTC
-            const fromTimesUTC = moment(`${formattedDate}T${fromTimeSplit}`).toISOString();
-            const toTimesUTC = moment(`${formattedDate}T${toTimeSplit}`).toISOString();
+        // Convert the local time to UTC
+        const fromTimesUTC = moment(`${formattedDate}T${fromTimeSplit}`).toISOString();
+        const toTimesUTC = moment(`${formattedDate}T${toTimeSplit}`).toISOString();
 
-            const apiUrl =
-                "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+        const apiUrl =
+          "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
 
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: {
-                    Accept: "application/json;odata=verbose",
-                    "Content-Type": "application/json;odata=verbose",
-                    Authorization: `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    __metadata: {
-                        type: "SP.Data.BookingRoomListItem"
-                    },
-                    Title: `${roomName}`,
-                    Space: `${building}`,
-                    BookedBy: `${session.user?.name}`,
-                    BookingDate: week[currentIndex],
-                    BookingDay: `${formattedBookingDay}`,
-                    FromTime: fromTimesUTC, // Use UTC time
-                    ToTime: toTimesUTC, // Use UTC time
-                    Description: `${courseName}`
-                })
-            });
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json;odata=verbose",
+            "Content-Type": "application/json;odata=verbose",
+            Authorization: `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({
+            __metadata: {
+              type: "SP.Data.BookingRoomListItem"
+            },
+            Title: `${roomName}`,
+            Space: `${building}`,
+            BookedBy: `${session.user?.name}`,
+            BookingDate: week[currentIndex],
+            BookingDay: `${formattedBookingDay}`,
+            FromTime: fromTimesUTC, // Use UTC time
+            ToTime: toTimesUTC, // Use UTC time
+            Description: `${courseName}`
+          })
+        });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data && data.d && data.d.Id) {
-                // Update the SharePoint ID in the schedule
-                await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
-                    sharepointId: data.d.Id,
-                    attendanceId: attendance_id
-                });
-
-                // Continue to the next date in the array
-                handleSharePointBookingRoom(week, attendance_id, currentIndex + 1);
-            }
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const data = await response.json();
+
+        if (data && data.d && data.d.Id) {
+          // Update the SharePoint ID in the schedule
+          await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+            sharepointId: data.d.Id,
+            attendanceId: attendance_id
+          });
+
+          // Continue to the next date in the array
+          handleSharePointBookingRoom(week, attendance_id, currentIndex + 1);
+        }
+      }
     } catch (error) {
-        console.error("Error submitting booking to SharePoint:", error.message);
+      console.error("Error submitting booking to SharePoint:", error.message);
     }
-};
+  };
 
 
 
@@ -779,34 +779,42 @@ const ClassList = ({ users, allCourse }) => {
   }, selection_data.message_disapear_timing);
 
   const createBooking = async (data) => {
-    try {
-      const payload = data.map(item => ({
-        BookedBy: item.BookedBy,
-        BookingDate: item.BookingDate,
-        BookingDay: item.BookingDay,
-        FromTime: item.FromTime,
-        ToTime: item.ToTime,
-        Space: item.Space,
-        Title: item.Title,
-        Id: item.Id
-      }));
+    const batchSize = 30; // Set the batch size according to your needs
+    const totalBatches = Math.ceil(data.length / batchSize);
   
-      await fetch('/api/pmApi/createBooking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+    try {
+      for (let i = 0; i < totalBatches; i++) {
+        const startIdx = i * batchSize;
+        const endIdx = startIdx + batchSize;
+        const batchData = data.slice(startIdx, endIdx).map(item => ({
+          BookedBy: item.BookedBy,
+          BookingDate: item.BookingDate,
+          BookingDay: item.BookingDay,
+          FromTime: item.FromTime,
+          ToTime: item.ToTime,
+          Space: item.Space,
+          Title: item.Title,
+          Id: item.Id
+        }));
+  
+        await fetch('/api/pmApi/createBooking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(batchData)
+        });
+      }
     } catch (error) {
-      return error;
+      console.error('Error creating bookings:', error);
+      return { ok: false, error: error.message };
     }
   };
 
 
-  
-  
-  
+
+
+
 
 
 

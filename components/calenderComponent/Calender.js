@@ -131,29 +131,39 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
   const createBooking = async (data) => {
+    const batchSize = 30; // Set the batch size to 30 events
+    const totalBatches = Math.ceil(data.length / batchSize);
+
     try {
-      const payload = data.map(item => ({
-        BookedBy: item.BookedBy,
-        BookingDate: item.BookingDate,
-        BookingDay: item.BookingDay,
-        FromTime: item.FromTime,
-        ToTime: item.ToTime,
-        Space: item.Space,
-        Title: item.Title,
-        Id: item.Id
-      }));
-  
-      await fetch('/api/pmApi/createBooking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+        for (let i = 0; i < totalBatches; i++) {
+            const startIdx = i * batchSize;
+            const endIdx = Math.min(startIdx + batchSize, data.length);
+            const batchData = data.slice(startIdx, endIdx).map(item => ({
+                BookedBy: item.BookedBy,
+                BookingDate: item.BookingDate,
+                BookingDay: item.BookingDay,
+                FromTime: item.FromTime,
+                ToTime: item.ToTime,
+                Space: item.Space,
+                Title: item.Title,
+                Id: item.Id
+            }));
+
+            await fetch('/api/pmApi/createBooking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(batchData)
+            });
+        }
     } catch (error) {
-      return error;
+        console.error('Error creating bookings:', error);
+        return { ok: false, error: error.message };
     }
-  };
+};
+
+  
   
   
 
@@ -1395,7 +1405,6 @@ export const Calender = ({ schedule, setSchedule }) => {
       if (response.data.success === true) {
 
         const response2 = await axios.post('/api/pmApi/getAllCourses', payload2)
-        console.log('response2', response2)
         await handleAccessToken(response2.data.data)
       }
 
