@@ -368,3 +368,43 @@ textarea {
 .fc .fc-button-primary:not(:disabled).fc-button-active:focus, .fc .fc-button-primary:not(:disabled):active:focus {
   box-shadow: none;
 }
+.fc-daygrid-day-content {
+  display: inline-block; /* Display content as inline-block */
+  width: 60rem; /* Set width to auto to expand based on content */
+}
+
+.fc-timegrid-event,.fc-event-time {
+  width: auto;
+  font-size: var(--fc-small-font-size);
+  margin-bottom: 1px;
+  white-space: nowrap;
+}
+/* styles.css */
+
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  max-width: 300px; /* Adjust the max-width as needed */
+}
+
+.tooltip-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tooltip-content button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.tooltip-content button:hover {
+  color: #f00; /* Change color on hover as desired */
+}

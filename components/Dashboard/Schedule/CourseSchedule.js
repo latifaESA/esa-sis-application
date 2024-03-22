@@ -19,6 +19,9 @@ const CourseSchedule = () => {
   const { data: session } = useSession();
   const [events, setEvents] = useState([]);
   const [event, setEvent] = useState([]);
+  const [tooltipContent, setTooltipContent] = useState('');
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
+  const [tooltipActive, setTooltipActive] = useState(false);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -217,6 +220,19 @@ const CourseSchedule = () => {
   });
 
 
+  const handleEventClick = (info) => {
+    const content = info.event.title || '';
+    const { left, top } = info.jsEvent.target.getBoundingClientRect();
+    setTooltipContent(content);
+    setTooltipPosition({ left, top: top + window.scrollY });
+    setTooltipActive(true);
+  };
+
+  const handleCloseTooltip = () => {
+    setTooltipActive(false);
+  };
+
+
   return (
     // <div className='container bg-white p-3 p-md-5 rounded-lg'>
     <div className="flex flex-col items-center justify-center overflow-auto">
@@ -224,7 +240,7 @@ const CourseSchedule = () => {
         <GoogleLogin
           onSuccess={() => {
             try {
-              console.log('wslllllllllllllllllllllllll')
+             
               login();
             } catch (error) {
               console.error('Error obtaining the access token:', error);
@@ -257,7 +273,15 @@ const CourseSchedule = () => {
               duration: { months: 4 },
             },
           }}
+          
         />
+        <Tooltip
+  content={tooltipContent}
+  position={tooltipPosition}
+  active={tooltipActive}
+  onClose={handleCloseTooltip}
+/>
+
       </div>
       {/* </div> */}
     </div>
@@ -271,5 +295,19 @@ const App = () => {
     </GoogleOAuthProvider>
   );
 };
+const Tooltip = ({ content, position, active, onClose }) => {
+  return active ? (
+    <div
+      className="absolute bg-white border border-gray-300 p-2 rounded-lg shadow"
+      style={{ left: position.left, top: position.top }}
+    >
+      <div>{content}</div>
+      <button onClick={onClose} className="text-blue-500 hover:underline mt-2">
+        Close
+      </button>
+    </div>
+  ) : null;
+};
+
 
 export default App;

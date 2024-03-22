@@ -127,3 +127,13 @@
     filter: invert(1);
   }
 }
+/* styles.css */
+
+.fc-daygrid-day {
+  white-space: nowrap; /* Prevent text wrapping */
+
+}
+
+
+
+
