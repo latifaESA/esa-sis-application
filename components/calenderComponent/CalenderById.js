@@ -1817,7 +1817,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       const toTimeSplit = toSharePoint.split('+')[0];
 
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+      const utcOffset = 3; // Change this value if daylight saving time is not in effect
 
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
