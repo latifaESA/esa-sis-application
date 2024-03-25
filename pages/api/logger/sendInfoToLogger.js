@@ -12,7 +12,7 @@ import useragent from "useragent";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(400).send({ message: `${req.method} not supported` });
+    return res.status(200).send({ message: `${req.method} not supported` });
   }
   try{
   const encryptedBody = req.body.data;

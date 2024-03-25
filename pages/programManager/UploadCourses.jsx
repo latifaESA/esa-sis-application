@@ -9,7 +9,7 @@ import DropZone from '../../components/UploadDocuments/DropZone';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
 
 
-export default function UploadCourses({setOpenUpload}) {
+export default function UploadCourses({setOpenUpload , handleShowAll}) {
    
 
     const { data: session } = useSession();
@@ -133,6 +133,7 @@ export default function UploadCourses({setOpenUpload}) {
             if (data.success === true) {
               setConfirmOpenMessage(true);
               setMessages(data.message);
+              handleShowAll()
             }
           } catch (error) {
             if (error.response && error.response.data.success === false) {

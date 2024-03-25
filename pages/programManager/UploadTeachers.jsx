@@ -9,7 +9,7 @@ import DropZone from '../../components/UploadDocuments/DropZone';
 import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDocReducer';
 
 
-export default function UploadTeachers({setOpenUpload}) {
+export default function UploadTeachers({setOpenUpload , handleShowAll}) {
    
 
     // const [showProfileModal, setShowProfileModal] = useState(false);
@@ -210,6 +210,7 @@ export default function UploadTeachers({setOpenUpload}) {
               // );
 
               if (response.data.success === true) {
+                handleShowAll()
                 setConfirmOpenMessage(true);
                 setIsClick(false);
                 setMessages(response.data.message);
