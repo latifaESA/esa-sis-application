@@ -360,7 +360,7 @@ export default function StudentByMajor() {
     <>
   
    {openUpload ? <>
-   <UploadStudent setOpenUpload={setOpenUpload}/>
+   <UploadStudent setOpenUpload={setOpenUpload} renderValues={renderValues}/>
     
     </>:<></>}
       <Head>

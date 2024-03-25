@@ -1265,6 +1265,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
+      if(attendanceData.data.code === 200){
+        setConfirmOccupied(true);
+        setMessage(attendanceData.data.message);
+      }
 
 
       // Proceed based on the type of class

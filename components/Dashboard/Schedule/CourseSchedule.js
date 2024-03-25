@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import Tooltip from './Tooltip';
 // import styles from './CourseSchedule.module.css';
 
 import {
@@ -24,6 +25,34 @@ const CourseSchedule = () => {
   // const [tooltipActive, setTooltipActive] = useState(false);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [tooltipContent, setTooltipContent] = useState('');
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
+  const [tooltipActive, setTooltipActive] = useState(false);
+  // const [popoverInfo, setPopoverInfo] = useState(null);
+
+  // const handleClosePopover = () => {
+  //   setPopoverInfo(null);
+  // };
+
+  // Function to handle click on an event and display tooltip
+  const handleEventClick = (info) => {
+    if(info.view.type === 'dayGridMonth' || info.view.type === 'timeGridWeek'){
+      const content = info.event.title || '';
+      const { left, top } = info.jsEvent.target.getBoundingClientRect();
+      setTooltipContent(content);
+      setTooltipPosition({ left, top: top + window.scrollY });
+      setTooltipActive(true);
+
+    }
+
+  };
+
+  
+
+  // Function to close the tooltip
+  const handleCloseTooltip = () => {
+    setTooltipActive(false);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +89,8 @@ const CourseSchedule = () => {
       listPlugin,
     ];
 
+  
+
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
@@ -69,7 +100,7 @@ const CourseSchedule = () => {
           major_id,
           promotion,
         });
-        console.log('data', data.data.data)
+    
         const formattedEvents = data.data.data.map((event) => {
           // Parse the date and time strings
           const startDateTime = new Date(event.day);
@@ -89,7 +120,11 @@ const CourseSchedule = () => {
           let url = '';
     
           if (event.is_online === true) {
-            title = [`C-${event.course_name}`, `T-${event.teacher_fullname}`, `join to meeting`];
+            title = [
+              `C-${event.course_name}`, 
+              `T-${event.teacher_fullname}`, 
+              `Join to Zoom`
+            ];
             url = event.zoom_url;
           } else {
             title = [
@@ -148,11 +183,13 @@ const CourseSchedule = () => {
         console.error(error);
       }
     };
-    
+
     fetchSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
 
   const SaveRefreshToken = async (credentials) => {
     try {
@@ -194,7 +231,7 @@ const CourseSchedule = () => {
   };
   const exchangeCodeForTokens = async (authorizationCode) => {
     try {
-        const response = await fetch('/api/google-api/token', {
+      const response = await fetch('/api/google-api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +242,7 @@ const CourseSchedule = () => {
       const { data } = await response.json();
       await SaveRefreshToken(data.refresh_token)
       // Handle the tokens
-  
+
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
       throw error;
@@ -233,6 +270,7 @@ const CourseSchedule = () => {
   // };
 
 
+
   return (
     // <div className='container bg-white p-3 p-md-5 rounded-lg'>
     <div className="flex flex-col items-center justify-center overflow-auto">
@@ -240,7 +278,7 @@ const CourseSchedule = () => {
         <GoogleLogin
           onSuccess={() => {
             try {
-             
+
               login();
             } catch (error) {
               console.error('Error obtaining the access token:', error);
@@ -267,14 +305,23 @@ const CourseSchedule = () => {
           handleWindowResize={true}
           weekends={true}
           events={events}
+          
+          eventClick={handleEventClick} 
           views={{
             multiMonthFourMonth: {
               type: 'multiMonth',
               duration: { months: 4 },
             },
           }}
-          
+
         />
+        <Tooltip
+          content={tooltipContent}
+          position={tooltipPosition}
+          active={tooltipActive}
+          onClose={handleCloseTooltip}
+        />
+
         {/* <Tooltip
   content={tooltipContent}
   position={tooltipPosition}
@@ -295,19 +342,6 @@ const App = () => {
     </GoogleOAuthProvider>
   );
 };
-// const Tooltip = ({ content, position, active, onClose }) => {
-//   return active ? (
-//     <div
-//       className="absolute bg-white border border-gray-300 p-2 rounded-lg shadow"
-//       style={{ left: position.left, top: position.top }}
-//     >
-//       <div>{content}</div>
-//       <button onClick={onClose} className="text-blue-500 hover:underline mt-2">
-//         Close
-//       </button>
-//     </div>
-//   ) : null;
-// };
 
 
 export default App;

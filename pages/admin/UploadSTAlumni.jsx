@@ -64,7 +64,7 @@ export default function UploadTeacher() {
 
         const formData = new FormData();
         formData.append("file", uploadPhotoData.fileList[0]);
-           console.log("formdata" , formData)
+           
         const file = uploadPhotoData.fileList[0];
         const reader = new FileReader();
 
@@ -100,9 +100,14 @@ export default function UploadTeacher() {
               }
               for (let rowIndex = 1; rowIndex < records.length; rowIndex++) {
                 const record = records[rowIndex];
-               
+                
                 if (record[0] === '' || record[1] === '' || record[2] === '' ||
-                  record[0] === undefined || record[1] === undefined || record[2] === undefined) {
+                  record[0] === undefined || record[1] === undefined || record[2] === undefined 
+                  || record[3] === ''|| record[3] === undefined || record[4]==='' || record[4]===undefined
+                  || record[5]==='' || record[5] === undefined || record[6] === '' || record[6] === undefined
+                  || record[7] === '' || record[7] === undefined || record[8] === '' || record[8] === undefined 
+                  || record[9] === '' || record[9] === undefined || record[10] === '' || record[10] === undefined 
+                  ) {
                   setIsClick(false);
                   setConfirmOpenMessage(true);
                   setMessages("No data was uploaded due to missing required information.");
