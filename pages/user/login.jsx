@@ -10,7 +10,7 @@ import Head from "next/head";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import esaBuilding from "../../public/images/ESA2.jpg";
+import esaBuilding from "../../public/images/ESA3.jpg";
 import esaLogo from "../../public/images/esa.png";
 import {
   loginFailed,
@@ -257,8 +257,8 @@ export default function LoginScreen() {
             <Image
               src={esaBuilding}
               alt="Esa-Building"
-              width={457}
-              height="100%" // Set height to 100%
+              width={456}
+              height={690}
             />
           </div>
           <div className="bg-white pr-11 sm:pl-11">
