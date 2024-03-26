@@ -17,6 +17,9 @@ body {
   @apply bg-gray-100;
   background-color: #fff;
 }
+img{
+  height: 100%;
+}
 
 /* a {
   color: inherit;
@@ -179,6 +182,62 @@ textarea {
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Montserrat:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Libre+Franklin:wght@500&family=Montserrat:wght@300&display=swap');
 
+.contentSIS{
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  margin: auto;
+  padding: 2rem; 
+  justify-content: center;
+  flex-wrap: nowrap;
+  
+}
+.SISText{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  color: #707070;
+  font-size: 20px;
+  
+}
+.ContainerCircle{
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.circle{
+  flex-wrap: nowrap;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  
+}
+.ContentText{
+  font-weight: bold;
+  color: white;
+
+}
+.circle.blue{
+  margin-right: 2rem;
+ background: #02495f;
+}
+.circle.gray{
+  margin-right: 2rem;
+ background: darkgray;
+}
+.circle.lightBlue{
+  margin-right: 2rem;
+  background:#5992d3;
+}
+.circle.darkBlue{
+  margin-right: 2rem;
+ background: #535252;
+}
 
 .log {
   margin-top: 79px;
@@ -192,7 +251,8 @@ textarea {
 }
 .SIS {
   font-family: 'Montserrat';
-  font-size: 35px;
+  font-size: 20px;
+  word-spacing:2px;
   color: #707070;
   font-weight: bold;
   letter-spacing: 0px;
@@ -258,6 +318,10 @@ textarea {
   }
   
 }
+.formContent{
+  display: flex;
+    justify-content: center;
+}
 @media only screen and (max-width: 500px){
  .esaLogo{ 
   margin: auto;
@@ -271,10 +335,14 @@ textarea {
   margin-top: -14%;
  }
  .login{ 
+  margin:0;
   margin-left: 60px !important;
  }
  .error{ 
   margin-left: 30px !important;
+ }
+ .img{
+  height: 100%;
  }
  
 }

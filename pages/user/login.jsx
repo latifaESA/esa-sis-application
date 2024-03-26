@@ -10,7 +10,7 @@ import Head from "next/head";
 import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import esaBuilding from "../../public/images/ESA-building.png";
+import esaBuilding from "../../public/images/ESA2.jpg";
 import esaLogo from "../../public/images/esa.png";
 import {
   loginFailed,
@@ -48,7 +48,7 @@ export default function LoginScreen() {
   const userState = useSelector(
     (state) => state.persistedReducer.user_state.userState
   );
-   console.log('user' , userState)
+  //  console.log('user' , userState)
   // const appState = useSelector(
   //   (state) => state.persistedReducer.app_state.appState
   // );
@@ -125,7 +125,7 @@ export default function LoginScreen() {
   useEffect(() => {
     // // console.log('this is session');
     // // console.log(session?.user.status);
-console.log('session?.user  : ', session?.user)
+    // console.log('session?.user  : ', session?.user)
     if (session?.user && !userState.user.isLogOut) {
       if (session?.user.role === "1") {
         router.push(redirect || "/student/main");
@@ -141,7 +141,7 @@ console.log('session?.user  : ', session?.user)
         session?.user.hasMultiMajor === 'true'
       ) {
         router.push(redirect || "/programManager/studentView");
-      } 
+      }
       else if (
         session?.user.role === "3" &&
         session?.user.status == "active" &&
@@ -155,7 +155,7 @@ console.log('session?.user  : ', session?.user)
         session?.user.hasMultiMajor === 'true'
       ) {
         router.push(redirect || "/programManager/studentView");
-      } 
+      }
       else if (session?.user.role === "0") {
         router.push(redirect || "/admin/Accounts");
       } else if (session?.user.role === "4") {
@@ -191,18 +191,18 @@ console.log('session?.user  : ', session?.user)
     try {
       setErrorMessage("");
       dispatch(loginRequest());
-      console.log('password' , password)
-      console.log('userid' , userid)
+      // console.log('password' , password)
+      // console.log('userid' , userid)
       const result = await signIn("credentials", {
         redirect: false,
         userid,
         password,
       });
       // temporary commented
-      console.log('the result : ', result)
+      // console.log('the result : ', result)
       if (!result?.error) {
         const userSession = await getSession();
-        console.log('userSession : ', userSession)
+        // console.log('userSession : ', userSession)
         // // console.log('userSession==>', userSession);
         if (userSession) {
           dispatch(
@@ -224,13 +224,13 @@ console.log('session?.user  : ', session?.user)
       } else {
         // // console.log(result.error);
         dispatch(loginFailed(result.error));
-        console.log('errormesage' , errorMessage)
+        // console.log('errormesage' , errorMessage)
         setErrorMessage(result.error);
       }
     } catch (err) {
       // console.log(err);
       setErrorMessage(getError(err));
-       console.log('erroemeage catch' , getError(err))
+
       const encryptedBody = encrypt(
         JSON.stringify({
           userid: userid,
@@ -258,7 +258,7 @@ console.log('session?.user  : ', session?.user)
               src={esaBuilding}
               alt="Esa-Building"
               width={457}
-              height={680}
+              height="100%" // Set height to 100%
             />
           </div>
           <div className="bg-white pr-11 sm:pl-11">
@@ -268,17 +268,41 @@ console.log('session?.user  : ', session?.user)
                 width={81}
                 className="esaLogo"
                 alt="Logo"
-                height={151}
+                height='100%'
               />
               <div className="leading-7 welcometoSis mt-4 ml-5">
                 <p className="welcomeTo mt-11">WELCOME TO</p>
-                <span className="SIS">SIS</span>
+                <span className="SIS">Student Information System (SIS)</span>
               </div>
             </div>
-            <div className="text-center mt-11 login text-[#3D709A] text-[39px] bold">
+            <div className="contentSIS">
+              <div className="SISText">This site will allow you to:</div>
+              <div className="ContainerCircle">
+                <div className="circle blue">
+                  <p className="ContentText">Check your grades</p>
+                </div>
+                <div className="circle gray">
+                  <p className="ContentText">
+                    Get Notifications
+
+                  </p>
+                </div>
+                <div className="circle lightBlue">
+                  <p className="ContentText">
+                    Submit Requests
+                  </p>
+                </div>
+                <div className="circle darkBlue">
+                  <p className="ContentText">
+                    Check your payment
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="text-center login text-[#3D709A] text-[39px] bold">
               Login
             </div>
-            <div>
+            <div className='formContent'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <div>
                   {userInactive && (
