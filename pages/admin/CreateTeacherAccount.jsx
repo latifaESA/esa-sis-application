@@ -231,10 +231,10 @@ export default function CreateTeacher() {
                   </div>
                 )}
               </label>
-              <label>
+              <label className="w-[253px]">
                 Mobile:
                 <input
-                  className="ml-10  w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  className="ml-10  w-40 max-[850px]:ml-6 max-[850px]:mt-0"
                   type="mobile"
                   name="mobile"
                   placeholder="Mobile Number"
