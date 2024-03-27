@@ -11,6 +11,9 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/Loader/Loader";
+import EmailForResetPassword from "../../../utilities/emailing/emailForResetPassword";
+// import selection_data from '../../../utilities/selection_data';
+
 
 const ForgetPassword = () => {
   const [errorMessage, setErrorMessage] = useState("");

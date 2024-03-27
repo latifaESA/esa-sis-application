@@ -64,9 +64,9 @@ const RequestList = ({ users, setUsers }) => {
         //   ),
         // }
       )
-      .then((response) => {
+      .then(() => {
         // Handle success
-     
+        
         setMessage('User Status Changed Successfully!');
 
         //Update the user's status and major in the table
