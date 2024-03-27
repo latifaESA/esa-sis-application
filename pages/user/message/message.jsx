@@ -41,7 +41,7 @@ const Message = () => {
   if (router.query.email) {
     email = router.query.email;
   }
-  console.log('router' , router.query.email)
+  // console.log('router' , router.query.email)
   // // console.log('Email=', router.query.email);
   // // console.log('message=', router.query.message);
 

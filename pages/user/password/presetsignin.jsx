@@ -28,7 +28,7 @@ import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
 // import selection_data from '../../../utilities/selection_data';
 
 const PreSignIn = () => {
-  console.log('presigin')
+  // console.log('presigin')
   const { data: session } = useSession();
   const router = useRouter();
   const { redirect } = router.query;
@@ -36,7 +36,7 @@ const PreSignIn = () => {
   const [isSignedIn, setisSignedIn] = useState(false);
   const [sessionExist, setsessionExist] = useState(false);
   const [triggerSignIn, settriggerSignIn] = useState(false);
-  console.log(message);
+  // console.log(message);
   const dispatch = useDispatch();
   let password = null;
   let userid = null;

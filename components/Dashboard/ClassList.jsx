@@ -190,7 +190,7 @@ const ClassList = ({ users, allCourse }) => {
     }
   };
   const getDetails = async (event) => {
-    console.log('the course value : ', event.course_id)
+  
     try {
 
       setTeacherValue(event.teacher_id);
@@ -226,12 +226,12 @@ const ClassList = ({ users, allCourse }) => {
       if (response.data.data[0].course_type !== "Elective") {
         let major_id = session.user?.majorid;
         let promotion = event.promotion.replace(/\s/g, "");
-        console.log(major_id, "  ", promotion)
+        
         const { data } = await axios.post("/api/pmApi/getAllStudent", {
           major_id,
           promotion,
         });
-        console.log('the student : ', data)
+  
         await handleAccessToken(data.data)
         setStudent(data.data);
       } else {
@@ -335,7 +335,6 @@ const ClassList = ({ users, allCourse }) => {
 
   const handleSaveSchedule = async () => {
 
-    console.log(teacherValue, courseValue, session.user?.majorid, fromTime, toTime, location, building)
     if (isOnline == 'false' || isOnline == "") {
       if (teacherValue.trim() === '' || courseValue.trim() === '' || !session.user?.majorid || fromTime.trim() === '' || toTime.trim() === '' || location == '' || building.trim() === '') {
         alert("Please fill all the data");
@@ -536,14 +535,14 @@ const ClassList = ({ users, allCourse }) => {
                     };
 
                     const response = await axios.post('/api/zoom_api/createZoom', payload);
-                    console.log('response', response)
+                    
 
                     let payload1 = {
                       tmpscheduleIds: data.scheduleId,
                       meetingIds: response.data.data.id,
                       zoomUrls: response.data.data.join_url
                     }
-                    console.log('payload', payload1)
+                   
 
 
                     let result = await axios.post("/api/zoom_api/updateScheduleZoom", {

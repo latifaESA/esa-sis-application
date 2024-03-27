@@ -300,6 +300,7 @@ textarea {
     color: #707070;
     letter-spacing: 0px;
     margin-left: inherit;
+    margin-top: 3.5rem;
   }
   .SIS{ 
     position: absolute;
@@ -330,10 +331,11 @@ textarea {
     margin-left: 50px;
   }
   .SIS{ 
-    margin-top: 1rem;
+    margin-top: 0;
+    margin-left: inherit;
    }
   .circle.darkBlue{
-    margin-right: -2rem;
+    margin-right: -2.5rem;
   }
   .circle.blue{
     margin-left: 4rem;
@@ -361,7 +363,8 @@ textarea {
   margin-top: 120px;
  }
  .SIS{ 
-  margin-top: 1rem;
+  margin-top: 0;
+  margin-left: inherit;
  }
  .login{ 
   margin:0;

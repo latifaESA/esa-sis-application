@@ -101,9 +101,9 @@ const TeachersList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log('=============');
-        console.log(response.data);
-        console.log('=============');
+        // console.log('=============');
+        // console.log(response.data);
+        // console.log('=============');
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -125,7 +125,7 @@ const TeachersList = ({ users, setUsers }) => {
 
     const currentDate = new Date();
     const formattedCurrentDate = formatDate(currentDate);
-    console.log(formattedCurrentDate);
+    // console.log(formattedCurrentDate);
     let sendToLogs = {
       student_id: user.student_id,
       action: 'status',
@@ -159,7 +159,7 @@ const TeachersList = ({ users, setUsers }) => {
       )
       .then((response) => {
         // Handle success
-        console.log(response.data);
+        // console.log(response.data);
         setMessage('User Status Changed Succesfully!');
 
         //Update the user's status and major in the table
@@ -181,7 +181,7 @@ const TeachersList = ({ users, setUsers }) => {
 
     const currentDate = new Date();
     const formattedCurrentDate = formatDate(currentDate);
-    console.log(formattedCurrentDate);
+    // console.log(formattedCurrentDate);
     let sendToLogs = {
       student_id: user.student_id,
       action: 'status',
@@ -409,7 +409,7 @@ const TeachersList = ({ users, setUsers }) => {
         />
       </Box>
 
-      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
+      {/* <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
@@ -417,7 +417,7 @@ const TeachersList = ({ users, setUsers }) => {
           handlePrintSelected={handlePrintSelected}
           session={session}
         />
-      </div>
+      </div> */}
     </>
   );
 };

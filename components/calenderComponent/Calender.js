@@ -468,7 +468,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     });
 
     setScheduleDate(datesArray);
-    console.log(schedule)
+    
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -961,7 +961,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student, select]);
-  console.log('student', student)
+
 
   const getStudentSchedule = async () => {
     if (select && !hasFetched) {

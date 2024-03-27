@@ -42,7 +42,7 @@ export default function Create() {
     router.push("/AccessDenied");
   };
 
-  console.log(majorValue)
+  // console.log(majorValue)
 
   const getAllMajors = async () => {
     let majorData = await axios.get("/api/admin/adminApi/getMajor");
@@ -292,19 +292,22 @@ export default function Create() {
               </label>
               {/* </div>
         <div className="grid lg:grid-cols-3 min-[100px]:gap-4 mb-3"> */}
-              <label className="">
-                Major:
-
+              <label className="flex items-center space-x-4">
+                <span className="ml-4">Major:</span>
                 <Select
                   isMulti={true}
-                  options={major.map((majors) => ({ value: majors.major_id, label: majors.major_name })).sort((a, b) => a.label.localeCompare(b.label))}
+                  options={major
+                    .map((majors) => ({
+                      value: majors.major_id,
+                      label: majors.major_name,
+                    }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
                   placeholder="Select a Major"
                   onChange={handleMajor}
-                  className='place-items-center ml-20 w-60 mt-0'
+                  className='w-60'
                 />
-
-
               </label>
+
 
 
 

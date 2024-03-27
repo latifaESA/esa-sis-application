@@ -177,7 +177,7 @@ const AttendanceList = ({ users }) => {
   const handleShowAll = async (event) => {
     try {
       // setEditModal(true)
-       console.log('event' , event.attendance_id)
+      //  console.log('event' , event.attendance_id)
       const attendance_id = event.attendance_id;
       const { data } = await axios.post(`/api/pmApi/getAllAttendance`, {
         attendance_id,

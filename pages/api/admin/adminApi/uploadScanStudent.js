@@ -150,11 +150,11 @@ async function handler(req, res) {
         }
 
         const major = await getMajor(connection, field.MajorName);
-        await disconnect(connection);
+        // await disconnect(connection);
 
         const majorid = major.rows[0].major_id;
         const exist = await StudentExist(connection, field['Email(required)'], majorid);
-        await disconnect(connection);
+        // await disconnect(connection);
 
         if (exist) {
           return res.status(200).json({
