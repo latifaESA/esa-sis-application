@@ -537,11 +537,11 @@ const ClassList = ({ users, allCourse }) => {
                     const response = await axios.post('/api/zoom_api/createZoom', payload);
                     
 
-                    let payload1 = {
-                      tmpscheduleIds: data.scheduleId,
-                      meetingIds: response.data.data.id,
-                      zoomUrls: response.data.data.join_url
-                    }
+                    // let payload1 = {
+                    //   tmpscheduleIds: data.scheduleId,
+                    //   meetingIds: response.data.data.id,
+                    //   zoomUrls: response.data.data.join_url
+                    // }
                    
 
 
