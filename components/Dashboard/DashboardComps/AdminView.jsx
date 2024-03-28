@@ -40,7 +40,10 @@ const AdminView = () => {
               router.pathname == '/admin/createAccount' ||
               router.pathname == '/admin/create' ||
               router.pathname == '/admin/UploadStudent' ||
-              router.pathname == '/admin/UploadTeacher'
+              router.pathname == '/admin/UploadTeacher' || 
+              router.pathname == '/admin/UploadSTAlumni' ||
+              router.pathname == '/admin/StudentAccount'
+
                 ? 'bg-blue-100 text-blue-500'
                 : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
