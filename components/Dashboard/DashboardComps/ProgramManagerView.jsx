@@ -12,8 +12,10 @@ import {
   // HandRaisedIcon,
   UserGroupIcon,
   // NewspaperIcon,
+  ClipboardDocumentIcon,
   AcademicCapIcon,
   WalletIcon,
+  EnvelopeOpenIcon,
   PaperAirplaneIcon,
   EnvelopeIcon,
 } from '@heroicons/react/24/solid';
@@ -125,7 +127,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <AcademicCapIcon className="h-5 w-5" />
+                  <ClipboardDocumentIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Class</p>
@@ -290,7 +292,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <PaperAirplaneIcon className="h-5 w-5" />
+                  <EnvelopeOpenIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Requests</p>
@@ -457,7 +459,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <AcademicCapIcon className="h-5 w-5" />
+                  <ClipboardDocumentIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Class</p>
@@ -621,7 +623,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <PaperAirplaneIcon className="h-5 w-5" />
+                  <EnvelopeOpenIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Requests</p>

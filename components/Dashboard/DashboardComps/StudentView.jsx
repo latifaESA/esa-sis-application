@@ -11,7 +11,7 @@ import {
   // PencilSquareIcon,
   // HandRaisedIcon,
   // UserGroupIcon,
-  // NewspaperIcon,
+  NewspaperIcon,
   AcademicCapIcon,
   // WalletIcon ,
   LockClosedIcon,
@@ -164,10 +164,10 @@ const StudentView = () => {
               }`}
             >
               <div className="mr-2">
-                <PaperAirplaneIcon className="h-5 w-5" />
+                <NewspaperIcon className="h-5 w-5" />
               </div>
               <div>
-                <p>enrollment</p>
+                <p>Enrollment</p>
               </div>
             </div>
           </Link>
