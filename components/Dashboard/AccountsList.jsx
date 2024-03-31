@@ -20,7 +20,7 @@ import selection_data from '../../utilities/selection_data';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 // import encrypt from '../../utilities/encrypt_decrypt/encryptText';
 // import major_code from '../../utilities/major_code';
-import { LowerButtons } from './LowerButtons';
+// import { LowerButtons } from './LowerButtons';
 // import AddIcon from '@mui/icons-material/Add';
 import exportSelect from '../../utilities/ExcelExport/exportSelect';
 import generatePasswod from '../../utilities/generatePassword';
@@ -705,7 +705,7 @@ const TeachersList = ({ users, setUsers }) => {
         />
       </Box>
 
-      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
+      {/* <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
@@ -713,7 +713,7 @@ const TeachersList = ({ users, setUsers }) => {
           handlePrintSelected={handlePrintSelected}
           session={session}
         />
-      </div>
+      </div> */}
     </>
   );
 };
