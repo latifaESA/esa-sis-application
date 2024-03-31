@@ -166,7 +166,7 @@ async function handler(req, res) {
 
         const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '').toUpperCase();
         const promotion_exist = await PromotionExist(connection, promotion_name);
-
+        disconnect(connection)
         if (!promotion_exist) {
           return res.status(200).json({
             code: 200,

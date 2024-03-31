@@ -18,7 +18,7 @@ import {
   WalletIcon,
   ArrowDownCircleIcon,
   UserGroupIcon,
-  UserPlusIcon,
+  // UserPlusIcon,
   PlusCircleIcon
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';

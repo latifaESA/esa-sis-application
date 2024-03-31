@@ -133,7 +133,7 @@ export default function DownloadGrades({ setClickDownload , majors }) {
       fetchStudent()
     }
 
-  }, [promotionName])
+  }, [promotionName ])
   const fetchStudent = async () => {
     try {
       const payload = {

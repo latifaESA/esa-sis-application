@@ -16,7 +16,7 @@ import {
   AcademicCapIcon,
   WalletIcon,
   EnvelopeOpenIcon,
-  PaperAirplaneIcon,
+  // PaperAirplaneIcon,
   EnvelopeIcon,
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
