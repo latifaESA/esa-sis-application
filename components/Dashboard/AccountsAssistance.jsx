@@ -21,7 +21,7 @@ import selection_data from "../../utilities/selection_data";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import bcryptjs from "bcryptjs";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { LowerButtons } from "./LowerButtons";
+// import { LowerButtons } from "./LowerButtons";
 import exportSelect from "../../utilities/ExcelExport/exportSelect";
 import generatePasswod from "../../utilities/generatePassword";
 import exportAll from "../../utilities/ExcelExport/exportAll";
@@ -646,7 +646,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
         />
       </Box>
 
-      <div className="grid lg:grid-cols-1 p-5 shadow-sm">
+      {/* <div className="grid lg:grid-cols-1 p-5 shadow-sm">
         <LowerButtons
           exportButton={exportButton}
           selectedRows={selectedRows}
@@ -654,7 +654,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           handlePrintSelected={handlePrintSelected}
           session={session}
         />
-      </div>
+      </div> */}
     </>
   );
 };
