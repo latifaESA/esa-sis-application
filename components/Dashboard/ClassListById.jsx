@@ -1045,6 +1045,7 @@ const handleShowAll = async (tmpclass_id) => {
           student={student}
           // setCourseType={setCourseType}
           setTeacherValue={setTeacherValue}
+          zoomUserId={zoomUserId}
         />
       )}
     </>
