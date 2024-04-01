@@ -22,16 +22,16 @@ import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import bcryptjs from "bcryptjs";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 // import { LowerButtons } from "./LowerButtons";
-import exportSelect from "../../utilities/ExcelExport/exportSelect";
+// import exportSelect from "../../utilities/ExcelExport/exportSelect";
 import generatePasswod from "../../utilities/generatePassword";
-import exportAll from "../../utilities/ExcelExport/exportAll";
+// import exportAll from "../../utilities/ExcelExport/exportAll";
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
   WarningMessageObsolote,
 } from "./WarningMessage";
-import decrypt from "../../utilities/encrypt_decrypt/decryptText";
+// import decrypt from "../../utilities/encrypt_decrypt/decryptText";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 
@@ -43,7 +43,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
   // const statusData = selection_data.application_status_inList;
   // const majorData = selection_data.Academic_program_inList;
   // const [majorEnable, setMajorEnable] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const [confirmOpenIncomplete, setConfirmOpenIncomplete] = useState(false);
   // const [ setConfirmOpenObsolote] = useState(false);
   // const [setCancleIncomplete] = useState(false);
@@ -552,59 +552,59 @@ const TeachersList = ({ assistance, setAssistance }) => {
 
   // export select to excel
 
-  const exportButton = async () => {
-    if (assistance.length > 0) {
-      try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-          // // console.log('response', response);
-          // // console.log('incomingData', incomingData);
-          await exportSelect(selectedRows, incomingData, session);
-        } else {
-          setAssistance([]);
-        }
-      } catch (error) {
-        return error
-      }
-    }
-  };
+  // const exportButton = async () => {
+  //   if (assistance.length > 0) {
+  //     try {
+  //       const response = await axios.get("/api/admin/listusers/listexport");
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
+  //         // // console.log('response', response);
+  //         // // console.log('incomingData', incomingData);
+  //         await exportSelect(selectedRows, incomingData, session);
+  //       } else {
+  //         setAssistance([]);
+  //       }
+  //     } catch (error) {
+  //       return error
+  //     }
+  //   }
+  // };
 
-  // export all to excel
-  const exportAllButton = async () => {
-    if (assistance.length > 0) {
-      try {
-        const response = await axios.get("/api/admin/listusers/listexport");
-        const incomingData = JSON.parse(decrypt(response.data.data));
-        if (response.status === 200) {
-          // // console.log('response', response);
-          // // console.log('incomingData', incomingData);
-          await exportAll(incomingData, session);
-        } else {
-          setAssistance([]);
-        }
-      } catch (error) {
-        return error
-      }
-    }
-  };
-  const handlePrintSelected = () => {
-    const selectedIDs = selectedRows;
-    // // console.log('selectedIDs', selectedIDs);
-    const selectedUsers = assistance.filter((user) =>
-      selectedIDs.includes(user.ID)
-    );
-    // // console.log('selectedUsersbefore', selectedUsers);
-    selectedUsers.forEach((user) => {
-      if (user.reportURL) {
-        window.open(user.reportURL);
-      } else {
-        setMessage("Please select a user with a report");
-      }
-    });
+  // // export all to excel
+  // const exportAllButton = async () => {
+  //   if (assistance.length > 0) {
+  //     try {
+  //       const response = await axios.get("/api/admin/listusers/listexport");
+  //       const incomingData = JSON.parse(decrypt(response.data.data));
+  //       if (response.status === 200) {
+  //         // // console.log('response', response);
+  //         // // console.log('incomingData', incomingData);
+  //         await exportAll(incomingData, session);
+  //       } else {
+  //         setAssistance([]);
+  //       }
+  //     } catch (error) {
+  //       return error
+  //     }
+  //   }
+  // };
+  // const handlePrintSelected = () => {
+  //   const selectedIDs = selectedRows;
+  //   // // console.log('selectedIDs', selectedIDs);
+  //   const selectedUsers = assistance.filter((user) =>
+  //     selectedIDs.includes(user.ID)
+  //   );
+  //   // // console.log('selectedUsersbefore', selectedUsers);
+  //   selectedUsers.forEach((user) => {
+  //     if (user.reportURL) {
+  //       window.open(user.reportURL);
+  //     } else {
+  //       setMessage("Please select a user with a report");
+  //     }
+  //   });
 
-    // // console.log('selectedUsers', selectedUsers);
-  };
+  //   // // console.log('selectedUsers', selectedUsers);
+  // };
 
   return (
     <>
@@ -633,7 +633,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 15, 20]}
           checkboxSelection
-          onSelectionModelChange={setSelectedRows}
+          // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
