@@ -11,9 +11,9 @@ async function handler(req, res) {
   
     await disconnect(connection);
     if (response.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        code: 404,
+      return res.status(200).json({
+        success: true,
+        code: 200,
         message: "enrollment Not found",
       });
     } else {

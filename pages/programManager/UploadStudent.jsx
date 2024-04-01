@@ -15,7 +15,7 @@ import uploadDocReducer from '../../components/UploadDocuments/reducers/uploadDo
 //     return academic_year + major_id + randomDigits
 // }
 
-export default function UploadStudent({setOpenUpload}) {
+export default function UploadStudent({setOpenUpload , renderValues}) {
    
 
     const { data: session } = useSession();
@@ -277,6 +277,7 @@ export default function UploadStudent({setOpenUpload}) {
                                 setIsClick(false);
                                 setConfirmOpenMessage(true);
                                 setMessages(data.data.message);
+                                renderValues()
                             }
                         } catch (error) {
                             if (error.response && error.response.data.success === false) {

@@ -43,10 +43,12 @@ async function handler(req, res) {
         options.filename = (name, ext, path1, form) => {
 
           if (
+            path1.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             path1.mimetype ===
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            'text/csv'
           ) {
             let sourceDir = fs.readdirSync(place);
+
 
             sourceDir.forEach((file) => {
               const filePath = path.join(place, file);

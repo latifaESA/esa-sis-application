@@ -13,9 +13,13 @@ import {
   // NewspaperIcon,
   // AcademicCapIcon,
   // WalletIcon,
+  ArrowPathIcon,
   ChartBarIcon,
+  WalletIcon,
+  ArrowDownCircleIcon,
   UserGroupIcon,
-  UserPlusIcon,
+  // UserPlusIcon,
+  PlusCircleIcon
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -36,7 +40,10 @@ const AdminView = () => {
               router.pathname == '/admin/createAccount' ||
               router.pathname == '/admin/create' ||
               router.pathname == '/admin/UploadStudent' ||
-              router.pathname == '/admin/UploadTeacher'
+              router.pathname == '/admin/UploadTeacher' || 
+              router.pathname == '/admin/UploadSTAlumni' ||
+              router.pathname == '/admin/StudentAccount'
+
                 ? 'bg-blue-100 text-blue-500'
                 : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
@@ -60,7 +67,7 @@ const AdminView = () => {
             }`}
           >
             <div className="mr-2">
-              <UserGroupIcon className="h-5 w-5" />
+              <ArrowDownCircleIcon className="h-5 w-5" />
             </div>
             <div>
               <p>Download</p>
@@ -100,7 +107,7 @@ const AdminView = () => {
             disabled={true}
           >
             <div className="mr-2">
-              <UserPlusIcon className="h-5 w-5" />
+              <WalletIcon className="h-5 w-5" />
             </div>
             <div>
               <p>Courses</p>
@@ -111,14 +118,14 @@ const AdminView = () => {
         <Link href="/admin/Addition">
           <div
             className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/admin/AdditionList'
+              router.pathname == '/admin/Addition'
                 ? 'bg-blue-100 text-blue-500'
                 : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
             }`}
             disabled={true}
           >
             <div className="mr-2">
-              <UserPlusIcon className="h-5 w-5" />
+              <PlusCircleIcon className="h-5 w-5" />
             </div>
             <div>
               <p>Addition</p>
@@ -136,7 +143,7 @@ const AdminView = () => {
             disabled={true}
           >
             <div className="mr-2">
-              <UserPlusIcon className="h-5 w-5" />
+              <ArrowPathIcon className="h-5 w-5" />
             </div>
             <div>
               <p>Reset Password</p>

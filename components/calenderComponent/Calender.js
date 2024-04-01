@@ -131,29 +131,39 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
   const createBooking = async (data) => {
+    const batchSize = 30; // Set the batch size to 30 events
+    const totalBatches = Math.ceil(data.length / batchSize);
+
     try {
-      const payload = data.map(item => ({
-        BookedBy: item.BookedBy,
-        BookingDate: item.BookingDate,
-        BookingDay: item.BookingDay,
-        FromTime: item.FromTime,
-        ToTime: item.ToTime,
-        Space: item.Space,
-        Title: item.Title,
-        Id: item.Id
-      }));
-  
-      await fetch('/api/pmApi/createBooking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+        for (let i = 0; i < totalBatches; i++) {
+            const startIdx = i * batchSize;
+            const endIdx = Math.min(startIdx + batchSize, data.length);
+            const batchData = data.slice(startIdx, endIdx).map(item => ({
+                BookedBy: item.BookedBy,
+                BookingDate: item.BookingDate,
+                BookingDay: item.BookingDay,
+                FromTime: item.FromTime,
+                ToTime: item.ToTime,
+                Space: item.Space,
+                Title: item.Title,
+                Id: item.Id
+            }));
+
+            await fetch('/api/pmApi/createBooking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(batchData)
+            });
+        }
     } catch (error) {
-      return error;
+        console.error('Error creating bookings:', error);
+        return { ok: false, error: error.message };
     }
-  };
+};
+
+  
   
   
 
@@ -458,7 +468,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     });
 
     setScheduleDate(datesArray);
-    console.log(schedule)
+    
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -951,7 +961,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student, select]);
-  console.log('student', student)
+
 
   const getStudentSchedule = async () => {
     if (select && !hasFetched) {
@@ -1283,6 +1293,11 @@ export const Calender = ({ schedule, setSchedule }) => {
       setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
+      
+      if(attendanceData.data.code === 200){
+        setConfirmOccupied(true);
+        setMessage(attendanceData.data.message);
+      }
 
 
       // Proceed based on the type of class
@@ -1395,7 +1410,6 @@ export const Calender = ({ schedule, setSchedule }) => {
       if (response.data.success === true) {
 
         const response2 = await axios.post('/api/pmApi/getAllCourses', payload2)
-        console.log('response2', response2)
         await handleAccessToken(response2.data.data)
       }
 
@@ -1844,7 +1858,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       const toTimeSplit = toSharePoint.split('+')[0];
   
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 2; // Change this value if daylight saving time is not in effect
+      const utcOffset = 3; // Change this value if daylight saving time is not in effect
   
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();

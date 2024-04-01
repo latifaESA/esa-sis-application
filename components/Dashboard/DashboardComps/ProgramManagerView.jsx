@@ -12,9 +12,11 @@ import {
   // HandRaisedIcon,
   UserGroupIcon,
   // NewspaperIcon,
+  ClipboardDocumentIcon,
   AcademicCapIcon,
   WalletIcon,
-  PaperAirplaneIcon,
+  EnvelopeOpenIcon,
+  // PaperAirplaneIcon,
   EnvelopeIcon,
 } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
@@ -125,7 +127,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <AcademicCapIcon className="h-5 w-5" />
+                  <ClipboardDocumentIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Class</p>
@@ -188,6 +190,24 @@ const ProgramManagerView = () => {
                 </div>
               </div>
             </Link>
+            <Link href="/programManager/TeacherAttendace">
+              {/* <Link href='/admin/payments'> */}
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
+                  router.pathname == '/programManager/TeacherAttendace'
+                  ? 'bg-blue-100 text-blue-500'
+                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                  }`}
+              >
+                <div className="mr-2">
+                  <CreditCardIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p>Teachers Attendance</p>
+                </div>
+              </div>
+            </Link>
+            
 
             {/* course Management system */}
             {
@@ -272,7 +292,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <PaperAirplaneIcon className="h-5 w-5" />
+                  <EnvelopeOpenIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Requests</p>
@@ -439,7 +459,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <AcademicCapIcon className="h-5 w-5" />
+                  <ClipboardDocumentIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Class</p>
@@ -459,6 +479,23 @@ const ProgramManagerView = () => {
                 </div>
                 <div>
                   <p>Schedule</p>
+                </div>
+              </div>
+            </Link>
+            <Link href="/programManager/TeacherAttendace">
+              {/* <Link href='/admin/payments'> */}
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/attendanceView' ||
+                  router.pathname == '/programManager/TeacherAttendace'
+                  ? 'bg-blue-100 text-blue-500'
+                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                  }`}
+              >
+                <div className="mr-2">
+                  <CreditCardIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p>Teachers Attendance</p>
                 </div>
               </div>
             </Link>
@@ -586,7 +623,7 @@ const ProgramManagerView = () => {
                   }`}
               >
                 <div className="mr-2">
-                  <PaperAirplaneIcon className="h-5 w-5" />
+                  <EnvelopeOpenIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <p>Requests</p>

@@ -40,8 +40,8 @@ export default function Create() {
       "/api/admin/adminApi/filterStudentAdmin",
       sendData
     );
-    console.log("==========");
-    console.log(data.data.rows);
+    // console.log("==========");
+    // console.log(data.data.rows);
     setUsers(data.data.rows);
     setStudentId("");
     setFname("");
@@ -58,14 +58,14 @@ export default function Create() {
       student_firstname: fname,
       student_lastname: lname,
     };
-    console.log(sendData);
+    // console.log(sendData);
     const data = await axios.post(
       "/api/admin/adminApi/filterStudentAdmin",
       sendData
     );
     setUsers(data.data.rows);
-    console.log(status);
-    console.log(data.data.rows);
+    // console.log(status);
+    // console.log(data.data.rows);
   };
 
   const getAllMajors = async () => {

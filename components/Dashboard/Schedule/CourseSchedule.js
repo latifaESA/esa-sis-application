@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import Tooltip from './Tooltip';
 // import styles from './CourseSchedule.module.css';
 
 import {
@@ -18,9 +19,40 @@ import {
 const CourseSchedule = () => {
   const { data: session } = useSession();
   const [events, setEvents] = useState([]);
-  // const [event, setEvent] = useState([]);
+  const [event, setEvent] = useState([]);
+  // const [tooltipContent, setTooltipContent] = useState('');
+  // const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
+  // const [tooltipActive, setTooltipActive] = useState(false);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [tooltipContent, setTooltipContent] = useState('');
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
+  const [tooltipActive, setTooltipActive] = useState(false);
+  // const [popoverInfo, setPopoverInfo] = useState(null);
+
+  // const handleClosePopover = () => {
+  //   setPopoverInfo(null);
+  // };
+
+  // Function to handle click on an event and display tooltip
+  const handleEventClick = (info) => {
+    if(info.view.type === 'dayGridMonth' || info.view.type === 'timeGridWeek'){
+      const content = info.event.title || '';
+      const { left, top } = info.jsEvent.target.getBoundingClientRect();
+      setTooltipContent(content);
+      setTooltipPosition({ left, top: top + window.scrollY });
+      setTooltipActive(true);
+
+    }
+
+  };
+
+  
+
+  // Function to close the tooltip
+  const handleCloseTooltip = () => {
+    setTooltipActive(false);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -57,6 +89,8 @@ const CourseSchedule = () => {
       listPlugin,
     ];
 
+  
+
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
@@ -66,20 +100,31 @@ const CourseSchedule = () => {
           major_id,
           promotion,
         });
+    
         const formattedEvents = data.data.data.map((event) => {
-          const startDateTime = new Date(
-            `${event.day.split('T')[0]} ${event.from_time}`
-          );
-          startDateTime.setDate(startDateTime.getDate());
-          const endDateTime = new Date(
-            `${event.day.split('T')[0]} ${event.to_time}`
-          );
-          endDateTime.setDate(endDateTime.getDate());
+          // Parse the date and time strings
+          const startDateTime = new Date(event.day);
+          const endDateTime = new Date(event.day);
+    
+          // Adjust the start and end time based on the event's time zone offset
+          const fromTimeParts = event.from_time.split(':');
+          const toTimeParts = event.to_time.split(':');
+          startDateTime.setHours(Number(fromTimeParts[0]));
+          startDateTime.setMinutes(Number(fromTimeParts[1]));
+          startDateTime.setSeconds(Number(fromTimeParts[2].split('+')[0]));
+          endDateTime.setHours(Number(toTimeParts[0]));
+          endDateTime.setMinutes(Number(toTimeParts[1]));
+          endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
+    
           let title = [];
           let url = '';
-
+    
           if (event.is_online === true) {
-            title = [`C-${event.course_name}`, `T-${event.teacher_fullname}`, `join to meeting`];
+            title = [
+              `C-${event.course_name}`, 
+              `T-${event.teacher_fullname}`, 
+              `Join to Zoom`
+            ];
             url = event.zoom_url;
           } else {
             title = [
@@ -89,7 +134,7 @@ const CourseSchedule = () => {
               `R-${event.room_name}`,
             ];
           }
-
+    
           return {
             title: title.join(','),
             start: startDateTime,
@@ -98,44 +143,53 @@ const CourseSchedule = () => {
             url: url,
           };
         });
-
-        // const formattedEventsGoogle = data.data.data.map((event) => {
-        //   const startDateTime = new Date(event.day);
-        //   startDateTime.setHours(Number(event.from_time.split(':')[0]));
-        //   startDateTime.setMinutes(Number(event.from_time.split(':')[1]));
-
-        //   const endDateTime = new Date(event.day);
-        //   endDateTime.setHours(Number(event.to_time.split(':')[0]));
-        //   endDateTime.setMinutes(Number(event.to_time.split(':')[1]));
-
-        //   const title = [
-        //     `C-${event.course_name}`,
-        //     `T-${event.teacher_fullname}`,
-        //     `B-${event.room_building}`,
-        //     `R-${event.room_name}`,
-        //   ].map((line) => line + '\n');
-
-        //   return {
-        //     summary: title.join(','),
-        //     start: {
-        //       dateTime: startDateTime.toISOString(),
-        //     },
-        //     end: {
-        //       dateTime: endDateTime.toISOString(),
-        //     },
-        //   };
-        // });
-        // setEvent(formattedEventsGoogle);
-
+    
+        const formattedEventsGoogle = data.data.data.map((event) => {
+          // Parse the date and time strings
+          const startDateTime = new Date(event.day);
+          const endDateTime = new Date(event.day);
+    
+          // Adjust the start and end time based on the event's time zone offset
+          const fromTimeParts = event.from_time.split(':');
+          const toTimeParts = event.to_time.split(':');
+          startDateTime.setHours(Number(fromTimeParts[0]));
+          startDateTime.setMinutes(Number(fromTimeParts[1]));
+          startDateTime.setSeconds(Number(fromTimeParts[2].split('+')[0]));
+          endDateTime.setHours(Number(toTimeParts[0]));
+          endDateTime.setMinutes(Number(toTimeParts[1]));
+          endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
+    
+          const title = [
+            `C-${event.course_name}`,
+            `T-${event.teacher_fullname}`,
+            `B-${event.room_building}`,
+            `R-${event.room_name}`,
+          ].map((line) => line + '\n');
+    
+          return {
+            summary: title.join(','),
+            start: {
+              dateTime: startDateTime.toISOString(),
+            },
+            end: {
+              dateTime: endDateTime.toISOString(),
+            },
+          };
+        });
+        setEvent(formattedEventsGoogle);
+    
         setEvents(formattedEvents);
       } catch (error) {
         console.error(error);
       }
     };
+
     fetchSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
 
   const SaveRefreshToken = async (credentials) => {
     try {
@@ -146,38 +200,38 @@ const CourseSchedule = () => {
         user_id: session.user?.userid,
       });
 
-      // // Create an array to store the promises of adding events
-      // const addEventPromises = event.map(async (evt) => {
-      //   // Make a request to add the event to Google Calendar using the access token
-      //   const response = await axios.post('/api/user/google-event', {
-      //     accessToken: access_Token,
-      //     event: evt,
-      //   });
+      // Create an array to store the promises of adding events
+      const addEventPromises = event.map(async (evt) => {
+        // Make a request to add the event to Google Calendar using the access token
+        const response = await axios.post('/api/user/google-event', {
+          accessToken: access_Token,
+          event: evt,
+        });
 
-      //   console.log('Event added to Google Calendar:', response.data);
+        console.log('Event added to Google Calendar:', response.data);
 
-      //   return response.data.redirectUrl;
-      // });
+        return response.data.redirectUrl;
+      });
 
-      // // Wait for all promises to resolve using Promise.all
-      // const redirectUrls = await Promise.all(addEventPromises);
+      // Wait for all promises to resolve using Promise.all
+      const redirectUrls = await Promise.all(addEventPromises);
 
-      // // Create a Google Calendar URL that includes all the events
-      // let googleCalendarUrl = 'https://calendar.google.com/calendar/r/month?';
+      // Create a Google Calendar URL that includes all the events
+      let googleCalendarUrl = 'https://calendar.google.com/calendar/r/month?';
 
-      // for (const redirectUrl of redirectUrls) {
-      //   googleCalendarUrl += `src=${encodeURIComponent(redirectUrl)}&`;
-      // }
+      for (const redirectUrl of redirectUrls) {
+        googleCalendarUrl += `src=${encodeURIComponent(redirectUrl)}&`;
+      }
 
-      // // Open the Google Calendar URL in a single tab
-      // window.open(googleCalendarUrl, '_blank');
+      // Open the Google Calendar URL in a single tab
+      window.open(googleCalendarUrl, '_blank');
     } catch (error) {
       console.error('Error adding events to Google Calendar:', error);
     }
   };
   const exchangeCodeForTokens = async (authorizationCode) => {
     try {
-        const response = await fetch('/api/google-api/token', {
+      const response = await fetch('/api/google-api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -188,7 +242,7 @@ const CourseSchedule = () => {
       const { data } = await response.json();
       await SaveRefreshToken(data.refresh_token)
       // Handle the tokens
-  
+
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
       throw error;
@@ -203,6 +257,20 @@ const CourseSchedule = () => {
   });
 
 
+  // const handleEventClick = (info) => {
+  //   const content = info.event.title || '';
+  //   const { left, top } = info.jsEvent.target.getBoundingClientRect();
+  //   setTooltipContent(content);
+  //   setTooltipPosition({ left, top: top + window.scrollY });
+  //   setTooltipActive(true);
+  // };
+
+  // const handleCloseTooltip = () => {
+  //   setTooltipActive(false);
+  // };
+
+
+
   return (
     // <div className='container bg-white p-3 p-md-5 rounded-lg'>
     <div className="flex flex-col items-center justify-center overflow-auto">
@@ -210,7 +278,7 @@ const CourseSchedule = () => {
         <GoogleLogin
           onSuccess={() => {
             try {
-              console.log('wslllllllllllllllllllllllll')
+
               login();
             } catch (error) {
               console.error('Error obtaining the access token:', error);
@@ -237,13 +305,30 @@ const CourseSchedule = () => {
           handleWindowResize={true}
           weekends={true}
           events={events}
+          
+          eventClick={handleEventClick} 
           views={{
             multiMonthFourMonth: {
               type: 'multiMonth',
               duration: { months: 4 },
             },
           }}
+
         />
+        <Tooltip
+          content={tooltipContent}
+          position={tooltipPosition}
+          active={tooltipActive}
+          onClose={handleCloseTooltip}
+        />
+
+        {/* <Tooltip
+  content={tooltipContent}
+  position={tooltipPosition}
+  active={tooltipActive}
+  onClose={handleCloseTooltip}
+/> */}
+
       </div>
       {/* </div> */}
     </div>
@@ -257,5 +342,6 @@ const App = () => {
     </GoogleOAuthProvider>
   );
 };
+
 
 export default App;

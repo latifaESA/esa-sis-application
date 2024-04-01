@@ -645,27 +645,35 @@ const handleShowAll = async (tmpclass_id) => {
 
 
   const createBooking = async (data) => {
-    try {
-      const payload = data.map(item => ({
-        BookedBy: item.BookedBy,
-        BookingDate: item.BookingDate,
-        BookingDay: item.BookingDay,
-        FromTime: item.FromTime,
-        ToTime: item.ToTime,
-        Space: item.Space,
-        Title: item.Title,
-        Id: item.Id
-      }));
+    const batchSize = 30; // Set the batch size according to your needs
+    const totalBatches = Math.ceil(data.length / batchSize);
   
-      await fetch('/api/pmApi/createBooking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+    try {
+      for (let i = 0; i < totalBatches; i++) {
+        const startIdx = i * batchSize;
+        const endIdx = startIdx + batchSize;
+        const batchData = data.slice(startIdx, endIdx).map(item => ({
+          BookedBy: item.BookedBy,
+          BookingDate: item.BookingDate,
+          BookingDay: item.BookingDay,
+          FromTime: item.FromTime,
+          ToTime: item.ToTime,
+          Space: item.Space,
+          Title: item.Title,
+          Id: item.Id
+        }));
+  
+        await fetch('/api/pmApi/createBooking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(batchData)
+        });
+      }
     } catch (error) {
-      return error;
+      console.error('Error creating bookings:', error);
+      return { ok: false, error: error.message };
     }
   };
   

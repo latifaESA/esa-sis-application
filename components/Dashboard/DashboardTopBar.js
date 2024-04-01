@@ -53,7 +53,7 @@ export default function AdminTopBar({ showNav, setShowNav }) {
     getCount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(session?.user.role);
+ 
   const logoutClickHandler = async () => {
     dispatch(isLogout(true));
     const emailWas = session?.user.email;

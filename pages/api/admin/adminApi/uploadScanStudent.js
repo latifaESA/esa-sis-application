@@ -150,11 +150,11 @@ async function handler(req, res) {
         }
 
         const major = await getMajor(connection, field.MajorName);
-        await disconnect(connection);
+        // await disconnect(connection);
 
         const majorid = major.rows[0].major_id;
         const exist = await StudentExist(connection, field['Email(required)'], majorid);
-        await disconnect(connection);
+        // await disconnect(connection);
 
         if (exist) {
           return res.status(200).json({
@@ -166,7 +166,7 @@ async function handler(req, res) {
 
         const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '').toUpperCase();
         const promotion_exist = await PromotionExist(connection, promotion_name);
-
+        disconnect(connection)
         if (!promotion_exist) {
           return res.status(200).json({
             code: 200,

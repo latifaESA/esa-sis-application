@@ -133,27 +133,35 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   const createBooking = async (data) => {
-    try {
-      const payload = data.map(item => ({
-        BookedBy: item.BookedBy,
-        BookingDate: item.BookingDate,
-        BookingDay: item.BookingDay,
-        FromTime: item.FromTime,
-        ToTime: item.ToTime,
-        Space: item.Space,
-        Title: item.Title,
-        Id: item.Id
-      }));
+    const batchSize = 30; // Set the batch size according to your needs
+    const totalBatches = Math.ceil(data.length / batchSize);
   
-      await fetch('/api/pmApi/createBooking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+    try {
+      for (let i = 0; i < totalBatches; i++) {
+        const startIdx = i * batchSize;
+        const endIdx = startIdx + batchSize;
+        const batchData = data.slice(startIdx, endIdx).map(item => ({
+          BookedBy: item.BookedBy,
+          BookingDate: item.BookingDate,
+          BookingDay: item.BookingDay,
+          FromTime: item.FromTime,
+          ToTime: item.ToTime,
+          Space: item.Space,
+          Title: item.Title,
+          Id: item.Id
+        }));
+  
+        await fetch('/api/pmApi/createBooking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(batchData)
+        });
+      }
     } catch (error) {
-      return error;
+      console.error('Error creating bookings:', error);
+      return { ok: false, error: error.message };
     }
   };
   
@@ -1257,6 +1265,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
+      if(attendanceData.data.code === 200){
+        setConfirmOccupied(true);
+        setMessage(attendanceData.data.message);
+      }
 
 
       // Proceed based on the type of class
@@ -1809,7 +1821,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       const toTimeSplit = toSharePoint.split('+')[0];
 
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+      const utcOffset = 3; // Change this value if daylight saving time is not in effect
 
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();

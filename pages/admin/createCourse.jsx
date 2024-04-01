@@ -32,7 +32,7 @@ export default function CreateCourse() {
   const getAllType = async()=>{
     let table = 'course_type'
     let typeCourse = await axios.post('/api/pmApi/getAll' , {table})
-    console.log(typeCourse)
+    
     setType(typeCourse.data.rows)
   }
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function CreateCourse() {
         course_type: course_type,
       };
       const { data } = await axios.post("/api/pmApi/createCourses", payload);
-      console.log("data", data);
+     
       // setData(data);
       // setShowModal(true);
       if (data.success === true) {

@@ -139,17 +139,20 @@ export default function StudentByMajor() {
   };
 
 
-  const calculateColumnWidths = (data) => {
-    const columnWidths = data[0].map((col, colIndex) => {
-      const maxContentWidth = data.reduce((max, row) => {
-        const cellContent = row[colIndex] !== undefined ? row[colIndex].toString() : '';
-        const contentWidth = cellContent.length;
-        return Math.max(max, contentWidth);
-      }, col.length);
-      
-      return { wch: maxContentWidth };
+  const calculateColumnWidths = (worksheet) => {
+    const columnWidths = worksheet['!cols'] || [];
+    const headerRow = worksheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
+    if (!Array.isArray(headerRow)) {
+      return columnWidths;
+    }
+  
+    headerRow.forEach((cell, colIndex) => {
+      const content = cell?.w || '';
+      const contentWidth = content.length * 7; // Adjust the multiplier as needed
+      const defaultWidth = 10; // Set a default width if content width is smaller
+      columnWidths[colIndex] = { wch: Math.max(defaultWidth, contentWidth) };
     });
-
+  
     return columnWidths;
   };
 
@@ -357,7 +360,7 @@ export default function StudentByMajor() {
     <>
   
    {openUpload ? <>
-   <UploadStudent setOpenUpload={setOpenUpload}/>
+   <UploadStudent setOpenUpload={setOpenUpload} renderValues={renderValues}/>
     
     </>:<></>}
       <Head>

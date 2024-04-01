@@ -14,7 +14,7 @@ import React from "react";
 import { signIn, useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getError } from "../../../utilities/error";
+// import { getError } from "../../../utilities/error";
 import { useDispatch } from "react-redux";
 import {
   isLogout,
@@ -28,15 +28,15 @@ import decrypt from "../../../utilities/encrypt_decrypt/decryptText";
 // import selection_data from '../../../utilities/selection_data';
 
 const PreSignIn = () => {
-  console.log('presigin')
+  // console.log('presigin')
   const { data: session } = useSession();
   const router = useRouter();
   const { redirect } = router.query;
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [isSignedIn, setisSignedIn] = useState(false);
   const [sessionExist, setsessionExist] = useState(false);
   const [triggerSignIn, settriggerSignIn] = useState(false);
-  console.log(message);
+  // console.log(message);
   const dispatch = useDispatch();
   let password = null;
   let userid = null;
@@ -122,11 +122,12 @@ const PreSignIn = () => {
         dispatch(isLogout(false));
       } else {
         dispatch(loginFailed(result.error));
-        setMessage(result.error);
+        // setMessage(result.error);
         // console.log('error from else')
       }
     } catch (err) {
-      setMessage(getError(err));
+      return err
+      // setMessage(getError(err));
       // console.log(err)
       // console.log('error from catch')
     }

@@ -1,9 +1,5 @@
-/*
-Created By: Mohammad jaber
-Page: Reset Password Page
-Created at: 12/10/2022
-*/
 import React from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { passwordResetSchema } from "../../../Schemas";
@@ -11,87 +7,60 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { getError } from "../../../utilities/error";
 import axios from "axios";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
-import EmailForResetPassword from "../../../utilities/emailing/emailForResetPassword";
-// import selection_data from '../../../utilities/selection_data';
+import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/Loader/Loader";
+import EmailForResetPassword from "../../../utilities/emailing/emailForResetPassword";
+// import selection_data from '../../../utilities/selection_data';
+
+
 const ForgetPassword = () => {
-  // Edited By:KANSO ADI 11/12/2022
-  // Very important to prevent the routing if loged inn and the user pass the url of this page
-  /* Checking if the user is logged in or not. If the user is logged in, it will redirect him to the
-  home page. */
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
   const appState = useSelector(
     (state) => state.persistedReducer.app_state.appState
   );
-
   const router = useRouter();
   const { redirect } = router.query;
-  // // console.log('session?.user=>', session?.user);
+
   useEffect(() => {
     if (session?.user) {
       router.push(redirect || "/");
     }
   }, [router, session, redirect]);
-  /* A hook that is used to validate the form. */
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    // reset,
   } = useForm({
     resolver: yupResolver(passwordResetSchema),
   });
 
-  // Edited By:KANSO ADI 11/12/2022
   const submitHandler = async ({ email }) => {
-    console.log(email);
     setIsLoading(true);
     try {
-      console.log("before axios");
       const res = await axios.post("/api/user/password/forgetpassword", {
         email,
       });
-      console.log('result' , res)
-      console.log("res", res.data);
-
-      // console.log("=======res.data======");
-      // // console.log(errorMessage)
-      // console.log(res.data);
       const emailToken = res.data.emailToken;
-      console.log('token',emailToken)
-      // console.log("emailToken", emailToken);
-      // const lname = res.data.lname;
-      // const fname = res.data.fname;
       const ID = res.data.ID;
       const idForRes = res.data.email;
-      console.log("email", idForRes);
-      // // console.log(emailToken)
-
-      // console.log("before email");
-      // console.log(router);
       await EmailForResetPassword({
         emailToken,
         ID,
         idForRes,
         router,
       });
-      // console.log("after email");
-      // console.log("asd===asd===asd");
-      // console.log(emailToken);
-      // console.log(ID);
-      // console.log(email);
     } catch (err) {
       setIsLoading(false);
       setErrorMessage(getError(err));
     }
   };
+
+  const baseUrl = 'https://esasis.esa.edu.lb/';
 
   return (
     <>
@@ -101,13 +70,15 @@ const ForgetPassword = () => {
             <title> Reset Account</title>
           </Head>
           <div className="flex-col text-center">
-            <Image
-              className="inline h-auto w-auto"
-              src={appState.appVar.esa_logo}
-              alt="logo"
-              width={100}
-              height={150}
-            />
+            <a href={baseUrl}>
+              <Image
+                className="inline h-auto w-auto"
+                src={appState.appVar.esa_logo}
+                alt="logo"
+                width={100}
+                height={150}
+              />
+            </a>
           </div>
           <form
             onSubmit={handleSubmit(submitHandler)}

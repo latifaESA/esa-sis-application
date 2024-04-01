@@ -305,7 +305,7 @@ export default function Students() {
     <>
   
    {openUpload ? <>
-   <UploadStudent setOpenUpload={setOpenUpload}/>
+   <UploadStudent setOpenUpload={setOpenUpload} renderValues={handleShowAll}/>
     
     </>:<></>}
       <Head>
