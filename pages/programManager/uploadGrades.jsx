@@ -351,8 +351,10 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     );
 
                     if (data.success === true) {
+                        
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAll()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -426,9 +428,11 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     if (data.success === true) {
                         // Extract promotion name from the first row of the specified column
                         // Get the cell address of the first cell in the specified column
+                       
 
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllGMP()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -504,6 +508,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllEXED()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -576,6 +581,7 @@ export default function UploadGrades({ setClickUpload, showAll, showAllGMP, show
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllRTF()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
