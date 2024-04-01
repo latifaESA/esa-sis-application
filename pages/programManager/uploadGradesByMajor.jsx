@@ -337,6 +337,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAll()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -486,6 +487,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
 
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllGMP()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -562,6 +564,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllEXED()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {
@@ -635,6 +638,7 @@ export default function UploadGradesByMajor({ setClickUpload, showAll, showAllGM
                     if (data.success === true) {
                         setConfirmOpenMessage(true);
                         setMessages(data.message);
+                        showAllRTF()
                     }
                 } catch (error) {
                     if (error.response && error.response.data.success === false) {

@@ -176,7 +176,6 @@ async function handler(req, res) {
         }
 
         const major_exist = await PromotionMajorExist(connection, promotion_name, majorid);
-        console.log("promotionmajor" ,major_exist )
         if (!major_exist) {
           return res.status(200).json({
             success: true,
