@@ -90,7 +90,7 @@ const ClassList = ({ users, allCourse }) => {
   let allID = []
 
   const [building, setBuilding] = useState("");
-  const [zoomUserId, setZoomUserId] = useState()
+  const [zoomUserId, setZoomUserId] = useState(null)
   const [zoomAccessToken, setZoomAccessToken] = useState("")
 
 
@@ -1181,6 +1181,7 @@ const ClassList = ({ users, allCourse }) => {
           student={student}
           // setCourseType={setCourseType}
           setTeacherValue={setTeacherValue}
+          zoomUserId={zoomUserId}
         />
       )}
     </>

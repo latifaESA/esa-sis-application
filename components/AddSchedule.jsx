@@ -49,11 +49,10 @@ export default function AddSchedule({
   setStudent,
   // setCourseType,
   allrooms,
-  building
+  building,
+  zoomUserId
 }) {
 
-  console.log('is triggering')
-  console.log('the timeResult : ', timeResult)
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [remainingRooms, setRemainingRooms] = useState([]);
 
@@ -301,7 +300,7 @@ export default function AddSchedule({
                         value={isOnline}
                       >
                         <option value="">Choose Value..</option>
-                        <option value="true">Online</option>
+                        {zoomUserId && <option value="true">Online</option>}
                         <option value="false">Onsite</option>
                       </select>
                     </label>
