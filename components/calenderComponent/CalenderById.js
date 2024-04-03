@@ -877,29 +877,19 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   const handleClass = (selectedValue) => {
-   console.log('selectedvalue' , selectedValue)
-    const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue)
+    const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue);
 
-    // Now, you can access the tmpclass_id outside the loop if needed
     if (foundCourse) {
       const courseName = foundCourse.course_name;
-      console.log(courseName)
-      // Use courseName as needed
-
-      setCourseName(courseName)
-
-
+      setCourseName(courseName);
     } else {
       console.log("Course not found in allCourses");
     }
 
-
-    // Do something with the selected value
     setSelect(true);
     selectedValue.length > 0 &&
       setClasses(
-        allClasses.filter((clas) => clas.course_id === selectedValue)[0]
-          .tmpclass_id
+        allClasses.filter((clas) => clas.course_id === selectedValue)[0].tmpclass_id
       );
   };
 
@@ -939,7 +929,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     getStudentSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [student, select, classes]);
+  }, [student, select]);
 
   const getStudentSchedule = async () => {
     if (select && !hasFetched) {
@@ -962,48 +952,43 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         const data2 = await axios.post('/api/pmApi/getAllCourses', payload2);
 
         if (data2.data.data[0].course_type !== 'Elective') {
-          let major_id = majorId;
+          let major_id = session.user?.majorid;
           let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
           const { data } = await axios.post('/api/pmApi/getAllStudent', {
             major_id,
             promotion,
           });
-          await handleAccessToken(data.data)
+          await handleAccessToken(data.data);
           setStudent(data.data);
           setHasFetched(true);
         } else {
           const payload = {
-            major_id: majorId,
+            major_id: session.user?.majorid,
             promotion: data1.data.data[0].promotion.replace(/\s/g, ''),
             course_id: course_id,
           };
           try {
-            const data = await axios.post(
-              '/api/pmApi/getStudentAssign',
-              payload
-            );
-            await handleAccessToken(data.data.data)
-            setStudent(data.data.data);
+            const data = await axios.post('/api/pmApi/getStudentAssign', payload);
+            await handleAccessToken(data.data.data);
             setHasFetched(true);
+            setStudent(data.data.data);
           } catch (error) {
-            let major_id = majorId;
+            let major_id = session.user?.majorid;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
-            // let promotion = promotionName
-            // console.log("promotion", promotions);
             const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
               promotion,
             });
-            console.log('data.data' , data.data)
-            await handleAccessToken(data.data)
-
+            await handleAccessToken(data.data);
             setStudent(data.data);
             setHasFetched(true);
           }
         }
       } catch (error) {
-        return error;
+        console.error(error);
       }
+    } else {
+      setHasFetched(false); // Reset hasFetched when classes change
     }
   };
 
@@ -1207,10 +1192,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
     try {
       
-      if(zoomUserId === undefined){
-        setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
-        setIsClick(false)
-        return;
+
+      if (isOnline === 'true') {
+        if(zoomUserId === undefined){
+          setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
+          setIsClick(false)
+          return;
+        }
       }
 
       if (fromTime === '') {

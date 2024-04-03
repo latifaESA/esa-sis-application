@@ -894,29 +894,19 @@ export const Calender = ({ schedule, setSchedule }) => {
   };
 
   const handleClass = (selectedValue) => {
-    console.log('selectvalue', selectedValue)
+    const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue);
 
-    const foundCourse = allCourses.find((clas) => clas.course_id === selectedValue)
-
-    // Now, you can access the tmpclass_id outside the loop if needed
     if (foundCourse) {
       const courseName = foundCourse.course_name;
-      // Use courseName as needed
-
-      setCourseName(courseName)
-
-
+      setCourseName(courseName);
     } else {
       console.log("Course not found in allCourses");
     }
 
-
-    // Do something with the selected value
     setSelect(true);
     selectedValue.length > 0 &&
       setClasses(
-        allClasses.filter((clas) => clas.course_id === selectedValue)[0]
-          .tmpclass_id
+        allClasses.filter((clas) => clas.course_id === selectedValue)[0].tmpclass_id
       );
   };
 
@@ -962,7 +952,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     getStudentSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [student, select]);
+  }, [ student , classes ]);
 
 
   const getStudentSchedule = async () => {
@@ -992,7 +982,7 @@ export const Calender = ({ schedule, setSchedule }) => {
             major_id,
             promotion,
           });
-          await handleAccessToken(data.data)
+          await handleAccessToken(data.data);
           setStudent(data.data);
           setHasFetched(true);
         } else {
@@ -1002,34 +992,30 @@ export const Calender = ({ schedule, setSchedule }) => {
             course_id: course_id,
           };
           try {
-            const data = await axios.post(
-              '/api/pmApi/getStudentAssign',
-              payload
-            );
-            await handleAccessToken(data.data.data)
-            setHasFetched(true)
+            const data = await axios.post('/api/pmApi/getStudentAssign', payload);
+            await handleAccessToken(data.data.data);
+            setHasFetched(true);
             setStudent(data.data.data);
           } catch (error) {
             let major_id = session.user?.majorid;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
-            // let promotion = promotionName
-            // console.log("promotion", promotions);
             const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
               promotion,
             });
-            await handleAccessToken(data.data)
-
-
+            await handleAccessToken(data.data);
             setStudent(data.data);
             setHasFetched(true);
           }
         }
       } catch (error) {
-        return error;
+        console.error(error);
       }
+    } else {
+      setHasFetched(false); // Reset hasFetched when classes change
     }
   };
+
 
 
   const handleCreateAttendance = () => {
@@ -1236,13 +1222,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     e.preventDefault();
 
     try {
-      
-      if(zoomUserId === undefined){
-        setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
-        setIsClick(false)
-        return;
-      }
-
+    
 
       if (fromTime === '') {
         setErrorStart('Please Fill The Start Date');
@@ -1267,6 +1247,14 @@ export const Calender = ({ schedule, setSchedule }) => {
         }
         if (place === '') {
           setErrorLocation('Please Fill The Location');
+          setIsClick(false)
+          return;
+        }
+      }
+
+      if (isOnline === 'true') {
+        if(zoomUserId === undefined){
+          setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
           setIsClick(false)
           return;
         }
