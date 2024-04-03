@@ -494,10 +494,11 @@ export const Calender = ({ schedule, setSchedule }) => {
     setAllCourses(data.rows);
   };
 
+
   const getClass = async () => {
     let table = 'tmpclass';
-    let colName = 'pm_id';
-    let val = session.user.userid;
+    let colName = 'major_id';
+    let val = session.user.majorid;
     let { data } = await axios.post('/api/pmApi/getAllCondition', {
       table,
       colName,
