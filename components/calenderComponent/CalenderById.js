@@ -1207,7 +1207,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
     try {
       
-    
+      if(zoomUserId === undefined){
+        setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
+        setIsClick(false)
+        return;
+      }
 
       if (fromTime === '') {
         setErrorStart('Please Fill The Start Date');

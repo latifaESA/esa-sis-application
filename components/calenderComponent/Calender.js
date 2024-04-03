@@ -119,6 +119,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [errorStart, setErrorStart] = useState('');
   const [errorClass, setErrorClass] = useState('');
   const [errorEnd, setErrorEnd] = useState('');
+ 
 
   const getAllRooms = async () => {
     try {
@@ -232,6 +233,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       return error
     }
   }
+  
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
@@ -1234,7 +1236,12 @@ export const Calender = ({ schedule, setSchedule }) => {
     e.preventDefault();
 
     try {
-
+      
+      if(zoomUserId === undefined){
+        setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
+        setIsClick(false)
+        return;
+      }
 
 
       if (fromTime === '') {
