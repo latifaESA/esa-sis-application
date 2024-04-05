@@ -77,7 +77,7 @@ async function newEmailToken(connection, userid) {
     UPDATE users
     SET token = '${emailToken}'
     WHERE userid = '${userid}'`;
-    console.log('query' , query)
+    console.log('query', query)
 
     const result = await connection.query(query);
     return result;
@@ -118,7 +118,7 @@ async function newpassword(connection, email, newPassword) {
     UPDATE users
     SET userpassword = '${password}'
     WHERE userid = '${email}'`;
-    console.log('test',query)
+    console.log('test', query)
 
     const result = await connection.query(query);
     return result;
@@ -256,7 +256,7 @@ async function createSchedule(
 }
 
 async function updateZoomInfo(connection, tmpscheduleIds, meetingIds, zoomUrls) {
-  console.log('query' , tmpscheduleIds, meetingIds, zoomUrls)
+  console.log('query', tmpscheduleIds, meetingIds, zoomUrls)
   try {
 
 
@@ -267,7 +267,7 @@ async function updateZoomInfo(connection, tmpscheduleIds, meetingIds, zoomUrls) 
           zoom_url = '${zoomUrls}'
         WHERE tmpschedule_id = ${tmpscheduleIds};
       `;
-      console.log(query)
+    console.log(query)
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -1381,7 +1381,7 @@ async function unassign(connection, teacher_id, course_id) {
 // update query to upload url
 async function uploadFile(connection, Url, attendance_id) {
   try {
-    console.log('attebdance' , attendance_id)
+    console.log('attebdance', attendance_id)
     const query = `UPDATE attendance_report SET url='${Url}' WHERE attendance_id ='${attendance_id}'`;
     const res = await connection.query(query);
     console.log(query);
@@ -3462,11 +3462,11 @@ async function updateScheduleSharepointID(connection, sharepointId, attendanceId
   }
 }
 
-async function createBooking(connection, 
-{  bookingId, room, space, bookingBy, date, fromTime, toTime}) {
+async function createBooking(connection,
+  { bookingId, room, space, bookingBy, date, fromTime, toTime }) {
   try {
     const query = `INSERT INTO booking (booking_id , rooms , space ,bookingby ,date_booking , from_time , to_time) VALUES (${bookingId} , '${room}' , '${space}' ,'${bookingBy}' ,'${date}' , '${fromTime}' , '${toTime}')`
-    
+
     const res = await connection.query(query)
     return res
   } catch (error) {
@@ -3651,7 +3651,7 @@ async function updateEmailForEditProfilePM(connection, email, status, mobile_num
 async function ExistGrades(connection, student_id, course_id, task_name) {
   try {
     const query = `SELECT * FROM grades_gmp WHERE student_id = '${student_id}' AND course_id = '${course_id}' AND task_name='${task_name}'`
- 
+
     const res = connection.query(query)
     return res
   } catch (error) {
@@ -3690,10 +3690,10 @@ async function ExistGradesStudent(connection, student_id, course_id, task_name) 
   }
 }
 
-async function insertGoogleEventDetails(connection , student_id , event_id , attendance_id){
+async function insertGoogleEventDetails(connection, student_id, event_id, attendance_id) {
   try {
     const query = `INSERT INTO google_calendar (user_id , event_id , attendence_id) VALUES ('${student_id}' , '${event_id}' , '${attendance_id}')`
-    console.log('query' , query)
+    console.log('query', query)
     const res = connection.query(query)
     return res
   } catch (error) {
@@ -3702,7 +3702,7 @@ async function insertGoogleEventDetails(connection , student_id , event_id , att
 
 }
 
-async function deleteGoogleEventDetails(connection , student_id ){
+async function deleteGoogleEventDetails(connection, student_id) {
   try {
     const query = `DELETE google_calendar WHERE user_id = '${student_id}'`
     const res = connection.query(query)
@@ -3743,7 +3743,7 @@ async function uploadStudentFinancial(
     console.log("error in the query file : ", error); return;
   }
 }
-async function findUserRole(connection , userid){
+async function findUserRole(connection, userid) {
   try {
     const query = `SELECT * FROM users WHERE userid= '${userid}'`
     const res = await connection.query(query)
@@ -3752,43 +3752,44 @@ async function findUserRole(connection , userid){
     return error
   }
 }
-async function teacherReport(connection, teacher_ids, pmMajor) {
+async function teacherReport(connection, teacher_ids, pmMajor, majorId) {
   try {
-      let query = `
-          SELECT tmpschedule.* ,tmpclass.teacher_id , 
-          teachers.teacher_firstname , 
-          teachers.teacher_lastname ,
-          courses.course_name,
-          rooms.room_name,
-          rooms.room_building,
-          tmpclass.promotion
-          FROM tmpschedule 
-          LEFT JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id 
-          LEFT JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id 
-          LEFT JOIN courses ON tmpclass.course_id = courses.course_id
-          LEFT JOIN rooms ON tmpschedule.room = rooms.room_id
-          WHERE `;
+    let query = `
+    SELECT tmpschedule.*, tmpclass.teacher_id, 
+    teachers.teacher_firstname, 
+    teachers.teacher_lastname,
+    courses.course_name,
+    rooms.room_name,
+    rooms.room_building,
+    tmpclass.promotion
+    FROM tmpschedule 
+    LEFT JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id 
+    LEFT JOIN teachers ON tmpclass.teacher_id = teachers.teacher_id 
+    LEFT JOIN courses ON tmpclass.course_id = courses.course_id
+    LEFT JOIN rooms ON tmpschedule.room = rooms.room_id
+    WHERE `;
 
-      if (Array.isArray(teacher_ids) && teacher_ids.length > 0) {
-          query += '(';
-          for (let i = 0; i < teacher_ids.length; i++) {
-              query += `tmpclass.teacher_id = '${teacher_ids[i]}'`;
-              if (i !== teacher_ids.length - 1) {
-                  query += ' OR ';
-              }
-          }
-          query += ')';
-      } else {
-          query += `tmpclass.teacher_id = '${teacher_ids}'`;
+    if (Array.isArray(teacher_ids) && teacher_ids.length > 0) {
+      query += '(';
+      for (let i = 0; i < teacher_ids.length; i++) {
+        query += `tmpclass.teacher_id = '${teacher_ids[i]}'`;
+        if (i !== teacher_ids.length - 1) {
+          query += ' OR ';
+        }
       }
+      query += ')';
+    } else {
+      query += `tmpclass.teacher_id = '${teacher_ids}'`;
+    }
 
-      // Add the pm_id = PMmajor condition for all cases
-      query += ` AND tmpclass.pm_id = '${pmMajor}'`;
+    // Add the pm_id = PMmajor condition for all cases
+    query += ` AND (tmpclass.major_id = '${pmMajor}' OR tmpclass.major_id = '${majorId}')`;
 
-      const res = await connection.query(query);
-      return res;
+
+    const res = await connection.query(query);
+    return res;
   } catch (error) {
-      return error;
+    return error;
   }
 }
 

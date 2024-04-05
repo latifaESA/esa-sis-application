@@ -16,6 +16,7 @@ export default function TeacherAttendance() {
     const [data, setData] = useState([])
     const [formErrors, setFormErrors] = useState({});
     // const [message , setMessage] = useState(``)
+    const [majorIDs, setMajorIDs] = useState()
 
     const redirect = () => {
         router.push("/AccessDenied");
@@ -51,19 +52,33 @@ export default function TeacherAttendance() {
         const fetchTeacherReport = async () => {
             try {
                 if (teacherValue.length > 0) {
+                    if (session.user?.hasMultiMajor === 'false') {
+                        const response = await axios.post('/api/pmApi/teacherReport', {
+                            teacher_id: teacherValue,
+                            pmMajor: session.user?.majorid
+                        })
+                        if (response.data.code === 201) {
+                            setData(response.data)
 
+                        } else {
+                            setData(response.data.data)
 
-                    const response = await axios.post('/api/pmApi/teacherReport', {
-                        teacher_id: teacherValue,
-                        pmMajor: session.user?.userid
-                    })
-                    if (response.data.code === 201) {
-                        setData(response.data)
-
+                        }
                     } else {
-                        setData(response.data.data)
+                        const response = await axios.post('/api/pmApi/teacherReport', {
+                            teacher_id: teacherValue,
+                            pmMajor: session.user?.majorid,
+                            majorId: majorIDs
+                        })
+                        if (response.data.code === 201) {
+                            setData(response.data)
 
+                        } else {
+                            setData(response.data.data)
+
+                        }
                     }
+
 
                 }
             } catch (error) {
@@ -73,6 +88,26 @@ export default function TeacherAttendance() {
         fetchTeacherReport()
 
     }, [teacherValue])
+
+    useEffect(() => {
+        const fetchAnotherMajor = async () => {
+            try {
+                const payload = { table: 'program_manager_extra_major' }
+                const response = await axios.post('/api/pmApi/getAll', payload)
+                console.log('extra' , response.data.rows[0].major_id)
+                if (response.data && response.data.rows) {
+                    setMajorIDs(response.data.rows[0].major_id)
+
+                } else {
+                    throw new Error('Invalid response data');
+                }
+            } catch (error) {
+                console.error('Error fetching data', error)
+            }
+
+        }
+        fetchAnotherMajor()
+    }, [])
 
 
     const exportData = () => {
@@ -95,7 +130,7 @@ export default function TeacherAttendance() {
                     const additionalFields = status === 'onsite'
                         ? { Room: item.room_name, Building: item.room_building }
                         : {};
-    
+
                     return {
                         FirstName: item.teacher_firstname,
                         LastName: item.teacher_lastname,
@@ -108,7 +143,7 @@ export default function TeacherAttendance() {
                         ...additionalFields,
                     };
                 });
-    
+
                 // Check if data is available for export
                 if (modifiedData.length > 0) {
                     // Convert modified data to XLSX format
@@ -124,10 +159,10 @@ export default function TeacherAttendance() {
         } catch (error) {
             console.error("Error exporting data: ", error);
             // Handle the error and set an appropriate error message
-            setFormErrors({ teacherValue: `Teacher Doesn't has schedule`});
+            setFormErrors({ teacherValue: `Teacher Doesn't has schedule` });
         }
     };
-    
+
 
 
     const ConvertTime = (timeWithTimeZone) => {
@@ -146,12 +181,12 @@ export default function TeacherAttendance() {
     return (
         <>
             <Head>
-                <title>SIS Admin - Teachers</title>
+                <title>SIS PM - Teachers</title>
             </Head>
             {session?.user.role === "2" || session?.user.role === "3" ? (
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-                        List Of Teachers
+                        Teacher(s) Attendance
                     </p>
                     <div className="text-center text-red-500 font-bold p-2">{formErrors.teacherValue}</div>
                     <>
