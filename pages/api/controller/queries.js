@@ -1044,35 +1044,76 @@ async function filterpm(
 ) {
   try {
     let query = `
-      SELECT program_manager.* , major.major_name FROM program_manager 
-      INNER JOIN major ON program_manager.major_id = major.major_id
-      WHERE 1=1`;
+    SELECT 
+        pm.*, 
+        major.major_name AS pm_major_name, 
+        string_agg(extra_major.major_name, ', ') AS concatenated_major_names,
+        CONCAT(major.major_name, ', ', string_agg(extra_major.major_name, ', ')) AS combined_major_names
+    FROM 
+        (
+            SELECT 
+                program_manager.pm_id, 
+                program_manager.pm_firstname, 
+                program_manager.pm_lastname, 
+                program_manager.pm_status, 
+                program_manager.pm_email, 
+                program_manager.major_id AS pm_major_id,
+                program_manager_extra_major.major_id AS extra_major_id
+            FROM 
+                program_manager 
+            LEFT JOIN 
+                program_manager_extra_major ON program_manager.pm_id = program_manager_extra_major.pm_id
+            WHERE 
+                1 = 1
+        ) AS pm
+    INNER JOIN 
+        major ON pm.pm_major_id = major.major_id
+    LEFT JOIN 
+        major AS extra_major ON pm.extra_major_id = extra_major.major_id
+    WHERE 
+        1 = 1
+    `;
 
-    if (pm_id != "") {
-      query += ` AND lower(trim(pm_id)) LIKE lower(trim('%${pm_id}%'))`;
+    if (pm_id.trim() != "") {
+      query += ` AND lower(trim(pm.pm_id)) LIKE lower(trim('%${pm_id}%'))`;
     }
     if (pm_firstname.trim() != "") {
-      query += ` AND lower(trim(pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
+      query += ` AND lower(trim(pm.pm_firstname)) LIKE lower(trim('%${pm_firstname}%'))`;
     }
     if (majorName.trim() != "") {
-      query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
+      query += `
+        AND (
+          lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%')) OR
+          lower(trim(extra_major.major_name)) LIKE lower(trim('%${majorName}%'))
+        )
+      `;
     }
     if (pm_lastname.trim() != "") {
-      query += ` AND lower(trim(pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
+      query += ` AND lower(trim(pm.pm_lastname)) LIKE lower(trim('%${pm_lastname}%'))`;
     }
-    if (pm_email != "") {
-      query += ` AND lower(trim(pm_email)) LIKE lower(trim('%${pm_email}%'))`;
+    if (pm_email.trim() != "") {
+      query += ` AND lower(trim(pm.pm_email)) LIKE lower(trim('%${pm_email}%'))`;
     }
     if (pm_status.trim() != "") {
-      query += ` AND program_manager.pm_status = '${pm_status}'`;
+      query += ` AND pm.pm_status = '${pm_status}'`;
     }
+
+    query += `
+    GROUP BY 
+        pm.pm_id, pm.pm_firstname, pm.pm_lastname, pm.pm_status, pm.pm_email, pm.pm_major_id, major.major_name, pm.extra_major_id
+    `;
 
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log("error in the query file : ", err);
+    return;
   }
 }
+
+
+
+
 async function filterassistance(
   connection,
   pm_ass_id,
@@ -1084,35 +1125,69 @@ async function filterassistance(
 ) {
   try {
     let query = `
-      SELECT program_manager_assistance.* , major.major_name FROM program_manager_assistance
-      INNER JOIN major ON program_manager_assistance.major_id = major.major_id
-      WHERE 1=1`;
+    SELECT 
+    pm_ass.*, 
+    major.major_name AS pm_ass_major_name, 
+    string_agg(extra_major.major_name, ', ') AS concatenated_major_names,
+    CONCAT(major.major_name, ', ', string_agg(extra_major.major_name, ', ')) AS combined_major_names
+FROM 
+    (
+        SELECT 
+            program_manager_assistance.*, 
+            program_manager_assistance_extra_major.major_id AS extra_major_id
+        FROM 
+            program_manager_assistance 
+        LEFT JOIN 
+            program_manager_assistance_extra_major ON program_manager_assistance.pm_ass_id = program_manager_assistance_extra_major.pm_ass_id
+        WHERE 
+            1 = 1
+    ) AS pm_ass
+INNER JOIN 
+    major ON pm_ass.major_id = major.major_id
+LEFT JOIN 
+    major AS extra_major ON pm_ass.extra_major_id = extra_major.major_id
+WHERE 
+    1 = 1
+    `;
 
     if (pm_ass_id.trim() != "") {
-      query += ` AND lower(trim(pm_ass_id)) LIKE lower(trim('%${pm_ass_id}%'))`;
-    }
-    if (majorName.trim() != "") {
-      query += ` AND lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%'))`;
+      query += ` AND lower(trim(pm_ass.pm_ass_id)) LIKE lower(trim('%${pm_ass_id}%'))`;
     }
     if (pm_ass_firstname.trim() != "") {
-      query += ` AND lower(trim(pm_ass_firstname)) LIKE lower(trim('%${pm_ass_firstname}%'))`;
+      query += ` AND lower(trim(pm_ass.pm_ass_firstname)) LIKE lower(trim('%${pm_ass_firstname}%'))`;
+    }
+    if (majorName.trim() != "") {
+      query += `
+        AND (
+          lower(trim(major.major_name)) LIKE lower(trim('%${majorName}%')) OR
+          lower(trim(extra_major.major_name)) LIKE lower(trim('%${majorName}%'))
+        )
+      `;
     }
     if (pm_ass_lastname.trim() != "") {
-      query += ` AND lower(trim(pm_ass_lastname)) LIKE lower(trim('%${pm_ass_lastname}%'))`;
+      query += ` AND lower(trim(pm_ass.pm_ass_lastname)) LIKE lower(trim('%${pm_ass_lastname}%'))`;
     }
-    if (pm_ass_email != "") {
-      query += ` AND lower(trim(pm_ass_email)) LIKE lower(trim('%${pm_ass_email}%'))`;
+    if (pm_ass_email.trim() != "") {
+      query += ` AND lower(trim(pm_ass.pm_ass_email)) LIKE lower(trim('%${pm_ass_email}%'))`;
     }
     if (pm_ass_status.trim() != "") {
-      query += ` AND program_manager_assistance.pm_ass_status = '${pm_ass_status}'`;
+      query += ` AND pm_ass.pm_ass_status = '${pm_ass_status}'`;
     }
+
+    query += `
+      GROUP BY 
+          pm_ass.pm_ass_id, pm_ass.pm_ass_firstname, pm_ass.pm_ass_lastname, pm_ass.pm_ass_status, pm_ass.pm_ass_email, pm_ass.major_id, major.major_name, pm_ass.extra_major_id
+    `;
 
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log("error in the query file : ", err);
+    return;
   }
 }
+
+
 
 async function filterStudentForResetPassword(
   connection,
