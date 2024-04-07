@@ -92,7 +92,14 @@ export default function TeacherAttendance() {
     useEffect(() => {
         const fetchAnotherMajor = async () => {
             try {
-                const payload = { table: 'program_manager_extra_major' }
+                let payload;
+                if(session.user?.role === '2'){
+                     payload = { table: 'program_manager_extra_major' }
+
+                }else if(session.user?.role === '3'){
+                     payload = { table: 'program_manager_assistance_extra_major' }
+                }
+                
                 const response = await axios.post('/api/pmApi/getAll', payload)
                 console.log('extra' , response.data.rows[0].major_id)
                 if (response.data && response.data.rows) {

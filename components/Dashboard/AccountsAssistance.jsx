@@ -353,7 +353,7 @@ const TeachersList = ({ assistance, setAssistance }) => {
     //   width: 100,
     // },
     {
-      field: "major_name",
+      field: "combined_major_names",
       headerName: "Major",
       headerAlign: "center",
       align: "center",

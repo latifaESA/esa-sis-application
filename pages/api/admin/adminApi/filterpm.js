@@ -24,7 +24,13 @@ async function handler(req, res) {
     return res.status('200').send(data.rows);
   } catch (error) {
     // console.log('the error is: ', error)
-    return res.status('401').send(error);
+    return res.status(500).json(
+      {
+        code:500,
+        success:false,
+        message: error.message
+      }
+    );
     // return error;
   }
 }
