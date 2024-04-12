@@ -13,7 +13,9 @@ import Head from 'next/head';
 // import { useEffect, useState } from 'react';
 // import { ApplyNow } from '../components/ApplyNow';
 // import SocialIcons from '../components/SocialIcons';
-import LoginScreen from './user/login';
+// import LoginScreen from './user/login';
+import HomeScreen from './user/homepage';
+
 
 // import { useSession } from 'next-auth/react';
 // import { useState } from 'react';
@@ -84,7 +86,9 @@ export default function Home() {
         <link rel='icon' href='/esa.ico' />
         <meta name="google-site-verification" content="OM1_3GqV2ivos-Y_OSyfU7Gcfz6ajfWkpejdKaNJMxE" />
       </Head>
-      <LoginScreen />
+      {/* <LoginScreen /> */}
+      <HomeScreen />
+   
       {/* <Carousel
         className='mt-8 rounded-xl  border-8 border-gray-300 h-[200px] md:h-[600px]'
         navButtonsAlwaysVisible={true}
