@@ -98,7 +98,7 @@ export default function HomeScreen() {
                             </div>
                         </div>
                         <footer className="text-center mt-8">
-                            <a href="/user/PrivacyPolicy" className="text-gray-700 font-bold text-sm hover:text-gray-900 underline">Privacy Policy</a>
+                            <Link href="/user/PrivacyPolicy" className="text-gray-700 font-bold text-sm hover:text-gray-900 underline">Privacy Policy</Link>
                         </footer>
                     </div>
                 </div>
