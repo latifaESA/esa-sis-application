@@ -50,43 +50,62 @@ export default function HomeScreen() {
                                 <p className="welcomeTo mt-11">WELCOME TO</p>
                                 <span className="SIS">Student Information System (SIS)</span>
                             </div>
+                            <Link href="/user/login" legacyBehavior>
+                                <div className="text-center login text-[#3D709A] text-[39px] bold cursor-pointer">
+                                    Login
+                                </div>
+                            </Link>
                         </div>
                         <div className="contentSIS">
                             <div className="SISText">This site will allow you to:</div>
                             <div className="ContainerCircle">
-                                <div className="circle blue">
-                                    <p className="ContentText">Check your grades</p>
+                                <div className="contentDiv">
+                                    <div className="circle blue">
+                                        <p className="ContentText">Check your grades</p>
+                                    </div>
+                                    <div className="rightContent">
+                                        <p className="textContent blue"> You can access all your grades for enrolled courses through our SIS.</p>
+                                    </div>
                                 </div>
-                                <div className="circle gray">
-                                    <p className="ContentText">
-                                        Get Notifications
-
-                                    </p>
+                                <div className="contentDiv">
+                                    <div className="circle gray">
+                                        <p className="ContentText">Get Notifications</p>
+                                    </div>
+                                    <div className="rightContent">
+                                        <p className="textContent gray">Notifications for new grades or reminders before each class.</p>
+                                    </div>
                                 </div>
-                                <div className="circle lightBlue">
-                                    <p className="ContentText">
-                                        Submit Requests
-                                    </p>
+                                <div className="contentDiv">
+                                    <div className="circle lightBlue">
+                                        <p className="ContentText">Submit Requests</p>
+                                    </div>
+                                    <div className="rightContent">
+                                        <p className="textContent lightBlue">
+                                            Directly submit requests to the program manager,<br />
+                                            such as Academic Transcript,<br />
+                                            through our SIS
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="circle darkBlue">
-                                    <p className="ContentText">
-                                        Check your payment
-                                    </p>
+                                <div className="contentDiv">
+                                    <div className="circle darkBlue">
+                                        <p className="ContentText">Check your payment</p>
+                                    </div>
+                                    <div className="rightContent">
+                                        <p className="textContent darkBlue">View upcoming installments and payment history</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <Link href="/user/login" legacyBehavior>
-                            <div className="text-center login text-[#3D709A] text-[39px] bold cursor-pointer">
-                                Login
-                            </div>
-                        </Link>
-                        <div>
-                        </div>
+                        <footer className="text-center mt-8">
+                            <a href="/user/PrivacyPolicy" className="text-gray-700 font-bold text-sm hover:text-gray-900 underline">Privacy Policy</a>
+                        </footer>
                     </div>
                 </div>
             </div>
         </>
+
+
     );
 }
 

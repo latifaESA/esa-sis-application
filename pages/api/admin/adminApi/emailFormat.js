@@ -12,7 +12,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
    
     const itServiceDeskEmail = emailing_data.itServiceDeskEmail;
     const fromEmail = emailing_data.fromEmail;
-    const link = `${process.env.NEXTAUTH_URL}`
+    const link = `${process.env.NEXTAUTHLOGIN_URL}`
     const bccEmail = emailing_data.bccEmail;
     const subject = `Your Student Information System (SIS) Access`;
 
