@@ -275,30 +275,7 @@ export default function LoginScreen() {
                 <span className="SIS">Student Information System (SIS)</span>
               </div>
             </div>
-            <div className="contentSIS">
-              <div className="SISText">This site will allow you to:</div>
-              <div className="ContainerCircle">
-                <div className="circle blue">
-                  <p className="ContentText">Check your grades</p>
-                </div>
-                <div className="circle gray">
-                  <p className="ContentText">
-                    Get Notifications
-
-                  </p>
-                </div>
-                <div className="circle lightBlue">
-                  <p className="ContentText">
-                    Submit Requests
-                  </p>
-                </div>
-                <div className="circle darkBlue">
-                  <p className="ContentText">
-                    Check your payment
-                  </p>
-                </div>
-              </div>
-            </div>
+      
             <div className="text-center login text-[#3D709A] text-[39px] bold">
               Login
             </div>

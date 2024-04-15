@@ -208,7 +208,8 @@ textarea {
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
-  flex-direction: row;
+
+  flex-direction: column;
 }
 .circle{
   flex-wrap: nowrap;
@@ -216,6 +217,7 @@ textarea {
   height: 100px;
   border-radius: 50%;
   display: flex;
+  margin-bottom: 1rem;
   align-items: center;
   text-align: center;
   
@@ -513,3 +515,192 @@ textarea {
 .tooltip-content button:hover {
   color: #f00; /* Change color on hover as desired */
 }
+
+.contentDiv{
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+
+  flex-direction: row;
+}
+.rightContent{
+  padding: auto;
+  text-align: center;
+}
+/* styles.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  @apply bg-gray-100;
+  background-color: #fff;
+}
+
+.imageRes {
+  max-width: 100%;
+  height: auto;
+}
+
+.esaLogo {
+  max-height: 100%;
+}
+
+.log {
+  margin-top: 4rem;
+  display: flex;
+  align-items: center;
+}
+
+.welcometoSis {
+  margin-left: 1rem;
+  font-size: 2rem;
+  color: #707070;
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+.SIS {
+  font-size: 1.5rem;
+  color: #707070;
+  font-family: 'Montserrat';
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.login {
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3D709A;
+  cursor: pointer;
+}
+
+.contentSIS {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: auto;
+  padding: 1rem;
+}
+
+.SISText {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #707070;
+  font-size: 2rem;
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+.ContainerCircle {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-background-color);
+  margin-bottom: 1rem;
+}
+
+.ContentText {
+  font-size: 1.5rem;
+  color: white;
+  font-family: 'Montserrat';
+  font-weight: bold;
+  text-align: center;
+}
+
+.rightContent {
+  max-width: 300px;
+  margin-left: 1rem;
+  font-size: 1.25rem;
+  color: #000;
+  font-family: 'Montserrat';
+  line-height: 1.5;
+}
+
+@media only screen and (max-width: 768px) {
+  .ContainerCircle {
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  .circle {
+      margin-right: 0;
+  }
+
+  .rightContent {
+      margin-left: 0;
+      margin-top: 1rem;
+      text-align: center;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .imageRes {
+      display: none;
+  }
+
+  .log {
+      margin-top: 3rem;
+      justify-content: center;
+  }
+
+  .welcometoSis {
+      margin-left: 0;
+      margin-top: 1rem;
+      text-align: center;
+  }
+
+  .SIS {
+      margin-top: 0.5rem;
+      text-align: center;
+  }
+
+  .login {
+      margin-left: 0;
+      margin-top: 1rem;
+      text-align: center;
+  }
+
+  .SISText {
+      margin-bottom: 1rem;
+      text-align: center;
+  }
+}
+.textContent{
+  text-align: center;
+
+
+}
+.textContent.blue{
+  color: var(--main-background-color);
+
+}
+
+.textContent.gray{
+  color:#707070
+
+}
+
+.textContent.gray{
+  color:#707070
+
+}
+.textContent.lightBlue{
+  color: var(--main-active-color);
+}
+.rightContent.darkBlue{
+  color: #333;
+}
+
+
