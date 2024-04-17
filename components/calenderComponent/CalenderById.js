@@ -1620,12 +1620,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // tmpscheduleID, classID, day, fromTime, toTime, room_id, pm_id
     // let pmID = session.user.userid;
     let schedData = {
-      // pm_id: pmID,
       tmpscheduleID: tmpscheduleID,
       classID:
         typeof classes === 'string'
-          ? allClasses.filter((clas) => clas.course_id === classes)[0]
-            .tmpclass_id
+          ? allClasses.find((clas) => clas.course_id === classes)?.tmpclass_id
           : classes,
       day: modifyDate(theDate),
       fromTime: fromTime,
@@ -1633,18 +1631,20 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       room_id:
         place > 0
           ? place
-          : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
+          : allroomName.find((rom) => rom.room_name === roomName)?.room_id,
       pm_id: session.user.userid,
       is_online: isOnline,
-      student:student,
-      building:roomBuilding,
-      room_name:roomName,
-      teacher_id:allClasses.filter((clas) => clas.teacher_id),
-      courseName:
-         allClasses.filter((clas) => clas.course_id
-        ),
-        oldData: scheduleDate
+      student: student,
+      building: roomBuilding,
+      room_name: roomName,
+      oldData: scheduleDate
     };
+    
+    // Assuming teacher_id and courseName are available in the current scope
+    const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
+   
+    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : null;
+    schedData.courseName = matchingClass ? matchingClass.course_id : null;
     if (editOnline === isOnline) {
       if (editOnline === true) {
         let { data } = await axios.post(

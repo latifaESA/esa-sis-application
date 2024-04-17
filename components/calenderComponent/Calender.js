@@ -119,7 +119,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   const [errorStart, setErrorStart] = useState('');
   const [errorClass, setErrorClass] = useState('');
   const [errorEnd, setErrorEnd] = useState('');
- 
+
 
   const getAllRooms = async () => {
     try {
@@ -136,37 +136,37 @@ export const Calender = ({ schedule, setSchedule }) => {
     const totalBatches = Math.ceil(data.length / batchSize);
 
     try {
-        for (let i = 0; i < totalBatches; i++) {
-            const startIdx = i * batchSize;
-            const endIdx = Math.min(startIdx + batchSize, data.length);
-            const batchData = data.slice(startIdx, endIdx).map(item => ({
-                BookedBy: item.BookedBy,
-                BookingDate: item.BookingDate,
-                BookingDay: item.BookingDay,
-                FromTime: item.FromTime,
-                ToTime: item.ToTime,
-                Space: item.Space,
-                Title: item.Title,
-                Id: item.Id
-            }));
+      for (let i = 0; i < totalBatches; i++) {
+        const startIdx = i * batchSize;
+        const endIdx = Math.min(startIdx + batchSize, data.length);
+        const batchData = data.slice(startIdx, endIdx).map(item => ({
+          BookedBy: item.BookedBy,
+          BookingDate: item.BookingDate,
+          BookingDay: item.BookingDay,
+          FromTime: item.FromTime,
+          ToTime: item.ToTime,
+          Space: item.Space,
+          Title: item.Title,
+          Id: item.Id
+        }));
 
-            await fetch('/api/pmApi/createBooking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(batchData)
-            });
-        }
+        await fetch('/api/pmApi/createBooking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(batchData)
+        });
+      }
     } catch (error) {
-        console.error('Error creating bookings:', error);
-        return { ok: false, error: error.message };
+      console.error('Error creating bookings:', error);
+      return { ok: false, error: error.message };
     }
-};
+  };
 
-  
-  
-  
+
+
+
 
 
 
@@ -233,7 +233,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       return error
     }
   }
-  
+
 
   const handleCreateZoomMeeting = async (class_id, day, fromTime, to_time) => {
     try {
@@ -334,7 +334,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       return error;
     }
   };
-  
+
 
   const handleDeleteZoom = async (zoom_id) => {
     try {
@@ -470,7 +470,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     });
 
     setScheduleDate(datesArray);
-    
+
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
@@ -841,7 +841,7 @@ export const Calender = ({ schedule, setSchedule }) => {
             }
           } else {
             if (data.success) {
-              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course , ev.room_name , ev.room_building)
+              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course, ev.room_name, ev.room_building)
               await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
 
               setStudent([]);
@@ -953,7 +953,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     getStudentSchedule();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ student , classes ]);
+  }, [student, classes]);
 
 
   const getStudentSchedule = async () => {
@@ -1043,7 +1043,7 @@ export const Calender = ({ schedule, setSchedule }) => {
               room_id: place,
             };
 
-            
+
             axios
               .post('/api/pmApi/createAttendanceReport', payload)
               .then(async (response2) => {
@@ -1223,7 +1223,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     e.preventDefault();
 
     try {
-    
+
 
       if (fromTime === '') {
         setErrorStart('Please Fill The Start Date');
@@ -1254,7 +1254,7 @@ export const Calender = ({ schedule, setSchedule }) => {
       }
 
       if (isOnline === 'true') {
-        if(zoomUserId === undefined){
+        if (zoomUserId === undefined) {
           setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
           setIsClick(false)
           return;
@@ -1289,8 +1289,8 @@ export const Calender = ({ schedule, setSchedule }) => {
       setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
-      
-      if(attendanceData.data.code === 200){
+
+      if (attendanceData.data.code === 200) {
         setConfirmOccupied(true);
         setMessage(attendanceData.data.message);
       }
@@ -1358,7 +1358,7 @@ export const Calender = ({ schedule, setSchedule }) => {
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
-          await handleSharePointBookingRoom(theDate ,attendanceData.data.data , courseName)
+          await handleSharePointBookingRoom(theDate, attendanceData.data.data, courseName)
           await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
@@ -1594,7 +1594,7 @@ export const Calender = ({ schedule, setSchedule }) => {
     setShowFormEdit(false);
   };
   const handleEdit = async (e, event, date) => {
-    
+
     setHasFetched(false)
     await getStudentSchedule()
     await studentGoogleAccess(event)
@@ -1656,12 +1656,10 @@ export const Calender = ({ schedule, setSchedule }) => {
     // tmpscheduleID, classID, day, fromTime, toTime, room_id, pm_id
     // let pmID = session.user.userid;
     let schedData = {
-      // pm_id: pmID,
       tmpscheduleID: tmpscheduleID,
       classID:
         typeof classes === 'string'
-          ? allClasses.filter((clas) => clas.course_id === classes)[0]
-            .tmpclass_id
+          ? allClasses.find((clas) => clas.course_id === classes)?.tmpclass_id
           : classes,
       day: modifyDate(theDate),
       fromTime: fromTime,
@@ -1669,18 +1667,21 @@ export const Calender = ({ schedule, setSchedule }) => {
       room_id:
         place > 0
           ? place
-          : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
+          : allroomName.find((rom) => rom.room_name === roomName)?.room_id,
       pm_id: session.user.userid,
       is_online: isOnline,
-      student:student,
-      building:roomBuilding,
-      room_name:roomName,
-      teacher_id:allClasses.filter((clas) => clas.teacher_id),
-      courseName:
-         allClasses.filter((clas) => clas.course_id
-        ),
-        oldData: scheduleDate
+      student: student,
+      building: roomBuilding,
+      room_name: roomName,
+      oldData: scheduleDate
     };
+    
+    // Assuming teacher_id and courseName are available in the current scope
+    const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
+   
+    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : null;
+    schedData.courseName = matchingClass ? matchingClass.course_id : null;
+    
     if (editOnline === isOnline) {
       if (editOnline === true) {
         let { data } = await axios.post(
@@ -1710,7 +1711,7 @@ export const Calender = ({ schedule, setSchedule }) => {
           await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
 
-          await UpdateFromSharePointBookingRoom(sharepointId, theDate , courseName)
+          await UpdateFromSharePointBookingRoom(sharepointId, theDate, courseName)
 
           getData();
           setIsOnline('')
@@ -1752,7 +1753,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         );
         if (data.success) {
 
-          await handleSharePointBookingRoom(theDate, attendanceId , courseName)
+          await handleSharePointBookingRoom(theDate, attendanceId, courseName)
           await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
           await handleDeleteZoom(zoom_id)
@@ -1787,66 +1788,66 @@ export const Calender = ({ schedule, setSchedule }) => {
     // console.log("the update change:  ", data);
   };
 
-  const UpdateFromSharePointBookingRoom = async (sharepointId, date , courseName) => {
+  const UpdateFromSharePointBookingRoom = async (sharepointId, date, courseName) => {
     try {
-        const accessToken = await getSharePointToken();
-        const dates = new Date(date);
-        const bookingDay = new Date();
-        const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+      const accessToken = await getSharePointToken();
+      const dates = new Date(date);
+      const bookingDay = new Date();
+      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
 
-        const formattedDate = moment(dates).format('YYYY-MM-DD');
-        const fromTimeSplit = fromSharePoint.split('+')[0];
-        const toTimeSplit = toSharePoint.split('+')[0];
+      const formattedDate = moment(dates).format('YYYY-MM-DD');
+      const fromTimeSplit = fromSharePoint.split('+')[0];
+      const toTimeSplit = toSharePoint.split('+')[0];
 
-        // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-        const utcOffset = 2; // Change this value if daylight saving time is not in effect
+      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+      const utcOffset = 2; // Change this value if daylight saving time is not in effect
 
-        // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-        let fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true);
-        let toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true);
+      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+      let fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true);
+      let toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true);
 
-        // Adding 2 hours to the "from" and "to" times
-        fromTimes.add(2, 'hours');
-        toTimes.add(2, 'hours');
+      // Adding 2 hours to the "from" and "to" times
+      fromTimes.add(2, 'hours');
+      toTimes.add(2, 'hours');
 
-        // Convert back to ISO string format after adding 2 hours
-        fromTimes = fromTimes.toISOString();
-        toTimes = toTimes.toISOString();
+      // Convert back to ISO string format after adding 2 hours
+      fromTimes = fromTimes.toISOString();
+      toTimes = toTimes.toISOString();
 
-        const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
+      const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
 
-        const response = await fetch(apiUrl, {
-            method: "PATCH",
-            headers: {
-                Accept: "application/json;odata=verbose",
-                "Content-Type": "application/json;odata=verbose",
-                Authorization: `Bearer ${accessToken}`,
-                'If-Match': '*'
-            },
-            body: JSON.stringify({
-                __metadata: {
-                    type: "SP.Data.BookingRoomListItem",
-                },
-                Title: `${roomName}`,
-                Space: `${building}`,
-                BookedBy: `${session.user?.name}`,
-                BookingDate: date, // Use the current date in the iteration
-                BookingDay: formattedBookingDay,
-                FromTime: fromTimes,
-                ToTime: toTimes,
-                Description: `${courseName}`
-            }),
-        });
+      const response = await fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json;odata=verbose",
+          "Content-Type": "application/json;odata=verbose",
+          Authorization: `Bearer ${accessToken}`,
+          'If-Match': '*'
+        },
+        body: JSON.stringify({
+          __metadata: {
+            type: "SP.Data.BookingRoomListItem",
+          },
+          Title: `${roomName}`,
+          Space: `${building}`,
+          BookedBy: `${session.user?.name}`,
+          BookingDate: date, // Use the current date in the iteration
+          BookingDay: formattedBookingDay,
+          FromTime: fromTimes,
+          ToTime: toTimes,
+          Description: `${courseName}`
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        } else {
-            return { success: true }
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return { success: true }
+      }
     } catch (error) {
-        return { success: false }
+      return { success: false }
     }
-};
+  };
 
 
 
@@ -1858,21 +1859,21 @@ export const Calender = ({ schedule, setSchedule }) => {
       const dates = new Date(date);
       const bookingDay = new Date();
       const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-  
+
       const formattedDate = moment(dates).format('YYYY-MM-DD');
       const fromTimeSplit = fromSharePoint.split('+')[0];
       const toTimeSplit = toSharePoint.split('+')[0];
-  
+
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
       const utcOffset = 3; // Change this value if daylight saving time is not in effect
-  
+
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();
       const toTimes = moment(`${formattedDate}T${toTimeSplit}`).utcOffset(utcOffset, true).toISOString();
-  
+
       const apiUrl =
         "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-  
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -1894,13 +1895,13 @@ export const Calender = ({ schedule, setSchedule }) => {
           Description: `${courseName}`
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Log the ID of the newly added item
       if (data && data.d && data.d.Id) {
         // Update the SharePoint ID in the schedule
@@ -1913,30 +1914,30 @@ export const Calender = ({ schedule, setSchedule }) => {
       console.error("Error submitting booking to SharePoint:", error.message);
     }
   };
-  
 
-  const handleDragRoomBooking = async (date, from, to, attendance_id , courseName ,roomName , roomSpace) => {
+
+  const handleDragRoomBooking = async (date, from, to, attendance_id, courseName, roomName, roomSpace) => {
     try {
-      console.log('courseName' , courseName)
+      console.log('courseName', courseName)
       const accessToken = await getSharePointToken();
       const dates = new Date(date);
       const bookingDay = new Date();
       const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-  
+
       const formattedDate = moment(dates).format('YYYY-MM-DD');
       const fromTimeSplit = from.split('+')[0];
       const toTimeSplit = to.split('+')[0];
-  
+
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
       const utcOffset = 3; // Change this value if daylight saving time is not in effect
-  
+
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();
       const toTimes = moment(`${formattedDate}T${toTimeSplit}`).utcOffset(utcOffset, true).toISOString();
-  
+
       const apiUrl =
         "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-  
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -1958,13 +1959,13 @@ export const Calender = ({ schedule, setSchedule }) => {
           Description: `${courseName}`
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Log the ID of the newly added item
       if (data && data.d && data.d.Id) {
         // Update the SharePoint ID in the schedule
@@ -2618,41 +2619,41 @@ const AddSchedule = ({
 
               </div>
               {isOnline === false || isOnline === 'false' ?
-              <>
-                              <div className="sm:flex">
-                  <div className="mb-4 sm:mr-8 sm:w-1/2">
-                    <label className="text-gray-700 block mb-2">
-                      Building:
-                    </label>
-                    <CustomSelectBox
-                      options={allStages}
-                      placeholder="Select Location"
-                      onSelect={handleStages}
-                      styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
-                      enable={false}
-                      oldvalue={theroombuilding}
-                    />
-
-                  </div>
-                  {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
-                    <div className="mb-4 sm:w-1/2">
+                <>
+                  <div className="sm:flex">
+                    <div className="mb-4 sm:mr-8 sm:w-1/2">
                       <label className="text-gray-700 block mb-2">
-                        Location:
+                        Building:
                       </label>
                       <CustomSelectBox
-                        options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                        options={allStages}
                         placeholder="Select Location"
-                        onSelect={handlePlace}
+                        onSelect={handleStages}
                         styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
                         enable={false}
-                        oldvalue={theroomname}
+                        oldvalue={theroombuilding}
                       />
 
                     </div>
-                  }
-                </div>
-              
-              </>:<></>
+                    {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
+                      <div className="mb-4 sm:w-1/2">
+                        <label className="text-gray-700 block mb-2">
+                          Location:
+                        </label>
+                        <CustomSelectBox
+                          options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                          placeholder="Select Location"
+                          onSelect={handlePlace}
+                          styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                          enable={false}
+                          oldvalue={theroomname}
+                        />
+
+                      </div>
+                    }
+                  </div>
+
+                </> : <></>
 
               }
             </div>

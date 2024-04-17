@@ -24,6 +24,7 @@ async function handler(req, res) {
       courseName,
       oldData } =
       req.body;
+      console.log("bodyyyyyyyyyyyyyyyy" , teacher_id)
       const classFilter= oldData.filter((sched)=>sched.tmpschedule_id === tmpscheduleID)
       
       const formattedDate = moment(day).format('DD-MM-YYYY');
@@ -39,9 +40,9 @@ async function handler(req, res) {
       
     const table = 'teachers'
     const colName='teacher_id'
-    const val=teacher_id[0].teacher_id
-        const data = await getAllById(connection, table, colName, val
-  );
+    const val=teacher_id
+        const data = await getAllById(connection, table, colName, val);
+        console.log('data' , data , val)
     const response = await updateSchedule(
       connection,
       classID,
@@ -94,7 +95,7 @@ async function handler(req, res) {
             students.email ,
             students.student_firstname ,
             students.student_lastname, 
-            courseName[0].course_id , 
+            courseName , 
             oldDate ,
             oldFromTime,
             oldToTime , 
@@ -126,7 +127,7 @@ async function handler(req, res) {
                   `</br>` +
                   `<p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p>` +
                   `<p>We trust this email finds you well.</p> ` +
-                  `<p>We We would like to inform you of a necessary change to our ${courseName[0].course_id} schedule:</p>` +
+                  `<p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p>` +
                   `<p>Previous Schedule:</p>` +
                   `<p>
                   <ul>
