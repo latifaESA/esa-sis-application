@@ -445,6 +445,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         date: new Date(sched.day),
         course: sched.course_name,
         courseID: sched.course_id,
+        teacherId:sched.teacher_id,
         title: sched.course_name,
         type: sched.course_type,
         teacher: `${sched.teacher_firstname} ${sched.teacher_lastname}`,
@@ -1643,8 +1644,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // Assuming teacher_id and courseName are available in the current scope
     const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
    
-    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : null;
-    schedData.courseName = matchingClass ? matchingClass.course_id : null;
+    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate.teacherId;
+    schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate.courseID;
     if (editOnline === isOnline) {
       if (editOnline === true) {
         let { data } = await axios.post(

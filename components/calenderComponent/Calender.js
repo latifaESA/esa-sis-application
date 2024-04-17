@@ -446,6 +446,7 @@ export const Calender = ({ schedule, setSchedule }) => {
   const getSchedule = async () => {
     const datesArray = [];
     schedule.forEach((sched) => {
+      console.log('sched' , sched)
       datesArray.push({
         tmpschedule_id: sched.tmpschedule_id,
         class_id: sched.class_id,
@@ -454,6 +455,7 @@ export const Calender = ({ schedule, setSchedule }) => {
         courseID: sched.course_id,
         title: sched.course_name,
         type: sched.course_type,
+        teacherId:sched.teacher_id,
         teacher: `${sched.teacher_firstname} ${sched.teacher_lastname}`,
         from: sched.from_time,
         to: sched.to_time,
@@ -465,14 +467,16 @@ export const Calender = ({ schedule, setSchedule }) => {
         attendance_id: sched.attendance_id,
         zoom_meeting_id: sched.zoom_meeting_id,
         zoom_url: sched.zoom_url,
+        promotions:sched.promotion,
+    
         color: '#00CED1',
       });
     });
 
     setScheduleDate(datesArray);
 
-    // console.log("datesArray of schedule:  ", datesArray);
-    // console.log("schedule:  ", data.data);
+    console.log("datesArray of schedule:  ", datesArray);
+    console.log("schedule:  ", schedule);
   };
   const getData = async () => {
     try {
@@ -1593,10 +1597,29 @@ export const Calender = ({ schedule, setSchedule }) => {
     setIsOnline('')
     setShowFormEdit(false);
   };
+  const studentEdit = async(ev)=>{
+    console.log('event.promotion' , ev)
+    try {
+      let major_id = session.user?.majorid;
+      let promotion = ev.promotions.replace(/\s/g, '');
+      const { data } = await axios.post('/api/pmApi/getAllStudent', {
+        major_id,
+        promotion,
+      });
+      console.log('data',data)
+      setStudent(data.data);
+     
+    } catch (error) {
+      return error
+    }
+  }
+  useEffect(()=>{
+    studentEdit()
+  },[isEdit])
   const handleEdit = async (e, event, date) => {
 
-    setHasFetched(false)
-    await getStudentSchedule()
+    await studentEdit(event)
+   
     await studentGoogleAccess(event)
     // searchBook()
     setZoomUrl(event.zoom_url)
@@ -1678,9 +1701,9 @@ export const Calender = ({ schedule, setSchedule }) => {
     
     // Assuming teacher_id and courseName are available in the current scope
     const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
-   
-    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : null;
-    schedData.courseName = matchingClass ? matchingClass.course_id : null;
+  
+    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate[0].teacherId;
+    schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
     
     if (editOnline === isOnline) {
       if (editOnline === true) {
