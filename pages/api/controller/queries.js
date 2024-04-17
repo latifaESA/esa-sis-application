@@ -966,8 +966,9 @@ async function updatePresent(connection, present, student_id, attendance_id) {
 
 async function getAllStudent(connection, major_id, promotion) {
   try {
-    const query = `SELECT student.* , users.access_token FROM student 
+    const query = `SELECT student.* , users.access_token ,user_contact.email FROM student 
     INNER JOIN users ON student.student_id = users.userid
+    INNER JOIN user_contact ON student.student_id = user_contact.userid
     WHERE student.major_id = '${major_id}' AND (trim(student.promotion)) = '${promotion}' AND student.status != 'Alumni'`;
     const res = await connection.query(query);
     return res;
