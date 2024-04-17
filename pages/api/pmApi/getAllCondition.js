@@ -8,7 +8,9 @@ async function handler(req, res) {
   try {
     const connection = await connect();
     const { table, colName, val } = req.body;
+   
     const data = await getAllById(connection, table, colName, val);
+   
     await disconnect(connection);
 
     return res.status("200").send(data);

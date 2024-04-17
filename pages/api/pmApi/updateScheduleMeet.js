@@ -13,8 +13,8 @@ async function handler(req, res) {
      
     } =
       req.body;
-     const response = await updateOnlineSchedule(connection , zoom_id , zoom_url , attendance_id)
-     console.log('response' , response)
+     await updateOnlineSchedule(connection , zoom_id , zoom_url , attendance_id)
+     
  
   
     await disconnect(connection)   

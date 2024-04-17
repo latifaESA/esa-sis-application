@@ -463,10 +463,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     });
 
     setScheduleDate(datesArray);
-    console.log(schedule)
+  
     // console.log("datesArray of schedule:  ", datesArray);
     // console.log("schedule:  ", data.data);
   };
+ 
   const getData = async () => {
     try {
       let pmID = majorId;
@@ -497,7 +498,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       val,
     });
 
-    // console.log("all classes:  ==> ", data.rows);
+    console.log("all classes:  ==> ", data.rows);
 
     // setAllClasses(data.rows.map(clas => clas.course_id))
     setAllClasses(data.rows);
@@ -1134,7 +1135,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       }
     });
   };
-
+  console.log('googleToken' , student)
   const handleCreateAttendanceDragDrop = (ev, date, place) => {
     return new Promise((resolve, reject) => {
       try {
@@ -1558,7 +1559,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setShowFormEdit(false);
   };
   const handleEdit = async (e, event, date) => {
-
+    setHasFetched(false)
+    await getStudentSchedule()
     await studentGoogleAccess(event)
     // searchBook()
     setZoomUrl(event.zoom_url)
@@ -1633,7 +1635,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           ? place
           : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
       pm_id: session.user.userid,
-      is_online: isOnline
+      is_online: isOnline,
+      student:student,
+      building:roomBuilding,
+      room_name:roomName,
+      teacher_id:allClasses.filter((clas) => clas.teacher_id),
+      courseName:
+         allClasses.filter((clas) => clas.course_id
+        ),
+        oldData: scheduleDate
     };
     if (editOnline === isOnline) {
       if (editOnline === true) {
@@ -1941,7 +1951,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   }
 
-console.log('googleToken' , googleToken)
+console.log('googleToken' , student)
 
   const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 

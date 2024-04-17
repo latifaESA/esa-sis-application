@@ -1594,7 +1594,9 @@ export const Calender = ({ schedule, setSchedule }) => {
     setShowFormEdit(false);
   };
   const handleEdit = async (e, event, date) => {
-
+    
+    setHasFetched(false)
+    await getStudentSchedule()
     await studentGoogleAccess(event)
     // searchBook()
     setZoomUrl(event.zoom_url)
@@ -1669,7 +1671,15 @@ export const Calender = ({ schedule, setSchedule }) => {
           ? place
           : allroomName.filter((rom) => rom.room_name === roomName)[0].room_id,
       pm_id: session.user.userid,
-      is_online: isOnline
+      is_online: isOnline,
+      student:student,
+      building:roomBuilding,
+      room_name:roomName,
+      teacher_id:allClasses.filter((clas) => clas.teacher_id),
+      courseName:
+         allClasses.filter((clas) => clas.course_id
+        ),
+        oldData: scheduleDate
     };
     if (editOnline === isOnline) {
       if (editOnline === true) {
