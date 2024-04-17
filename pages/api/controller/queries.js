@@ -3868,6 +3868,31 @@ async function teacherReport(connection, teacher_ids, pmMajor, majorId) {
   }
 }
 
+async function getStudentsAndPims(connection, major_id, extra_major='null'){
+  try {
+    
+let query = `SELECT student.student_firstname, student.student_lastname, student.student_id, 
+student_financial.pims_id from student
+INNER JOIN student_financial ON student.student_id = student_financial.stundent_financial_id
+where student.major_id = '${major_id}'`;
+if (extra_major !== 'null') {
+  query += ` OR student.major_id = '${extra_major}'`;
+}
+const res = connection.query(query)
+return res
+  } catch (error) {
+    console.log("error in the query file in getStudentsAndPims function : ", error); return
+  }
+}
+async function pmExtraMajor(connection, pmID){
+  try {
+    const query = `SELECT major_id FROM program_manager_extra_major WHERE pm_id = '${pmID}'`;
+    const res = await connection.query(query)
+    return res;
+  } catch (error) {
+    console.log("error in the query file in the pmExtraMajor function : ", error); return;
+  }
+}
 
 
 /* End Postegresql */
@@ -4054,5 +4079,7 @@ module.exports = {
   updateOnlineSchedule,
   deleteZoomId,
   createExtraAS,
-  uploadStudentFinancial
+  uploadStudentFinancial,
+  getStudentsAndPims,
+  pmExtraMajor
 };

@@ -96,6 +96,24 @@ const ProgramManagerView = () => {
               </div>
             </Link>
 
+            {/* financial */}
+
+            <Link href="/programManager/financial">
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/financial'
+                  ? 'bg-blue-100 text-blue-500'
+                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                  }`}
+              >
+                <div className="mr-2">
+                  <UserGroupIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p>Financial</p>
+                </div>
+              </div>
+            </Link>
+
             {/* Course */}
 
             <Link href="/programManager/courseView">
@@ -193,10 +211,9 @@ const ProgramManagerView = () => {
             <Link href="/programManager/TeacherAttendace">
               {/* <Link href='/admin/payments'> */}
               <div
-                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-                  router.pathname == '/programManager/TeacherAttendace'
-                  ? 'bg-blue-100 text-blue-500'
-                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/TeacherAttendace'
+                    ? 'bg-blue-100 text-blue-500'
+                    : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
                   }`}
               >
                 <div className="mr-2">
@@ -207,7 +224,7 @@ const ProgramManagerView = () => {
                 </div>
               </div>
             </Link>
-            
+
 
             {/* course Management system */}
             {
