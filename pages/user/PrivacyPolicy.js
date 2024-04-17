@@ -85,6 +85,11 @@ const PrivacyPolicy = () => {
       </p>
       <p className="mb-4">Last updated: 5/3/2024</p>
       <p>Ecole Supérieure dAgricultures in Angers</p>
+
+      {/* Added disclosure */}
+      <p className="mb-4">
+        (App’s) use and transfer to any other app of information received from Google APIs will adhere to Google API Services User Data Policy, including the Limited Use requirements. For more details, please read the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>.
+      </p>
     </div>
   );
 };
