@@ -46,18 +46,12 @@ export default function Financial() {
       try{
         let body = { pmID: session?.user?.userid}
       let result = await axios.post('/api/pmApi/pmExtraMajor', body)
-      console.log('the result : ', result.data.data[0].major_id)
         getStudents({extraMajorId:result.data.data[0].major_id});
       return
       }catch (error){
         console.log('the error in requesting pims data is : ', error)
         return;
       }
-    }
-    if(session?.user?.hasMultiMajor){
-    getExtramajor();
-    }else{
-      getStudents({extraMajorId:null});
     }
     let getStudents = async ({extraMajorId}) => {
       console.log('the extra major is : ', extraMajorId)
@@ -71,6 +65,13 @@ export default function Financial() {
         return;
       }
     }
+
+    if(session?.user?.hasMultiMajor == 'true'){
+      getExtramajor();
+    }else{
+      getStudents({extraMajorId:null});
+    }
+
   } ,[])
   
   useEffect(() => {
