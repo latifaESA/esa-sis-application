@@ -126,7 +126,7 @@ export default function Reports() {
           <label className="w-[350px]">
             First Name:
             <input
-              className="ml-5 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+              className="ml-4 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
               type="text"
               name="Fname"
               value={studentFirstName}

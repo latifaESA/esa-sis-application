@@ -172,7 +172,7 @@ export default function Attendance() {
               <label>
                 Date:
                 <input
-                  className="ml-2 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
+                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
                   type="date"
                   name="date"
                   placeholder=""
@@ -189,7 +189,7 @@ export default function Attendance() {
               <label>
                 First Name:
                 <input
-                  className="ml-2 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
+                  className="ml-1 mt-3 w-40 max-[850px]:ml-1 max-[850px]:mt-0"
                   type="text"
                   name="firstname"
                   placeholder="First Name"

@@ -93,10 +93,7 @@ const SendEmail = async (
 
 
     await transporter.sendMail(mailOptions);
-    return {
-        success:true,
-        message:'sent email'
-    }
+
   } catch (error) {
     return error;
   }

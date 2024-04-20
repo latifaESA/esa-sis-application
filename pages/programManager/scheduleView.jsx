@@ -48,9 +48,10 @@ export default function ScheduleView() {
         handleMajor();
       }
     }, [session.user?.pm_id]);
-    console.log('')
+    
   
     const handleButtonClick = (majorId , majorName) => {
+      console.log('majorName' , majorName)
       router.push(`/programManager/ScheduleById?majorId=${majorId}&majorName=${majorName}`);
     };
 

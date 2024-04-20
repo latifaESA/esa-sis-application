@@ -439,15 +439,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const getSchedule = async () => {
     const datesArray = [];
     schedule.forEach((sched) => {
+      console.log('sched' , sched)
       datesArray.push({
         tmpschedule_id: sched.tmpschedule_id,
         class_id: sched.class_id,
         date: new Date(sched.day),
         course: sched.course_name,
         courseID: sched.course_id,
-        teacherId:sched.teacher_id,
         title: sched.course_name,
         type: sched.course_type,
+        teacherId:sched.teacher_id,
         teacher: `${sched.teacher_firstname} ${sched.teacher_lastname}`,
         from: sched.from_time,
         to: sched.to_time,
@@ -458,15 +459,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         is_online: sched.is_online,
         attendance_id: sched.attendance_id,
         zoom_meeting_id: sched.zoom_meeting_id,
-        zoom_url:sched.zoom_url,
+        zoom_url: sched.zoom_url,
+        promotions:sched.promotion,
+    
         color: '#00CED1',
       });
     });
 
     setScheduleDate(datesArray);
-  
-    // console.log("datesArray of schedule:  ", datesArray);
-    // console.log("schedule:  ", data.data);
   };
  
   const getData = async () => {
@@ -954,7 +954,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         const data2 = await axios.post('/api/pmApi/getAllCourses', payload2);
 
         if (data2.data.data[0].course_type !== 'Elective') {
-          let major_id = session.user?.majorid;
+          let major_id = majorId;
           let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
           const { data } = await axios.post('/api/pmApi/getAllStudent', {
             major_id,
@@ -965,7 +965,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           setHasFetched(true);
         } else {
           const payload = {
-            major_id: session.user?.majorid,
+            major_id: majorId,
             promotion: data1.data.data[0].promotion.replace(/\s/g, ''),
             course_id: course_id,
           };
@@ -975,7 +975,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             setHasFetched(true);
             setStudent(data.data.data);
           } catch (error) {
-            let major_id = session.user?.majorid;
+            let major_id = majorId;
             let promotion = data1.data.data[0].promotion.replace(/\s/g, '');
             const { data } = await axios.post('/api/pmApi/getAllStudent', {
               major_id,
@@ -1013,7 +1013,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
               teacher_id,
               course_id,
               attendance_date: modifyDate(theDate),
-              major_id: session.user?.majorid,
+              major_id: majorId,
               fromTime: fromTime,
               toTime: toTime,
               room_id: place,
@@ -1559,9 +1559,28 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setIsOnline('')
     setShowFormEdit(false);
   };
+  const studentEdit = async(ev)=>{
+    console.log('event.promotion' , ev)
+    try {
+      let major_id = majorId;
+      let promotion = ev.promotions.replace(/\s/g, '');
+      const { data } = await axios.post('/api/pmApi/getAllStudent', {
+        major_id,
+        promotion,
+      });
+      console.log('data',data)
+      setStudent(data.data);
+     
+    } catch (error) {
+      return error
+    }
+  }
+  useEffect(()=>{
+    studentEdit()
+  },[isEdit])
   const handleEdit = async (e, event, date) => {
-    setHasFetched(false)
-    await getStudentSchedule()
+    console.log('edit' , event)
+    await studentEdit(event)
     await studentGoogleAccess(event)
     // searchBook()
     setZoomUrl(event.zoom_url)
@@ -1598,7 +1617,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
 
   const handleSaveEdit = async (e) => {
-
+    
     e.preventDefault();
     setIsClickEdit(true);
     // setShowFormEdit(false)
@@ -1643,9 +1662,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     
     // Assuming teacher_id and courseName are available in the current scope
     const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
-   
-    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate.teacherId;
-    schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate.courseID;
+  
+    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate[0].teacherId;
+    schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
     if (editOnline === isOnline) {
       if (editOnline === true) {
         let { data } = await axios.post(

@@ -389,7 +389,7 @@ export default function StudentByMajor() {
               <label>
                 First Name:
                 <input
-                  className="ml-2 w-40 max-[850px]:ml-1"
+                  className="ml-1 w-40 max-[850px]:ml-1"
                   type="text"
                   name="Fname"
                   onChange={(e) => setFirstnameValue(e.target.value)}

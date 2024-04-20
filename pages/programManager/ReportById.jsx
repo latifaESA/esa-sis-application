@@ -131,7 +131,7 @@ export default function ReportById({
           <label>
             First Name:
             <input
-              className="ml-2 w-40 max-[850px]:ml-1"
+              className="ml-1 w-40 max-[850px]:ml-1"
               type="text"
               name="Fname"
               onChange={(e) => setStudentFirstName(e.target.value)}
@@ -169,7 +169,7 @@ export default function ReportById({
 
             Course:
             <input
-              className="ml-9 mt-3 w-40 max-[850px]:ml-7 max-[850px]:mt-0"
+              className="ml-8 mt-3 w-40 max-[850px]:ml-8 max-[850px]:mt-0"
               type="text"
               name="ID"
               onChange={(e) => setCourseName(e.target.value)}
@@ -196,7 +196,7 @@ export default function ReportById({
           <label>
             Date:
             <input
-              className="ml-10 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
+              className="ml-12 mt-3 w-40 max-[850px]:ml-12 max-[850px]:mt-0"
               type="date"
               name="date"
               placeholder=""

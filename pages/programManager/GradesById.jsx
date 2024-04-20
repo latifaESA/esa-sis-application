@@ -367,7 +367,7 @@ export default function GradesById() {
             fetchPromotion()
             showAll()
             search()
-        } else if (isExeMajor && secondMajorWord === 'GMP' || majorId === '1') {
+        } else if (isExeMajor && secondMajorWord === 'GMP' || majorId === '2') {
             fetchPromotion()
             showAllGMP()
             searchGMP()
@@ -416,7 +416,7 @@ export default function GradesById() {
                             <label>
                                 First Name:
                                 <input
-                                    className="ml-2 w-40 max-[850px]:ml-1"
+                                    className="ml-1 w-40 max-[850px]:ml-1"
                                     type="text"
                                     value={studentFirstName}
                                     onChange={(e) => setStudentFirstName(e.target.value)}
@@ -456,7 +456,7 @@ export default function GradesById() {
                             <label>
                                 Task:
                                 <select
-                                    className="ml-14 w-40 max-[850px]:ml-12"
+                                    className="ml-10 w-40 max-[850px]:ml-10"
                                     value={taskName}
                                     onChange={(e) => setTaskName(e.target.value)}
                                 >
@@ -496,7 +496,7 @@ export default function GradesById() {
                                     placeholder="Grade"
                                     className="ml-9 w-40 max-[850px]:ml-9" />
                             </label>
-                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || majorId === 2 ? <>
+                            {isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' || session.user?.majorName === 'EXED-Digital Transformation' && majorId ===3 ? <>
                                 <label>
                                     Grade/30:
                                     <input
@@ -504,7 +504,7 @@ export default function GradesById() {
                                         value={gradeOver30}
                                         onChange={(e) => setGradesOver30(e.target.value)}
                                         placeholder="Grade Over 30"
-                                        className="ml-5 w-40 max-[850px]:ml-4 max-[850px]:w-30" />
+                                        className="ml-4 w-40 max-[850px]:ml-4 max-[850px]:w-30" />
                                 </label>
 
                             </> : <>
@@ -653,7 +653,7 @@ export default function GradesById() {
                                     className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
                                     type="button"
                                     onClick={!isExeMajor ? search :
-                                        (secondMajorWord === 'GMP' || majorId === '1' ?
+                                        (secondMajorWord === 'GMP' || majorId === '2' ?
                                             searchGMP :
                                             isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'
                                                 ? searchRTF : isExeMajor ? searchEXED : <></>)
@@ -699,8 +699,8 @@ export default function GradesById() {
                         </div>
                         {
                             !isExeMajor ? <GradeList users={users} setUser={setUser} />
-                                : isExeMajor && majors === 'EXED-GMP' ? <GradeListGMP users={users} setUser={setUser} />
-                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation' ?
+                                : isExeMajor && majors === 'EXED-GMP' || secondMajorWord === 'GMP'? <GradeListGMP users={users} setUser={setUser} />
+                                    : isExeMajor && secondMajorWord === 'Digital Transformation in Financial Services' || secondMajorWord === 'Digital Transformation'  || session.user?.majorName === 'Digital Transformation' || session.user?.majorName === 'EXED-Digital Transformation'?
                                         <GradeListRTF users={users} setUser={setUser} />
                                         : isExeMajor ? <GradesEXEDList users={users} setUser={setUser} /> : <></>
 

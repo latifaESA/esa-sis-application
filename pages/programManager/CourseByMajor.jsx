@@ -325,7 +325,7 @@ export default function CourseByMajor() {
               <label className="">
               Type:
               <select
-                className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                className="ml-8 mt-3 w-40 max-[850px]:ml-8 max-[850px]:mt-0"
                 value={courseType}
                 onChange={(e) => setcourseType(e.target.value)}
               >
@@ -347,7 +347,7 @@ export default function CourseByMajor() {
               <label className="">
                 Type:
                 <select
-                  className="ml-10 mt-3 w-40 max-[850px]:ml-10 max-[850px]:mt-0"
+                  className="ml-8 mt-3 w-40 max-[850px]:ml-8 max-[850px]:mt-0"
                   value={courseType}
                   onChange={(e) => setcourseType(e.target.value)}
                 >

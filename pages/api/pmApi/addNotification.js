@@ -17,6 +17,7 @@ async function handler(req, res) {
       content,
       subject
     );
+    console.log('data' , data)
     await disconnect(connection);
 
     return res.status("200").send(data);
