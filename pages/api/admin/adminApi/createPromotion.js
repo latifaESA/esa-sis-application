@@ -14,13 +14,14 @@ async function handler(req, res) {
         academic_year,
         major_id
      } = req.body;
-     if(promotion_name === '' || academic_year === '' || major_id === ''){
-      return res.status(400).json({
-        success:false,
-        code:400,
-        message:`Field is required!`
-      })
-     }
+     console.log('testuuuuuuuuuuuuuuuuuu' )
+    //  if(promotion_name === '' || academic_year === '' || major_id === ''){
+    //   return res.status(400).json({
+    //     success:false,
+    //     code:400,
+    //     message:`Field is required!`
+    //   })
+    //  }
      const exist = await PromotionExist(connection , promotion_name)
      if(exist){
        return res.status(200).json({

@@ -30,7 +30,7 @@ async function handler(req, res) {
       req.body;
     
       const classFilter= oldData.filter((sched)=>sched.tmpschedule_id === tmpscheduleID)
-      
+      console.log('----------------------classfilter---------------------------' , classFilter)
       const formattedDate = moment(day).format('DD-MM-YYYY');
       const formattedDateold = moment(classFilter[0].date).format('DD-MM-YYYY');
       const oldTeacher = classFilter[0].teacher

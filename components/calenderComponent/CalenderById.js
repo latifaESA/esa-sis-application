@@ -1662,8 +1662,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     
     // Assuming teacher_id and courseName are available in the current scope
     const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
+      
   
     schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate[0].teacherId;
+    console.log('matchingClass' , schedData)
     schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
     if (editOnline === isOnline) {
       if (editOnline === true) {

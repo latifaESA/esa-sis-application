@@ -90,7 +90,7 @@ export default function AdditionList() {
             academic_year: new Date().getFullYear(),
             major_id: majorValue,
         };
-        // console.log(payload);
+        console.log(payload);
         try {
             const data = await axios.post(
                 "/api/admin/adminApi/createPromotion",
