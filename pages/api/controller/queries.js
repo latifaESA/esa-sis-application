@@ -3896,6 +3896,50 @@ async function pmExtraMajor(connection, pmID){
 }
 
 
+
+async function filterStudentAlumni(
+  connection,
+  id,
+  firstname,
+  lastname,
+  major,
+  promotion,
+  graduationYear
+  
+) {
+  try {
+    let query = `
+      SELECT student.*, major.major_name, user_contact.email, user_contact.mobile_number
+      FROM student
+      LEFT JOIN major ON student.major_id = major.major_id
+      LEFT JOIN user_contact ON student_id = user_contact.userid
+      WHERE student.major_id = '${major}' AND student.status='Alumni'`;
+
+    if (id.trim() != "") {
+      query += ` AND lower(trim(student_id)) LIKE lower(trim('%${id}%'))`;
+    }
+    if (firstname.trim() != "") {
+      query += ` AND lower(trim(student_firstname)) LIKE lower(trim('%${firstname}%'))`;
+    }
+    if (lastname.trim() != "") {
+      query += ` AND lower(trim(student_lastname)) LIKE lower(trim('%${lastname}%'))`;
+    }
+    if (promotion.trim() != "") {
+      query += ` AND promotion = '${promotion}'`;
+    }
+
+    if (graduationYear != "") {
+      query += ` AND graduated_year = '${graduationYear}'`;
+    }
+    const result = await connection.query(query);
+    return result;
+  } catch (err) {
+    console.log("error in the query file : ", err); return;
+  }
+}
+
+
+
 /* End Postegresql */
 
 module.exports = {
@@ -4082,5 +4126,6 @@ module.exports = {
   createExtraAS,
   uploadStudentFinancial,
   getStudentsAndPims,
-  pmExtraMajor
+  pmExtraMajor,
+  filterStudentAlumni
 };

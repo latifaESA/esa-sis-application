@@ -6,7 +6,9 @@ import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../../utilities/db");
 const {
   AddStudentAlumni,
-  getMajor
+  getMajor,
+  updateStudentStatus,
+  getAllById
 } = require("../../controller/queries");
 
 // import xlsx from "xlsx";
@@ -99,6 +101,8 @@ async function handler(req, res) {
       };
       const { fields } = await readFile(file.path);
 
+      // console.log('fields' , fields)
+
       const connection = await connect();
       let countSaved = 0;
 
@@ -106,25 +110,53 @@ async function handler(req, res) {
         try {
           const major = await getMajor(connection, row.Major);
           const majorid = major.rows[0].major_id;
-
-          const response = await AddStudentAlumni(connection, {
-            status: row.Status,
-            graduated_year: row.GraduatedYear,
-            student_id: row.StudentID,
-            promotion: row.Promotion,
-            major_id: majorid,
-            firstname: row.FirstName,
-            lastname: row.LastName,
-            academic_year: row.AcademicYear,
-            email: row.Email,
-            mobile_number: row.PhoneNumber,
-          });
-
-          if (response) {
-            countSaved++;
-          } else {
-            console.error(`Failed to save row: `, row);
+          const student_exist = await getAllById(
+            connection,
+            'student',
+            'student_id',
+            row.StudentID
+            
+          )
+      
+          
+          if(student_exist.rowCount>0){
+          
+            const response = await updateStudentStatus(
+              connection , {
+                status:'Alumni', 
+                graduated_year:row.GraduatedYear, 
+                student_id:row.StudentID
+              }
+            )
+           
+            if (response) {
+              countSaved++;
+            } else {
+              console.error(`Failed to save row: `, row);
+            }
+          }else{
+         
+            const response = await AddStudentAlumni(connection, {
+              status: row.Status,
+              graduated_year: row.GraduatedYear,
+              student_id: row.StudentID,
+              promotion: row.Promotion,
+              major_id: majorid,
+              firstname: row.FirstName,
+              lastname: row.LastName,
+              academic_year: row.AcademicYear,
+              email: row.Email,
+              mobile_number: row.PhoneNumber,
+            });
+            // console.log('test' , response)
+            if (response) {
+              countSaved++;
+            } else {
+              console.error(`Failed to save row: `, row);
+            }
           }
+
+
         } catch (error) {
           return res.status(500).json({
             success: false,
