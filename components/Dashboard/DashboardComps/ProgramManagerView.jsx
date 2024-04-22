@@ -134,6 +134,26 @@ const ProgramManagerView = () => {
               </div>
             </Link>
 
+            <Link href="/programManager/History">
+              {/* <Link href='/admin/profile'> */}
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors 
+                ${
+                  router.pathname == '/programManager/History'
+                  ? 'bg-blue-100 text-blue-500'
+                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                  }`}
+              >
+                <div className="mr-2">
+                  <WalletIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p> History</p>
+                </div>
+              </div>
+            </Link>
+
+
             {/* Class Section */}
             <Link href="/programManager/classView">
               <div
@@ -521,7 +541,7 @@ const ProgramManagerView = () => {
             <Link href="/programManager/TeacherAttendace">
               {/* <Link href='/admin/payments'> */}
               <div
-                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/attendanceView' ||
+                className={`pl-1 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${router.pathname == '/programManager/attendanceView' ||
                   router.pathname == '/programManager/TeacherAttendace'
                   ? 'bg-blue-100 text-blue-500'
                   : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
@@ -536,26 +556,6 @@ const ProgramManagerView = () => {
               </div>
             </Link>
 
-            {/* Payment Section */}
-
-            {/* <Link href="/programManager/attendance"> */}
-            {/* <Link href='/admin/payments'> */}
-            {/* <div
-            className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors ${
-              router.pathname == '/programManager/attendance'
-                ? // router.pathname == '/admin/Payments'
-                  'bg-blue-100 text-blue-500'
-                : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
-            }`}
-          >
-            <div className="mr-2">
-              <CreditCardIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <p>Attendance</p>
-            </div>
-          </div> */}
-            {/* </Link> */}
             {/*create in PM */}
             <Link href="/programManager/Create/PMmain">
               {/* <Link href='/admin/payments'> */}
@@ -573,6 +573,26 @@ const ProgramManagerView = () => {
                 </div>
                 <div>
                   <p>Attendance</p>
+                </div>
+              </div>
+            </Link>
+
+
+            <Link href="/programManager/History">
+              {/* <Link href='/admin/profile'> */}
+              <div
+                className={`pl-2 py-3 mx-5 rounded text-center cursor-pointer mb-3 flex items-center transition-colors 
+                ${
+                  router.pathname == '/programManager/History'
+                  ? 'bg-blue-100 text-blue-500'
+                  : 'text-gray-400 hover:bg-blue-100 hover:text-blue-500'
+                  }`}
+              >
+                <div className="mr-2">
+                  <WalletIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p> History</p>
                 </div>
               </div>
             </Link>
