@@ -473,11 +473,9 @@ const handleCloseNotificatonMessages = () => {
                     
               
                     const response = await axios.post('/api/zoom_api/createZoom', payload);
-             
-            
-                  
+                    console.log('response' ,data.scheduleId, response.data.data.id.toString(),response.data.data.join_url)
                       let result = await axios.post("/api/zoom_api/updateScheduleZoom", {
-                        tmpscheduleIds: data.scheduleId[0],
+                        tmpscheduleIds: data.scheduleId,
                         meetingIds: response.data.data.id.toString(), // Convert to string explicitly
                         zoomUrls: response.data.data.join_url
                     })

@@ -10,7 +10,7 @@ const { uploadGradesRTF } = require("../controller/queries");
 import xlsx from "xlsx";
 import { env } from 'process';
 // import { authOptions } from "../auth/[...nextauth]";
-import SendEmail from "./emailGrade";
+// import SendEmail from "./emailGrade";
 import gradeExistsDT from "./exist/ExistDTGrade";
 
 
@@ -209,12 +209,12 @@ async function handler(req, res) {
       for (const recipientInfo of recipientInfoArray) {
         try {   
           // Assuming the SendEmail function requires the recipient's email, first name, and last name
-          await SendEmail(
-             lastProcessedRow.CertificateName,
-              recipientInfo.email,
-             recipientInfo.firstName,
-             recipientInfo.lastName,
-          );
+          // await SendEmail(
+          //    lastProcessedRow.CertificateName,
+          //     recipientInfo.email,
+          //    recipientInfo.firstName,
+          //    recipientInfo.lastName,
+          // );
           await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`,{
             receiverIds:[recipientInfo.studentID], 
             senderId:recipientInfo.pm_id, 

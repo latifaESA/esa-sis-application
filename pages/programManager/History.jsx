@@ -32,7 +32,7 @@ export default function History() {
     const [promotionsName, setPromotionName] = useState('')
     console.log([promotionsName])
     const [major, setMajors] = useState([])
-    const [majorId , setMajorIds]=useState('')
+    const [majorId, setMajorIds] = useState('')
 
     //   const [openUpload , setOpenUpload] = useState(false)
     const [graduationYear, setGraduationYear] = useState('');
@@ -58,32 +58,32 @@ export default function History() {
 
     const handleMajors = async () => {
         try {
-          if(session.user?.role === '3'){
-            const data = await axios.post('/api/pmApi/getMajorFromAs', {
-              pm_ass_id: session.user?.userid
-            })
-            
-            setMajors(data.data.data)
-            setMajorIds(data.data.data[0].major_id)
-          }else if(session.user?.role === '2'){
-            const data = await axios.post('/api/pmApi/getMajorFromMajor', {
-              pm_id: session.user?.userid
-            })
-          
-            setMajorIds(data.data.data[0].major_id)
-            setMajors(data.data.data)
-          }
-    
-    
+            if (session.user?.role === '3') {
+                const data = await axios.post('/api/pmApi/getMajorFromAs', {
+                    pm_ass_id: session.user?.userid
+                })
+
+                setMajors(data.data.data)
+                setMajorIds(data.data.data[0].major_id)
+            } else if (session.user?.role === '2') {
+                const data = await axios.post('/api/pmApi/getMajorFromMajor', {
+                    pm_id: session.user?.userid
+                })
+
+                setMajorIds(data.data.data[0].major_id)
+                setMajors(data.data.data)
+            }
+
+
         } catch (error) {
-          return error;
+            return error;
         }
-      };
-      useEffect(() => {
+    };
+    useEffect(() => {
         handleMajors()
-    
-    
-      }, [])
+
+
+    }, [])
 
 
     // const handleMajorName = async()=>{
@@ -98,17 +98,17 @@ export default function History() {
     //         return error
     //     }
     //   }
-    
-    
-      const handleMajor = (selectedValue) => {
+
+
+    const handleMajor = (selectedValue) => {
         setMajorIds(selectedValue)
-      };
+    };
 
 
-      useEffect(()=>{
+    useEffect(() => {
         // handleMajorName()
         handlePromotions()
-      },[])
+    }, [])
 
 
     const handlePromotions = async () => {
@@ -265,15 +265,15 @@ export default function History() {
     const getGraduationYears = () => {
         const currentYear = new Date().getFullYear();
         const years = [];
-      
+
         for (let i = currentYear; i >= currentYear - 10; i--) {
-          years.push(i.toString());
+            years.push(i.toString());
         }
-      
+
         return years;
-      };
-      
-      
+    };
+
+
 
     const handleGraduationYear = (selectedValue) => {
         setGraduationYear(selectedValue);
@@ -289,7 +289,7 @@ export default function History() {
             {session?.user.role === '2' || session?.user.role === '3' ? (
                 <>
                     <p className="text-gray-700 text-3xl pt-5 mb-10 font-bold">
-                        List Of History
+                     History
                     </p>
                     <form>
                         <div className="grid grid-cols-1 gap-4 min-[850px]:grid-cols-2 min-[1100px]:grid-cols-3 mb-3 pb-4 border-blue-300 border-b-2">
@@ -359,7 +359,7 @@ export default function History() {
                   />
                 }
               </label> */}
-                               <label className="w-[350px]">
+                            <label className="w-[350px]">
                                 Graduated:
                                 {
                                     <CustomSelectBox
@@ -414,6 +414,23 @@ export default function History() {
                                     Show All
                                 </button>
                             </div>
+
+                            {/* <div className="flex flex-col min-[850px]:flex-row gap-4">
+                                <button
+                                    className="primary-button btnCol text-white w-60 hover:text-white hover:font-bold"
+                                    type="submit"
+                                    onClick={handleStudents}
+                                >
+                                    Search
+                                </button>
+                                <button
+                                    className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold"
+                                    type="reset"
+                                    onClick={handleShowAll}
+                                >
+                                    Show All
+                                </button>
+                            </div> */}
                         </div>
                         <HistoryList users={users} setUsers={setUsers} />
                     </form>

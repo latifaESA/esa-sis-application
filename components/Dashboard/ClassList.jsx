@@ -546,7 +546,7 @@ const ClassList = ({ users, allCourse }) => {
 
 
                     let result = await axios.post("/api/zoom_api/updateScheduleZoom", {
-                      tmpscheduleIds: data.scheduleId[0],
+                      tmpscheduleIds: data.scheduleId,
                       meetingIds: response.data.data.id.toString(), // Convert to string explicitly
                       zoomUrls: response.data.data.join_url
                     })

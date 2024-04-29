@@ -13,6 +13,7 @@ async function handler(req, res) {
      
     } =
       req.body;
+      console.log('zoom' , zoom_id , zoom_url)
      await updateOnlineSchedule(connection , zoom_id , zoom_url , attendance_id)
      
  
