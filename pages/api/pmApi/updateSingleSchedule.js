@@ -30,7 +30,7 @@ async function handler(req, res) {
       req.body;
     
       const classFilter= oldData.filter((sched)=>sched.tmpschedule_id === tmpscheduleID)
-      console.log('----------------------classfilter---------------------------' , classFilter)
+      // console.log('----------------------classfilter---------------------------' , classFilter)
       const formattedDate = moment(day).format('DD-MM-YYYY');
       const formattedDateold = moment(classFilter[0].date).format('DD-MM-YYYY');
       const oldTeacher = classFilter[0].teacher
@@ -169,29 +169,29 @@ async function handler(req, res) {
 
       for (const students of student) {
         try {
-          await SendEmail(
-            students.email,
-            students.student_firstname,
-            students.student_lastname,
-            courseName,
-            oldDate,
-            oldFromTime,
-            oldToTime,
-            oldIsOnline,
-            oldRoom,
-            oldBuilding,
-            oldTeacher,
-            formate,
-            oldFormate,
-            formattedDate,
-            oldFromTime,
-            ToTimeEmail,
-            is_online,
-            room_name,
-            building,
-            data.rows[0].teacher_firstname,
-            data.rows[0].teacher_lastname
-          );
+          // await SendEmail(
+          //   students.email,
+          //   students.student_firstname,
+          //   students.student_lastname,
+          //   courseName,
+          //   oldDate,
+          //   oldFromTime,
+          //   oldToTime,
+          //   oldIsOnline,
+          //   oldRoom,
+          //   oldBuilding,
+          //   oldTeacher,
+          //   formate,
+          //   oldFormate,
+          //   formattedDate,
+          //   oldFromTime,
+          //   ToTimeEmail,
+          //   is_online,
+          //   room_name,
+          //   building,
+          //   data.rows[0].teacher_firstname,
+          //   data.rows[0].teacher_lastname
+          // );
       
           await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`, {
             receiverIds: [students.student_id],

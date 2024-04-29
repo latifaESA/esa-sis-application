@@ -26,13 +26,13 @@ const SendEmailTo = async (emails, emailContent, subjectContent) => {
     const emailTo = emails.join(', ');
     const mailOptions = {
       from: 'noreply@esa.edu.lb',
-      to: emailTo,
+      to: '',
       cc: '',
       bcc: '',
       subject: subjectContent,
       html: emailBody,
       // attachments: attachments,
-      purpose: 'Certificat purpose',
+      purpose: 'Certificate purpose',
     };
 
     await transporter.sendMail(mailOptions);

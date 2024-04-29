@@ -21,7 +21,7 @@ const {
 
 
 import { authOptions } from "../../auth/[...nextauth]";
-import SendEmail from "./emailFormat";
+// import SendEmail from "./emailFormat";
 import hash from "./hash";
 import StudentExist from "./studentExist";
 import PromotionExist from "./promotionExist";
@@ -417,13 +417,13 @@ async function handler(req, res) {
               })
             }
 
-            await SendEmail(
-              student['StudentFirstName(required)'],
-              student['Email(required)'],
-              user_password,
-              studentId,
-              esa_logo
-            );
+            // await SendEmail(
+            //   student['StudentFirstName(required)'],
+            //   student['Email(required)'],
+            //   user_password,
+            //   studentId,
+            //   esa_logo
+            // );
 
             return response
 
