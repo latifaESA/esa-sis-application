@@ -23,10 +23,10 @@ const SendEmailTo = async (emails, emailContent, subjectContent) => {
       `</br>` +
       `<p>Best Regards,</p> ` +
       '</div></body></html>';
-    const emailTo = emails.join(', ');
+    // const emailTo = emails.join(', ');
     const mailOptions = {
       from: 'noreply@esa.edu.lb',
-      to: '',
+      to: 'Bcc@esa.edu.lb',
       cc: '',
       bcc: '',
       subject: subjectContent,

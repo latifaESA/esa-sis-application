@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 
 dotenv.config(); // Assuming the .env file is in the root of your project
 import moment from 'moment-timezone';
-import SendEmail from "./emailUpdateScheduleContent";
+// import SendEmail from "./emailUpdateScheduleContent";
 const FormatTime = (timeWithTimeZone) => {
   const [time] = timeWithTimeZone.split('+'); // Remove the timezone offset
   const [hours, minutes] = time.split(':');

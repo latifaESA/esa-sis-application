@@ -26,7 +26,7 @@ import hash from "./hash";
 import StudentExist from "./studentExist";
 import PromotionExist from "./promotionExist";
 import PromotionMajorExist from "./isPromotionToMajor";
-import DataSettings from "../../controller/getDataSettings";
+// import DataSettings from "../../controller/getDataSettings";
 // import ClassNameGenerator from "@mui/utils/ClassNameGenerator";
 
 function generateID(academicYear, majorId) {
@@ -299,9 +299,9 @@ async function handler(req, res) {
             })
           }
 
-          const settings = await DataSettings(connection, 'settings')
+          // const settings = await DataSettings(connection, 'settings')
 
-          const esa_logo = settings[0].esa_logo
+          // const esa_logo = settings[0].esa_logo
 
 
 
