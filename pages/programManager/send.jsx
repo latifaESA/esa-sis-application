@@ -27,7 +27,7 @@ export default function Send() {
 
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
-  const [signatureValue, setSignatureValue] = useState(null)
+  // const [signatureValue, setSignatureValue] = useState(null)
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -168,6 +168,8 @@ export default function Send() {
           setMessage('');
         }, 3000);
       }
+    }else if(e.target.value === 'Choose a signature'){
+      setSelectedSignature(null)
     }else{
       setMessage('All Fields Must be Filled !');
       setMessageClass('text-red-500');
@@ -180,7 +182,7 @@ export default function Send() {
   }
   const submitHandler = async (e) => {
     console.log(session?.user?.email)
-    console.log(signatureValue)
+    // console.log(signatureValue)
     e.preventDefault();
     setIsLoading(true);
     if (
@@ -285,10 +287,10 @@ export default function Send() {
               
               <select
                 onChange={handleSignature}
-                value={signatureValue}
+                // value={signatureValue}
                 className="mt-3 ml-5"
               >
-                <option key={"uu2isd"} value="">
+                <option key={"uu2isd"} value={"Choose a signature"}>
                   Choose a signature
                 </option>
                 {/* {majors &&
