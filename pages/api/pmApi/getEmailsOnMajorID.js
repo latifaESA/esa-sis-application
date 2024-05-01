@@ -13,13 +13,14 @@ async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const { user_id, selectedMajorID, subjectContent, emailContent } = req.body;
+    const { user_id, selectedMajorID, subjectContent, emailContent, selectedSignature } = req.body;
+    console.log(selectedSignature)
     const data = await getEmailsByMajorId(connection, selectedMajorID);
     if (data.length > 0) {
       const emails = data.map((row) => row.email);
       const userID = data.map((row) => row.userid);
       // await SendEmailTo(emails, subjectContent);
-      await SendEmailTo(emails, emailContent, subjectContent);
+      await SendEmailTo(emails, emailContent, subjectContent, selectedSignature);
       await insertNotifications(
         connection,
         userID,
