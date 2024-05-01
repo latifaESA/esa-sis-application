@@ -14,7 +14,7 @@ async function handler(req, res) {
     const connection = await connect();
 
     const { user_id, selectedMajorID, subjectContent, emailContent, selectedSignature } = req.body;
-    console.log(selectedSignature)
+
     const data = await getEmailsByMajorId(connection, selectedMajorID);
     if (data.length > 0) {
       const emails = data.map((row) => row.email);
