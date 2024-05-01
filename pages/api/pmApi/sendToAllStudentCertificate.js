@@ -66,7 +66,7 @@ const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignatu
     const emailTo = emails.join(', ');
     const mailOptions = {
       from: 'noreply@esa.edu.lb',
-      to: '',
+      to: emailTo,
       cc: '',
       bcc: '',
       subject: subjectContent,

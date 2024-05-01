@@ -102,19 +102,6 @@ export default function Send() {
   // };
   const handleSignature = (e) => {
     if(e.target.value === 'Exed signature'){
-  //     setSelectedSignature(`<div style="margin-top:20px;">
-  //     <strong>Yara SAADE NAJJAR</strong><br>
-  //     Senior Program Manager, Responsable de Programmes<br>
-  //     <br>
-  //     <div width="100" style="font-size: 10px; padding: 20px;">
-  //     École Supérieure des Affaires<br>
-  //     Campus de l’ESA, 289 rue Clemenceau<br>
-  //     Beyrouth, Liban, B.P. 113-7318<br><br>
-  //     T <a href="tel:+9611373373" style="text-decoration:none;color:black;">+961 1 373 373 ext.1183</a><br>
-  //     E <a href="mailto:saade@esa.edu.lb" style="text-decoration:none;color:black;">saade@esa.edu.lb</a><br>
-  //     <a href="http://www.esa.edu.lb" style="text-decoration:none;color:black;">www.esa.edu.lb</a>
-  //     </div>
-  // </div>`)
       const signatureInfo = {
         name: 'Sara KARA',
         position: 'Program Manager ESA EXECUTIVE EDUCATION',
@@ -173,6 +160,7 @@ export default function Send() {
       };
         setSelectedSignature(signatureInfo)
       }else{
+        setSelectedSignature(null)
         setMessage('Your signature is not exists.');
         setMessageClass('text-red-500');
         setIsLoading(false);
@@ -199,9 +187,7 @@ export default function Send() {
       selectedMajorID === null ||
       selectedMajorID === '' ||
       subjectContent.trim() === '' ||
-      emailContent.trim() === '' ||
-      selectedSignature === null ||
-      selectedSignature === ''
+      emailContent.trim() === ''
     ) {
       setMessage('All Fields Must be Filled !');
       setMessageClass('text-red-500');
@@ -209,7 +195,16 @@ export default function Send() {
       setTimeout(() => {
         setMessage('');
       }, 3000);
-    } else {
+    }else if(selectedSignature === null ||
+      selectedSignature === ''){
+        setMessage('Your signature is not exists.');
+        setMessageClass('text-red-500');
+        setIsLoading(false);
+        setTimeout(() => {
+          setMessage('');
+        }, 3000);
+      }
+     else {
       try {
         let user_id = session.user.userid;
         let sendData = {
