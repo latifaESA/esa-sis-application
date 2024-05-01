@@ -22,10 +22,12 @@ export default function Send() {
   const [emailContent, setEmailContent] = useState('');
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedMajorID, setSelectedMajorID] = useState(null);
+  const [selectedSignature, setSelectedSignature] = useState(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
+  const [signatureValue, setSignatureValue] = useState(null)
   const redirect = () => {
     router.push('/AccessDenied');
   };
@@ -98,14 +100,108 @@ export default function Send() {
   //     setSelectedMajorID(null);
   //   }
   // };
+  const handleSignature = (e) => {
+    if(e.target.value === 'Exed signature'){
+  //     setSelectedSignature(`<div style="margin-top:20px;">
+  //     <strong>Yara SAADE NAJJAR</strong><br>
+  //     Senior Program Manager, Responsable de Programmes<br>
+  //     <br>
+  //     <div width="100" style="font-size: 10px; padding: 20px;">
+  //     École Supérieure des Affaires<br>
+  //     Campus de l’ESA, 289 rue Clemenceau<br>
+  //     Beyrouth, Liban, B.P. 113-7318<br><br>
+  //     T <a href="tel:+9611373373" style="text-decoration:none;color:black;">+961 1 373 373 ext.1183</a><br>
+  //     E <a href="mailto:saade@esa.edu.lb" style="text-decoration:none;color:black;">saade@esa.edu.lb</a><br>
+  //     <a href="http://www.esa.edu.lb" style="text-decoration:none;color:black;">www.esa.edu.lb</a>
+  //     </div>
+  // </div>`)
+      const signatureInfo = {
+        name: 'Sara KARA',
+        position: 'Program Manager ESA EXECUTIVE EDUCATION',
+        address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+        phone: '+961 1 373 373 ext.1154',
+        tel_phone: '+961 1 373 374',
+        email: 'exed@esa.edu.lb',
+        website: 'www.esa.edu.lb'
+    };
+  setSelectedSignature(signatureInfo)
+    }else if(e.target.value === 'My signature'){
+      if(
+        session?.user?.email === 'kara.s@esa.edu.lb'
+        // true
+      ){
+        const signatureInfo = {
+          name: 'Sara KARA',
+          position: 'Program Manager ESA EXECUTIVE EDUCATION',
+          address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+          phone: '+961 1 373 373 ext.1154',
+          tel_phone: '+961 1 373 374',
+          email: 'kara.s@esa.edu.lb',
+          website: 'www.esa.edu.lb'
+      };
+        setSelectedSignature(signatureInfo)
+      }else if(session?.user?.email === 'yamak.n@esa.edu.lb'){
+        const signatureInfo = {
+          name: 'Nour YAMAK',
+          position: 'Senior Program Manager',
+          address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+          phone: '+961 1 373 373 ext.1133',
+          tel_phone: '+961 1 373 374',
+          email: 'yamak.n@esa.edu.lb',
+          website: 'www.esa.edu.lb'
+      };
+        setSelectedSignature(signatureInfo)
+      }else if(session?.user?.email === 'maalouf.v@esa.edu.lb'){
+        const signatureInfo = {
+          name: 'Valérie MAALOUF',
+          position: 'Responsable de Programme Senior Program Manager ESA Executive Education',
+          address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+          phone: '+961 1 373 373 ext.1172',
+          tel_phone: '+961 1 373 374',
+          email: 'maalouf.v@esa.edu.lb',
+          website: 'www.esa.edu.lb'
+      };
+        setSelectedSignature(signatureInfo)
+      }else if(session?.user?.email === 'saade.y@esa.edu.lb'){
+        const signatureInfo = {
+          name: 'Yara SAADE NAJJAR',
+          position: 'Senior Program Manager Responsable de Programmes ESA Business School',
+          address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+          phone: '+961 1 373 373 ext.1183',
+          email: 'saade.y@esa.edu.lb',
+          website: 'www.esa.edu.lb'
+      };
+        setSelectedSignature(signatureInfo)
+      }else{
+        setMessage('Your signature is not exists.');
+        setMessageClass('text-red-500');
+        setIsLoading(false);
+        setTimeout(() => {
+          setMessage('');
+        }, 3000);
+      }
+    }else{
+      setMessage('All Fields Must be Filled !');
+      setMessageClass('text-red-500');
+      setIsLoading(false);
+      setTimeout(() => {
+        setMessage('');
+      }, 3000);
+      return
+    }
+  }
   const submitHandler = async (e) => {
+    console.log(session?.user?.email)
+    console.log(signatureValue)
     e.preventDefault();
     setIsLoading(true);
     if (
       selectedMajorID === null ||
       selectedMajorID === '' ||
       subjectContent.trim() === '' ||
-      emailContent.trim() === ''
+      emailContent.trim() === '' ||
+      selectedSignature === null ||
+      selectedSignature === ''
     ) {
       setMessage('All Fields Must be Filled !');
       setMessageClass('text-red-500');
@@ -121,12 +217,14 @@ export default function Send() {
           selectedMajorID,
           subjectContent,
           emailContent,
+          selectedSignature
         };
+        console.log('selectedSignature : ',selectedSignature)
         let res = await axios.post('/api/pmApi/getEmailsOnMajorID', sendData);
         setMessage('Request Sent !');
         setMessageClass('text-green-500');
         setSubjectContent(''),
-          setEmailContent(''),
+        setEmailContent(''),
           setTimeout(() => {
             setMessage('');
           }, 5000);
@@ -187,6 +285,27 @@ export default function Send() {
                 </select>
               </label>
             }
+
+              <label className="block mb-4 md:mt-3 md:w-40">
+              
+              <select
+                onChange={handleSignature}
+                value={signatureValue}
+                className="mt-3 ml-5"
+              >
+                <option key={"uu2isd"} value="">
+                  Choose a signature
+                </option>
+                {/* {majors &&
+                  majors.map((major) => (
+                    <option key={major.major_id} value={major.major_id}>
+                      {major.major_name}
+                    </option>
+                  ))} */}
+                  <option key={1} value={"Exed signature"}>Exed signature</option>
+                  <option key={2} value={"My signature"}>My signature</option>
+              </select>
+            </label>
 
             <div className="m-4">
               <input
