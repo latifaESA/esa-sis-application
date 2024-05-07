@@ -103,11 +103,11 @@ export default function Send() {
   const handleSignature = (e) => {
     if(e.target.value === 'Exed signature'){
       const signatureInfo = {
-        name: 'Sara KARA',
-        position: 'Program Manager ESA EXECUTIVE EDUCATION',
-        address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
-        phone: '+961 1 373 373 ext.1154',
-        tel_phone: '+961 1 373 374',
+        // name: 'Sara KARA',
+        position: 'ESA EXECUTIVE EDUCATION',
+        // address: 'École Supérieure des Affaires\nCampus de l’ESA, 289 rue Clemenceau\nBeyrouth, Liban, B.P. 113-7318',
+        phone: '+961 1 373 373',
+        tel_phone: null,
         email: 'exed@esa.edu.lb',
         website: 'www.esa.edu.lb'
     };
