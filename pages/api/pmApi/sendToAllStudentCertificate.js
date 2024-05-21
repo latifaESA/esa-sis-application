@@ -3,8 +3,9 @@ import createTransporter from '../../../utilities/emailing/smtp';
 
 dotenv.config('../env');
 const transporter = createTransporter();
+const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignature) => {
+  console.log(selectedSignature)
 
-const SendEmailTo = async (emailContent, subjectContent, selectedSignature) => {
   // const apiUrl = '/api/controller/settingdata'; 
   // const response = await fetch(apiUrl);
   // const data = await response.json();
@@ -44,15 +45,17 @@ const SendEmailTo = async (emailContent, subjectContent, selectedSignature) => {
 // =======
       `<!-- Adding Signature -->
       <div style="margin-top:20px;">
-          <strong>${selectedSignature.name}</strong><br>
+          <strong>${selectedSignature.name ? selectedSignature.name : ''}</strong><br>
           Senior Program Manager, Responsable de Programmes<br>
           <br>
           <div width="100" style="font-size: 10px; padding: 20px;">
           École Supérieure des Affaires<br>
           Campus de l’ESA, 289 rue Clemenceau<br>
           Beyrouth, Liban, B.P. 113-7318<br><br>
-          T <a href="tel:+9611373373" style="text-decoration:none;color:black;">${selectedSignature.phone}</a><br>
-          E <a href="mailto:saade@esa.edu.lb" style="text-decoration:none;color:black;">${selectedSignature.email}</a><br>
+          T <a href=${selectedSignature.phone} style="text-decoration:none;color:black;">${selectedSignature.phone}</a><br>
+
+          ${selectedSignature.tel_phone ? `F <a href=${selectedSignature.tel_phone} style="text-decoration:none;color:black;">${selectedSignature.tel_phone}</a><br>` : ''}
+          E <a href=${selectedSignature.email} style="text-decoration:none;color:black;">${selectedSignature.email}</a><br>
           <a href="http://www.esa.edu.lb" style="text-decoration:none;color:black;">www.esa.edu.lb</a>
           </div>
       </div>` +
