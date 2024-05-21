@@ -3,27 +3,29 @@ import dateFormatter from "../dateFormatter";
 import timeFormatter from "../timeFormatter";
 import dateSeperator from "../dateSeperator";
 import getSevenDaysBefore from "../dateBeforeSeven";
+
 const sendMailClass = async (class_id, fromTime, toTime, location) => {
   console.log(class_id);
   console.log(fromTime);
   console.log(toTime);
 
   const classInfo = await axios.post(
-    "http://localhost:3001/api/pmApi/getClassInfoForEmail",
+    `https://esasis.esa.edu.lb/api/pmApi/getClassInfoForEmail`,
     {
       class_id: class_id,
     }
   );
+
   // console.log("this is classInfo", classInfo.data.rows[0]);
 
   const locationInfo = await axios.post(
-    "http://localhost:3001/api/pmApi/getLocationInfo",
+    `https://esasis.esa.edu.lb/api/pmApi/getLocationInfo`,
     { room_id: location }
   );
   // console.log("this is locationInfo", locationInfo.data.rows[0]);
 
   const studentsEmails = await axios.post(
-    "http://localhost:3001/api/pmApi/getStudentEmailsForEmailClass",
+    `https://esasis.esa.edu.lb/api/pmApi/getStudentEmailsForEmailClass`,
     { promo: classInfo.data.rows[0].promotion }
   );
   let stEmails = [];
@@ -43,16 +45,13 @@ const sendMailClass = async (class_id, fromTime, toTime, location) => {
     `<p>We hope this email finds you well.</p>` +
     `<p>We would like to remind you about your upcoming class next week:</p>` +
     `<ul>
-      <li>Class: ${classInfo.data.rows[0].course_id} : ${
-      classInfo.data.rows[0].course_name
-    } - ${classInfo.data.rows[0].teacher_firstname} ${
-      classInfo.data.rows[0].teacher_lastname
+      <li>Class: ${classInfo.data.rows[0].course_id} : ${classInfo.data.rows[0].course_name
+    } - ${classInfo.data.rows[0].teacher_firstname} ${classInfo.data.rows[0].teacher_lastname
     } </li>
       <li>Start Date: ${dateFormatter(
-        classInfo.data.rows[0].startdate
-      )} at  ${timeFormatter(fromTime)} till  ${timeFormatter(toTime)}   </li>
-        <li> Building: ${locationInfo.data.rows[0].room_building} - Room: ${
-      locationInfo.data.rows[0].room_name
+      classInfo.data.rows[0].startdate
+    )} at  ${timeFormatter(fromTime)} till  ${timeFormatter(toTime)}   </li>
+        <li> Building: ${locationInfo.data.rows[0].room_building} - Room: ${locationInfo.data.rows[0].room_name
     }</li>
       </ul>` +
     `<p>If you have any questions or require any further information, please do
@@ -78,7 +77,7 @@ const sendMailClass = async (class_id, fromTime, toTime, location) => {
     month: seperateDate.month,
   };
   const res = await axios.post(
-    "http://localhost:3001/api/admin/adminApi/schedulemail",
+    `https://esasis.esa.edu.lb/api/admin/adminApi/schedulemail`,
     sendMailData
   );
   console.log(res);
@@ -90,7 +89,7 @@ const sendMailClass = async (class_id, fromTime, toTime, location) => {
     subject: "Class Reminder",
   };
   const sendToNotification = await axios.post(
-    "http://localhost:3001/api/pmApi/addNotification",
+    `https://esasis.esa.edu.lb/api/pmApi/addNotification`,
     data
   );
   console.log(sendToNotification);

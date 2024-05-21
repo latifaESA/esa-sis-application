@@ -34,6 +34,7 @@ import CustomPagination from "./Pagination";
 // import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
 // import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
 import AddSchedule from "../AddSchedule";
+import sendMailClass from "../../utilities/emailing/emailBeforeClass";
 // const formatTime = (timeWithTimeZone) => {
 //   const [hours, minutes] = timeWithTimeZone.split(':');
 //   const formattedHours = (parseInt(hours) % 12 === 0) ? 12 : (parseInt(hours) % 12);
@@ -486,6 +487,7 @@ const handleCloseNotificatonMessages = () => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
+                      sendMailClass(classID , fromTime , toTime , location)
                     }
                   }
                 } else {
@@ -523,6 +525,7 @@ const handleCloseNotificatonMessages = () => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
+                      sendMailClass(classID , fromTime , toDate , location)
                     }
                   }
                 } else {
@@ -533,6 +536,7 @@ const handleCloseNotificatonMessages = () => {
               }
             }
           }
+        
         } catch (error) {
           return error;
         }

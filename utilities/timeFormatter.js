@@ -1,4 +1,5 @@
 function timeFormatter(timeString) {
+  console.log('time' , timeString)
   const [time] = timeString.split("+");
   const [hours, minutes] = time.split(":");
 

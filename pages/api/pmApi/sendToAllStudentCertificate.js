@@ -3,9 +3,9 @@ import createTransporter from '../../../utilities/emailing/smtp';
 
 dotenv.config('../env');
 const transporter = createTransporter();
-
 const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignature) => {
   console.log(selectedSignature)
+
   // const apiUrl = '/api/controller/settingdata'; 
   // const response = await fetch(apiUrl);
   // const data = await response.json();
@@ -73,10 +73,10 @@ const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignatu
       `<p>Best Regards,</p> ` +
       '</div></body></html>'
     }
-    const emailTo = emails.join(', ');
+    // const emailTo = emails.join(', ');
     const mailOptions = {
       from: 'noreply@esa.edu.lb',
-      to: emailTo,
+      to: 'Bcc@esa.edu.lb',
 // >>>>>>> 1dd4f89229b279ee0b6bc4d858a6c31723a54f55
       cc: '',
       bcc: '',

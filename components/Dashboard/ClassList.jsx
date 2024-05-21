@@ -34,6 +34,7 @@ import CustomPagination from "./Pagination";
 // import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
 // import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
 import AddSchedule from "../AddSchedule";
+import sendMailClass from "../../utilities/emailing/emailBeforeClass";
 // const formatTime = (timeWithTimeZone) => {
 //   const [hours, minutes] = timeWithTimeZone.split(':');
 //   const formattedHours = (parseInt(hours) % 12 === 0) ? 12 : (parseInt(hours) % 12);
@@ -500,7 +501,7 @@ const ClassList = ({ users, allCourse }) => {
               };
               try {
                 if (attendance_id.length !== 0) {
-
+                  
                   const { data } = await axios.post("/api/pmApi/createScheduleOnline", scheduleData);
                   if (data.success) {
 
@@ -558,6 +559,8 @@ const ClassList = ({ users, allCourse }) => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
+                      await sendMailClass(classID , fromTime , toTime , location)
+                      
                     }
                     // if (schedulesCreated === totalSchedules) {
                     //   const weekDaysNumbers = selectedValues.map(item => item + 1);
@@ -626,6 +629,7 @@ const ClassList = ({ users, allCourse }) => {
               };
               try {
                 if (attendance_id.length !== 0) {
+                  
                   const { data } = await axios.post("/api/pmApi/createSchedule", scheduleData);
 
                   if (data.success) {
@@ -639,12 +643,15 @@ const ClassList = ({ users, allCourse }) => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
+                      await sendMailClass(classID , fromTime , toTime , location)
+                      
 
                     }
                   }
                 } else {
                   console.log("error");
                 }
+                
               } catch (error) {
                 setSelectedValues([])
                 console.log('the error in another unkown is : ', error)
