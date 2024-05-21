@@ -1,11 +1,12 @@
 /*
- * Created By: JABER Mohamad,Moetassem Chebbo
+ * Created By: hareb batoul
  * Project: SIS Application
- * File: components\Admin\StudentsList.js
+ * File: components\Admin\AccountList.js
  * École Supérieure des Affaires (ESA)
- * Copyright (c) 2023 ESA
+ * Copyright (c) 2024 ESA
  */
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import React from 'react';
 import { useState } from 'react';
@@ -28,6 +29,7 @@ import bcryptjs from 'bcryptjs';
 // import exportAll from '../../utilities/ExcelExport/exportAll';
 // import EmailAfterChangMajor from '../../utilities/emailing/emailAfterChangeMajor';
 import {
+  WarningMessageChange,
   // WarningMessageCancleIncomplete,
   WarningMessageIncomplete,
   WarningMessageObsolote,
@@ -38,7 +40,7 @@ import CustomPagination from './Pagination';
 
 // import { Pagination, Stack } from '@mui/material';
 
-const TeachersList = ({ users, setUsers }) => {
+const TeachersList = ({ users, setUsers , major  }) => {
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState('');
   // const statusData = selection_data.application_status_inList;
@@ -51,6 +53,10 @@ const TeachersList = ({ users, setUsers }) => {
   // const [cancleIncomplete, setCancleIncomplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { data: session } = useSession();
+  const [confirmOpenChange, setConfirmOpenChange] = useState(false);
+  const [majorId , setMajorId] = useState()
+  const [majorChangeName , setMajorNameChange] = useState()
+
 
 
   //incomplete modal
@@ -85,6 +91,7 @@ const TeachersList = ({ users, setUsers }) => {
   const handleConfirmClose = (user) => {
     setConfirmOpenIncomplete(false);
     setConfirmOpenDelete(false);
+    setConfirmOpenChange(false)
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
     const prevStatus = users.find((u) => u.ID === user.ID)?.status;
@@ -232,6 +239,7 @@ const TeachersList = ({ users, setUsers }) => {
       });
   };
 
+
   const handleConfirm = () => {
     handleEnable(selectedUser);
     handleSave(selectedUser);
@@ -246,6 +254,37 @@ const TeachersList = ({ users, setUsers }) => {
     // setConfirmOpenObsolote(false);
     // setCancleIncomplete(false);
   };
+  const handleSaveChange = (user) => {
+    setSelectedUser(user);
+    setConfirmOpenChange(true);
+  };
+  const handleEditCellChange = (params) => {
+    const { field, value } = params;
+   
+  if (field === "combined_major_names") {
+
+    setMajorId(value);
+    const majorName = major.find(majors =>  majors.major_id === value);
+    setMajorNameChange(majorName.major_name)
+    }
+  };
+  const handleAddMajor = async()=>{
+    try {
+      const payload = {
+        pm_id : selectedUser.pm_id,
+        major_id:majorId
+
+      }
+     
+      const response = await axios.post(`/api/admin/adminApi/assignMajorPM`, payload);
+      if (response.data.success) {
+        setConfirmOpenChange(false)
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      return error
+    }
+  }
   //  const handleChangeMajor =  async(user) => {
   //   const targetPromotion = major_code.find(
   //     (major) => major.major === user.major
@@ -383,6 +422,17 @@ const TeachersList = ({ users, setUsers }) => {
       headerAlign: 'center',
       align: 'center',
       width: 300,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: major.map((majors) => ({
+        value: majors.major_id,
+        label: majors.major_name,
+      })),
+      valueGetter: (params) => {
+        const selectedMajorId = params.value;
+        const selectedMajor = major.find(major => major.major_id === selectedMajorId);
+        return selectedMajor ? selectedMajor.major_name : selectedMajorId;
+      }
     },
 
     {
@@ -533,6 +583,7 @@ const TeachersList = ({ users, setUsers }) => {
       align: 'center',
       sortable: false,
       renderCell: (params) => (
+       
         <div className="flex gap-2">
           <button
             disabled={params.row.pm_status == 'active' ? true : false}
@@ -558,6 +609,20 @@ const TeachersList = ({ users, setUsers }) => {
             type="button"
           >
             <PersonRemoveIcon />
+          </button>
+
+          <button
+            className="primary-button hover:text-white"
+            
+            onClick={() => {
+              // handleSave(params.row)
+              // handleConfirmIncomplete(params.row)
+              handleSaveChange(params.row);
+              // handleDelete(params.row)
+            }}
+            type="button"
+          >
+            <SaveOutlinedIcon />
           </button>
           {/* <Link
             className='text-black'
@@ -681,6 +746,16 @@ const TeachersList = ({ users, setUsers }) => {
           handleConfirm={handleConfirmDelete}
         />
       )}
+           {confirmOpenChange && (
+        <WarningMessageChange
+          confirmOpenVerified={confirmOpenChange}
+          handleConfirmClose={handleConfirmClose}
+          handleConfirmVerified={handleAddMajor}
+          selectedUser={selectedUser}
+          majorName={majorChangeName}
+          
+        />
+      )}
       <div className="text-center text-red-500 font-bold p-2">{message}</div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
@@ -694,6 +769,7 @@ const TeachersList = ({ users, setUsers }) => {
           checkboxSelection
           // onSelectionModelChange={setSelectedRows}
           disableSelectionOnClick
+          onCellEditCommit={handleEditCellChange} // Use the handleEditCellChange function
           // onSelectionModelChange={disablePrintHanlder}
           // onCellEditCommit={(params) => setMajorEnable(params.id)}
           components={{

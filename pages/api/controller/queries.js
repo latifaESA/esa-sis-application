@@ -1046,31 +1046,24 @@ async function filterpm(
   try {
     let query = `
     SELECT 
-        pm.*, 
-        major.major_name AS pm_major_name, 
-        string_agg(extra_major.major_name, ', ') AS concatenated_major_names,
-        CONCAT(major.major_name, ', ', string_agg(extra_major.major_name, ', ')) AS combined_major_names
-    FROM 
-        (
-            SELECT 
-                program_manager.pm_id, 
-                program_manager.pm_firstname, 
-                program_manager.pm_lastname, 
-                program_manager.pm_status, 
-                program_manager.pm_email, 
-                program_manager.major_id AS pm_major_id,
-                program_manager_extra_major.major_id AS extra_major_id
-            FROM 
-                program_manager 
-            LEFT JOIN 
-                program_manager_extra_major ON program_manager.pm_id = program_manager_extra_major.pm_id
-            WHERE 
-                1 = 1
-        ) AS pm
-    INNER JOIN 
-        major ON pm.pm_major_id = major.major_id
-    LEFT JOIN 
-        major AS extra_major ON pm.extra_major_id = extra_major.major_id
+    pm.pm_id, 
+    pm.pm_firstname, 
+    pm.pm_lastname, 
+    pm.pm_status, 
+    pm.pm_email, 
+    major.major_name AS pm_major_name, 
+    STRING_AGG(extra_major.major_name, ', ') AS concatenated_major_names,
+    CONCAT(major.major_name, 
+           CASE WHEN STRING_AGG(extra_major.major_name, ', ') IS NOT NULL THEN ', ' ELSE '' END, 
+           STRING_AGG(extra_major.major_name, ', ')) AS combined_major_names
+FROM 
+    program_manager pm
+LEFT JOIN 
+    program_manager_extra_major pmem ON pm.pm_id = pmem.pm_id
+INNER JOIN 
+    major ON pm.major_id = major.major_id
+LEFT JOIN 
+    major AS extra_major ON pmem.major_id = extra_major.major_id
     WHERE 
         1 = 1
     `;
@@ -1101,7 +1094,12 @@ async function filterpm(
 
     query += `
     GROUP BY 
-        pm.pm_id, pm.pm_firstname, pm.pm_lastname, pm.pm_status, pm.pm_email, pm.pm_major_id, major.major_name, pm.extra_major_id
+    pm.pm_id, 
+    pm.pm_firstname, 
+    pm.pm_lastname, 
+    pm.pm_status, 
+    pm.pm_email, 
+    major.major_name
     `;
 
     const result = await connection.query(query);
@@ -3869,23 +3867,23 @@ async function teacherReport(connection, teacher_ids, pmMajor, majorId) {
   }
 }
 
-async function getStudentsAndPims(connection, major_id, extra_major='null'){
+async function getStudentsAndPims(connection, major_id, extra_major = 'null') {
   try {
-    
-let query = `SELECT student.student_firstname, student.student_lastname, student.student_id, 
+
+    let query = `SELECT student.student_firstname, student.student_lastname, student.student_id, 
 student_financial.pims_id from student
 INNER JOIN student_financial ON student.student_id = student_financial.stundent_financial_id
 where student.major_id = '${major_id}'`;
-if (extra_major !== 'null') {
-  query += ` OR student.major_id = '${extra_major}'`;
-}
-const res = connection.query(query)
-return res
+    if (extra_major !== 'null') {
+      query += ` OR student.major_id = '${extra_major}'`;
+    }
+    const res = connection.query(query)
+    return res
   } catch (error) {
     console.log("error in the query file in getStudentsAndPims function : ", error); return
   }
 }
-async function pmExtraMajor(connection, pmID){
+async function pmExtraMajor(connection, pmID) {
   try {
     const query = `SELECT major_id FROM program_manager_extra_major WHERE pm_id = '${pmID}'`;
     const res = await connection.query(query)
@@ -3896,7 +3894,6 @@ async function pmExtraMajor(connection, pmID){
 }
 
 
-
 async function filterStudentAlumni(
   connection,
   id,
@@ -3905,7 +3902,7 @@ async function filterStudentAlumni(
   major,
   promotion,
   graduationYear
-  
+
 ) {
   try {
     let query = `
@@ -3937,6 +3934,26 @@ async function filterStudentAlumni(
     console.log("error in the query file : ", err); return;
   }
 }
+async function assignPM(connection, pm_id, major_id) {
+  try {
+    const query = `INSERT INTO program_manager_extra_major (pm_id , major_id) VALUES ('${pm_id}' , '${major_id}')`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    console.log("error in the query file : ", error); return;
+  }
+}
+async function getassignPM(connection, table, pm_id, major_id) {
+  try {
+    const query = `SELECT * FROM ${table} WHERE pm_id = '${pm_id}' AND major_id='${major_id}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    console.log("error in the query file : ", error); return;
+  }
+}
+
+
 
 
 
@@ -4127,5 +4144,7 @@ module.exports = {
   uploadStudentFinancial,
   getStudentsAndPims,
   pmExtraMajor,
-  filterStudentAlumni
+  filterStudentAlumni,
+  assignPM,
+  getassignPM
 };

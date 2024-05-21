@@ -445,7 +445,7 @@ export default function Create() {
             />
           ) : (
             // Render AccountsList for role 2 users
-            <AccountsList users={users} setUsers={setUsers} />
+            <AccountsList users={users} setUsers={setUsers} major={major} setMajor={setMajor} />
           )}
         </>
       ) : (

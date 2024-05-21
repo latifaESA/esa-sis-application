@@ -639,8 +639,48 @@ function WarningMessageSchedule({
     </Modal>
   );
 }
+function WarningMessageChange({
+  confirmOpenVerified,
+  handleConfirmClose,
+  handleConfirmVerified,
+  selectedUser,
+  majorName
+  
+}) {
+  return (
+    <Modal
+      open={confirmOpenVerified}
+      onClose={handleConfirmClose}
+      className="top-0 left-0 w-full h-full flex items-center justify-center"
+    >
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-10">
+        <p className="text-gray-700 font-bold mb-4">
+
+          {`Are you sure you want to assign new major ${majorName} to program manager ${selectedUser.pm_firstname} ${selectedUser.pm_lastname}'s account?`}
+        </p>
+        <div className="flex justify-end">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded mr-4"
+            onClick={handleConfirmClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              handleConfirmVerified();
+            }}
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 export {
+  WarningMessageChange,
   WarningMessageIncomplete,
   WarningMessageStatus,
   WarningMessageGrade,
