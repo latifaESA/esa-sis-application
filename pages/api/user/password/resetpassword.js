@@ -94,7 +94,8 @@ async function handler(req, res) {
         userAgentinfo.source
       }=${userAgentinfo.device.family}`
     );
-    res.status(500).json({
+    await disconnect(connection)
+    return res.status(500).json({
       message: message,
     });
   } else {
@@ -108,10 +109,7 @@ async function handler(req, res) {
       "userid",
       id
     );
-    console.log('user' , existingUserEmail)
 
-    // console.log("this is existing email user smthng");
-    // console.log(existingUserEmail.rows[0]);
     const existingUserToken = await findDataForResetPassword(
       connection,
       "users",
@@ -121,8 +119,6 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    // // console.log("this is existing token user smthng");
-    // console.log(existingUserToken.rows[0]);
 
     // for Program Manager
     const existingPMEmail = await findDataForResetPassword(
@@ -134,7 +130,6 @@ async function handler(req, res) {
       "userid",
       id
     );
-    console.log('programmanger' , existingPMEmail.rows[0].pm_email)
 
     const existingPMToken = await findDataForResetPassword(
       connection,
@@ -145,7 +140,6 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    // // console.log("this is existing pm token user smthng");
 
     // program manager assistance
     const existingPMAssistanceEmail = await findDataForResetPassword(
@@ -176,8 +170,6 @@ async function handler(req, res) {
       "userid",
       id
     );
-    // console.log("this is existing admin user smthng");
-    // console.log(existingAdminEmail.rows[0]);
     const existinAdminToken = await findDataForResetPassword(
       connection,
       "users",
@@ -187,18 +179,9 @@ async function handler(req, res) {
       "token",
       emailToken
     );
-    // console.log("this is existing admin user smthng");
-    // console.log(existinAdminToken.rows[0]);
-
-    // const user= await Userinfo(connection,email);
-    //const updateToken=await UpdateToken(connection,emailToken);
-
-    // FIXME: Verify the emailToken validation (time validation)
     // Email Verification
-    console.log('existingPMEmail' , existingUserEmail.rows[0].email == null)
    if( existingUserEmail.rows[0].role === 1){
     
-      console.log("usser student")
         if (
           existingUserEmail.rows[0].email != null &&
           existingUserToken.rows[0].token != null
@@ -256,6 +239,7 @@ async function handler(req, res) {
                 userAgentinfo.source
               }=${userAgentinfo.device.family}`
             );
+            await disconnect(connection);
             return;
           }
           if (existingUserEmail.rows[0].email == null) {
@@ -289,15 +273,6 @@ async function handler(req, res) {
         existingAdminEmail.rows[0].adminid != null) &
       (existinAdminToken.rows[0] != null)
     ) {
-      console.log("this is adminid");
-      console.log(existingAdminEmail.rows[0].adminid);
-      // admin
-      // existingAdminEmail
-      // existinAdminToken
-      console.log(
-        existingAdminEmail.rows[0].adminemail != null &&
-          existinAdminToken.rows[0].token != null
-      );
       if (
         existingAdminEmail.rows[0].adminemail != null &&
         existinAdminToken.rows[0].token != null
@@ -305,19 +280,13 @@ async function handler(req, res) {
         const role = existinAdminToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingAdminEmail.rows[0].userid;
-        // // console.log('newPassword=', newPassword);
-        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
-        // existingUserToken.password = bcryptjs.hashSync(newPassword);
-        // await existingUserToken.save();
-        // if (existingUserToken.isVerified)
+
         const updatoken =await UpdateToken(connection, emailToken);
-        console.log('updatetoken' , updatoken)
        const newpass= await newpassword(
           connection,
           existinAdminToken.rows[0].userid,
           newPassword
         );
-        console.log('new pass' , newpass)
         const encryptedQuery = encodeURIComponent(
           encrypt(
             JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
@@ -389,7 +358,6 @@ async function handler(req, res) {
         existingPMEmail.rows[0].pm_id != null) &
       (existingPMToken.rows[0] != null)
     ) {
-      console.log('existingPMToken')
  
       // program manager
       if (
@@ -454,7 +422,6 @@ async function handler(req, res) {
         }
         if (existingPMEmail.rows[0].pm_email == null) {
 
-          console.log('pm header' , existingPMEmail.rows[0].pm_email)
           res.writeHead(302, {
             Location: `${protocol}://${
               req.headers.host
@@ -485,8 +452,6 @@ async function handler(req, res) {
         existingPMAssistanceEmail.rows[0].pm_ass_id != null) &
       (existingPMAssistanceToken.rows[0] != null)
     ) {
-      console.log("this is adminid inside the pm ass section");
-      console.log(existingAdminEmail.rows[0].adminid);
       // program manager assistance
       if (
         existingPMAssistanceEmail.rows[0].pm_ass_email != null &&
@@ -495,11 +460,6 @@ async function handler(req, res) {
         const role = existingPMAssistanceToken.rows[0].role;
         const newPassword = generatPassword(8);
         const userid = existingPMAssistanceEmail.rows[0].userid;
-        // // console.log('newPassword=', newPassword);
-        //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
-        // existingUserToken.password = bcryptjs.hashSync(newPassword);
-        // await existingUserToken.save();
-        // if (existingUserToken.isVerified)
         await UpdateToken(connection, emailToken);
 
         await newpassword(
