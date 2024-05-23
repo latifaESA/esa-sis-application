@@ -281,8 +281,8 @@ async function handler(req, res) {
         const newPassword = generatPassword(8);
         const userid = existingAdminEmail.rows[0].userid;
 
-        const updatoken =await UpdateToken(connection, emailToken);
-       const newpass= await newpassword(
+      await UpdateToken(connection, emailToken);
+      await newpassword(
           connection,
           existinAdminToken.rows[0].userid,
           newPassword
