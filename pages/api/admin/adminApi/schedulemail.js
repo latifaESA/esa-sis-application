@@ -10,7 +10,7 @@ async function handler(req, res) {
   try {
     const { emails, content } = req.body;
   
-    const cronSchedule = '30 10 20 5 *'; // Updated cron expression for 2:55 PM
+    const cronSchedule = '30 10 * * *'; // Updated cron expression for 2:55 PM
 
     if (!cronSchedule) {
       return res.status(200).json({

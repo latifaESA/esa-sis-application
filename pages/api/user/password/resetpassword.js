@@ -310,13 +310,14 @@ async function handler(req, res) {
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
         // await existingUserToken.save();
         // if (existingUserToken.isVerified)
-        await UpdateToken(connection, emailToken);
-
-        await newpassword(
+        const updatoken =await UpdateToken(connection, emailToken);
+        console.log('updatetoken' , updatoken)
+       const newpass= await newpassword(
           connection,
           existinAdminToken.rows[0].userid,
           newPassword
         );
+        console.log('new pass' , newpass)
         const encryptedQuery = encodeURIComponent(
           encrypt(
             JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })

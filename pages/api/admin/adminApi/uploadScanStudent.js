@@ -3,7 +3,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import multer from "multer";
 // import * as XLSX from 'xlsx';
-
+import iconv from "iconv-lite";
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../../utilities/db");
 const {
@@ -105,6 +105,8 @@ async function handler(req, res) {
         return new Promise((resolve, reject) => {
           const results = [];
           fs.createReadStream(filePath)
+            .pipe(iconv.decodeStream("win1252")) // Specify the input encoding, such as "win1252" for Windows-1252
+            .pipe(iconv.encodeStream("utf8")) // Convert to UTF-8 encoding
             .pipe(csv())
             .on("data", (data) => results.push(data))
             .on("end", () => {
@@ -115,7 +117,6 @@ async function handler(req, res) {
             });
         });
       };
-
 
       const { fields } = await readFile(file.path);
 
@@ -166,7 +167,7 @@ async function handler(req, res) {
 
         const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '').toUpperCase();
         const promotion_exist = await PromotionExist(connection, promotion_name);
-        disconnect(connection)
+       
         if (!promotion_exist) {
           return res.status(200).json({
             code: 200,

@@ -487,7 +487,7 @@ const handleCloseNotificatonMessages = () => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
-                      sendMailClass(classID , fromTime , toTime , location)
+                      await sendMailClass(classID , fromTime , toTime , location)
                     }
                   }
                 } else {
@@ -525,7 +525,7 @@ const handleCloseNotificatonMessages = () => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
-                      sendMailClass(classID , fromTime , toDate , location)
+                      await sendMailClass(classID , fromTime , toTime , location)
                     }
                   }
                 } else {
