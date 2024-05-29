@@ -422,6 +422,9 @@ const handleCloseNotificatonMessages = () => {
                       student_id:student,
                     });
                   
+                }else if(data3.data.code === 200){
+                  setConfirmOccupied(true);
+                setMessages(data3.data.message);
                 }
               // }
             } catch (error) {
