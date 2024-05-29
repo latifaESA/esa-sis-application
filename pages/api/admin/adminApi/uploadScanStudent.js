@@ -76,6 +76,8 @@ export const config = {
 
 async function handler(req, res) {
   try {
+    const connection = await connect();
+
     const session = await getServerSession(req, res, authOptions);
 
     if (!session) {
@@ -127,7 +129,7 @@ async function handler(req, res) {
       for (const field of fields) {
 
         let countSaved = 0; // Add a variable to track the number of records saved
-        const connection = await connect();
+        // const connection = await connect();
 
         // Check for duplicate email
         if (emailSet.has(field['Email(required)'])) {
@@ -240,7 +242,7 @@ async function handler(req, res) {
       // }
 
 
-      const connection = await connect();
+      // const connection = await connect();
 
       let countSaved = 0; // Add a variable to track the number of records saved
 
