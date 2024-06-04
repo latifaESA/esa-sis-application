@@ -12,7 +12,6 @@ export default function StudentView() {
   const redirect = () => {
     router.push("/AccessDenied");
   };
-
   const [isMultiMajor, setIsMultiMajor] = useState([]);
 
   useEffect(() => {

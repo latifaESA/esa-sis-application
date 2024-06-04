@@ -3968,8 +3968,18 @@ async function getassignPM(connection, table, pm_id, major_id) {
   }
 }
 
-
-
+async function getStudentStatistics(connection, major_id){
+  try {
+    const query = `SELECT s.student_id, upi.gender, upi.dateofbirth
+    FROM student s
+    INNER JOIN user_personal_info upi ON s.student_id = upi.userid
+    WHERE s.major_id = '${major_id}';`
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("error in the query getStudentStatistics function : ", error); return;
+  }
+}
 
 
 /* End Postegresql */
@@ -4162,5 +4172,6 @@ module.exports = {
   filterStudentAlumni,
   assignPM,
   getassignPM,
-  getPromotionByMajorId
+  getPromotionByMajorId,
+  getStudentStatistics
 };
