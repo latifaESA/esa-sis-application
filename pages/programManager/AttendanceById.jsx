@@ -110,6 +110,7 @@ export default function AttendanceById() {
 
         setUsers(result.data.data);
       } catch (error) {
+        setUsers([])
         return error;
       }
     };
@@ -146,6 +147,7 @@ export default function AttendanceById() {
       // setMajorValue('')
       // setTest(true)
     } catch (error) {
+      setUsers([])
       return error;
     }
   };
@@ -171,6 +173,7 @@ export default function AttendanceById() {
       setUsers(result.data.data);
     } catch (error) {
       setUsers([])
+   
       return error;
     }
   };
