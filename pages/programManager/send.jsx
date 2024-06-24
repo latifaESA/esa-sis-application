@@ -26,7 +26,9 @@ export default function Send() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
   const [majors, setMajors] = useState([])
+  const [promotions, setPrototions] = useState([])
   const [majorValue, setMajorValue] = useState([])
+  const [promotionValue, setPromotionValue] = useState(null)
   // const [signatureValue, setSignatureValue] = useState(null)
   const redirect = () => {
     router.push('/AccessDenied');
@@ -84,12 +86,30 @@ export default function Send() {
     }
   };
 
+  const handlePromotions = async () => {
+    try {
+        const { data } = await axios.post('/api/pmApi/getPromotionsByMajor', {
+          majorID: selectedMajorID,
+        });
+        setPrototions(data)
+        console.log('the promotions : ', data)
+        return;
+      
+    } catch (error) {
+      console.log('this error from handlePromotion : ', error)
+      return;
+    }
+  };
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-
     handleMajorPM();
   }, [session, selectedMajorID, majorValue]); // Empty dependency array means this effect runs once when the component mounts
 
+  useEffect(() => {
+    handlePromotions()
+    setPromotionValue(null)
+  },[selectedMajorID])
   // const handleSelect = (selectedValue) => {
   //   if (selectedValue.trim() !== '') {
   //     let selectedMajor = allmajors.filter(
@@ -189,7 +209,8 @@ export default function Send() {
       selectedMajorID === null ||
       selectedMajorID === '' ||
       subjectContent.trim() === '' ||
-      emailContent.trim() === ''
+      emailContent.trim() === '' ||
+      promotionValue === null
     ) {
       setMessage('All Fields Must be Filled !');
       setMessageClass('text-red-500');
@@ -212,11 +233,11 @@ export default function Send() {
         let sendData = {
           user_id,
           selectedMajorID,
+          promotionValue,
           subjectContent,
           emailContent,
           selectedSignature
         };
-        console.log('selectedSignature : ',selectedSignature)
         let res = await axios.post('/api/pmApi/getEmailsOnMajorID', sendData);
         setMessage('Request Sent !');
         setMessageClass('text-green-500');
@@ -266,7 +287,9 @@ export default function Send() {
               <label className="block mb-4 md:mt-3 md:w-40">
               
                 <select
-                  onChange={(e) => setMajorValue(e.target.value)}
+                  onChange={(e) => {
+                    setMajorValue(e.target.value);
+                    e.target.value === "" && setPromotionValue(null), setPrototions([])}}
                   value={majorValue}
                   className="mt-3 ml-5"
                 >
@@ -283,6 +306,24 @@ export default function Send() {
               </label>
             }
 
+<label className="block mb-4 md:mt-3 md:w-40">
+              
+              <select
+                onChange={(e) => setPromotionValue(e.target.value)}
+                value={promotionValue}
+                className="mt-3 ml-5"
+              >
+                <option key={"uu2isdvf"} value="">
+                  Choose a Promotion
+                </option>
+                {promotions &&
+                  promotions.map((promotion) => (
+                    <option key={promotion.promotion_id} value={promotion.promotion_name}>
+                      {promotion.promotion_name}
+                    </option>
+                  ))}
+              </select>
+            </label>
               <label className="block mb-4 md:mt-3 md:w-40">
               
               <select

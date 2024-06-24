@@ -13,9 +13,10 @@ async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const { user_id, selectedMajorID, subjectContent, emailContent, selectedSignature } = req.body;
+    const { user_id, selectedMajorID, promotionValue, subjectContent, emailContent, selectedSignature } = req.body;
 
-    const data = await getEmailsByMajorId(connection, selectedMajorID);
+    const data = await getEmailsByMajorId(connection, selectedMajorID, promotionValue);
+    console.log('the data of the students : ', data)
     if (data.length > 0) {
       const emails = data.map((row) => row.email);
       const userID = data.map((row) => row.userid);

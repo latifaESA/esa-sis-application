@@ -422,8 +422,20 @@ async function getMajorPM(connection, majorID) {
   }
 }
 
+async function getPromotionByMajorId(connection, majorID){
+  try{
+    const result = await connection.query(`SELECT *
+    FROM promotions
+    WHERE major_id = '${majorID}'`)
+    return result;
+  }catch(error){
+    console.log("error in the query file : ", error);
+    return;
+  }
+}
+
 // get the emails based on major id
-const getEmailsByMajorId = async (connection, majorId) => {
+const getEmailsByMajorId = async (connection, majorId, promotionValue) => {
   try {
     const result = await connection.query(
       `
@@ -431,10 +443,12 @@ const getEmailsByMajorId = async (connection, majorId) => {
       FROM user_contact uc
       JOIN student s ON uc.userid = s.student_id
       WHERE s.major_id = $1
+      AND s.promotion = $2
     `,
-      [majorId]
+      [majorId, promotionValue]
     );
-
+    console.log(majorId, "  ====  ",promotionValue)
+console.log('the result : ', result)
     return result.rows;
   } catch (error) {
     console.log("error in the query file : ", error); return;
@@ -2592,7 +2606,8 @@ async function getStudentPromotionMajor(connection, major_id, promotion) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    console.log("error in the query file : ", error); return;
+    console.log("error in the query file : ", error); 
+    return;
   }
 }
 async function uploadGrades(
@@ -3953,8 +3968,18 @@ async function getassignPM(connection, table, pm_id, major_id) {
   }
 }
 
-
-
+async function getStudentStatistics(connection, major_id,promotion){
+  try {
+    const query = `SELECT s.student_id, upi.gender, upi.dateofbirth
+    FROM student s
+    INNER JOIN user_personal_info upi ON s.student_id = upi.userid
+    WHERE s.major_id = '${major_id}' AND s.promotion ='${promotion}';`
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("error in the query getStudentStatistics function : ", error); return;
+  }
+}
 
 
 /* End Postegresql */
@@ -4146,5 +4171,7 @@ module.exports = {
   pmExtraMajor,
   filterStudentAlumni,
   assignPM,
-  getassignPM
+  getassignPM,
+  getPromotionByMajorId,
+  getStudentStatistics
 };

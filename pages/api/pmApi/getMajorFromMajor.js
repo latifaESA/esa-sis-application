@@ -11,7 +11,6 @@ async function handler(req, res) {
 
         } = req.body;
         const response = await getMajorFromPM(connection,
-
             pm_id
         );
        
