@@ -8,11 +8,12 @@ async function handler(req, res) {
     const connection = await connect();
 
     const {
-      major_id
+      major_id,
+      promotion
     } = req.body;
 
 
-     const response = await getStudentStatistics(connection, major_id )
+     const response = await getStudentStatistics(connection, major_id, promotion)
     
     await disconnect(connection);
     return res.status(200).json({

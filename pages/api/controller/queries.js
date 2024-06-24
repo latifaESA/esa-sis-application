@@ -3968,12 +3968,12 @@ async function getassignPM(connection, table, pm_id, major_id) {
   }
 }
 
-async function getStudentStatistics(connection, major_id){
+async function getStudentStatistics(connection, major_id,promotion){
   try {
     const query = `SELECT s.student_id, upi.gender, upi.dateofbirth
     FROM student s
     INNER JOIN user_personal_info upi ON s.student_id = upi.userid
-    WHERE s.major_id = '${major_id}';`
+    WHERE s.major_id = '${major_id}' AND s.promotion ='${promotion}';`
     const res = await connection.query(query);
     return res;
   } catch (error) {

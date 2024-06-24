@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 // import Link from 'next/link';
 import axios from 'axios';
 import * as XLSX from "xlsx";
+import StatisticsTable from '../../components/Dashboard/StatisticsTable';
 // import Reports from './Reports';
 
 export default function Statistics() {
@@ -18,6 +19,33 @@ export default function Statistics() {
   const [majors, setMajors] = useState([])
   const [majorValue, setMajorValue] = useState([])
   const [selectMajor, setSelectMajor] = useState(false)
+  const [promotionValue, setPromotionValue] = useState(null)
+  const [promotions, setPrototions] = useState([])
+  const [thefemalepercent, setFemalepercent] = useState([])
+  const [themalepercent, setMalepercent] = useState([])
+  const [theselMajor, setTheMajor] = useState([])
+  const [theAvg, setAvg] = useState([])
+
+  const handlePromotions = async () => {
+    try {
+        const { data } = await axios.post('/api/pmApi/getPromotionsByMajor', {
+          majorID: majorValue,
+        });
+        setPrototions(data)
+        console.log('the promotions : ', data)
+        return;
+      
+    } catch (error) {
+      console.log('this error from handlePromotion : ', error)
+      return;
+    }
+  };
+
+  useEffect(() => {
+    handlePromotions()
+    setPromotionValue(null)
+  },[majorValue])
+
   const handleMajors = async () => {
     try {
       if(session.user?.role === '3'){
@@ -44,10 +72,9 @@ export default function Statistics() {
     handleMajors()
   }, [])
 
-  const exportData = async() => {
-    try {
-
-    function calculateAge(dateOfBirth) {
+  useEffect(() => {
+    let calStat = async () => {
+      function calculateAge(dateOfBirth) {
         const dob = new Date(dateOfBirth);
         const today = new Date();
         const ageInMilliseconds = today - dob;
@@ -56,9 +83,9 @@ export default function Statistics() {
     }
     
     const {data} = await axios.post('/api/pmApi/statistics',{
-        major_id: majorValue 
+        major_id: majorValue,
+        promotion: promotionValue
     })
-    console.log('the stat info : ', data)
     let femalecount = 0
     let malecount = 0
     let age = 0
@@ -69,23 +96,31 @@ export default function Statistics() {
         age+=calculateAge(ind.dateofbirth)
         console.log(calculateAge(ind.dateofbirth))
 })
-console.log('sum : ', sum)
    avg = sum !== 0 ? age/sum : 0;
    let femalepercent = sum !== 0 ? (femalecount/sum*100).toFixed(2) : 0;
    let malepercent = sum !== 0 ? (malecount/sum*100).toFixed(2) : 0;
-   console.log('avg : ', avg)
-   console.log('female count : ', femalecount)
-   console.log('female count percentage: ', femalepercent)
-   console.log('male count : ', malecount)
-   console.log('male count percentage: ', malepercent)
+   let theMajor = majors.filter(major => major.major_id === majorValue)[0].major_name;
+
+   setFemalepercent(femalepercent)
+   setMalepercent(malepercent)
+   setTheMajor(theMajor)
+   setAvg(avg)
+    }
+    selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' && calStat()
+
+    
+  },[selectMajor,majorValue,promotionValue])
+
+  const exportData = async() => {
+    try {
 
     const stats = [{
-       'MajorName': majorValue,
-       'Male Ratio': `${malepercent} %`,
-       'Female Ratio': `${femalepercent} %`,
-       'Average Age': avg
+       'MajorName': theselMajor,
+       'Promotion': promotionValue,
+       'Male Ratio': `${themalepercent} %`,
+       'Female Ratio': `${thefemalepercent} %`,
+       'Average Age': theAvg
     }]
-
 
       // Convert modified data to XLSX format
       const ws = XLSX.utils.json_to_sheet(stats);
@@ -95,9 +130,7 @@ console.log('sum : ', sum)
       // Save the file
       const fileName = `Major-.xlsx`;
       XLSX.writeFile(wb, fileName);
-
-      // Alternatively, use file-saver to save the file
-      // saveAs(new Blob([s2ab(XLSX.write(wb, { bookType: 'xlsx', type: 'blob' }))], { type: 'application/octet-stream' }), fileName);
+      
     } catch (error) {
       console.error("Error exporting data: ", error);
     }
@@ -113,15 +146,14 @@ console.log('sum : ', sum)
       {session?.user.role === '2' || session?.user.role === "3" ? (<>
         <div className='grid lg:grid-cols-1 gap-5 mb-5'>
         <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Statistics</p>
-        <div className='flex justify-around flex-col h-40 sm:flex-row sm:h-auto'>
+        <div className='flex flex-col'>
+        <div className='flex justify-around items-center flex-col h-40 lg:flex-row sm:h-auto'>
           {session.user?.hasMultiMajor === "true" ? <>
           <>
-          <label className='flex'>
-              Major:
+          <label className='mb-4 md:mt-3 md:w-40'>
               <select
                 onChange={(e) => {setMajorValue(e.target.value) ; setSelectMajor(true)}}
                 value={majorValue}
-                className="ml-12 w-60"
 
               >
                 <option key={"uu2isdvf"} value="">
@@ -137,20 +169,41 @@ console.log('sum : ', sum)
                   ))}
               </select>
             </label>
+            <label className="mb-4 md:mt-3 md:w-40">
+              
+              <select
+                onChange={(e) => setPromotionValue(e.target.value)}
+                value={promotionValue}
+              >
+                <option key={"uu2isdvf"} value="">
+                  Choose a Promotion
+                </option>
+                {promotions &&
+                  promotions.map((promotion) => (
+                    <option key={promotion.promotion_id} value={promotion.promotion_name}>
+                      {promotion.promotion_name}
+                    </option>
+                  ))}
+              </select>
+            </label>
           </> 
        
-            {selectMajor && majorValue != '' ? <button
+            {selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' ? <button
               className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold self-center"
               type="button"
               onClick={exportData}
             >
               Export
             </button>
+
             :<>
           
             </> }
-
           </> : <></>}
+        </div>
+        {selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' &&
+            <StatisticsTable theselMajor={theselMajor} promotionValue={promotionValue} themalepercent={themalepercent} thefemalepercent={thefemalepercent} theAvg={theAvg} />
+            }
           </div>
         </div>
       </>) : redirect()}
