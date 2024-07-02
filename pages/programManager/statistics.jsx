@@ -224,7 +224,7 @@ export default function Statistics() {
             </label>
           </> 
        
-            {selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' ? <button
+            {selectMajor && majorValue != '' ? <button
               className="primary-button btnCol text-white  w-60 hover:text-white hover:font-bold self-center"
               type="button"
               onClick={exportData}
