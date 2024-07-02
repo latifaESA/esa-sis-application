@@ -8,7 +8,7 @@
 
 import React from "react";
 
-const StatisticsTable = ({ theselMajor, promotionValue, themalepercent, thefemalepercent, theAvg }) => {
+const StatisticsTable = ({ theselMajor, promotionValue, themalepercent, thefemalepercent, theAvg,companyStats }) => {
  
   return (
     <>
@@ -20,6 +20,9 @@ const StatisticsTable = ({ theselMajor, promotionValue, themalepercent, thefemal
             <th className="p-4 text-left">Male Ratio</th>
             <th className="p-4 text-left">Female Ratio</th>
             <th className="p-4 text-left">Average Age</th>
+            {companyStats.map(element => {
+                return <th className="p-4 text-left">{element.establishment}</th>
+            })}
         </tr>
     </thead>
     <tbody className="text-gray-700">
@@ -29,6 +32,9 @@ const StatisticsTable = ({ theselMajor, promotionValue, themalepercent, thefemal
             <td className="p-4 border-t border-gray-300">{themalepercent}</td>
             <td className="p-4 border-t border-gray-300">{thefemalepercent}</td>
             <td className="p-4 border-t border-gray-300">{theAvg}</td>
+            {companyStats.map(element => {
+                return <th className="p-4 text-left">{element.percentage} %</th>
+            })}
         </tr>
     </tbody>
 </table>

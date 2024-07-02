@@ -25,6 +25,7 @@ export default function Statistics() {
   const [themalepercent, setMalepercent] = useState([])
   const [theselMajor, setTheMajor] = useState([])
   const [theAvg, setAvg] = useState([])
+  const [companyStats, setCompanyStats] = useState([])
 
   const handlePromotions = async () => {
     try {
@@ -86,6 +87,32 @@ export default function Statistics() {
         major_id: majorValue,
         promotion: promotionValue
     })
+    console.log('the data of the statistics : ', data.data)
+    const studentIDs = data.data.map(student => student.student_id);
+    const companyRes = await axios.post('/api/pmApi/statisticsCompany',{
+      studentIDs: studentIDs
+      })
+      console.log('companyRes : ', companyRes)
+
+      const calculatePercentages = (array) => {
+        const totalCount = array.length;
+        const establishmentCounts = array.reduce((acc, item) => {
+          const establishment = item.establishment || 'empty';
+          acc[establishment] = (acc[establishment] || 0) + 1;
+          return acc;
+        }, {});
+      
+        const establishmentPercentages = Object.keys(establishmentCounts).map(key => ({
+          establishment: key,
+          percentage: ((establishmentCounts[key] / totalCount) * 100).toFixed(2)
+        }));
+      
+        return establishmentPercentages;
+      };
+      
+      const establishmentPercentages = calculatePercentages(companyRes.data.data);
+      console.log('establishmentPercentages : ', establishmentPercentages)
+      setCompanyStats(establishmentPercentages)
     let femalecount = 0
     let malecount = 0
     let age = 0
@@ -106,7 +133,7 @@ export default function Statistics() {
    setTheMajor(theMajor)
    setAvg(avg)
     }
-    selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' && calStat()
+    selectMajor && majorValue != '' && calStat()
 
     
   },[selectMajor,majorValue,promotionValue])
@@ -114,12 +141,21 @@ export default function Statistics() {
   const exportData = async() => {
     try {
 
+    const additionalDataObject = companyStats.reduce((obj, item) => {
+      // obj[item.key] = item.value;
+      obj[item.establishment] = `${item.percentage} %`;
+      return obj;
+    }, {});
+
+    console.log('additionalDataObject : ', additionalDataObject)
+
     const stats = [{
        'MajorName': theselMajor,
        'Promotion': promotionValue,
        'Male Ratio': `${themalepercent} %`,
        'Female Ratio': `${thefemalepercent} %`,
-       'Average Age': theAvg
+       'Average Age': theAvg,
+       ...additionalDataObject
     }]
 
       // Convert modified data to XLSX format
@@ -201,8 +237,8 @@ export default function Statistics() {
             </> }
           </> : <></>}
         </div>
-        {selectMajor && majorValue != '' && promotionValue != null && promotionValue != '' &&
-            <StatisticsTable theselMajor={theselMajor} promotionValue={promotionValue} themalepercent={themalepercent} thefemalepercent={thefemalepercent} theAvg={theAvg} />
+        {selectMajor && majorValue != '' &&
+            <StatisticsTable theselMajor={theselMajor} promotionValue={promotionValue} themalepercent={themalepercent} thefemalepercent={thefemalepercent} theAvg={theAvg} companyStats={companyStats}/>
             }
           </div>
         </div>

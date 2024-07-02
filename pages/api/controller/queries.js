@@ -3968,13 +3968,52 @@ async function getassignPM(connection, table, pm_id, major_id) {
   }
 }
 
-async function getStudentStatistics(connection, major_id,promotion){
+// async function getStudentStatistics(connection, major_id,promotion){
+//   try {
+//     const query = `SELECT s.student_id, upi.gender, upi.dateofbirth
+//     FROM student s
+//     INNER JOIN user_personal_info upi ON s.student_id = upi.userid
+//     WHERE s.major_id = '${major_id}' AND s.promotion ='${promotion}';`
+//     const res = await connection.query(query);
+//     return res;
+//   } catch (error) {
+//     console.log("error in the query getStudentStatistics function : ", error); return;
+//   }
+// }
+
+async function getStudentStatistics(connection, major_id, promotion) {
   try {
-    const query = `SELECT s.student_id, upi.gender, upi.dateofbirth
+    // Base query
+    let query = `SELECT s.student_id, upi.gender, upi.dateofbirth
     FROM student s
     INNER JOIN user_personal_info upi ON s.student_id = upi.userid
-    WHERE s.major_id = '${major_id}' AND s.promotion ='${promotion}';`
+    WHERE s.major_id = '${major_id}'`;
+
+    // Add promotion condition if promotion is not null
+    if (promotion) {
+      query += ` AND s.promotion = '${promotion}'`;
+    }
+
+    query += ';';
+
+    // Execute the query
     const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("Error in the query getStudentStatistics function: ", error);
+    return;
+  }
+}
+
+
+
+async function getStudentStatisticsCompany(connection, studentIDs){
+  try {
+    const query = `SELECT userid, establishment 
+        FROM user_education 
+        WHERE userid = ANY($1)`;
+        const values = [studentIDs];
+    const res = await connection.query(query, values);
     return res;
   } catch (error) {
     console.log("error in the query getStudentStatistics function : ", error); return;
@@ -4173,5 +4212,6 @@ module.exports = {
   assignPM,
   getassignPM,
   getPromotionByMajorId,
-  getStudentStatistics
+  getStudentStatistics,
+  getStudentStatisticsCompany
 };
