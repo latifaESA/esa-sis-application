@@ -3952,6 +3952,19 @@ async function getassignPM(connection, table, pm_id, major_id) {
     console.log("error in the query file : ", error); return;
   }
 }
+async function insertMajor(connection, table, columns, values) {
+  try {
+    const columnList = columns.join(", ");
+    const valueList = values.map((val) => `'${val}'`).join(", ");
+    const result = await connection.query(
+      `INSERT INTO ${table} (${columnList}) VALUES (${valueList}) 
+      ON CONFLICT (major_name) DO NOTHING`
+    );
+    return result;
+  } catch (err) {
+    console.log("error in the query file : ", err); return;
+  }
+}
 
 
 
@@ -4146,5 +4159,6 @@ module.exports = {
   pmExtraMajor,
   filterStudentAlumni,
   assignPM,
-  getassignPM
+  getassignPM,
+  insertMajor
 };

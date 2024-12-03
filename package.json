@@ -6,7 +6,7 @@
     "dev:next": "next dev -p 3001",
     "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
     "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\"",
-    "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS",
+    "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS_EXED",
     "build": "next build",
     "start": "next start -p 3001 & node ./pages/api/pmApi/schedulerhandler.js",
     "lint": "next lint",

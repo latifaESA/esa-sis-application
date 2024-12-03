@@ -8,8 +8,9 @@ dotenv.config("../env");
 const transporter = createTransporter();
 
 const SendEmail = async (name, email, password, studentId, esa_logo) => {
+  // console.log('wsll email' , password)
   try {
-   
+  //  console.log('pass' , password)
     const itServiceDeskEmail = emailing_data.itServiceDeskEmail;
     const fromEmail = emailing_data.fromEmail;
     const link = `${process.env.NEXTAUTHLOGIN_URL}`
@@ -72,6 +73,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
     };
 
     await transporter.sendMail(mailOptions);
+
   } catch (error) {
     return error;
   }
