@@ -5,10 +5,16 @@
   "scripts": {
     "dev:next": "next dev -p 3001",
     "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
-    "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\"",
+
     "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS_EXED",
+
+    "dev:check": "node ./scripts/checkConnection.js",
+    "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\" \"npm run dev:check\"",
     "build": "next build",
-    "start": "next start -p 3001 & node ./pages/api/pmApi/schedulerhandler.js",
+    "start:next": "next start -p 3001",
+    "start:node": "node ./pages/api/pmApi/schedulerhandler.js",
+    "start:check": "node ./scripts/checkConnection.js",
+    "start": "npx concurrently \"npm run start:next\" \"npm run start:node\" \"npm run start:check\"",
     "lint": "next lint",
     "generate-sitemap": "next-sitemap",
     "test": "npx playwright test"

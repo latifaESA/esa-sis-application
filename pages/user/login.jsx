@@ -252,7 +252,7 @@ export default function LoginScreen() {
         <link rel="icon" href="/public/index.ico" />
       </Head>
       <div className="bg-[#F7F7F7] h-screen">
-        <div className="flex justify-center   text-black">
+        <div className="flex justify-center text-black">
           <div className="imageRes lg:visible invisible">
             <Image
               src={esaBuilding}
@@ -261,8 +261,8 @@ export default function LoginScreen() {
               height={690}
             />
           </div>
-          <div className="bg-white pr-11 sm:pl-11">
-            <div className="log flex pr-11 ">
+          <div className="bg-white pr-11 sm:pl-11 bg-white p-6 sm:p-11 w-full max-w-md lg:max-w-lg shadow-md rounded-md">
+            <div className="log flex justify-center lg:justify-start items-center mb-6 ">
               <Image
                 src={esaLogo}
                 width={81}
@@ -271,12 +271,12 @@ export default function LoginScreen() {
                 height='100%'
               />
               <div className="leading-7 welcometoSis mt-4 ml-5">
-                <p className="welcomeTo mt-11">WELCOME TO</p>
-                <span className="SIS">Student Information System (SIS)</span>
+                <p className="welcomeTo text-lg font-semibold">WELCOME TO</p>
+                <span className="SIS text-xl font-bold">Student Information System (SIS)</span>
               </div>
             </div>
       
-            <div className="text-center login text-[#3D709A] text-[39px] bold">
+            <div className="text-center  text-[#3D709A] font-bold text-xl mb-4 mt-[7rem]">
               Login
             </div>
             <div className='formContent'>
@@ -325,10 +325,6 @@ export default function LoginScreen() {
                       data-testid="userid"
                       {...register("userid", {
                         required: "Please Enter username",
-                        // pattern: {
-                        //   value: /\S+@\S+\.\S+/,
-                        //   message: 'Please Enter Valid Email',
-                        // },
                       })}
                     />
                   </div>
@@ -341,7 +337,7 @@ export default function LoginScreen() {
                     </label>
                     <br />
                     <input
-                      className="bg-white inputT focus:outline-none  ml-2"
+                      className="bg-white inputT focus:outline-none ml-2"
                       type={showPassword === false ? "password" : "text"}
                       data-testid="password"
                       {...register("password", {
@@ -387,7 +383,7 @@ export default function LoginScreen() {
         </div>
       </div>
     </>
-  );
+);
 }
 
 LoginScreen.getLayout = function (page) {
