@@ -393,9 +393,10 @@ async function insertData(connection, table, columns, values) {
     const result = await connection.query(
       `INSERT INTO ${table} (${columnList}) VALUES (${valueList})`
     );
+    
     return result;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log(`error in the query file: `, err); return;
   }
 }
 
@@ -3975,9 +3976,10 @@ async function insertMajor(connection, table, columns, values) {
       `INSERT INTO ${table} (${columnList}) VALUES (${valueList}) 
       ON CONFLICT (major_name) DO NOTHING`
     );
+
     return result;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log("error in the query file in insert: ", err); return;
   }
 }
 
