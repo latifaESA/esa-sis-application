@@ -6,7 +6,7 @@
     "dev:next": "next dev -p 3001",
     "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
 
-    "server": "node pages/api/external_applications/recieve_active_student_info_in_SIS_EXED",
+    "server": "node pages/api/external_applications/recive_data",
 
     "dev:check": "node ./scripts/checkConnection.js",
     "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\" \"npm run dev:check\"",

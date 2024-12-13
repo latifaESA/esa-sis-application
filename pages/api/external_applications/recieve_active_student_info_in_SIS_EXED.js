@@ -51,6 +51,7 @@ async function handler(req, res) {
 
     res.setHeader('Access-Control-Allow-Origin', ONLINE_URL);
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.setHeader('Authorization', ONLINE_SIS_SECRET_KEY);
     if (
       allowIntegration &&
       req.method === 'POST' &&
