@@ -80,11 +80,15 @@ async function handler(req, res) {
         const new_pass = generatePassword(8);
         const salt = await bcryptjs.genSalt(8);
         const genPass = await bcryptjs.hash(new_pass, salt);
-
-        // Insert major
+     
+                  // Insert major
         const columns_major = ['major_id', 'major_name' , 'status'];
         const values_major = [`${recieved_data.major_id}`, `EXED-${recieved_data.major_name}` , 'active'];
         const resMajor = await insertMajor(connection, 'major', columns_major, values_major);
+        console.log('resMajor' , resMajor)
+        recieved_data.major_id = resMajor
+      
+
     
         isSuccess = isSuccess && resMajor.rowCount > 0;
 

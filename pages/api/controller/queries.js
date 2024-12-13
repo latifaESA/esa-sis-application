@@ -3972,12 +3972,16 @@ async function insertMajor(connection, table, columns, values) {
   try {
     const columnList = columns.join(", ");
     const valueList = values.map((val) => `'${val}'`).join(", ");
-    const result = await connection.query(
-      `INSERT INTO ${table} (${columnList}) VALUES (${valueList}) 
-      ON CONFLICT (major_name) DO NOTHING`
-    );
+    const query = `
+    INSERT INTO ${table} (${columnList}) 
+    VALUES (${valueList}) 
+    ON CONFLICT (major_name) DO UPDATE SET major_name = EXCLUDED.major_name
+    RETURNING major_id;
+`;
+const result = await connection.query(query);
+return result.rows[0]?.major_id; // Return the major_id from the result
 
-    return result;
+  
   } catch (err) {
     console.log("error in the query file in insert: ", err); return;
   }
