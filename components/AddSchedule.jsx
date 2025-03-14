@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import moment from 'moment-timezone';
+import React from "react";
+// import moment from 'moment-timezone';
 import axios from "axios";
 import CustomSelectBox from "../pages/programManager/customSelectBox";
 import { NotificatonMessage } from "./Dashboard/WarningMessage";
@@ -34,14 +34,14 @@ export default function AddSchedule({
   setPromotions,
   setCourseValue,
   // roomName,
-  timeResult,
+  // timeResult,
   // weekDays,
   // dateFrom,
   // dateTo,
   // promotions,
   // attendance,
-  fromTime,
-  toTime,
+  // fromTime,
+  // toTime,
   // weekDays,
   // details,
   setDetails,
@@ -54,81 +54,81 @@ export default function AddSchedule({
 }) {
 
   // const [occupiedRooms, setOccupiedRooms] = useState([]);
-  const [remainingRooms, setRemainingRooms] = useState([]);
+  // const [remainingRooms, setRemainingRooms] = useState([]);
 
-  const searchBook = async () => {
-    console.log('in the searchbook')
-    try {
-      console.log(timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '')
-      if (timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '') {
-        console.log('in condition')
-        const occupiedRoomsArray = [];
+  // const searchBook = async () => {
+  //   console.log('in the searchbook')
+  //   try {
+  //     console.log(timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '')
+  //     if (timeResult.length > 0 && building !== '' && fromTime !== '' && toTime !== '') {
+  //       console.log('in condition')
+  //       const occupiedRoomsArray = [];
 
-        for (let i = 0; i < timeResult.length; i++) {
-          const dates = new Date(timeResult[i]);
-          const formattedDate = moment(dates).format('YYYY-MM-DDT00:00:00[Z]');
+  //       for (let i = 0; i < timeResult.length; i++) {
+  //         const dates = new Date(timeResult[i]);
+  //         const formattedDate = moment(dates).format('YYYY-MM-DDT00:00:00[Z]');
 
-          const fromTimeSplit = fromTime;
-          const toTimeSplit = toTime;
-          const datess = formattedDate.split('T')[0];
+  //         const fromTimeSplit = fromTime;
+  //         const toTimeSplit = toTime;
+  //         const datess = formattedDate.split('T')[0];
 
-          const offset = 2;
-          const fromTimes = moment(`${datess}T${fromTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
-          const toTimes = moment(`${datess}T${toTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
+  //         const offset = 2;
+  //         const fromTimes = moment(`${datess}T${fromTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
+  //         const toTimes = moment(`${datess}T${toTimeSplit}:00.000`).utcOffset(offset, true).toISOString();
 
-          if (fromTimes && toTimes) {
-            const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
-            const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
+  //         if (fromTimes && toTimes) {
+  //           const formattedFromTime = fromTimes.replace(/\.\d{3}Z/, 'Z');
+  //           const formattedToTime = toTimes.replace(/\.\d{3}Z/, 'Z');
 
-            const payload = {
-              space: building,
-              date: formattedDate,
-              FromTime: formattedFromTime,
-              ToTime: formattedToTime,
-            };
+  //           const payload = {
+  //             space: building,
+  //             date: formattedDate,
+  //             FromTime: formattedFromTime,
+  //             ToTime: formattedToTime,
+  //           };
 
-            const response = await axios.post('/api/pmApi/getBooking', payload);
+  //           const response = await axios.post('/api/pmApi/getBooking', payload);
 
-            const data = response.data.data;
-            if (response.data.success === true) {
-              // Collect occupied rooms
-              data.forEach(item => {
-                occupiedRoomsArray.push(item.rooms);
-              });
-
-
-              // // Set state to store occupied rooms
-              // setOccupiedRooms(occupiedRoomsArray);
-              // console.log(occupiedRoomsArray)
+  //           const data = response.data.data;
+  //           if (response.data.success === true) {
+  //             // Collect occupied rooms
+  //             data.forEach(item => {
+  //               occupiedRoomsArray.push(item.rooms);
+  //             });
 
 
-              // Set state to store remaining rooms
-              const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
-              setRemainingRooms(remainingRoomsArray);
-              console.log("all room filter :", allrooms)
+  //             // // Set state to store occupied rooms
+  //             // setOccupiedRooms(occupiedRoomsArray);
+  //             // console.log(occupiedRoomsArray)
 
-            } else {
-              // If data.data.success is not true, set all rooms as remaining
 
-              setRemainingRooms(allrooms);
-              console.log("all room :", allrooms)
+  //             // Set state to store remaining rooms
+  //             const remainingRoomsArray = allrooms.filter(room => !occupiedRoomsArray.includes(room));
+  //             setRemainingRooms(remainingRoomsArray);
+  //             console.log("all room filter :", allrooms)
 
-            }
-          } else {
-            console.error('fromTimes or toTimes is null or undefined');
-          }
-        }
-      }
-      console.log('outside the condition ')
-    } catch (error) {
-      console.log('the error in the AddSchedule is : ', error)
-      return;
-    }
-  };
+  //           } else {
+  //             // If data.data.success is not true, set all rooms as remaining
 
-  useEffect(() => {
-    searchBook();
-  }, [building, fromTime, toTime]);
+  //             setRemainingRooms(allrooms);
+  //             console.log("all room :", allrooms)
+
+  //           }
+  //         } else {
+  //           console.error('fromTimes or toTimes is null or undefined');
+  //         }
+  //       }
+  //     }
+  //     console.log('outside the condition ')
+  //   } catch (error) {
+  //     console.log('the error in the AddSchedule is : ', error)
+  //     return;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   searchBook();
+  // }, [building, fromTime, toTime]);
 
   const handleSaveAll = async () => {
     try {
@@ -321,7 +321,7 @@ export default function AddSchedule({
                         <label className="text-gray-700 mt-2 md:mt-0 md:ml-2 w-full">
                           Location:
                           <CustomSelectBox
-                            options={remainingRooms}
+                            options={allrooms}
                             placeholder="Select Location"
                             onSelect={handleLocation}
                             styled="font-medium h-auto items-center border-[1px] border-gray-300 w-full px-4 py-2 rounded-md" 

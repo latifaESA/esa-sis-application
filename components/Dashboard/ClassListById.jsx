@@ -132,7 +132,7 @@ const ClassListById = ({ users, allCourse }) => {
     try {
       let table = "rooms";
       let { data } = await axios.post("/api/pmApi/getAll", { table });
-      // console.log("rooms are ::  ", data.rows)
+      console.log("rooms are ::  ", data.rows)
       setTheRoom(data.rows);
     } catch (error) {
       // console.log(error);
