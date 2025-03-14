@@ -15,6 +15,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
     const fromEmail = emailing_data.fromEmail;
     const link = `${process.env.NEXTAUTHLOGIN_URL}`
     const bccEmail = emailing_data.bccEmail;
+    const ccEmail = emailing_data.ccEmail;
     const subject = `Your Student Information System (SIS) Access`;
 
     const attachments = [
@@ -64,7 +65,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
     const mailOptions = {
       from: fromEmail,
       to: email,
-      cc: '',
+      cc: ccEmail,
       bcc: bccEmail,
       subject: subject,
       html: emailBody,
