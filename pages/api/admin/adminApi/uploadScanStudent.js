@@ -21,20 +21,20 @@ const {
 
 
 import { authOptions } from "../../auth/[...nextauth]";
-// import SendEmail from "./emailFormat";
+import SendEmail from "./emailFormat";
 import hash from "./hash";
 import StudentExist from "./studentExist";
 import PromotionExist from "./promotionExist";
 import PromotionMajorExist from "./isPromotionToMajor";
-// import DataSettings from "../../controller/getDataSettings";
+import DataSettings from "../../controller/getDataSettings";
 // import ClassNameGenerator from "@mui/utils/ClassNameGenerator";
 
-function generateID(academicYear, majorId) {
+function generateID(academicYear, majorId , program_name) {
   let academic_year = academicYear;
   let major_id = majorId;
   const randomDigits = Math.floor(Math.random() * 10000)
 
-  return academic_year + major_id + randomDigits
+  return program_name-academic_year + major_id + randomDigits
 }
 
 function generateRandomPassword(length = 8) {
@@ -167,7 +167,7 @@ async function handler(req, res) {
           });
         }
 
-        const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '').toUpperCase();
+        const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '');
         const promotion_exist = await PromotionExist(connection, promotion_name);
        
         if (!promotion_exist) {
@@ -265,6 +265,7 @@ async function handler(req, res) {
 
 
           const majorid = major.rows[0].major_id;
+          const majorName = major.rows[0].major_name
 
 
           let field = fields[idx];
@@ -302,9 +303,9 @@ async function handler(req, res) {
             })
           }
 
-          // const settings = await DataSettings(connection, 'settings')
+          const settings = await DataSettings(connection, 'settings')
 
-          // const esa_logo = settings[0].esa_logo
+          const esa_logo = settings[0].esa_logo
 
 
 
@@ -313,7 +314,7 @@ async function handler(req, res) {
           const uploadPromises = StudentArray.map(async (student) => {
 
             // const userpasswordref = await hash(student.userpassword);
-            const studentId = generateID(student['AcademicYear(required)'], majorid)
+            const studentId = generateID(student['AcademicYear(required)'], majorid , majorName)
             
             const user_password = generateRandomPassword(8)
            
@@ -407,7 +408,7 @@ async function handler(req, res) {
             const response = await uploadStudent(connection, {
               student_id: studentId,
               status: "active",
-              promotion: student['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '').toUpperCase(),
+              promotion: student['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, ''),
               academic_year: student['AcademicYear(required)'],
               student_firstname: student['StudentFirstName(required)'],
               student_lastname: student['StudentLastName(required)'],
@@ -420,13 +421,13 @@ async function handler(req, res) {
               })
             }
 
-            // await SendEmail(
-            //   student['StudentFirstName(required)'],
-            //   student['Email(required)'],
-            //   user_password,
-            //   studentId,
-            //   esa_logo
-            // );
+            await SendEmail(
+              student['StudentFirstName(required)'],
+              student['Email(required)'],
+              user_password,
+              studentId,
+              esa_logo
+            );
 
             return response
 
