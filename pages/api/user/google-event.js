@@ -1,83 +1,61 @@
-// pages/api/insertEvent.js
 import { google } from 'googleapis';
 require('dotenv').config();
 
 async function handler(req, res) {
- 
     try {
-        // const CLIENT_ID = '748431984812-251tnvfcugl1c3uns4h751pr3119oktc.apps.googleusercontent.com';
-        // const CLIENT_SECRET = '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';
         const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
         const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+        const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+
+        if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
+            return res.status(500).json({ success: false, message: "Missing API credentials" });
+        }
 
         const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET);
+        oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-        const { accessToken, event } = req.body; // Assuming you send these in the request body
+        const { accessToken, event } = req.body;
+        if (!accessToken || !event) {
+            return res.status(400).json({ success: false, message: "Missing accessToken or event data" });
+        }
 
-      oauth2Client.setCredentials({
-            access_token: accessToken,
+        oauth2Client.setCredentials({ access_token: accessToken });
+
+        console.log("Validating Token...");
+        try {
+            await oauth2Client.getAccessToken(); // Check if token is valid
+        } catch (error) {
+            console.error("Invalid Token, Refreshing...");
+            const { token } = await oauth2Client.refreshAccessToken();
+            oauth2Client.setCredentials({ access_token: token });
+        }
+
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        const existingEvents = await calendar.events.list({
+            calendarId: 'primary',
+            q: event.summary,
         });
 
-        
-        const calendar = google.calendar('v3');
-
-        try {
-            // List events that match the criteria (same summary, date, and time)
-            const existingEvents = await calendar.events.list({
-                auth: oauth2Client,
+        let response;
+        if (existingEvents.data.items.length > 0) {
+            response = await calendar.events.update({
                 calendarId: 'primary',
-                q: `summary:"${event.summary}"`,
+                eventId: existingEvents.data.items[0].id,
+                resource: event,
             });
-            
-            if (existingEvents.data.items.length > 0) {
-                // If events with the same criteria are found, update the first one
-                const existingEventId = existingEvents.data.items[0].id;
-
-                const updatedEvent = await calendar.events.update({
-                    auth: oauth2Client,
-                    calendarId: 'primary',
-                    eventId: existingEventId,
-                    resource: event,
-                });
-
-                const eventHtmlLink = updatedEvent.data.htmlLink;
-                res.status(200).json({
-                    success: true,
-                    code: 200,
-                    data: updatedEvent.data,
-                    redirectUrl: eventHtmlLink, // Include the Google Calendar event link
-                });
-            } else {
-                // If no events are found, insert a new event
-                const response = await calendar.events.insert({
-                    auth: oauth2Client,
-                    calendarId: 'primary',
-                    resource: event,
-                });
-
-                const eventHtmlLink = response.data.htmlLink;
-                res.status(201).json({
-                    success: true,
-                    code: 201,
-                    data: response.data,
-                    redirectUrl: eventHtmlLink, // Include the Google Calendar event link
-                });
-            }
-        } catch (error) {
-            // console.error('Error creating/updating event:', error);
-            return res.status(500).json({
-                success: false,
-                code: 500,
-                message: error.message,
+        } else {
+            response = await calendar.events.insert({
+                calendarId: 'primary',
+                resource: event,
             });
         }
+
+        return res.status(200).json({ success: true, data: response.data });
+
     } catch (error) {
-        console.error('Error:', error);
-        return res.status(500).json({
-            success: false,
-            code: 500,
-            message: error.message,
-        });
+        console.error("Google API Error:", error);
+        return res.status(500).json({ success: false, message: error.message });
     }
 }
 

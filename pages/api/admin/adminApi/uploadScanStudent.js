@@ -29,13 +29,27 @@ import PromotionMajorExist from "./isPromotionToMajor";
 import DataSettings from "../../controller/getDataSettings";
 // import ClassNameGenerator from "@mui/utils/ClassNameGenerator";
 
-function generateID(academicYear, majorId , program_name) {
-  let academic_year = academicYear;
-  let major_id = majorId;
-  const randomDigits = Math.floor(Math.random() * 10000)
+function generateID(academicYear, majorId, majorName) {
+  console.log('majorName:', majorName);
 
-  return program_name-academic_year + major_id + randomDigits
+  // Remove 'EXED-' if present
+  let program = majorName.startsWith("EXED-") ? majorName.replace("EXED-", "") : majorName;
+
+  // Extract last 2 digits of academic year
+  let shortYear = academicYear.toString().slice(-2);
+
+  // Generate a random 2-digit number (between 10-99)
+  const randomDigits = Math.floor(10 + Math.random() * 90);
+
+  return `${program}-${shortYear+majorId+randomDigits}`;
 }
+
+
+
+
+
+
+
 
 function generateRandomPassword(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@!$%?)(*&~`';
@@ -265,12 +279,11 @@ async function handler(req, res) {
 
 
           const majorid = major.rows[0].major_id;
-          const majorName = major.rows[0].major_name
-
-
+          
+          
           let field = fields[idx];
 
-
+          console.log('field' , field)
           idx++;
           // console.log('field.Email\n' , field.Email , 'field.Promotion\n',
           // field.Promotion, 
@@ -312,8 +325,11 @@ async function handler(req, res) {
           const StudentArray = Object.values({ field });
 
           const uploadPromises = StudentArray.map(async (student) => {
-
+            console.log('student' , student)
             // const userpasswordref = await hash(student.userpassword);
+            const majorName = student.MajorName
+            
+  
             const studentId = generateID(student['AcademicYear(required)'], majorid , majorName)
             
             const user_password = generateRandomPassword(8)

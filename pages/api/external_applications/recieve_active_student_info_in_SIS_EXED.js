@@ -76,6 +76,7 @@ async function handler(req, res) {
 
       if (studentInfo) {
         const recieved_data = studentInfo.rows[0];
+        console.log('recieved_data' , recieved_data)
         const connection = await connect();
         const new_pass = generatePassword(8);
         const salt = await bcryptjs.genSalt(8);

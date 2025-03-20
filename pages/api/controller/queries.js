@@ -4039,6 +4039,52 @@ async function getStudentStatisticsCompany(connection, studentIDs){
   }
 }
 
+async function getScheduleAttendance(connection) {
+  try {
+    const query = `SELECT * FROM tmpclass WHERE startdate::date = CURRENT_DATE + INTERVAL '7 days'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("Error in the getScheduleAttendance function:", error);
+    return;
+  }
+}
+
+async function getClass(connection , classId) {
+  try {
+    const query = `SELECT * FROM tmpschedule WHERE tmpclass_id = '${classId}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("Error in the getScheduleAttendance function:", error);
+    return;
+  }
+}
+
+async function getStudent(connection , attendanceId) {
+  try {
+    const query = `SELECT * FROM attendance WHERE attendance_id = '${attendanceId}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("Error in the getScheduleAttendance function:", error);
+    return;
+  }
+}
+
+async function getData(connection , table , column , id) {
+  try {
+    const query = `SELECT * FROM '${table}' WHERE ${column} = '${id}'`;
+    const res = await connection.query(query);
+    return res;
+  } catch (error) {
+    console.log("Error in the getData function:", error);
+    return;
+  }
+}
+
+
+
 
 /* End Postegresql */
 
@@ -4234,6 +4280,10 @@ module.exports = {
   getPromotionByMajorId,
   getStudentStatistics,
   getStudentStatisticsCompany,
-  insertMajor
+  insertMajor,
+  getScheduleAttendance,
+  getClass,
+  getStudent,
+  getData
 
 };

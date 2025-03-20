@@ -2,23 +2,30 @@
   "name": "sis-app",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev:next": "next dev -p 3001",
-    "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
+  "type": "module",
+  
+"scripts": {
+  "dev:next": "next dev -p 3001",
+  "dev:node": "node ./pages/api/pmApi/schedulerhandler.js",
+  
+  "dev:email": "node ./pages/api/pmApi/schedulerhandlerEmail.js",
 
-    "server": "node pages/api/external_applications/recive_data",
+  "server": "node pages/api/external_applications/recive_data",
+  
+  "dev:check": "node ./scripts/checkConnection.js",
+  "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\" \"npm run dev:check\" \"npm run dev:email\"",
+  "build": "next build",
+  "start:next": "next start -p 3001",
+  "start:node": "node ./pages/api/pmApi/schedulerhandler.js",
+  "start:email": "node ./pages/api/pmApi/schedulerhandlerEmail.js",
+  "start:check": "node ./scripts/checkConnection.js",
+  "start": "npx concurrently \"npm run start:next\" \"npm run start:node\" \"npm run start:check\" \"npm run start:email\"",
+  "lint": "next lint",
+  "generate-sitemap": "next-sitemap",
+  "test": "npx playwright test"
+},
 
-    "dev:check": "node ./scripts/checkConnection.js",
-    "dev": "npx concurrently \"npm run dev:next\" \"npm run dev:node\" \"npm run dev:check\"",
-    "build": "next build",
-    "start:next": "next start -p 3001",
-    "start:node": "node ./pages/api/pmApi/schedulerhandler.js",
-    "start:check": "node ./scripts/checkConnection.js",
-    "start": "npx concurrently \"npm run start:next\" \"npm run start:node\" \"npm run start:check\"",
-    "lint": "next lint",
-    "generate-sitemap": "next-sitemap",
-    "test": "npx playwright test"
-  },
+
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -122,6 +129,7 @@
     "xss-filters": "^1.2.7",
     "yup": "^0.32.11"
   },
+  
   "devDependencies": {
     "@applitools/eyes-playwright": "^1.16.1",
     "@playwright/test": "^1.33.0",
