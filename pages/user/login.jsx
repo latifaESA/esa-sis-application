@@ -251,7 +251,7 @@ export default function LoginScreen() {
         <title>ESA SIS - Login</title>
         <link rel="icon" href="/public/index.ico" />
       </Head>
-      <div className="bg-[#F7F7F7] h-screen">
+      <div className="h-screen flex flex-col justify-center bg-transparent md:bg-[#F7F7F7] w-full">
         <div className="flex justify-center text-black">
           <div className="imageRes lg:visible invisible">
             <Image
@@ -271,15 +271,21 @@ export default function LoginScreen() {
                 height='100%'
               />
               <div className="leading-7 welcometoSis mt-4 ml-5">
-                <p className="welcomeTo text-lg font-semibold">WELCOME TO</p>
-                <span className="SIS text-xl font-bold">Student Information System (SIS)</span>
+                <p className="welcomeTo text-lg font-semibold">
+                  WELCOME TO
+                  <span className="SIS text-xl font-bold block mt-2">
+                    Student Information System (SIS)
+                  </span>
+                </p>
               </div>
+
+
             </div>
-      
-            <div className="text-center  text-[#3D709A] font-bold text-xl mb-4 mt-[7rem]">
+
+            <div className="text-center  text-[#3D709A] font-bold text-xl mb-4 mt-[7rem] ">
               Login
             </div>
-            <div className='formContent'>
+            <div className='formContent '>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <div>
                   {userInactive && (
@@ -383,7 +389,7 @@ export default function LoginScreen() {
         </div>
       </div>
     </>
-);
+  );
 }
 
 LoginScreen.getLayout = function (page) {
