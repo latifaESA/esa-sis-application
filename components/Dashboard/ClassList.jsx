@@ -34,7 +34,7 @@ import CustomPagination from "./Pagination";
 // import AttendanceModal from '../../pages/programManager/ModalForm/AttendanceModal';
 // import UpdateModal from '../../pages/programManager/ModalForm/UpdateModal';
 import AddSchedule from "../AddSchedule";
-import sendMailClass from "../../utilities/emailing/emailBeforeClass";
+// import sendMailClass from "../../utilities/emailing/emailBeforeClass";
 // const formatTime = (timeWithTimeZone) => {
 //   const [hours, minutes] = timeWithTimeZone.split(':');
 //   const formattedHours = (parseInt(hours) % 12 === 0) ? 12 : (parseInt(hours) % 12);
@@ -559,7 +559,7 @@ const ClassList = ({ users, allCourse }) => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
-                      await sendMailClass(classID , fromTime , toTime , location)
+                      // await sendMailClass(classID , fromTime , toTime , location)
                       
                     }
                     // if (schedulesCreated === totalSchedules) {
@@ -643,7 +643,7 @@ const ClassList = ({ users, allCourse }) => {
                       setIsAddSchedule(false);
                       setSelectedValues([]);
                       setIsOnLine('')
-                      await sendMailClass(classID , fromTime , toTime , location)
+                      // await sendMailClass(classID , fromTime , toTime , location)
                       
 
                     }

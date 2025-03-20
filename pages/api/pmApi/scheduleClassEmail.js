@@ -22,7 +22,7 @@ async function handler(req , res){
         await Promise.all(
             getStudentData.map(async (id) => {
               const student = await getData(connection, "student", "student_id", id);
-                const contactStudent = await getData(connection , 'user_contact' , userid , id)
+                const contactStudent = await getData(connection , 'user_contact' , 'userid' , id)
               if (student && contactStudent.rows[0].email) {
                 
                 await SendEmailBeforeClass( student.student_id, contactStudent.rows[0].email, student.student_firstname , student.student_lastname , courseDetails , teacherDetails , roomDetails , scheduleDetails);
