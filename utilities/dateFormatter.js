@@ -23,4 +23,5 @@ function dateFormatter(dateString) {
   return formattedMonth;
 }
 
-export default dateFormatter;
+// export default dateFormatter;
+module.exports = dateFormatter;

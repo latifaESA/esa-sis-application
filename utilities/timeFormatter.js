@@ -10,4 +10,5 @@ function timeFormatter(timeString) {
   return `${formattedHours}:${formattedMinutes}`;
 }
 
-export default timeFormatter;
+// export default timeFormatter;
+module.exports = timeFormatter;

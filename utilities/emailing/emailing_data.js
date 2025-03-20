@@ -45,5 +45,5 @@ const emailing_data = {
     // programManagerEmail:Rammal.h@esa.edu.lb
     // admissionsDepartmentEmail: 'admissions@esa.edu.lb',
   };
-  export default emailing_data;
+  module.exports = emailing_data;
   

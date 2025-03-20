@@ -393,7 +393,7 @@ async function insertData(connection, table, columns, values) {
     const result = await connection.query(
       `INSERT INTO ${table} (${columnList}) VALUES (${valueList})`
     );
-    
+
     return result;
   } catch (err) {
     console.log(`error in the query file: `, err); return;
@@ -423,13 +423,13 @@ async function getMajorPM(connection, majorID) {
   }
 }
 
-async function getPromotionByMajorId(connection, majorID){
-  try{
+async function getPromotionByMajorId(connection, majorID) {
+  try {
     const result = await connection.query(`SELECT *
     FROM promotions
     WHERE major_id = '${majorID}'`)
     return result;
-  }catch(error){
+  } catch (error) {
     console.log("error in the query file : ", error);
     return;
   }
@@ -448,8 +448,8 @@ const getEmailsByMajorId = async (connection, majorId, promotionValue) => {
     `,
       [majorId, promotionValue]
     );
-    console.log(majorId, "  ====  ",promotionValue)
-console.log('the result : ', result)
+    console.log(majorId, "  ====  ", promotionValue)
+    console.log('the result : ', result)
     return result.rows;
   } catch (error) {
     console.log("error in the query file : ", error); return;
@@ -2607,7 +2607,7 @@ async function getStudentPromotionMajor(connection, major_id, promotion) {
     const res = await connection.query(query);
     return res;
   } catch (error) {
-    console.log("error in the query file : ", error); 
+    console.log("error in the query file : ", error);
     return;
   }
 }
@@ -3978,10 +3978,10 @@ async function insertMajor(connection, table, columns, values) {
     ON CONFLICT (major_name) DO UPDATE SET major_name = EXCLUDED.major_name
     RETURNING major_id;
 `;
-const result = await connection.query(query);
-return result.rows[0]?.major_id; // Return the major_id from the result
+    const result = await connection.query(query);
+    return result.rows[0]?.major_id; // Return the major_id from the result
 
-  
+
   } catch (err) {
     console.log("error in the query file in insert: ", err); return;
   }
@@ -4026,12 +4026,12 @@ async function getStudentStatistics(connection, major_id, promotion) {
 
 
 
-async function getStudentStatisticsCompany(connection, studentIDs){
+async function getStudentStatisticsCompany(connection, studentIDs) {
   try {
     const query = `SELECT userid, establishment 
         FROM user_education 
         WHERE userid = ANY($1)`;
-        const values = [studentIDs];
+    const values = [studentIDs];
     const res = await connection.query(query, values);
     return res;
   } catch (error) {
@@ -4050,20 +4050,28 @@ async function getScheduleAttendance(connection) {
   }
 }
 
-async function getClass(connection , classId) {
+async function getClass(connection, classId) {
   try {
-    const query = `SELECT * FROM tmpschedule WHERE tmpclass_id = '${classId}'`;
-    const res = await connection.query(query);
+    const query = `
+      SELECT * FROM tmpschedule 
+      WHERE class_id = $1 
+      AND day::date = CURRENT_DATE + INTERVAL '7 days'
+    `;
+
+    const res = await connection.query(query, [classId]); // Use parameterized query
     return res;
   } catch (error) {
-    console.log("Error in the getScheduleAttendance function:", error);
+    console.error("Error in the getClass function:", error);
     return;
   }
 }
 
-async function getStudent(connection , attendanceId) {
+
+
+async function getStudent(connection, attendanceId) {
   try {
     const query = `SELECT * FROM attendance WHERE attendance_id = '${attendanceId}'`;
+    console.log('qquer', query)
     const res = await connection.query(query);
     return res;
   } catch (error) {
@@ -4072,9 +4080,10 @@ async function getStudent(connection , attendanceId) {
   }
 }
 
-async function getData(connection , table , column , id) {
+async function getData(connection, table, column, id) {
   try {
-    const query = `SELECT * FROM '${table}' WHERE ${column} = '${id}'`;
+    const query = `SELECT * FROM ${table} WHERE ${column} = '${id}'`;
+
     const res = await connection.query(query);
     return res;
   } catch (error) {
