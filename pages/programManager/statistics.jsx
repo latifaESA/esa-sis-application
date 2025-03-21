@@ -184,7 +184,7 @@ export default function Statistics() {
         <p className='text-gray-700 text-3xl pt-5 mb-10 font-bold'>Statistics</p>
         <div className='flex flex-col'>
         <div className='flex justify-around items-center flex-col h-40 lg:flex-row sm:h-auto'>
-          {session.user?.hasMultiMajor === "true" ? <>
+          {/* {session.user?.hasMultiMajor === "true" ? <> */}
           <>
           <label className='mb-4 md:mt-3 md:w-40'>
               <select
@@ -235,7 +235,7 @@ export default function Statistics() {
             :<>
           
             </> }
-          </> : <></>}
+          {/* </> : <></>} */}
         </div>
         {selectMajor && majorValue != '' &&
             <StatisticsTable theselMajor={theselMajor} promotionValue={promotionValue} themalepercent={themalepercent} thefemalepercent={thefemalepercent} theAvg={theAvg} companyStats={companyStats}/>
