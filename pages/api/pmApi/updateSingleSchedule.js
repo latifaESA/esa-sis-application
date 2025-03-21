@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 
 dotenv.config(); // Assuming the .env file is in the root of your project
 import moment from 'moment-timezone';
-// import SendEmail from "./emailUpdateScheduleContent";
+import SendEmail from "./emailUpdateScheduleContent";
 const FormatTime = (timeWithTimeZone) => {
   const [time] = timeWithTimeZone.split('+'); // Remove the timezone offset
   const [hours, minutes] = time.split(':');
@@ -169,29 +169,29 @@ async function handler(req, res) {
 
       for (const students of student) {
         try {
-          // await SendEmail(
-          //   students.email,
-          //   students.student_firstname,
-          //   students.student_lastname,
-          //   courseName,
-          //   oldDate,
-          //   oldFromTime,
-          //   oldToTime,
-          //   oldIsOnline,
-          //   oldRoom,
-          //   oldBuilding,
-          //   oldTeacher,
-          //   formate,
-          //   oldFormate,
-          //   formattedDate,
-          //   oldFromTime,
-          //   ToTimeEmail,
-          //   is_online,
-          //   room_name,
-          //   building,
-          //   data.rows[0].teacher_firstname,
-          //   data.rows[0].teacher_lastname
-          // );
+          await SendEmail(
+            students.email,
+            students.student_firstname,
+            students.student_lastname,
+            courseName,
+            oldDate,
+            oldFromTime,
+            oldToTime,
+            oldIsOnline,
+            oldRoom,
+            oldBuilding,
+            oldTeacher,
+            formate,
+            oldFormate,
+            formattedDate,
+            oldFromTime,
+            ToTimeEmail,
+            is_online,
+            room_name,
+            building,
+            data.rows[0].teacher_firstname,
+            data.rows[0].teacher_lastname
+          );
       
           await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`, {
             receiverIds: [students.student_id],

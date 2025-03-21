@@ -18,7 +18,7 @@ const SendEmail = async (
    
     
     const fromEmail = emailing_data.fromEmail;
-   
+    const ccEmail = emailing_data.ccEmail;
     // const bccEmail = emailing_data.bccEmail;
     const subject = `Student Grades`;
 
@@ -47,7 +47,7 @@ const SendEmail = async (
     const mailOptions = {
       from: fromEmail,
       to: recipientEmail,
-      // cc: 'batoulhareb2020@gmail.com',
+      cc: ccEmail,
     //   bcc: bccEmail,
       subject: subject,
       html: emailBody,
