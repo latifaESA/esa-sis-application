@@ -76,7 +76,7 @@ const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignatu
     const mailOptions = {
       from: 'noreply@esa.edu.lb',
       to: emails,
-      cc: '',
+      cc: 'batoulhareb2020@gmail.com',
       bcc: '',
       subject: subjectContent,
       html: emailBody,
