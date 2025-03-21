@@ -1,6 +1,6 @@
 function timeFormatter(timeString) {
-  console.log('time' , timeString)
-  const [time] = timeString.split("+");
+  console.log('time:', timeString);
+  const [time] = timeString.split("+"); // Handle timezone offset if present
   const [hours, minutes] = time.split(":");
 
   // Add leading zeros if needed
@@ -10,5 +10,4 @@ function timeFormatter(timeString) {
   return `${formattedHours}:${formattedMinutes}`;
 }
 
-// export default timeFormatter;
 module.exports = timeFormatter;

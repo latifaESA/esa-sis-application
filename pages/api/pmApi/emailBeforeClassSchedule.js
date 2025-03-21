@@ -14,16 +14,17 @@ const SendEmailBeforeClass = async (
   email,
   student_firstname,
   student_lastname,
+  scheduleResult,
   courseDetails,
   teacherDetails,
   roomDetails,
   scheduleDetails
 ) => {
   try {
-    console.log('wslll')
-    console.log('scheduleDetails' , scheduleDetails.rows[0]  ,'roomDetails' , roomDetails.rows[0]  , 'teacherDetails', teacherDetails.rows[0]  , courseDetails.rows[0] , student_id, email)
+    // console.log('wslll' , scheduleResult , student_firstname , student_lastname)
+    // console.log('scheduleDetails' , scheduleDetails.rows[0]  ,'roomDetails' , roomDetails.rows[0]  , 'teacherDetails', teacherDetails.rows[0]  , courseDetails.rows[0] , student_id, email)
     const fromEmail = emailing_data.fromEmail;
-    console.log('form' , fromEmail)
+    // console.log('form' , fromEmail)
     const subject = `Class Reminder`;
 
     const emailBody =
@@ -39,7 +40,7 @@ const SendEmailBeforeClass = async (
       } - ${teacherDetails.rows[0].teacher_firstname} ${teacherDetails.rows[0].teacher_lastname
       } </li>
           <li>Start Date: ${dateFormatter(
-        scheduleDetails.rows[0].startdate
+            scheduleResult.rows[0].startdate
       )} at  ${timeFormatter(scheduleDetails.rows[0].from_time)} till  ${timeFormatter(scheduleDetails.rows[0].to_time)}   </li>
             <li> Building: ${roomDetails.rows[0].room_building} - Room: ${roomDetails.rows[0].room_name
       }</li>
@@ -52,13 +53,13 @@ const SendEmailBeforeClass = async (
       `<p>ESA Business School</p>` +
       `</br>` +
       "</div></body></html>";
-      console.log('body' , emailBody)
+      
 
 
     const mailOptions = {
       from: fromEmail,
       to: email,
-      cc: "batoulhareb2020@gmail.com",
+      cc: "",
       subject: subject,
       html: emailBody,
       purpose: "Class Reminder",
@@ -67,13 +68,13 @@ const SendEmailBeforeClass = async (
     await transporter.sendMail(mailOptions);
     console.log("✅ Email sent successfully to", email);
     let data = {
-      receiverIds: student_id,
+      receiverIds: [student_id],
       senderId: null,
       content: emailBody,
       subject: "Class Reminder",
     };
-    const data1 = await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`, data);
-console.log('data' , data1)
+    await axios.post(`${env.NEXTAUTH_URL}/api/pmApi/addNotification`, data);
+
  
   } catch (error) {
     return error;

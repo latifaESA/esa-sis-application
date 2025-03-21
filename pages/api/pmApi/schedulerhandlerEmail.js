@@ -1,7 +1,7 @@
 const schedule = require('node-schedule');
 const EmailSyncHandler = require('./scheduleClassEmail');
 
-schedule.scheduleJob({ hour: 20, minute: 40, tz: 'Asia/Beirut' }, async function () {
+schedule.scheduleJob({ hour: 14, minute: 55, tz: 'Asia/Beirut' }, async function () {
     try {
         // Mock response object
         const response = {
