@@ -1,10 +1,12 @@
 import dotenv from 'dotenv';
 import createTransporter from '../../../utilities/emailing/smtp';
+import emailing_data from '../../../utilities/emailing/emailing_data';
 
 dotenv.config('../env');
 const transporter = createTransporter();
 const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignature) => {
-
+  const fromEmail = emailing_data.fromEmail;
+  const ccEmail = emailing_data.ccEmail;
   try {
     let emailBody;
     {selectedSignature ? 
@@ -106,9 +108,9 @@ const SendEmailTo = async (emails, emailContent, subjectContent, selectedSignatu
     }
     // const emailTo = emails.join(', ');
     const mailOptions = {
-      from: 'noreply@esa.edu.lb',
+      from: fromEmail,
       to: emails,
-      cc: 'batoulhareb2020@gmail.com',
+      cc: ccEmail,
       bcc: '',
       subject: subjectContent,
       html: emailBody,
