@@ -15,17 +15,30 @@ async function handler(req, res) {
     // Get a fresh access token using the refresh token
     let accessToken;
     try {
-      const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        refresh_token: REFRESH_TOKEN,
-        grant_type: 'refresh_token'
-      });
+      const tokenResponse = await axios.post(
+        'https://oauth2.googleapis.com/token', 
+        new URLSearchParams({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          refresh_token: REFRESH_TOKEN,
+          grant_type: 'refresh_token'
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      );
       
       accessToken = tokenResponse.data.access_token;
+      console.log("Successfully obtained access token" , accessToken);
     } catch (error) {
       console.error("Error refreshing token:", error.response?.data || error.message);
-      return res.status(500).json({ success: false, message: "Failed to refresh token" });
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to refresh token", 
+        error: error.response?.data || error.message 
+      });
     }
 
     const { event } = req.body;
@@ -33,44 +46,9 @@ async function handler(req, res) {
       return res.status(400).json({ success: false, message: "Missing event data" });
     }
 
-    // Check if an event with similar summary exists
-    let existingEventId = null;
-    if (event.summary) {
-      try {
-        const searchResponse = await axios.get(
-          `https://www.googleapis.com/calendar/v3/calendars/primary/events?q=${encodeURIComponent(event.summary)}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-        
-        if (searchResponse.data.items && searchResponse.data.items.length > 0) {
-          existingEventId = searchResponse.data.items[0].id;
-        }
-      } catch (error) {
-        console.error("Error searching for existing events:", error.response?.data || error.message);
-        // Continue execution even if search fails
-      }
-    }
-
-    let response;
-    // Either update existing event or create new one
-    if (existingEventId) {
-      response = await axios.put(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${existingEventId}`,
-        event,
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    } else {
-      response = await axios.post(
+    // Simplify: Just create a new event every time to avoid search issues
+    try {
+      const response = await axios.post(
         'https://www.googleapis.com/calendar/v3/calendars/primary/events',
         event,
         {
@@ -80,14 +58,24 @@ async function handler(req, res) {
           }
         }
       );
+      
+      return res.status(200).json({ success: true, data: response.data });
+    } catch (error) {
+      console.error("Calendar API Error:", error.response?.data || error.message);
+      
+      // Return detailed error information to help diagnose the issue
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to create calendar event", 
+        error: error.response?.data || error.message,
+        scopes: error.response?.data?.error?.details?.[0]?.scopes || [] 
+      });
     }
-
-    return res.status(200).json({ success: true, data: response.data });
   } catch (error) {
-    console.error("API Error:", error.response?.data || error.message);
+    console.error("Handler Error:", error.message);
     return res.status(500).json({ 
       success: false, 
-      message: error.response?.data?.error?.message || error.message 
+      message: error.message 
     });
   }
 }
