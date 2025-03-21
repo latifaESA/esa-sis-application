@@ -181,7 +181,7 @@ async function handler(req, res) {
           });
         }
 
-        const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, '');
+        const promotion_name = field['Promotion(required,e.g:promo(promoNumber))'];
         const promotion_exist = await PromotionExist(connection, promotion_name);
        
         if (!promotion_exist) {
@@ -424,7 +424,7 @@ async function handler(req, res) {
             const response = await uploadStudent(connection, {
               student_id: studentId,
               status: "active",
-              promotion: student['Promotion(required,e.g:promo(promoNumber))'].replace(/\s+/g, ''),
+              promotion: student['Promotion(required,e.g:promo(promoNumber))'],
               academic_year: student['AcademicYear(required)'],
               student_firstname: student['StudentFirstName(required)'],
               student_lastname: student['StudentLastName(required)'],

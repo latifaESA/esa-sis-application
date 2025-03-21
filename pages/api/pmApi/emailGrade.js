@@ -47,7 +47,7 @@ const SendEmail = async (
     const mailOptions = {
       from: fromEmail,
       to: recipientEmail,
-    //   cc: '',
+      // cc: 'batoulhareb2020@gmail.com',
     //   bcc: bccEmail,
       subject: subject,
       html: emailBody,
