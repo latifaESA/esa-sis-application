@@ -35,10 +35,10 @@ const SendEmail = async (
 
 ) => {
   try {
-    console.log('old' , oldIsOnline , oldBuilding , oldRoom , oldFormate)
-    console.log('new' , is_online , building , room_name , formate)
+    // console.log('old' , oldIsOnline , oldBuilding , oldRoom , oldFormate)
+    // console.log('new' , is_online , building , room_name , formate)
     const fromEmail = emailing_data.fromEmail;
-   
+   const ccEmail = emailing_data.ccEmail;
     // const bccEmail = emailing_data.bccEmail;
     const subject = `Update Schedule`;
 
@@ -83,7 +83,7 @@ const SendEmail = async (
     const mailOptions = {
       from: fromEmail,
       to: email,
-    //   cc: '',
+      cc: ccEmail,
     //   bcc: bccEmail,
       subject: subject,
       html: emailBody,

@@ -24,6 +24,7 @@ const SendEmailBeforeClass = async (
     // console.log('wslll' , scheduleResult , student_firstname , student_lastname)
     // console.log('scheduleDetails' , scheduleDetails.rows[0]  ,'roomDetails' , roomDetails.rows[0]  , 'teacherDetails', teacherDetails.rows[0]  , courseDetails.rows[0] , student_id, email)
     const fromEmail = emailing_data.fromEmail;
+    const ccEmail = emailing_data.ccEmail;
     // console.log('form' , fromEmail)
     const subject = `Class Reminder`;
 
@@ -59,7 +60,7 @@ const SendEmailBeforeClass = async (
     const mailOptions = {
       from: fromEmail,
       to: email,
-      cc: "",
+      cc: ccEmail,
       subject: subject,
       html: emailBody,
       purpose: "Class Reminder",
