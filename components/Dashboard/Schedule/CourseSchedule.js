@@ -203,7 +203,7 @@ const CourseSchedule = () => {
       // Create an array to store the promises of adding events
       const addEventPromises = event.map(async (evt) => {
         // Make a request to add the event to Google Calendar using the access token
-        const response = await axios.post('/api/user/google-event', {
+        const response = await axios.post('/api/user/addEvent', {
           accessToken: access_Token,
           event: evt,
         });
