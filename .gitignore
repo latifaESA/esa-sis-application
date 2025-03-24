@@ -37,6 +37,7 @@ next-env.d.ts
 
 #project online app
 utilities/emailing_data.js
+utilities/emailing/emailing_data.js
 /uploads
 /public/Files
 /logs
