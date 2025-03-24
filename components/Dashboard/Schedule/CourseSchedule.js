@@ -240,7 +240,7 @@ const CourseSchedule = () => {
       });
 
       const { data } = await response.json();
-      await SaveRefreshToken(data.refresh_token)
+      await SaveRefreshToken(data.access_token)
       // Handle the tokens
 
     } catch (error) {
