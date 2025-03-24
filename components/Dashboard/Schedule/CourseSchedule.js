@@ -128,10 +128,10 @@ const CourseSchedule = () => {
             url = event.zoom_url;
           } else {
             title = [
-              `C-${event.course_name}`,
-              `T-${event.teacher_fullname}`,
-              `B-${event.room_building}`,
-              `R-${event.room_name}`,
+              `Course:${event.course_name}`,
+              `Teacher:${event.teacher_fullname}`,
+              `Building:${event.room_building}`,
+              `Room:${event.room_name}`,
             ];
           }
     
@@ -160,11 +160,11 @@ const CourseSchedule = () => {
           endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
     
           const title = [
-            `C-${event.course_name}`,
-            `T-${event.teacher_fullname}`,
-            `B-${event.room_building}`,
-            `R-${event.room_name}`,
-          ].map((line) => line + '\n');
+            `C:${event.course_name}`,
+            `T:${event.teacher_fullname}`,
+            `Building:${event.room_building}`,
+            `Room:${event.room_name}`,
+          ].map((line) => line + '\n\n\n');
     
           return {
             summary: title.join(','),

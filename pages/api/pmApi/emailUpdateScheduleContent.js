@@ -40,11 +40,11 @@ const SendEmail = async (
     const fromEmail = emailing_data.fromEmail;
    const ccEmail = emailing_data.ccEmail;
     // const bccEmail = emailing_data.bccEmail;
-    const subject = `Update Schedule`;
+    const subject = `Updated Schedule`;
 
     const emailBody =
     '<!DOCTYPE html>' +
-    '<html><head><title>Grades</title>' +
+    '<html><head><title>Updated Schedule</title>' +
     '</head><body><div>' +
     `<div style="text-align: center;">
        </div>` +
