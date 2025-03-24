@@ -191,10 +191,12 @@ const CourseSchedule = () => {
 
 
 
+
   const SaveRefreshToken = async (credentials) => {
     try {
       // Ensure you have the required access token from the OAuth flow.
       const access_Token = credentials;
+      console.log('acess' , access_Token)
       await axios.post('/api/user/setAccessTokenGoogle', {
         accessToken: access_Token,
         user_id: session.user?.userid,
@@ -204,7 +206,7 @@ const CourseSchedule = () => {
       const addEventPromises = event.map(async (evt) => {
         // Make a request to add the event to Google Calendar using the access token
         const response = await axios.post('/api/user/addEvent', {
-          accessToken: access_Token,
+          refreshToken: access_Token,
           event: evt,
         });
 
@@ -240,7 +242,8 @@ const CourseSchedule = () => {
       });
 
       const { data } = await response.json();
-      await SaveRefreshToken(data.access_token)
+      console.log('data' , data)
+      await SaveRefreshToken(data.refresh_token)
       // Handle the tokens
 
     } catch (error) {

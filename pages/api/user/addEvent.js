@@ -2,77 +2,73 @@ require('dotenv').config();
 const axios = require('axios');
 
 async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    console.log('wslt try')
+    console.log('Starting request...');
+
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-    console.log('CLIENT_ID' , CLIENT_ID)
-
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-    console.log('CLIENT_SECRET' , CLIENT_SECRET)
-    // const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
-    const { accessToken } = req.body; // Assuming you send these in the request body
-    console.log('ref' , accessToken)
-
-    if (!CLIENT_ID || !CLIENT_SECRET || !accessToken) {
-      return res.status(200).json({ success: false, message: "Missing API credentials" });
+    
+    let { refreshToken, event } = req.body; // Expect `refreshToken` instead of `accessToken`
+    console.log('refreshToken' , req.body)
+    
+    if (!CLIENT_ID || !CLIENT_SECRET || !refreshToken) {
+      console.error("Missing API credentials or refresh token");
+      return res.status(200).json({ success: false, message: "Missing API credentials or refresh token" });
     }
-    console.log('wslt if')
 
-    // Get a fresh access token using the refresh token
-    let AccessToken;
+    console.log('Fetching new access token...');
+    
+    // 🔹 Refresh the access token
+    let accessToken;
     try {
-      console.log('tene try')
       const tokenResponse = await axios.post(
-        'https://oauth2.googleapis.com/token', 
+        'https://oauth2.googleapis.com/token',
         new URLSearchParams({
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
-          refresh_token: accessToken,
+          refresh_token: refreshToken, // ✅ Using refresh token instead of accessToken
           grant_type: 'refresh_token'
         }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        }
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
-      // console.log('token' , tokenResponse)
-      AccessToken = tokenResponse.data.access_token;
-      console.log("Successfully obtained access token" , AccessToken);
+
+      accessToken = tokenResponse.data.access_token;
+      console.log("✅ Successfully obtained new access token:", accessToken);
+      
     } catch (error) {
-      console.error("Error refreshing token:", error.response?.data || error.message);
-      return res.status(400).json({ 
+      console.error("❌ Error refreshing token:", error.response?.data || error.message);
+      return res.status(200).json({ 
         success: false, 
         message: "Failed to refresh token", 
         error: error.response?.data || error.message 
       });
     }
 
-    const { event } = req.body;
-    console.log('event' , event)
-    if (!event) {
-      return res.status(200).json({ success: false, message: "Missing event data" });
+    // 🔹 Validate event data
+    if (!event || !event.start || !event.end || !event.summary) {
+      return res.status(200).json({ success: false, message: "Invalid event data" });
     }
 
-    // Simplify: Just create a new event every time to avoid search issues
+    console.log("Creating calendar event...");
+
+    // 🔹 Insert event into Google Calendar
     try {
       const response = await axios.post(
         'https://www.googleapis.com/calendar/v3/calendars/primary/events',
         event,
-        {
-          headers: {
-            'Authorization': `Bearer ${AccessToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
+        { headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' } }
       );
-      console.log('response' , response)
-      
+
+      console.log("✅ Event created successfully:", response.data);
+
       return res.status(200).json({ success: true, data: response.data });
-    } catch (error) {
-      console.error("Calendar API Error:", error.response?.data || error.message);
       
-      // Return detailed error information to help diagnose the issue
+    } catch (error) {
+      console.error("❌ Calendar API Error:", error.response?.data || error.message);
       return res.status(200).json({ 
         success: false, 
         message: "Failed to create calendar event", 
@@ -80,12 +76,10 @@ async function handler(req, res) {
         scopes: error.response?.data?.error?.details?.[0]?.scopes || [] 
       });
     }
+
   } catch (error) {
-    console.error("Handler Error:", error.message);
-    return res.status(500).json({ 
-      success: false, 
-      message: error.message 
-    });
+    console.error("❌ Handler Error:", error.message);
+    return res.status(200).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 }
 
