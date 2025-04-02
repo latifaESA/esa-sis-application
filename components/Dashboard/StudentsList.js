@@ -26,6 +26,7 @@ import { WarningConfirmChangeEmail } from "./WarningMessage";
 import { useSession } from "next-auth/react";
 import CustomPagination from "./Pagination";
 import { ExportButtons } from "./ExportButtons";
+import generateCertificate from "../../utilities/generateCertificate";
 
 const StudentsList = ({ users }) => {
 
@@ -534,6 +535,13 @@ const StudentsList = ({ users }) => {
   //     }
   //   });
   // };
+
+
+  useEffect(() => {
+    console.log('download the certificate')
+    // generateCertificate()
+    generateCertificate("Sandra Hitti", "March - May, 2024")
+  },[])
 
   return (
     <>
