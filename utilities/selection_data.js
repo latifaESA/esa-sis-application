@@ -2950,8 +2950,8 @@ const selection_data = {
     'https://res.cloudinary.com/ds6avfn6i/image/upload/v1672251868/esaonlineapp/carousel/Portalis_mansion_tzt5ia.jpg',
   ],
 
-  esa_logo:
-    'https://res.cloudinary.com/ds6avfn6i/image/upload/v1672246197/esaonlineapp/public/esa_qwrigu.png',
+  // esa_logo: 'https://res.cloudinary.com/ds6avfn6i/image/upload/v1672246197/esaonlineapp/public/esa_qwrigu.png',
+  esa_logo: `http://213.175.183.243:3000/file/setting/public/esa.png`,
   user_Avatar:
     'https://res.cloudinary.com/ds6avfn6i/image/upload/v1672246211/esaonlineapp/public/male_fozfl1.png',
   login_bg:
