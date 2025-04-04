@@ -57,8 +57,8 @@ async function EmailForResetPassword({
   // console.log(itServiceDeskEmail)
   const fromEmail = emailing_data.fromEmail;
   // console.log(fromEmail)
-  const ccEmail = emailing_data.ccEmail;
-  // const bccEmail = emailing_data.bccEamil;
+  // const ccEmail = emailing_data.ccEmail;
+  const bccEmail = emailing_data.bccEmail;
   const subject = `New mail for Reset Password from ${fromEmail}`;
   // console.log('this is subject')
   // console.log(subject)
@@ -82,7 +82,8 @@ async function EmailForResetPassword({
 const payload = JSON.stringify({
     from: fromEmail,
     to: idForRes,
-    cc: ccEmail,
+    cc: '',
+    bcc:bccEmail,
     subject: subject,
     ID:ID,
     itServiceDeskEmail:itServiceDeskEmail,

@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
       <h1 className="text-3xl font-bold mb-4">Privacy Policy for Using Google Calendar</h1>
 
       <p className="mb-4">
-        At Ecole Supérieure d Agricultures in Angers, we respect your privacy
+        At École supérieure des affaires (Beirut), we respect your privacy
         and are committed to protecting your personal information. This Privacy
         Policy outlines how we collect, use, and safeguard the information you
         provide when using our services to interact with Google Calendar.
