@@ -4092,6 +4092,17 @@ async function getData(connection, table, column, id) {
   }
 }
 
+async function updateGraduatedYear (connection , userId , year){
+  try {
+    const query = `UPDATE student SET status= 'Alumni', graduated_year='${year}' Where student_id='${userId}'`;
+    const result = await connection.query(query)
+    return result
+  } catch (error) {
+    console.log("Error in the graduated year function:", error);
+    return;
+  }
+}
+
 
 
 
@@ -4293,6 +4304,7 @@ module.exports = {
   getScheduleAttendance,
   getClass,
   getStudent,
-  getData
+  getData,
+  updateGraduatedYear
 
 };

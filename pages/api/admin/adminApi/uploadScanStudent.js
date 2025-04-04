@@ -30,18 +30,18 @@ import DataSettings from "../../controller/getDataSettings";
 // import ClassNameGenerator from "@mui/utils/ClassNameGenerator";
 
 function generateID(academicYear, majorId, majorName) {
-  console.log('majorName:', majorName);
+  // console.log('majorName:', majorName, academicYear, majorId);
 
   // Remove 'EXED-' if present
   let program = majorName.startsWith("EXED-") ? majorName.replace("EXED-", "") : majorName;
 
-  // Extract last 2 digits of academic year
-  let shortYear = academicYear.toString().slice(-2);
+  // Extract the last two digits of the academic year
+  let shortYear = academicYear.split('-')[1] || "00"; // Extracts '25' from 'Apr-25'
 
   // Generate a random 2-digit number (between 10-99)
   const randomDigits = Math.floor(10 + Math.random() * 90);
 
-  return `${program}-${shortYear+majorId+randomDigits}`;
+  return `${program}-${shortYear}${majorId}${randomDigits}`;
 }
 
 

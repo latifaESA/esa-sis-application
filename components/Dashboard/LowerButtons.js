@@ -10,6 +10,7 @@ export const LowerButtons = ({
   elective,
   setElective,
   assigned,
+  certificate
   // setOpenModal
   // setisModal,
 }) => {
@@ -52,7 +53,7 @@ export const LowerButtons = ({
           <></>
         )}
 
-        {!elective && !assigned ? (
+        {!elective && !assigned && !certificate? (
           <>
             <button
               className="primary-button btnCol text-white hover:text-white"
@@ -61,6 +62,21 @@ export const LowerButtons = ({
               // hidden={session.user.role === '2'?true:false}
             >
               Export All
+            </button>
+          </>
+        ) : (
+          <></>
+        )}
+
+{certificate ? (
+          <>
+            <button
+              className="primary-button btnCol text-white hover:text-white "
+              type="button"
+              onClick={exportAllButton}
+              // hidden={session.user.role === '2'?true:false}
+            >
+             Print All
             </button>
           </>
         ) : (
