@@ -28,6 +28,7 @@ async function handler(req, res) {
             task_name,
             grades
         );
+        
 
 
         await disconnect(connection);

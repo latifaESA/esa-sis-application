@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { getServerSession } from "next-auth/next";
 const { connect, disconnect } = require("../../../utilities/db");
-const { uplaodEXEDGrade } = require("../controller/queries");
+const { uplaodEXEDGrade, updateGraduatedYear } = require("../controller/queries");
 
 import xlsx from "xlsx";
 import { env } from 'process';
@@ -20,6 +20,11 @@ export const config = {
   api: {
     bodyParser: false,
   },
+};
+const getCurrentMonthYear = () => {
+  const date = new Date();
+  const options = { month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
 };
 
 async function handler(req, res) {
@@ -144,6 +149,7 @@ async function handler(req, res) {
         message: "Excel file is empty. No data to upload.",
       });
     }
+    
 
     const connection = await connect();
     const processedRows = []
@@ -170,6 +176,11 @@ async function handler(req, res) {
             message:`${row.FirstName} ${row.FamilyName} Grade Already Exist !`
           })
         }
+        const year = getCurrentMonthYear()
+        // console.log('year' , year)
+        if(row.TaskName === 'project'){
+          await updateGraduatedYear(connection , row.StudentID ,year )
+        }    
 
         await uplaodEXEDGrade(
           connection,

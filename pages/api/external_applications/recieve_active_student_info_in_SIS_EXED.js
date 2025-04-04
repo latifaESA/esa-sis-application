@@ -19,7 +19,11 @@ import bcryptjs from "bcryptjs";
 // import EmailAfterCreateAccount from "../../../utilities/emailing/emailAfterCreateAccount";
 import SendEmail from "../admin/adminApi/emailFormat";
 
-
+const getCurrentMonthYear = () => {
+  const date = new Date();
+  const options = { month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
 
 const formatDateForDB = (dateString) => {
   // Split the DD/MM/YYYY string into parts
@@ -96,6 +100,7 @@ async function handler(req, res) {
         // Insert promotion if not exist
         const date = new Date();
         let current_year = date.getFullYear();
+        const time_acc = getCurrentMonthYear()
         const columns_promotion = ['promotion_name', 'major_id', 'academic_year'];
         const promotion_data = [`${recieved_data.promotion}`, `${recieved_data.major_id}`, current_year];
         let insertIntoPromotionIfNotExist = await insertPromotion(connection, 'promotions', columns_promotion, promotion_data);
@@ -115,7 +120,7 @@ async function handler(req, res) {
 
         // Insert student
         const columns_student = ['student_id', 'status', 'promotion', 'academic_year', 'student_firstname', 'student_lastname', 'major_id', 'graduated_year'];
-        const values_student = [`${recieved_data.CID}`, 'active', `${recieved_data.promotion}`, `${current_year}`, `${recieved_data.first_name}`, `${recieved_data.last_name}`, `${recieved_data.major_id}`, 2023];
+        const values_student = [`${recieved_data.CID}`, 'active', `${recieved_data.promotion}`, `${time_acc}`, `${recieved_data.first_name}`, `${recieved_data.last_name}`, `${recieved_data.major_id}`, 2023];
         let resstudent = await insertData(connection, 'student', columns_student, values_student);
    
         isSuccess = isSuccess && resstudent.rowCount > 0;

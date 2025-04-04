@@ -6,7 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 
-import React from "react";
+import React, { useEffect , useRef } from "react";
 import { useState } from "react";
 
 
@@ -16,6 +16,9 @@ import Box from "@mui/material/Box";
 import selection_data from "../../utilities/selection_data";
 
 import CustomPagination from "./Pagination";
+import generateCertificate from "../../utilities/generateCertificate";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 
 
@@ -25,17 +28,70 @@ const StudentGradesEXED = ({
 
 }) => {
 
-  
-    const [pageSize, setPageSize] = useState(10);
+    // console.log('studentGrades' , studentGrades)
+
+
+    // const [pageSize, setPageSize] = useState(10);
     const [message, setMessage] = useState("");
+    const { data: session } = useSession();
+    const [studentData, setStudentData] = useState([])
 
     setTimeout(() => {
         setMessage("");
     }, selection_data.message_disapear_timing);
 
 
-      
+    useEffect(() => {
+        const StudentDetails = async () => {
+            try {
+                const payload = {
+                    table: 'student',
+                    Where: 'student_id',
+                    id: session.user.userid
+                }
+                const response = await axios.post('/api/pmApi/getAllCourses', payload)
+                // console.log('response', response)
+                setStudentData(response.data.data[0])
+            } catch (error) {
+                return error
+            }
+        };
+        StudentDetails()
+    
+        
+    }, [])
+    
 
+    const hasDownloaded = useRef(false);
+
+useEffect(() => {
+    console.log('student', studentData);
+
+    if (!hasDownloaded.current && studentData && studentData.academic_year && studentData.graduated_year) {
+        downloadCertificate(studentData);
+        hasDownloaded.current = true; // ✅ Ensure it runs only once
+    }
+}, [studentData]); // ✅ Runs only when studentData updates
+    
+    const downloadCertificate = (data) => {
+        if (!data || !data.academic_year || !data.graduated_year) {
+            console.error("Invalid student data:", data);
+            return;
+        }
+    
+        const name = `${data.student_firstname} ${data.student_lastname}`;
+    
+        // Extract month and year safely
+        const startMonth = data.academic_year.split(' ')[0] || "";
+        const year = data.academic_year.split(' ')[1] || "";
+        const endMonth = data.graduated_year.split(' ')[0] || "";
+    
+        // Format as "Apr-May, 2025"
+        const date = `${startMonth}-${endMonth}, ${year}`;
+    
+        generateCertificate(name, date);
+    };
+    
 
 
 
@@ -73,6 +129,29 @@ const StudentGradesEXED = ({
             width: 700,
 
         },
+        {
+            field: "Certificate",
+            headerName: "Certificate",
+            width: 350,
+            headerAlign: "center",
+            align: "center",
+            sortable: false,
+            renderCell: (params) => (
+                <div className="flex gap-2">
+                    <a
+                        href="#"
+                        className="text-blue-500 hover:underline"
+                        onClick={(e) => {
+                            e.preventDefault(); // Prevents navigation
+                            // console.log("data", params.row);
+                            downloadCertificate(params.row);
+                        }}
+                    >
+                        {params.row.student_firstname}-{params.row.student_lastname}
+                    </a>
+                </div>
+            ),
+        }
 
     ]
 
@@ -87,11 +166,11 @@ const StudentGradesEXED = ({
                     rows={studentGrades}
                     getRowHeight={() => "auto"}
                     columns={columns}
-                    pageSize={pageSize}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    rowsPerPageOptions={[5, 10, 15, 20]}
+                    // pageSize={pageSize}
+                    // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    // rowsPerPageOptions={[5, 10, 15, 20]}
                     // pagination
-                    checkboxSelection
+                    // checkboxSelection
                     // onSelectionModelChange={setSelectedRows}
                     disableSelectionOnClick
                     // onSelectionModelChange={disablePrintHanlder}

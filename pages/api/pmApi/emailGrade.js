@@ -48,7 +48,7 @@ const SendEmail = async (
       from: fromEmail,
       to: recipientEmail,
       cc: ccEmail,
-    //   bcc: bccEmail,
+      // bcc: bccEmail,
       subject: subject,
       html: emailBody,
     //   attachments: attachments,
