@@ -30,21 +30,23 @@ const HistoryList = ({ users }) => {
   const [message, setMessage] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
  const { data: session } = useSession();
-  const downloadCertificate = (data) => {
-    // console.log('data', data.student_firstname, data.student_lastname, data.academic_year, data.graduated_year);
-    
-    const name = `${data.student_firstname} ${data.student_lastname}`;
-    
-    // Extract month and year
-    const startMonth = data.academic_year.split(' ')[0];
-    const year = data.academic_year.split(' ')[1]
-      // Extract only the month from graduated_year (assuming format "April 2025")
-      const endMonth = data.graduated_year.split(' ')[0];
+ const downloadCertificate = (data) => {
+  if (!data || !data.academic_year || !data.graduated_year) {
+      console.error("Invalid student data:", data);
+      return;
+  }
 
-    // Format as "Apr-May, 2025"
-    const date = `${startMonth}-${endMonth}, ${year}`;
+  const name = `${data.student_firstname.charAt(0).toUpperCase()}${data.student_firstname.slice(1)} ${data.student_lastname.toUpperCase()}`;
 
-    generateCertificate(name, date);
+  // Extract month and year safely
+  const startMonth = data.academic_year.split(' ')[0] || "";
+  const year = data.academic_year.split(' ')[1] || "";
+  const endMonth = data.graduated_year.split(' ')[0] || "";
+
+  // Format as "Apr-May, 2025"
+  const date = `${startMonth}-${endMonth}, ${year}`;
+
+  generateCertificate(name, date);
 };
 
 

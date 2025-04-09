@@ -6,7 +6,7 @@
  * Copyright (c) 2023 ESA
  */
 
-import React, { useEffect , useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 
 
@@ -57,41 +57,41 @@ const StudentGradesEXED = ({
             }
         };
         StudentDetails()
-    
-        
+
+
     }, [])
-    
+
 
     const hasDownloaded = useRef(false);
 
-useEffect(() => {
-    console.log('student', studentData);
+    useEffect(() => {
+        console.log('student', studentData);
 
-    if (!hasDownloaded.current && studentData && studentData.academic_year && studentData.graduated_year) {
-        downloadCertificate(studentData);
-        hasDownloaded.current = true; // ✅ Ensure it runs only once
-    }
-}, [studentData]); // ✅ Runs only when studentData updates
-    
+        if (!hasDownloaded.current && studentData && studentData.academic_year && studentData.graduated_year) {
+            downloadCertificate(studentData);
+            hasDownloaded.current = true; // ✅ Ensure it runs only once
+        }
+    }, [studentData]); // ✅ Runs only when studentData updates
+
     const downloadCertificate = (data) => {
         if (!data || !data.academic_year || !data.graduated_year) {
             console.error("Invalid student data:", data);
             return;
         }
-    
-        const name = `${data.student_firstname} ${data.student_lastname}`;
-    
+
+        const name = `${data.student_firstname.charAt(0).toUpperCase()}${data.student_firstname.slice(1)} ${data.student_lastname.toUpperCase()}`;
+
         // Extract month and year safely
         const startMonth = data.academic_year.split(' ')[0] || "";
         const year = data.academic_year.split(' ')[1] || "";
         const endMonth = data.graduated_year.split(' ')[0] || "";
-    
+
         // Format as "Apr-May, 2025"
         const date = `${startMonth}-${endMonth}, ${year}`;
-    
+
         generateCertificate(name, date);
     };
-    
+
 
 
 
