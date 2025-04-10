@@ -4092,7 +4092,7 @@ async function getData(connection, table, column, id) {
   }
 }
 
-async function updateGraduatedYear (connection , userId , year){
+async function updateGraduatedYear(connection, userId, year) {
   try {
     const query = `UPDATE student SET status= 'Alumni', graduated_year='${year}' Where student_id='${userId}'`;
     const result = await connection.query(query)
@@ -4104,7 +4104,19 @@ async function updateGraduatedYear (connection , userId , year){
 }
 
 
-
+async function getClassStart(connection, promotion) {
+  try {
+    const query = `SELECT tmpschedule.day,tmpschedule.class_id  , tmpclass.promotion
+from tmpschedule 
+LEFT JOIN tmpclass ON tmpschedule.class_id = tmpclass.tmpclass_id
+where tmpclass.promotion ='${promotion}'`
+    const res = await connection.query(query)
+    return res
+  } catch (error) {
+    console.log("Error in the getClassStart function:", error);
+    return;
+  }
+}
 
 /* End Postegresql */
 
@@ -4305,6 +4317,7 @@ module.exports = {
   getClass,
   getStudent,
   getData,
-  updateGraduatedYear
+  updateGraduatedYear,
+  getClassStart
 
 };
