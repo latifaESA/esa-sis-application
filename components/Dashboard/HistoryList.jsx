@@ -1,6 +1,6 @@
 
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 // import Link from 'next/link';
 import { DataGrid } from "@mui/x-data-grid";
@@ -24,22 +24,55 @@ import generateCertificate from "../../utilities/generateCertificate";
 // import { ExportButtons } from "./ExportButtons";
 import { useSession } from "next-auth/react";
 import generateAllCertificates from "../../utilities/generateAllCertificate";
+import axios from "axios";
+
+function getMonthYear(dateString) {
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'long' };
+  return date.toLocaleDateString('en-US', options);
+}
+
+
 const HistoryList = ({ users }) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [message, setMessage] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
  const { data: session } = useSession();
+const [startDate , setStartDate] = useState('')
+const [promotion , setPromotion] = useState([])
+
+useEffect(()=>{
+  const getStartDate = async()=>{
+    try {
+      const payload = {
+        promotion:promotion.promotion
+      }
+      console.log(payload )
+      const response = await axios.post('/api/pmApi/getFirstClass' , payload)
+      // console.log('response' , response.data.data[0].day)
+      setStartDate(response.data.data[0].day)
+
+    } catch (error) {
+      return error
+    }
+  };
+  
+    getStartDate()
+ 
+  
+},[promotion , startDate])
+// console.log('startdate' , startDate)
  const downloadCertificate = (data) => {
-  if (!data || !data.academic_year || !data.graduated_year) {
+  if (!data || !startDate || !data.graduated_year) {
       console.error("Invalid student data:", data);
       return;
   }
-
+ 
   const name = `${data.student_firstname.charAt(0).toUpperCase()}${data.student_firstname.slice(1)} ${data.student_lastname.toUpperCase()}`;
-
+  const start_day = getMonthYear(startDate)
   // Extract month and year safely
-  const startMonth = data.academic_year.split(' ')[0] || "";
+  const startMonth = start_day.split(' ')[0] || "";
   const year = data.academic_year.split(' ')[1] || "";
   const endMonth = data.graduated_year.split(' ')[0] || "";
 
@@ -145,6 +178,7 @@ const HistoryList = ({ users }) => {
               onClick={(e) => {
                 e.preventDefault(); // Prevents navigation
                 // console.log("data", params.row);
+                setPromotion(params.row)
                 downloadCertificate(params.row);
               }}
             >
@@ -164,6 +198,8 @@ const HistoryList = ({ users }) => {
       try {
         let selected = new Set(selectedRows)
         const filteredStudents = users.filter(student => selected.has(student.student_id));
+        console.log('filteredStudents' ,filteredStudents)
+        setPromotion(filteredStudents.promotion)
        generateAllCertificates(filteredStudents)
       } catch (error) {
         console.error(error);
@@ -178,7 +214,8 @@ const HistoryList = ({ users }) => {
     if (users.length > 0) {
       try {
         setSelectedRows(users)
-    
+        console.log('users' , users)
+        setPromotion(users.promotion)
        generateAllCertificates(users)
    
       } catch (error) {

@@ -19,7 +19,11 @@ import CustomPagination from "./Pagination";
 import generateCertificate from "../../utilities/generateCertificate";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-
+function getMonthYear(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long' };
+    return date.toLocaleDateString('en-US', options);
+}
 
 
 
@@ -40,7 +44,29 @@ const StudentGradesEXED = ({
         setMessage("");
     }, selection_data.message_disapear_timing);
 
+    const [startDate, setStartDate] = useState('')
+    const [hasdownload, sethasdownload] = useState(false)
+    // console.log(promotion.promotion != undefined)
+    useEffect(() => {
+        const getStartDate = async () => {
+            try {
+                const payload = {
+                    promotion: session.user.promotion
+                }
+                console.log(payload)
+                const response = await axios.post('/api/pmApi/getFirstClass', payload)
+                // console.log('response' , response.data.data[0].day)
+                setStartDate(response.data.data[0].day)
 
+            } catch (error) {
+                return error
+            }
+        };
+
+        getStartDate()
+
+
+    }, [])
     useEffect(() => {
         const StudentDetails = async () => {
             try {
@@ -59,8 +85,16 @@ const StudentGradesEXED = ({
         StudentDetails()
 
 
-    }, [])
+    }, [hasdownload])
+    useEffect(() => {
+        console.log('student', studentData);
 
+        if (hasdownload) {
+            downloadCertificate(studentData);
+            sethasdownload(false)
+            
+        }
+    }, [hasdownload]); // ✅ Runs only when studentData updates
 
     const hasDownloaded = useRef(false);
 
@@ -71,18 +105,19 @@ const StudentGradesEXED = ({
             downloadCertificate(studentData);
             hasDownloaded.current = true; // ✅ Ensure it runs only once
         }
-    }, [studentData]); // ✅ Runs only when studentData updates
+    }, [studentGrades]); // ✅ Runs only when studentData updates
 
     const downloadCertificate = (data) => {
-        if (!data || !data.academic_year || !data.graduated_year) {
+        if (!data || !startDate || !data.graduated_year) {
             console.error("Invalid student data:", data);
             return;
         }
 
         const name = `${data.student_firstname.charAt(0).toUpperCase()}${data.student_firstname.slice(1)} ${data.student_lastname.toUpperCase()}`;
 
+        const start_day = getMonthYear(startDate)
         // Extract month and year safely
-        const startMonth = data.academic_year.split(' ')[0] || "";
+        const startMonth = start_day.split(' ')[0] || "";
         const year = data.academic_year.split(' ')[1] || "";
         const endMonth = data.graduated_year.split(' ')[0] || "";
 
@@ -144,6 +179,7 @@ const StudentGradesEXED = ({
                         onClick={(e) => {
                             e.preventDefault(); // Prevents navigation
                             // console.log("data", params.row);
+                            sethasdownload(true)
                             downloadCertificate(params.row);
                         }}
                     >
