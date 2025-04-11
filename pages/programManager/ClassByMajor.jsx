@@ -171,6 +171,25 @@ export default function ClassByMajor() {
       if (dateTo === '') {
         setErrorEnd('Please Fill The End Date');
       }
+            // dateFrom
+            if (dateTo.length > 0 && dateFrom > dateTo) {
+              setErrorStart('The start date is greater than end date');
+              return;
+              // alert('The start date is greater than end date');
+            } else if (dateTo.length > 0 && dateFrom === dateTo) {
+              // alert('The date from and to are equal');
+              setErrorStart('The date from and to are equal');
+              return;
+            }
+            if (dateFrom.length > 0 && dateTo < dateFrom) {
+              // alert('The end date is less than start date');
+              setErrorEnd('The end date is less than start date');
+              return;
+            } else if (dateFrom.length > 0 && dateTo === dateFrom) {
+              // alert('The date from and to are equal');
+              setErrorEnd('The date from and to are equal');
+              return;
+            }
       const payload = {
         major_id: majorId,
         teachers_fullname: teacherValue,
@@ -271,13 +290,17 @@ export default function ClassByMajor() {
     const selectedDate = event.target.value;
 
     // console.log(selectedDate);
-    if (dateFrom.length > 0 && selectedDate < dateFrom) {
-      alert('The end date is less than start date');
-    } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
-      alert('The date from and to are equal');
-    } else {
+    // if (dateFrom.length > 0 && selectedDate < dateFrom) {
+    //   // alert('The end date is less than start date');
+    //   setErrorEnd('The end date is less than start date');
+    //   return;
+    // } else if (dateFrom.length > 0 && selectedDate === dateFrom) {
+    //   // alert('The date from and to are equal');
+    //   setErrorEnd('The date from and to are equal');
+    //   return
+    // } else {
       setDateTo(selectedDate);
-    }
+    // }
   };
 
   const fetchClass = async () => {
