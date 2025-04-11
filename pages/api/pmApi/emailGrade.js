@@ -47,8 +47,8 @@ const SendEmail = async (
     const mailOptions = {
       from: fromEmail,
       to: recipientEmail,
-      // cc: ccEmail,
-      // bcc: bccEmail,
+      cc: ccEmail,
+      bcc: bccEmail,
       subject: subject,
       html: emailBody,
     //   attachments: attachments,

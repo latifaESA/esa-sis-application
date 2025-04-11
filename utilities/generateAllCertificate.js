@@ -1,6 +1,12 @@
 import jsPDF from "jspdf";
 
-const generateAllCertificates = async (students) => {
+function getMonthYear(dateString) {
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'long' };
+  return date.toLocaleDateString('en-US', options);
+}
+
+const generateAllCertificates = async (students, startDate) => {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
 
   try {
@@ -14,8 +20,6 @@ const generateAllCertificates = async (students) => {
       reader.readAsDataURL(blob);
     });
 
-
-
     // Loop through each student and generate a certificate
     students.forEach((student, index) => {
       // Format first name: capitalize first letter, lowercase the rest
@@ -23,14 +27,17 @@ const generateAllCertificates = async (students) => {
 
       // Format last name: all uppercase
       const formattedLastName = student.student_lastname.toUpperCase();
-      // Extract month and year from academic_year (assuming format "Apr-25")
-      const startMonth = student.academic_year.split(' ')[0];
-      const year = student.academic_year.split(' ')[1];
+
+      // Get month and year from the given startDate
+      const startMonthYear = getMonthYear(startDate);
+      const [startMonth, year] = startMonthYear.split(' ');
+
       // Extract only the month from graduated_year (assuming format "April 2025")
       const endMonth = student.graduated_year.split(' ')[0];
 
       // Format as "Apr-May, 2025"
-      const date = `${startMonth}-${endMonth}, ${year}`;
+      const certificateDate = `${startMonth}-${endMonth}, ${year}`;
+
       if (index !== 0) doc.addPage(); // Add new page for each certificate except the first
 
       const imgProps = doc.getImageProperties(dataUrl);
@@ -48,7 +55,7 @@ const generateAllCertificates = async (students) => {
       // Graduation date
       doc.setFontSize(16);
       doc.setFont("helvetica", "normal");
-      doc.text(date, 148, 145, { align: "center" });
+      doc.text(certificateDate, 148, 145, { align: "center" });
     });
 
     // Save as single PDF file
