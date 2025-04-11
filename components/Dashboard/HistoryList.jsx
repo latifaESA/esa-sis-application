@@ -41,17 +41,20 @@ const HistoryList = ({ users }) => {
  const { data: session } = useSession();
 const [startDate , setStartDate] = useState('')
 const [promotion , setPromotion] = useState([])
-
+const [getDate , setGetDate] = useState(false)
+console.log('promotion' , promotion , getDate)
 useEffect(()=>{
   const getStartDate = async()=>{
     try {
       const payload = {
         promotion:promotion.promotion
       }
-      console.log(payload )
-      const response = await axios.post('/api/pmApi/getFirstClass' , payload)
-      // console.log('response' , response.data.data[0].day)
-      setStartDate(response.data.data[0].day)
+     
+        const response = await axios.post('/api/pmApi/getFirstClass' , payload)
+        // console.log('response' , response.data.data[0].day)
+        setStartDate(response.data.data[0].day)
+      
+  
 
     } catch (error) {
       return error
@@ -61,7 +64,30 @@ useEffect(()=>{
     getStartDate()
  
   
-},[promotion , startDate])
+},[promotion , startDate ])
+
+useEffect(()=>{
+  const getStartDate = async()=>{
+    try {
+      const payload = {
+        promotion:promotion
+      }
+      if(getDate){
+        const response = await axios.post('/api/pmApi/getFirstClass' , payload)
+        // console.log('response' , response.data.data[0].day)
+        setStartDate(response.data.data[0].day)
+      }
+  
+
+    } catch (error) {
+      return error
+    }
+  };
+  
+    getStartDate()
+ 
+  
+},[promotion , startDate ,getDate])
 // console.log('startdate' , startDate)
  const downloadCertificate = (data) => {
   if (!data || !startDate || !data.graduated_year) {
@@ -178,6 +204,7 @@ useEffect(()=>{
               onClick={(e) => {
                 e.preventDefault(); // Prevents navigation
                 // console.log("data", params.row);
+                // setGetDate(true)
                 setPromotion(params.row)
                 downloadCertificate(params.row);
               }}
@@ -199,7 +226,8 @@ useEffect(()=>{
         let selected = new Set(selectedRows)
         const filteredStudents = users.filter(student => selected.has(student.student_id));
         console.log('filteredStudents' ,filteredStudents)
-        setPromotion(filteredStudents.promotion)
+        setPromotion(filteredStudents)
+        console.log('filteredStudents' ,promotion)
        generateAllCertificates(filteredStudents)
       } catch (error) {
         console.error(error);
@@ -209,20 +237,30 @@ useEffect(()=>{
 
   // export all to excel
   const exportAllButton = async () => {
-   
-    // console.log('the users : ', users)
-    if (users.length > 0) {
+    console.log('the users : ', users);
+    setSelectedRows(users)
+    console.log('selectedRows' , selectedRows)
+    if (selectedRows.length > 0) {
       try {
-        setSelectedRows(users)
-        console.log('users' , users)
-        setPromotion(users.promotion)
-       generateAllCertificates(users)
-   
+        const selectedIds = new Set(selectedRows.map(student => student.student_id));
+        console.log('selected', selectedIds);
+        
+        const filteredStudents = users.filter(student => selectedIds.has(student.student_id));
+        console.log('filteredStudents', filteredStudents);
+  
+        if (filteredStudents.length > 0) {
+          setPromotion(filteredStudents[0].promotion);
+          console.log('promotion', filteredStudents[0].promotion);
+        }
+  
+        setGetDate(true);
+        generateAllCertificates(filteredStudents , startDate)
       } catch (error) {
         console.error(error);
       }
     }
   };
+  
   const handlePrintSelected = () => {
     const selectedIDs = selectedRows;
 
