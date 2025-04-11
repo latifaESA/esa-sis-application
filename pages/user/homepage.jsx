@@ -12,7 +12,7 @@ import Head from "next/head";
 // import { useDispatch } from "react-redux";
 import esaBuilding from "../../public/images/ESA3.jpg";
 import esaLogo from "../../public/images/esa.png";
-
+// import { SiGooglecalendar } from 'react-icons/si';
 // import Person2Icon from '@mui/icons-material/Person2';
 // import LockIcon from '@mui/icons-material/Lock';
 import Image from "next/image";
@@ -69,10 +69,22 @@ export default function HomeScreen() {
                                 </div>
                                 <div className="contentDiv">
                                     <div className="circle gray">
-                                        <p className="ContentText">Get Notifications</p>
+                                        <p className="ContentText">Check and Sync Schedule Calendar</p>
                                     </div>
                                     <div className="rightContent">
-                                        <p className="textContent gray">Notifications for new grades or reminders before each class.</p>
+                                        <p className="textContent text-gray-700">
+                                            Check your class schedule and easily sync it with Google&nbsp;
+                                            <span className="inline-flex items-center gap-1 align-middle">
+                                                <img
+                                                    src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                                                    alt="Google Calendar"
+                                                    className="inline h-[1em] align-middle"
+                                                />
+                                                Calendar
+                                            </span>
+                                        </p>
+
+
                                     </div>
                                 </div>
                                 <div className="contentDiv">
