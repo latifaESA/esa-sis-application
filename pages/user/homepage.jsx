@@ -106,12 +106,20 @@ export default function HomeScreen() {
                             </li>
                         ))}
                     </ul>
+                    <a
+                    href="/privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 font-semibold text-lg hover:underline transition-all duration-300 text-center ease-in-out"
+                >
+                    View Our Privacy Policy
+                </a>
 
                 </div>
             </main>
 
             {/* FOOTER */}
-            <footer className="bg-gradient-to-r from-[#F3F9FF] to-[#B2D0FF] text-center py-8 border-t border-gray-200">
+            {/* <footer className="bg-gradient-to-r from-[#F3F9FF] to-[#B2D0FF] text-center py-8 border-t border-gray-200">
                 <p className="text-lg font-semibold text-[#3D709A] mb-4">
                     We care about your experience
                 </p>
@@ -123,7 +131,7 @@ export default function HomeScreen() {
                 >
                     View Our Privacy Policy
                 </a>
-            </footer>
+            </footer> */}
         </div>
     );
 }
