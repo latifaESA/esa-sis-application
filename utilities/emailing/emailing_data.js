@@ -23,8 +23,8 @@ const emailing_data = {
     fromEmail: 'noreply@esa.edu.lb',
   
     admissionsDepartmentEmail: '',
-    ccEmail: 'batoolharb26@gmail.com',
-    bccEmail: 'batoolharb26@gmail.com',
+    ccEmail: 'exed@esa.edu.lb',
+    bccEmail: 'bcc@esa.edu.lb',
   
     // TODO: Change Email to below  in production phase
     // admissionsDepartmentEmail: 'admissions@esa.edu.lb',

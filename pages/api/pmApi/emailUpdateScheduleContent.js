@@ -51,7 +51,7 @@ const SendEmail = async (
     `</br>` +
     `<p>Dear <span style="font-weight: bold">${student_firstname} ${student_lastname}</span>,</p>` +
     `<p>We trust this email finds you well.</p> ` +
-    `<p>We We would like to inform you of a necessary change to our ${course_id} schedule:</p>` +
+    `<p>We would like to inform you of a necessary change to our ${course_id} schedule:</p>` +
     `<p><span style="font-weight: bold">Previous Schedule:</span></p>` +
     `<p>
     <ul>

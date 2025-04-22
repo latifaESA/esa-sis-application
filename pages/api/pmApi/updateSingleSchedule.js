@@ -28,7 +28,7 @@ async function handler(req, res) {
       courseName,
       oldData } =
       req.body;
-
+  console.log('room id' , room_id)
     const classFilter = oldData.filter((sched) => sched.tmpschedule_id === tmpscheduleID)
     // console.log('----------------------classfilter---------------------------' , classFilter)
     const formattedDate = moment(day).format('DD-MM-YYYY');
@@ -48,22 +48,26 @@ async function handler(req, res) {
     colName = 'tmpschedule_id'
     val = tmpscheduleID
     const data = await getAllById(connection, table, colName, val);
-    console.log('data', data)
+    //console.log('data', data)
     table = 'tmpclass'
     colName = 'tmpclass_id'
     val = data.rows[0].class_id
     const dataclass = await getAllById(connection, table, colName, val);
-    console.log('dataclass', dataclass)
+    //console.log('dataclass', dataclass)
     table = 'courses'
     colName = 'course_id'
     val = dataclass.rows[0].course_id
     const datacourse = await getAllById(connection, table, colName, val);
-    console.log('datacourse', datacourse)
+    //console.log('datacourse', datacourse)
     table = 'teachers'
     colName = 'teacher_id'
     val = dataclass.rows[0].teacher_id
     const datateacher = await getAllById(connection, table, colName, val);
-    console.log('datateacher', datateacher)
+    table = 'rooms'
+    colName = 'room_id'
+    val = room_id
+    const dataroom = await getAllById(connection, table, colName, val);
+    //console.log('datateacher', datateacher)
     const response = await updateSchedule(
       connection,
       classID,
@@ -205,7 +209,7 @@ async function handler(req, res) {
             toTime,
             is_online,
             room_name,
-            building,
+            dataroom.rows[0].room_building,
             datateacher.rows[0].teacher_firstname,
             datateacher.rows[0].teacher_lastname
           );

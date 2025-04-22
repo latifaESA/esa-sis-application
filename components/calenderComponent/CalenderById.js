@@ -110,8 +110,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [allCourses, setAllCourses] = useState([]);
   const [studentGoogle, setStudentGoogleAccess] = useState([]);
 
-  const [urlZoom , setZoomUrl] = useState('')
-  
+  const [urlZoom, setZoomUrl] = useState('')
+
   const [errorType, setErrorType] = useState('');
   // eslint-disable-next-line no-unused-vars
 
@@ -135,7 +135,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const createBooking = async (data) => {
     const batchSize = 30; // Set the batch size according to your needs
     const totalBatches = Math.ceil(data.length / batchSize);
-  
+
     try {
       for (let i = 0; i < totalBatches; i++) {
         const startIdx = i * batchSize;
@@ -150,7 +150,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           Title: item.Title,
           Id: item.Id
         }));
-  
+
         await fetch('/api/pmApi/createBooking', {
           method: 'POST',
           headers: {
@@ -164,8 +164,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       return { ok: false, error: error.message };
     }
   };
-  
-  
+
+
 
 
 
@@ -439,7 +439,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const getSchedule = async () => {
     const datesArray = [];
     schedule.forEach((sched) => {
-      console.log('sched' , sched)
+      console.log('sched', sched)
       datesArray.push({
         tmpschedule_id: sched.tmpschedule_id,
         class_id: sched.class_id,
@@ -448,7 +448,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         courseID: sched.course_id,
         title: sched.course_name,
         type: sched.course_type,
-        teacherId:sched.teacher_id,
+        teacherId: sched.teacher_id,
         teacher: `${sched.teacher_firstname} ${sched.teacher_lastname}`,
         from: sched.from_time,
         to: sched.to_time,
@@ -460,15 +460,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         attendance_id: sched.attendance_id,
         zoom_meeting_id: sched.zoom_meeting_id,
         zoom_url: sched.zoom_url,
-        promotions:sched.promotion,
-    
+        promotions: sched.promotion,
+
         color: '#00CED1',
       });
     });
 
     setScheduleDate(datesArray);
   };
- 
+
   const getData = async () => {
     try {
       let pmID = majorId;
@@ -816,8 +816,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           if (ev.is_online === true) {
             if (data.success) {
               const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
-              await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data , response.zoom_url)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to , attendanceData.data.data)
+              await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data, response.zoom_url)
+              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -825,8 +825,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           } else {
             if (data.success) {
 
-              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course , ev.room_name , ev.room_building)
-              await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to , attendanceData.data.data)
+              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course, ev.room_name, ev.room_building)
+              await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -853,7 +853,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
     // setPlace(selectedValue)
-
+// console.log('selectedValue' , selectedValue)
     setRoomName(selectedValue)
 
     setPlace(
@@ -1136,7 +1136,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       }
     });
   };
-  console.log('googleToken' , student)
+  // console.log('googleToken', student)
   const handleCreateAttendanceDragDrop = (ev, date, place) => {
     return new Promise((resolve, reject) => {
       try {
@@ -1167,11 +1167,11 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             const response = await getStudentsDragDrop(ev);
             const attendance_id = data.data.data;
             if (attendance_id) {
-       
-                await axios.post('/api/pmApi/createAttendanceStudent', {
-                  attendance_id,
-                  student_id:response,
-                });
+
+              await axios.post('/api/pmApi/createAttendanceStudent', {
+                attendance_id,
+                student_id: response,
+              });
             }
             resolve(data);
           })
@@ -1193,10 +1193,10 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     e.preventDefault();
 
     try {
-      
+
 
       if (isOnline === 'true') {
-        if(zoomUserId === undefined){
+        if (zoomUserId === undefined) {
           setErrorType(`Email ${session.user?.email} Zoom account Not Activated`);
           setIsClick(false)
           return;
@@ -1213,12 +1213,12 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         setIsClick(false)
         return;
       }
-      if (isOnline !=='false' && isOnline !=='true') {
+      if (isOnline !== 'false' && isOnline !== 'true') {
         setErrorType('Please Fill The Type');
         setIsClick(false)
         return;
       }
-      if(isOnline === 'false'){
+      if (isOnline === 'false') {
         if (building === '') {
           setErrorBuilding('Please Fill The Building');
           setIsClick(false)
@@ -1239,18 +1239,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         // alert('The start date is greater than end date');
       } else if (fromTime === toTime) {
         // alert('The date from and to are equal');
-       
+
         setErrorStart('The time from and to are equal');
         setIsClick(false)
         return;
       }
-      if ( toTime < fromTime) {
+      if (toTime < fromTime) {
         // alert('The end date is less than start date');
-        
+
         setErrorEnd('The end time is less than start date');
         setIsClick(false)
         return;
-      } else if ( toTime === fromTime) {
+      } else if (toTime === fromTime) {
         // alert('The date from and to are equal');
         setErrorEnd('The time from and to are equal');
         setIsClick(false)
@@ -1259,7 +1259,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       setIsClick(true);
       // Create attendance data
       const attendanceData = await handleCreateAttendance();
-      if(attendanceData.data.code === 200){
+      if (attendanceData.data.code === 200) {
         setConfirmOccupied(true);
         setMessage(attendanceData.data.message);
       }
@@ -1327,7 +1327,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
-          await handleSharePointBookingRoom(theDate, attendanceData.data.data , courseName)
+          await handleSharePointBookingRoom(theDate, attendanceData.data.data, courseName)
           await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
@@ -1356,36 +1356,36 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   };
 
-  const studentGoogleAccess = async(event)=>{
+  const studentGoogleAccess = async (event) => {
     try {
       const payload = {
-        table:'google_calendar',
-        Where:'attendence_id',
-        id:event.attendance_id
+        table: 'google_calendar',
+        Where: 'attendence_id',
+        id: event.attendance_id
       }
       const response = await axios.post('/api/pmApi/getAllCourses', payload)
       setStudentGoogleAccess(response)
       const payload2 = {
-        table:'users',
-        Where:'userid',
-        id:response.data.data[0].user_id
+        table: 'users',
+        Where: 'userid',
+        id: response.data.data[0].user_id
       }
-     
-      if(response.data.success === true){
-       
+
+      if (response.data.success === true) {
+
         const response2 = await axios.post('/api/pmApi/getAllCourses', payload2)
         await handleAccessToken(response2.data.data)
       }
 
 
-    
-     
+
+
     } catch (error) {
       return error
     }
   }
-  const handleOnClickEvent = async(event) => {
- 
+  const handleOnClickEvent = async (event) => {
+
     await studentGoogleAccess(event)
     setConfirmOpenMessage(true);
     // setShowPortal(true);
@@ -1559,8 +1559,8 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setIsOnline('')
     setShowFormEdit(false);
   };
-  const studentEdit = async(ev)=>{
-    console.log('event.promotion' , ev)
+  const studentEdit = async (ev) => {
+    console.log('event.promotion', ev)
     try {
       let major_id = majorId;
       let promotion = ev.promotions.replace(/\s/g, '');
@@ -1568,18 +1568,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         major_id,
         promotion,
       });
-      console.log('data',data)
+      console.log('data', data)
       setStudent(data.data);
-     
+
     } catch (error) {
       return error
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     studentEdit()
-  },[isEdit])
+  }, [isEdit])
   const handleEdit = async (e, event, date) => {
-    console.log('edit' , event)
+    console.log('edit', event)
     await studentEdit(event)
     await studentGoogleAccess(event)
     // searchBook()
@@ -1610,14 +1610,15 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setToTime(formatTime(event.to));
     setClasses(event.courseID);
     setRoomBuilding(event.room_building);
+    console.log('event.room_building' , event.room_building)
     setRoomName(event.room_name);
     setTheDate(date);
     setTmpscheduleID(event.tmpschedule_id);
   };
-
+console.log('roomBuilding' , roomBuilding)
 
   const handleSaveEdit = async (e) => {
-    
+console.log('e' , e)
     e.preventDefault();
     setIsClickEdit(true);
     // setShowFormEdit(false)
@@ -1659,7 +1660,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       room_name: roomName,
       oldData: scheduleDate
     };
-    console.log('schedData' , schedData)
+    console.log('schedData', schedData)
     // Assuming teacher_id and courseName are available in the current scope
     // const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
     // console.log('matchingClass' , matchingClass)
@@ -1677,12 +1678,12 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
-       
+
 
         if (data.success) {
 
           await handleUpdateZoom(zoom_id, theDate, courseName, fromTime, toTime)
-          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle ,urlZoom)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle, urlZoom)
 
           getData();
           setIsOnline('')
@@ -1695,9 +1696,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
-       
+
         if (data.success) {
-          await handleUpdateGoogleCalender(schedData, studentGoogle , roomName , building)
+          await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
 
           await UpdateFromSharePointBookingRoom(sharepointId, theDate)
@@ -1717,14 +1718,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           '/api/pmApi/updateSingleSchedule',
           schedData
         );
-        
+
 
 
         if (data.success) {
           await deleteFromSharePointBookingRoom(sharepointId);
           const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime, toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
-          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle , response.zoom_url)
+          await handleUpdateGoogleCalenderZoom(schedData, studentGoogle, response.zoom_url)
           await axios.post('/api/pmApi/deleteSharePointId', {
             attendance_id: attendanceId
           })
@@ -1742,21 +1743,21 @@ export const CalenderById = ({ schedule, setSchedule }) => {
         );
         if (data.success) {
 
-          await handleSharePointBookingRoom(theDate, attendanceId , courseName)
-          await handleUpdateGoogleCalender(schedData, studentGoogle ,roomName , building)
+          await handleSharePointBookingRoom(theDate, attendanceId, courseName)
+          await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
           await handleDeleteZoom(zoom_id)
           await axios.post('/api/pmApi/deleteZoomSchedule', {
             attendance_id: attendanceId
           })
-          
+
           getData();
           setIsClickEdit(false);
           setShowFormEdit(false);
           setIsOnline('')
           if (isOnline === false) {
             await UpdateFromSharePointBookingRoom(sharepointId, theDate)
-            await handleUpdateGoogleCalender(schedData, studentGoogle , roomName , building)
+            await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
             getData();
             setIsClickEdit(false);
@@ -1837,7 +1838,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
 
-  const handleSharePointBookingRoom = async (date, attendance_id , courseName) => {
+  const handleSharePointBookingRoom = async (date, attendance_id, courseName) => {
     try {
       const accessToken = await getSharePointToken();
       const dates = new Date(date);
@@ -1877,7 +1878,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           BookingDay: `${formattedBookingDay}`,
           FromTime: fromTimes,
           ToTime: toTimes,
-          Description:`${courseName}`
+          Description: `${courseName}`
         }),
       });
 
@@ -1902,28 +1903,28 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   };
 
-  const handleDragRoomBooking = async (date, from, to, attendance_id , courseName ,roomName , roomSpace) => {
+  const handleDragRoomBooking = async (date, from, to, attendance_id, courseName, roomName, roomSpace) => {
     try {
-      console.log('courseName' , courseName)
+      console.log('courseName', courseName)
       const accessToken = await getSharePointToken();
       const dates = new Date(date);
       const bookingDay = new Date();
       const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-  
+
       const formattedDate = moment(dates).format('YYYY-MM-DD');
       const fromTimeSplit = from.split('+')[0];
       const toTimeSplit = to.split('+')[0];
-  
+
       // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
       const utcOffset = 3; // Change this value if daylight saving time is not in effect
-  
+
       // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
       const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();
       const toTimes = moment(`${formattedDate}T${toTimeSplit}`).utcOffset(utcOffset, true).toISOString();
-  
+
       const apiUrl =
         "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-  
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -1945,13 +1946,13 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           Description: `${courseName}`
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Log the ID of the newly added item
       if (data && data.d && data.d.Id) {
         // Update the SharePoint ID in the schedule
@@ -1965,7 +1966,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   };
   const handleAccessToken = async (studentDetails) => {
-    console.log('studentDetails' , studentDetails)
+    console.log('studentDetails', studentDetails)
     try {
       const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
         oldRefreshToken: studentDetails
@@ -1977,7 +1978,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   }
 
-console.log('googleToken' , student)
+
 
   const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 
@@ -2050,80 +2051,80 @@ console.log('googleToken' , student)
     }
   }
 
-  const deleteFromGoogleCalendar = async(event_id)=>{
+  const deleteFromGoogleCalendar = async (event_id) => {
     try {
-     
+
       const payload = {
-        access_token :googleToken,
-        eventId:event_id
+        access_token: googleToken,
+        eventId: event_id
       }
-       await axios.post(`/api/google-api/deleteSchedule` , payload)
+      await axios.post(`/api/google-api/deleteSchedule`, payload)
     } catch (error) {
       return error
     }
-   }
+  }
 
-   const handleUpdateGoogleCalender = async (data, event_id , roomName ,roomBuilding) => {
+  const handleUpdateGoogleCalender = async (data, event_id, roomName, roomBuilding) => {
     try {
       const formattedDate = moment(data.day).format('YYYY-MM-DD');
       let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
       let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
-  
+
       // Check if the time is in PM or AM format and adjust if needed
       if (!fromTime.isValid() || !toTime.isValid()) {
         throw new Error('Invalid time format');
       }
-  
+
       const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
       const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
-  
+
       const newData = {
         summary: `${courseName}`,
         description: `R-${roomName}-B-${roomBuilding}`,
         start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
         end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
       };
-  
+
       const payload = {
         accessToken: googleToken,
         eventId: event_id,
         newData: newData,
       };
-  
+
       await axios.post('/api/google-api/updateSchedule', payload);
     } catch (error) {
       return error;
     }
   };
 
-  const handleUpdateGoogleCalenderZoom = async (data, event_id , zoomURL) => {
+  const handleUpdateGoogleCalenderZoom = async (data, event_id, zoomURL) => {
     try {
       console.log(zoomURL)
       const formattedDate = moment(data.day).format('YYYY-MM-DD');
       let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
       let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
-  
+
       // Check if the time is in PM or AM format and adjust if needed
       if (!fromTime.isValid() || !toTime.isValid()) {
         throw new Error('Invalid time format');
       }
-  
+
       const localDateTime = `${formattedDate}T${fromTime.format('HH:mm')}:00`;
       const localDateToTime = `${formattedDate}T${toTime.format('HH:mm')}:00`;
-  
+
       const newData = {
         summary: `${courseName}`,
         description: `Online-${zoomURL}`,
         start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
         end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
       };
-  
+
       const payload = {
         accessToken: googleToken,
         eventId: event_id,
         newData: newData,
       };
-  
+
       await axios.post('/api/google-api/updateSchedule', payload);
     } catch (error) {
       return error;
@@ -2384,7 +2385,7 @@ console.log('googleToken' , student)
               handleConfirmClose={handlePotalClose}
             />
           )}
-         {showForm && (
+          {showForm && (
             <AddSchedules
               errorBuilding={errorBuilding}
               errorEnd={errorEnd}
@@ -2517,7 +2518,7 @@ const AddSchedule = ({
   // isEdit,
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id)
-  // console.log(allrooms , 'allrooms')
+  console.log(allrooms , 'allrooms' , theroombuilding)
 
   return (
     <>
@@ -2601,41 +2602,41 @@ const AddSchedule = ({
 
               </div>
               {isOnline === false || isOnline === 'false' ?
-              <>
-                              <div className="sm:flex">
-                  <div className="mb-4 sm:mr-8 sm:w-1/2">
-                    <label className="text-gray-700 block mb-2">
-                      Building:
-                    </label>
-                    <CustomSelectBox
-                      options={allStages}
-                      placeholder="Select Location"
-                      onSelect={handleStages}
-                      styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
-                      enable={false}
-                      oldvalue={theroombuilding}
-                    />
-
-                  </div>
-                  {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
-                    <div className="mb-4 sm:w-1/2">
+                <>
+                  <div className="sm:flex">
+                    <div className="mb-4 sm:mr-8 sm:w-1/2">
                       <label className="text-gray-700 block mb-2">
-                        Location:
+                        Building:
                       </label>
                       <CustomSelectBox
-                        options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                        options={allStages}
                         placeholder="Select Location"
-                        onSelect={handlePlace}
+                        onSelect={handleStages}
                         styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
                         enable={false}
-                        oldvalue={theroomname}
+                        oldvalue={theroombuilding}
                       />
 
                     </div>
-                  }
-                </div>
-              
-              </>:<></>
+                    {(theroombuilding?.length > 0 || (building.length > 0 && allrooms.length > 0)) &&
+                      <div className="mb-4 sm:w-1/2">
+                        <label className="text-gray-700 block mb-2">
+                          Location:
+                        </label>
+                        <CustomSelectBox
+                          options={remainingRooms.length > 0 ? remainingRooms : allroomsRef.current}
+                          placeholder="Select Location"
+                          onSelect={handlePlace}
+                          styled="font-medium h-auto items-center border-[1px] border-zinc-300 self-center w-full sm:w-60 inline-block ml-[8px]"
+                          enable={false}
+                          oldvalue={theroomname}
+                        />
+
+                      </div>
+                    }
+                  </div>
+
+                </> : <></>
 
               }
             </div>
@@ -2711,7 +2712,7 @@ const AddSchedules = ({
 }) => {
   let classNames = allClasses.map((clss) => clss.course_id);
 
-
+  console.log(allrooms , 'allrooms' , theroombuilding)
   return (
     <>
       {click && confirmOccupied ? (
