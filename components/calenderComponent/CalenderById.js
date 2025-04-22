@@ -1659,14 +1659,18 @@ export const CalenderById = ({ schedule, setSchedule }) => {
       room_name: roomName,
       oldData: scheduleDate
     };
-    
+    console.log('schedData' , schedData)
     // Assuming teacher_id and courseName are available in the current scope
-    const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
-      
-  
-    schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate[0].teacherId;
-    console.log('matchingClass' , schedData)
-    schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
+    // const matchingClass = allClasses.find((clas) => clas.tmpclass_id===classes);
+    // console.log('matchingClass' , matchingClass)
+    // const matchingClassOld = schedData.oldData.find((clas) => clas.tmpclass_id===schedData.classID)
+    // console.log('matchingClassOld' , matchingClassOld)
+    // schedData.teacher_id = matchingClass ? matchingClass.teacher_id : scheduleDate[0].teacherId;
+    // console.log('schedData.teacher_id' , schedData.teacher_id)
+    // schedData.courseName = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
+    // console.log(' schedData.courseName' ,  schedData.courseName)
+    // schedData.oldData = matchingClass ? matchingClass.course_id : scheduleDate[0].courseID;
+
     if (editOnline === isOnline) {
       if (editOnline === true) {
         let { data } = await axios.post(

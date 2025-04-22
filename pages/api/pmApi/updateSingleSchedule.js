@@ -1,5 +1,5 @@
-const { connect , disconnect} = require("../../../utilities/db");
-const { updateSchedule , getAllById} = require("../controller/queries");
+const { connect, disconnect } = require("../../../utilities/db");
+const { updateSchedule, getAllById } = require("../controller/queries");
 import axios from "axios";
 const dotenv = require("dotenv");
 
@@ -17,36 +17,53 @@ const FormatTime = (timeWithTimeZone) => {
 };
 
 async function handler(req, res) {
- 
+
   try {
     const connection = await connect();
     const {
-       tmpscheduleID, classID, day, 
-      fromTime, toTime, room_id, 
-      pm_id , is_online , student , 
-      building , room_name , teacher_id , 
+      tmpscheduleID, classID, day,
+      fromTime, toTime, room_id,
+      pm_id, is_online, student,
+      building, room_name,
       courseName,
       oldData } =
       req.body;
-    
-      const classFilter= oldData.filter((sched)=>sched.tmpschedule_id === tmpscheduleID)
-      // console.log('----------------------classfilter---------------------------' , classFilter)
-      const formattedDate = moment(day).format('DD-MM-YYYY');
-      const formattedDateold = moment(classFilter[0].date).format('DD-MM-YYYY');
-      const oldTeacher = classFilter[0].teacher
-      const oldFromTime = FormatTime(classFilter[0].from)
-      const oldToTime = FormatTime(classFilter[0].to)
-      
-      const oldDate = formattedDateold
-      const oldIsOnline = classFilter[0].is_online
-      const oldRoom = classFilter[0].room_name
-      const oldBuilding = classFilter[0].room_building
-      
-    const table = 'teachers'
-    const colName='teacher_id'
-    const val=teacher_id
-        const data = await getAllById(connection, table, colName, val);
-        
+
+    const classFilter = oldData.filter((sched) => sched.tmpschedule_id === tmpscheduleID)
+    // console.log('----------------------classfilter---------------------------' , classFilter)
+    const formattedDate = moment(day).format('DD-MM-YYYY');
+    const formattedDateold = moment(classFilter[0].date).format('DD-MM-YYYY');
+    const oldTeacher = classFilter[0].teacher
+    const oldFromTime = FormatTime(classFilter[0].from)
+    const oldToTime = FormatTime(classFilter[0].to)
+
+    const oldDate = formattedDateold
+    const oldIsOnline = classFilter[0].is_online
+    const oldRoom = classFilter[0].room_name
+    const oldBuilding = classFilter[0].room_building
+    let table
+    let colName
+    let val
+    table = 'tmpschedule'
+    colName = 'tmpschedule_id'
+    val = tmpscheduleID
+    const data = await getAllById(connection, table, colName, val);
+    console.log('data', data)
+    table = 'tmpclass'
+    colName = 'tmpclass_id'
+    val = data.rows[0].class_id
+    const dataclass = await getAllById(connection, table, colName, val);
+    console.log('dataclass', dataclass)
+    table = 'courses'
+    colName = 'course_id'
+    val = dataclass.rows[0].course_id
+    const datacourse = await getAllById(connection, table, colName, val);
+    console.log('datacourse', datacourse)
+    table = 'teachers'
+    colName = 'teacher_id'
+    val = dataclass.rows[0].teacher_id
+    const datateacher = await getAllById(connection, table, colName, val);
+    console.log('datateacher', datateacher)
     const response = await updateSchedule(
       connection,
       classID,
@@ -59,11 +76,11 @@ async function handler(req, res) {
       is_online
     );
 
-
-    let formate;
-    const fromTimeEmail = FormatTime(fromTime);
-    const ToTimeEmail = FormatTime(toTime);
     
+    let formate;
+    // const fromTimeEmail = FormatTime(fromTime);
+    // const ToTimeEmail = FormatTime(toTime);
+   
     if (is_online === 'true') {
       formate = 'online';
     } else if (is_online === 'false') {
@@ -74,7 +91,7 @@ async function handler(req, res) {
       formate = 'online';
     }
     console.log('new', is_online, formate);
-    
+
     let oldFormate;
     if (oldIsOnline === 'true') {
       oldFormate = 'online';
@@ -86,15 +103,15 @@ async function handler(req, res) {
       oldFormate = 'online';
     }
     console.log('old', oldIsOnline, oldFormate === 'false');
-    
-  
+
+
     await disconnect(connection)
     // console.log(response)
 
     if (response.rowCount > 0) {
       // student.map(async (students)=>{
       //   try {
-          
+
       //    await SendEmail(
       //       students.email ,
       //       students.student_firstname ,
@@ -118,62 +135,62 @@ async function handler(req, res) {
       //       data.rows[0].teacher_firstname,
       //       data.rows[0].teacher_lastname
       //     )
-          
+
 
       //     await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`,{
       //       receiverIds:[students.student_id], 
       //       senderId:pm_id, 
-            // content:'<!DOCTYPE html>' +
-            //       '<html><head><title>Grades</title>' +
-            //       '</head><body><div>' +
-            //       `<div style="text-align: center;">
-            //          </div>` +
-            //       `</br>` +
-            //       `<p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p>` +
-            //       `<p>We trust this email finds you well.</p> ` +
-            //       `<p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p>` +
-            //       `<p>Previous Schedule:</p>` +
-            //       `<p>
-            //       <ul>
-            //         <li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>
-            //         ${oldIsOnline ? ``:`<li>Location:${oldRoom}-${oldBuilding}</li>`}
-            //         <li>Professor:${oldTeacher}</li>
-            //         <li>Formate:${oldFormate}</li>
-            //       </ul>
-            //       </p>`+
-  
-            //       `<p>Update Schedule:</p>` +
-            //       `<p>
-            
-            //       <ul>
-            //         <li>Date(s) and Time(s):${formattedDate}/${fromTimeEmail} To ${ToTimeEmail}</li>
-            //         ${is_online ? ``:`<li>Location:${room_name}-${building}</li>`}
-                    
-            //         <li>Professor:${data.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li>
-            //         <li>Formate:${formate}</li>
-            //       </ul>
-            //       </p>`+
-            //       `<p>
-            //       If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p>` +
-            //       `<p>Best regards,</p> ` +
-            //       `<p>ESA Business School</p> ` +
-            
-            //       '</div></body></html>',
+      // content:'<!DOCTYPE html>' +
+      //       '<html><head><title>Grades</title>' +
+      //       '</head><body><div>' +
+      //       `<div style="text-align: center;">
+      //          </div>` +
+      //       `</br>` +
+      //       `<p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p>` +
+      //       `<p>We trust this email finds you well.</p> ` +
+      //       `<p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p>` +
+      //       `<p>Previous Schedule:</p>` +
+      //       `<p>
+      //       <ul>
+      //         <li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>
+      //         ${oldIsOnline ? ``:`<li>Location:${oldRoom}-${oldBuilding}</li>`}
+      //         <li>Professor:${oldTeacher}</li>
+      //         <li>Formate:${oldFormate}</li>
+      //       </ul>
+      //       </p>`+
+
+      //       `<p>Update Schedule:</p>` +
+      //       `<p>
+
+      //       <ul>
+      //         <li>Date(s) and Time(s):${formattedDate}/${fromTimeEmail} To ${ToTimeEmail}</li>
+      //         ${is_online ? ``:`<li>Location:${room_name}-${building}</li>`}
+
+      //         <li>Professor:${data.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li>
+      //         <li>Formate:${formate}</li>
+      //       </ul>
+      //       </p>`+
+      //       `<p>
+      //       If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p>` +
+      //       `<p>Best regards,</p> ` +
+      //       `<p>ESA Business School</p> ` +
+
+      //       '</div></body></html>',
       //        subject:'Update Schedule'
       //     })
       //   } catch (error) {
       //     return error
       //   }
-       
+
       // })
 
       for (const students of student) {
         try {
-          await SendEmail(
+          const test = await SendEmail(
             students.email,
             students.student_firstname,
             students.student_lastname,
-            courseName,
+            datacourse.rows[0].course_name,
             oldDate,
             oldFromTime,
             oldToTime,
@@ -185,31 +202,31 @@ async function handler(req, res) {
             oldFormate,
             formattedDate,
             oldFromTime,
-            ToTimeEmail,
+            toTime,
             is_online,
             room_name,
             building,
-            data.rows[0].teacher_firstname,
-            data.rows[0].teacher_lastname
+            datateacher.rows[0].teacher_firstname,
+            datateacher.rows[0].teacher_lastname
           );
-      
+          console.log('test', test)
           await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`, {
             receiverIds: [students.student_id],
             senderId: pm_id,
-            content: `<!DOCTYPE html><html><head><title>Grades</title></head><body><div><div style="text-align: center;"></div></br><p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p><p>We trust this email finds you well.</p> <p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p><p>Previous Schedule:</p><p><ul><li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>${oldIsOnline ? `` : `<li>Location:${oldRoom}-${oldBuilding}</li>`}<li>Professor:${oldTeacher}</li><li>Formate:${oldFormate}</li></ul></p><p>Update Schedule:</p><p><ul><li>Date(s) and Time(s):${formattedDate}/${fromTimeEmail} To ${ToTimeEmail}</li>${is_online ? `` : `<li>Location:${room_name}-${building}</li>`}<li>Professor:${data.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li><li>Formate:${formate}</li></ul></p><p>If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p><p>Best regards,</p> <p>ESA Business School</p> '</div></body></html>`,
+            content: `<!DOCTYPE html><html><head><title>Grades</title></head><body><div><div style="text-align: center;"></div></br><p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p><p>We trust this email finds you well.</p> <p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p><p>Previous Schedule:</p><p><ul><li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>${oldIsOnline ? `` : `<li>Location:${oldRoom}-${oldBuilding}</li>`}<li>Professor:${oldTeacher}</li><li>Formate:${oldFormate}</li></ul></p><p>Update Schedule:</p><p><ul><li>Date(s) and Time(s):${formattedDate}/${fromTime} To ${toTime}</li>${is_online ? `` : `<li>Location:${room_name}-${building}</li>`}<li>Professor:${datateacher.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li><li>Formate:${formate}</li></ul></p><p>If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p><p>Best regards,</p> <p>ESA Business School</p> '</div></body></html>`,
             subject: 'Update Schedule',
           });
         } catch (error) {
           console.error('Error sending email:', error);
         }
       }
-      
+
       return res.status(201).json({
         success: true,
         code: 201,
         message: "Single Schedule updated successfully",
       });
-    }else{
+    } else {
       return res.status(400).json({
         success: true,
         code: 400,
