@@ -1,9 +1,23 @@
-import { google } from 'googleapis';
 import axios from 'axios';
 import { env } from "process";
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+async function refreshAccessToken(refresh_token) {
+  const response = await axios.post('https://oauth2.googleapis.com/token', new URLSearchParams({
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    refresh_token: refresh_token,
+    grant_type: 'refresh_token',
+  }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
+  return response.data.access_token;
+}
 
 export default async function handler(req, res) {
-  console.log('body' , req.body)
+  console.log('body', req.body);
+
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -12,48 +26,76 @@ export default async function handler(req, res) {
 
   if (access_Token.length > 0) {
     try {
-      let success = false; // Flag to track overall success
+      let success = false;
 
       for (let i = 0; i < access_Token.length; i++) {
-        const oauth2Client = new google.auth.OAuth2({
-          clientId: '488510538109-36i4ol70jivfrtcu31upbmld812klgr7.apps.googleusercontent.com',
-          clientSecret: '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',
-          redirectUri: 'https://esasis.esa.edu.lb/student/schedule/',
-          scopes: ['https://www.googleapis.com/auth/calendar'],
-        });
-        const access_token = access_Token[i].access_token;
-
-        oauth2Client.setCredentials({ access_token });
-        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+        let { access_token, refresh_token, student_id } = access_Token[i];
 
         try {
-          const response = await calendar.events.insert({
-            calendarId: 'primary',
-            requestBody: event,
-          });
+          // Attempt to insert event
+          let response = await axios.post(
+            'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+            event,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
 
           await axios.post(`${env.NEXTAUTH_URL}api/pmApi/fillgoogleCalender`, {
-            student_id: access_Token[i].student_id,
-            event_id: response.data.id, 
+            student_id: student_id,
+            event_id: response.data.id,
             attendance_id: attendance_id
           });
-          success = true; // Mark this iteration as successful
+
+          success = true;
         } catch (error) {
-          console.error('Error inserting event:', error);
-          // Handle the error but continue with next iteration
-          continue;
+          console.error('Error inserting event:', error.response?.data || error.message);
+
+          if (error.response?.status === 401 && refresh_token) {
+            // Token expired, try to refresh
+            console.log('Trying to refresh access token...');
+            try {
+              access_token = await refreshAccessToken(refresh_token);
+
+              // Retry the event insertion
+              const retryResponse = await axios.post(
+                'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+                event,
+                {
+                  headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+
+              await axios.post(`${env.NEXTAUTH_URL}api/pmApi/fillgoogleCalender`, {
+                student_id: student_id,
+                event_id: retryResponse.data.id,
+                attendance_id: attendance_id
+              });
+
+              success = true;
+            } catch (refreshError) {
+              console.error('Error refreshing token or retrying:', refreshError.response?.data || refreshError.message);
+              continue;
+            }
+          } else {
+            continue;
+          }
         }
       }
 
       if (success) {
-        // At least one iteration was successful
         return res.status(201).json({
-          success: true, 
+          success: true,
           code: 201,
           message: 'Schedule created successfully'
         });
       } else {
-        // All iterations failed
         return res.status(500).json({
           success: false,
           code: 500,
@@ -62,7 +104,7 @@ export default async function handler(req, res) {
       }
 
     } catch (error) {
-      console.error('Error setting up OAuth2 client:', error);
+      console.error('Unexpected error:', error);
       return res.status(500).json({
         success: false,
         code: 500,
