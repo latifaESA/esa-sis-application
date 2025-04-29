@@ -29,16 +29,19 @@ export default async function handler(req, res) {
       for (let i = 0; i < access_token.length; i++) {
         const calendarId = 'primary';
         let token = access_token[i].access_token;
-        const refresh_token = access_token[i].refresh_token; // Make sure you pass this from client!
+        console.log('token' , token)
+        // const refresh_token = access_token[i].refresh_token; // Make sure you pass this from client!
         const event_id = eventId.data.data[i].event_id;
 
+        let new_access_token = await refreshAccessToken(token) 
+        console.log("new_access_token" , new_access_token)
         try {
           // Attempt to delete the event
           await axios.delete(
             `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${event_id}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${new_access_token}`,
                 'Content-Type': 'application/json',
               },
             }
@@ -46,29 +49,7 @@ export default async function handler(req, res) {
         } catch (error) {
           console.error('Delete failed, trying refresh...', error.response?.data || error.message);
 
-          if (error.response?.status === 401 && refresh_token) {
-            // Access token might be expired, refresh it
-            try {
-              token = await refreshAccessToken(refresh_token);
-
-              // Retry deleting the event with new token
-              await axios.delete(
-                `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${event_id}`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                  },
-                }
-              );
-
-            } catch (refreshError) {
-              console.error('Error refreshing access token or retrying delete:', refreshError.response?.data || refreshError.message);
-              return res.status(500).json({ error: 'Failed to refresh token and delete event' });
-            }
-          } else {
-            return res.status(500).json({ error: 'Failed to delete event' });
-          }
+       
         }
       }
 

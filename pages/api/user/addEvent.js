@@ -1,17 +1,19 @@
 require('dotenv').config();
 const axios = require('axios');
-
+const { connect, disconnect } = require("../../../utilities/db");
+const { addTokensGoogle } = require("../controller/queries");
 async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
+  const connection = await connect();
   try {
     console.log('Starting request...');
 
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-    const { refreshToken, event } = req.body;
+    const { refreshToken, event , user_id } = req.body;
 
     // console.log('Incoming refreshToken and event:', JSON.stringify({ refreshToken, event }, null, 2));
 
@@ -30,14 +32,24 @@ async function handler(req, res) {
         new URLSearchParams({
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
-          refresh_token: refreshToken,
+          refresh_token: refreshToken,  // For refreshing token
           grant_type: 'refresh_token',
         }),
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
-
+      
+      // Access the response from Google
       accessToken = tokenResponse.data.access_token;
-      console.log('✅ New access token obtained');
+      
+      // If a new refresh token is returned, include it in the response
+      const newRefreshToken = tokenResponse.data.refresh_token || refreshToken; // Use the new refresh token if available, else retain the old one
+      
+      console.log('tokenResponse.data', newRefreshToken);
+      
+      // Save tokens to the database
+      const response = await addTokensGoogle(connection, newRefreshToken, user_id);
+      await disconnect(connection)
+      console.log('✅ New access token obtained' , response);     
     } catch (error) {
       console.error('❌ Error refreshing token:', error.response?.data || error.message);
       return res.status(400).json({

@@ -1,47 +1,81 @@
-import { google } from 'googleapis';
+import axios from 'axios';
+
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+// Refresh the access token using refresh_token
+async function refreshAccessToken(refresh_token) {
+  const response = await axios.post('https://oauth2.googleapis.com/token', new URLSearchParams({
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    refresh_token: refresh_token,
+    grant_type: 'refresh_token',
+  }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
+  return response.data.access_token;
+}
 
 
 export default async function handler(req, res) {
   const { eventId, accessToken, newData } = req.body;
 
-  try {
-    if(accessToken.length > 0){
-          // Continue with the loop to update the event with each access token
-    for (let i = 0; i < accessToken.length; i++) {
-      const oauth2Client = new google.auth.OAuth2();
-      oauth2Client.setCredentials({ access_token: accessToken[i].access_token });
-    
-      const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-      try {
-        const updatedEvent = await calendar.events.update({
-          calendarId: 'primary',
-          eventId: eventId.data.data[i].event_id,
-          resource: newData,
-        });
-        console.log('updatedEvent', updatedEvent.data);
-        return res.status(200).json({ success: true, event: updatedEvent.data });
-      } catch (error) {
-        // Log the error for debugging purposes
-        console.error('Error updating event:', error.message);
-        if (i === accessToken.length - 1) {
-          return res.status(500).json({ success: false, code: 500, message: error.message });
-        }
-      }
-    }
-
-    }else{
-      return res.status(400).json({
-        success:false,
-        code:400,
-        message:`No AccessToken `
-      })
-    }
-
-  } catch (error) {
-    // Handle any unexpected errors
-    console.error('Unexpected error:', error.message);
-    return res.status(500).json({ success: false, code: 500, message: error.message });
+  if (!Array.isArray(accessToken) || accessToken.length === 0) {
+    return res.status(400).json({
+      success: false,
+      code: 400,
+      message: 'No AccessToken provided or invalid format.'
+    });
   }
-}
 
+  // if (!Array.isArray(eventId) || eventId.length !== accessToken.length) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     code: 400,
+  //     message: 'eventId must be an array matching the length of accessToken.'
+  //   });
+  // }
+
+  const results = [];
+  const errors = [];
+
+  for (let i = 0; i < accessToken.length; i++) {
+    try {
+      console.log('event' , eventId.data.data[i].event_id )
+      let new_access_token = await refreshAccessToken(accessToken[i].access_token)
+      const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId.data.data[i].event_id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${new_access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Unknown error');
+      }
+
+      results.push({ index: i, event: data });
+
+    } catch (error) {
+      console.error(`Error updating event for index ${i}:`, error.message);
+      errors.push({ index: i, error: error.message });
+    }
+  }
+
+  if (errors.length > 0) {
+    return res.status(207).json({
+      success: false,
+      code: 207,
+      message: 'Some updates failed',
+      results,
+      errors
+    });
+  }
+
+  return res.status(200).json({ success: true, results });
+}
 
