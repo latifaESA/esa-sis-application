@@ -4118,6 +4118,17 @@ where tmpclass.promotion ='${promotion}'`
   }
 }
 
+async function addTokensGoogle(connection , token , user_id){
+  try {
+    const query =  `UPDATE users SET access_token='${token}' where userid='${user_id}'`
+    const result = await connection.query(query)
+    return result
+  } catch (error) {
+    console.log("Error in the addTokensGoogle function:", error);
+    return; 
+  }
+}
+
 /* End Postegresql */
 
 module.exports = {
@@ -4318,6 +4329,7 @@ module.exports = {
   getStudent,
   getData,
   updateGraduatedYear,
-  getClassStart
+  getClassStart,
+  addTokensGoogle
 
 };

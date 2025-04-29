@@ -62,7 +62,7 @@ const SendEmail = async (
     </ul>
     </p>`+
 
-    `<p><span style="font-weight: bold">Update Schedule:</span></p>` +
+    `<p><span style="font-weight: bold">Updated Schedule:</span></p>` +
     `<p>
 
     <ul>

@@ -521,12 +521,15 @@ const CourseSchedule = () => {
     }, [session]);
   
 
-  const SaveRefreshToken = async (refreshToken) => {
+  const SaveRefreshToken = async (refreshToken , authorizationCode) => {
     try {
       for (const evt of eventPayloads) {
         const response = await axios.post('/api/user/addEvent', {
           refreshToken,
           event: evt,
+          code:authorizationCode.code,
+          user_id:session.user?.userid
+
         });
   
         if (!response.data.success) {
@@ -554,7 +557,7 @@ const CourseSchedule = () => {
 
       const { data } = await response.json();
       if (data?.refresh_token) {
-        await SaveRefreshToken(data.refresh_token);
+        await SaveRefreshToken(data.refresh_token , authorizationCode);
       } else {
         console.error('Missing refresh token from server response:', data);
       }

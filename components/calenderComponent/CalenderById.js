@@ -1968,18 +1968,15 @@ console.log('e' , e)
   const handleAccessToken = async (studentDetails) => {
     console.log('studentDetails', studentDetails)
     try {
-      const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
-        oldRefreshToken: studentDetails
-      })
-      console.log('refreshToken' , refreshToken)
+ 
 
-      setGoogleToken(refreshToken.data.data)
+      setGoogleToken(studentDetails)
     } catch (error) {
       return error
     }
   }
 
-console.log('access token google' , googleToken)
+
 
   const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 
