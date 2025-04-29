@@ -91,9 +91,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const [clickEdit, setIsClickEdit] = useState(false);
   const [student, setStudent] = useState([]);
   const [messages, setMessage] = useState('');
-  const [sharepointId, setSharePointId] = useState('')
-  const [fromSharePoint, setFromTimeEditSharePoint] = useState('')
-  const [toSharePoint, setToTimeEditSharePoint] = useState('')
+  // const [sharepointId, setSharePointId] = useState('')
+  // const [fromSharePoint, setFromTimeEditSharePoint] = useState('')
+  // const [toSharePoint, setToTimeEditSharePoint] = useState('')
   const [attendanceId, setAttendanceId] = useState()
   const [editOnline, setEditOnline] = useState()
   const [confirmOpenMessageNotification, setConfirmOpenMessageNotification] =
@@ -132,68 +132,68 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     }
   };
 
-  const createBooking = async (data) => {
-    const batchSize = 30; // Set the batch size according to your needs
-    const totalBatches = Math.ceil(data.length / batchSize);
+  // const createBooking = async (data) => {
+  //   const batchSize = 30; // Set the batch size according to your needs
+  //   const totalBatches = Math.ceil(data.length / batchSize);
 
-    try {
-      for (let i = 0; i < totalBatches; i++) {
-        const startIdx = i * batchSize;
-        const endIdx = startIdx + batchSize;
-        const batchData = data.slice(startIdx, endIdx).map(item => ({
-          BookedBy: item.BookedBy,
-          BookingDate: item.BookingDate,
-          BookingDay: item.BookingDay,
-          FromTime: item.FromTime,
-          ToTime: item.ToTime,
-          Space: item.Space,
-          Title: item.Title,
-          Id: item.Id
-        }));
+  //   try {
+  //     for (let i = 0; i < totalBatches; i++) {
+  //       const startIdx = i * batchSize;
+  //       const endIdx = startIdx + batchSize;
+  //       const batchData = data.slice(startIdx, endIdx).map(item => ({
+  //         BookedBy: item.BookedBy,
+  //         BookingDate: item.BookingDate,
+  //         BookingDay: item.BookingDay,
+  //         FromTime: item.FromTime,
+  //         ToTime: item.ToTime,
+  //         Space: item.Space,
+  //         Title: item.Title,
+  //         Id: item.Id
+  //       }));
 
-        await fetch('/api/pmApi/createBooking', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(batchData)
-        });
-      }
-    } catch (error) {
-      console.error('Error creating bookings:', error);
-      return { ok: false, error: error.message };
-    }
-  };
-
-
+  //       await fetch('/api/pmApi/createBooking', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json'
+  //         },
+  //         body: JSON.stringify(batchData)
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error creating bookings:', error);
+  //     return { ok: false, error: error.message };
+  //   }
+  // };
 
 
 
-  const getRoomBooking = async () => {
-    try {
-      const accessToken = await getSharePointToken();
-
-      const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
-
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json;odata=verbose',
-          'Content-Type': 'application/json;odata=verbose',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const data = await response.json();
-      await createBooking(data.d.results)
 
 
-    } catch (error) {
-      console.error('Error checking room availability in SharePoint:', error.message);
-      // Assuming an error means the room is not available
-      return { ok: false, result: false };
-    }
-  };
+  // const getRoomBooking = async () => {
+  //   try {
+  //     const accessToken = await getSharePointToken();
+
+  //     const apiUrl = `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items`;
+
+  //     const response = await fetch(apiUrl, {
+  //       method: 'GET',
+  //       headers: {
+  //         Accept: 'application/json;odata=verbose',
+  //         'Content-Type': 'application/json;odata=verbose',
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+
+  //     const data = await response.json();
+  //     await createBooking(data.d.results)
+
+
+  //   } catch (error) {
+  //     console.error('Error checking room availability in SharePoint:', error.message);
+  //     // Assuming an error means the room is not available
+  //     return { ok: false, result: false };
+  //   }
+  // };
 
 
 
@@ -825,7 +825,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           } else {
             if (data.success) {
 
-              await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course, ev.room_name, ev.room_building)
+              // await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course, ev.room_name, ev.room_building)
               await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
 
               setStudent([]);
@@ -864,7 +864,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   const handleFrom = (e) => {
-    setFromTimeEditSharePoint(e.target.value)
+    // setFromTimeEditSharePoint(e.target.value)
     setFromTime(e.target.value);
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
@@ -874,7 +874,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const handleTo = (e) => {
     // Do something with the selected value
     // console.log("Selected Value:", selectedValue);
-    setToTimeEditSharePoint(e.target.value)
+    // setToTimeEditSharePoint(e.target.value)
     setToTime(e.target.value);
   };
 
@@ -899,7 +899,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     event.preventDefault();
     setShowForm(true);
     if (!event.target.classList.contains('StyledEvent')) {
-      getRoomBooking()
+      // getRoomBooking()
       date.setHours(0);
       date.setSeconds(0);
       date.setMilliseconds(0);
@@ -1327,7 +1327,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         // console.log("axios data ==>  ", place);
         if (data.success) {
-          await handleSharePointBookingRoom(theDate, attendanceData.data.data, courseName)
+          // await handleSharePointBookingRoom(theDate, attendanceData.data.data, courseName)
           await handleInsertGoogleEventOnSite(theDate, fromTime, toTime, roomName, building, attendanceData.data.data)
           deleteTable()
           setShowForm(false);
@@ -1478,9 +1478,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
         await axios.post('/api/pmApi/delete', payload2);
         // Delete from SharePoint booking room
-        const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
+        // const { success } = await deleteFromSharePointBookingRoom(portalData.sharepointId);
 
-        if (data.rowCount > 0 && success) {
+        if (data.rowCount > 0) {
 
           await deleteTable()
           handlePotalClose();
@@ -1499,59 +1499,59 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   };
 
   // Your client-side code
-  const getSharePointToken = async () => {
-    try {
-      const response = await fetch('/api/pmApi/getsharePointToken', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json;odata=verbose',
-          'Content-Type': 'application/json;odata=verbose',
-        },
-      });
+  // const getSharePointToken = async () => {
+  //   try {
+  //     const response = await fetch('/api/pmApi/getsharePointToken', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Accept': 'application/json;odata=verbose',
+  //         'Content-Type': 'application/json;odata=verbose',
+  //       },
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (!data.access_token) {
-        throw new Error('Access token not obtained');
-      }
+  //     if (!data.access_token) {
+  //       throw new Error('Access token not obtained');
+  //     }
 
-      return data.access_token;
-    } catch (error) {
-      console.error('Error obtaining SharePoint access token:', error.message);
-      throw error;
-    }
-  };
+  //     return data.access_token;
+  //   } catch (error) {
+  //     console.error('Error obtaining SharePoint access token:', error.message);
+  //     throw error;
+  //   }
+  // };
 
-  const deleteFromSharePointBookingRoom = async (sharepointId) => {
+  // const deleteFromSharePointBookingRoom = async (sharepointId) => {
 
-    try {
-      const accessToken = await getSharePointToken();
+  //   try {
+  //     const accessToken = await getSharePointToken();
 
-      const apiUrl =
-        `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
+  //     const apiUrl =
+  //       `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
 
 
-      const response = await fetch(apiUrl, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json;odata=verbose",
-          "Content-Type": "application/json;odata=verbose",
-          Authorization: `Bearer ${accessToken}`,
-          'If-Match': '*'
-        },
-      });
+  //     const response = await fetch(apiUrl, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json;odata=verbose",
+  //         "Content-Type": "application/json;odata=verbose",
+  //         Authorization: `Bearer ${accessToken}`,
+  //         'If-Match': '*'
+  //       },
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      } else {
-        return { success: true }
-      }
-    } catch (error) {
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     } else {
+  //       return { success: true }
+  //     }
+  //   } catch (error) {
 
-      return { success: false }
+  //     return { success: false }
 
-    }
-  };
+  //   }
+  // };
   const handleCloseEdit = () => {
     setRemainingRooms([])
     setAllrooms([])
@@ -1586,7 +1586,7 @@ export const CalenderById = ({ schedule, setSchedule }) => {
     setZoomUrl(event.zoom_url)
     setCourseName(event.title)
     setAttendanceId(event.attendance_id)
-    setSharePointId(event.sharepoint_id)
+    // setSharePointId(event.sharepoint_id)
     setZoomID(event.zoom_meeting_id)
     setEditOnline(event.is_online)
 
@@ -1594,14 +1594,14 @@ export const CalenderById = ({ schedule, setSchedule }) => {
 
     e.preventDefault();
 
-    await getRoomBooking()
+    // await getRoomBooking()
     setShowFormEdit(true);
     setIsEdit(true)
 
     searchBookEdit(date, event.room_building, event.from, event.to)
-    setSharePointId(event.sharepointId)
-    setFromTimeEditSharePoint(event.from)
-    setToTimeEditSharePoint(event.to)
+    // setSharePointId(event.sharepointId)
+    // setFromTimeEditSharePoint(event.from)
+    // setToTimeEditSharePoint(event.to)
 
     // console.log(event);
     setIsOnline(event.is_online)
@@ -1701,7 +1701,7 @@ console.log('e' , e)
           await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
 
-          await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+          // await UpdateFromSharePointBookingRoom(sharepointId, theDate)
 
           getData();
           setIsOnline('')
@@ -1722,13 +1722,13 @@ console.log('e' , e)
 
 
         if (data.success) {
-          await deleteFromSharePointBookingRoom(sharepointId);
+          // await deleteFromSharePointBookingRoom(sharepointId);
           const response = await handleCreateZoomMeetingEdit(courseName, theDate, fromTime, toTime)
           await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceId)
           await handleUpdateGoogleCalenderZoom(schedData, studentGoogle, response.zoom_url)
-          await axios.post('/api/pmApi/deleteSharePointId', {
-            attendance_id: attendanceId
-          })
+          // await axios.post('/api/pmApi/deleteSharePointId', {
+          //   attendance_id: attendanceId
+          // })
 
           getData();
           setIsClickEdit(false);
@@ -1743,7 +1743,7 @@ console.log('e' , e)
         );
         if (data.success) {
 
-          await handleSharePointBookingRoom(theDate, attendanceId, courseName)
+          // await handleSharePointBookingRoom(theDate, attendanceId, courseName)
           await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
           await handleDeleteZoom(zoom_id)
@@ -1756,7 +1756,7 @@ console.log('e' , e)
           setShowFormEdit(false);
           setIsOnline('')
           if (isOnline === false) {
-            await UpdateFromSharePointBookingRoom(sharepointId, theDate)
+            // await UpdateFromSharePointBookingRoom(sharepointId, theDate)
             await handleUpdateGoogleCalender(schedData, studentGoogle, roomName, building)
 
             getData();
@@ -1779,198 +1779,199 @@ console.log('e' , e)
   };
 
 
-  const UpdateFromSharePointBookingRoom = async (sharepointId, date) => {
+  // const UpdateFromSharePointBookingRoom = async (sharepointId, date) => {
 
-    try {
-      const accessToken = await getSharePointToken();
-      const dates = new Date(date);
-      const bookingDay = new Date()
-      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+  //   try {
+  //     const accessToken = await getSharePointToken();
+  //     const dates = new Date(date);
+  //     const bookingDay = new Date()
+  //     const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
 
-      const formattedDate = moment(dates).format('YYYY-MM-DD');
-      const fromTimeSplit = fromSharePoint.split('+')[0];
-      const toTimeSplit = toSharePoint.split('+')[0];
+  //     const formattedDate = moment(dates).format('YYYY-MM-DD');
+  //     const fromTimeSplit = fromSharePoint.split('+')[0];
+  //     const toTimeSplit = toSharePoint.split('+')[0];
 
-      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 4; // Change this value if daylight saving time is not in effect
+  //     // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+  //     const utcOffset = 4; // Change this value if daylight saving time is not in effect
 
-      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+  //     // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+  //     const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+  //     const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
 
-      const apiUrl =
-        `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
-
-
-      const response = await fetch(apiUrl, {
-        method: "PATCH",
-        headers: {
-          Accept: "application/json;odata=verbose",
-          "Content-Type": "application/json;odata=verbose",
-          Authorization: `Bearer ${accessToken}`,
-          'If-Match': '*'
-        },
-        body: JSON.stringify({
-          __metadata: {
-            type: "SP.Data.BookingRoomListItem",
-          },
-          Title: `${roomName}`,
-          Space: `${building}`,
-          BookedBy: `${session.user?.name}`,
-          BookingDate: date, // Use the current date in the iteration
-          BookingDay: formattedBookingDay,
-          FromTime: fromTimes,
-          ToTime: toTimes,
-        }),
-      });
+  //     const apiUrl =
+  //       `https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items/getbyid('${sharepointId}')`;
 
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      } else {
-        return { success: true }
-      }
-    } catch (error) {
-
-      return { success: false }
-
-    }
-  };
-
-
-  const handleSharePointBookingRoom = async (date, attendance_id, courseName) => {
-    try {
-      const accessToken = await getSharePointToken();
-      const dates = new Date(date);
-      const bookingDay = new Date()
-      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
-
-      const formattedDate = moment(dates).format('YYYY-MM-DD');
-      const fromTimeSplit = fromSharePoint.split('+')[0];
-      const toTimeSplit = toSharePoint.split('+')[0];
-
-      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 3; // Change this value if daylight saving time is not in effect
-
-      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-      const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
-
-      const apiUrl =
-        "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application/json;odata=verbose",
-          "Content-Type": "application/json;odata=verbose",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-
-          __metadata: {
-            type: "SP.Data.BookingRoomListItem",
-          },
-          Title: `${roomName}`,
-          Space: `${building}`,
-          BookedBy: `${session.user?.name}`,
-          BookingDate: dates,
-          BookingDay: `${formattedBookingDay}`,
-          FromTime: fromTimes,
-          ToTime: toTimes,
-          Description: `${courseName}`
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
+  //     const response = await fetch(apiUrl, {
+  //       method: "PATCH",
+  //       headers: {
+  //         Accept: "application/json;odata=verbose",
+  //         "Content-Type": "application/json;odata=verbose",
+  //         Authorization: `Bearer ${accessToken}`,
+  //         'If-Match': '*'
+  //       },
+  //       body: JSON.stringify({
+  //         __metadata: {
+  //           type: "SP.Data.BookingRoomListItem",
+  //         },
+  //         Title: `${roomName}`,
+  //         Space: `${building}`,
+  //         BookedBy: `${session.user?.name}`,
+  //         BookingDate: date, // Use the current date in the iteration
+  //         BookingDay: formattedBookingDay,
+  //         FromTime: fromTimes,
+  //         ToTime: toTimes,
+  //       }),
+  //     });
 
 
-      // Log the ID of the newly added item
-      if (data && data.d && data.d.Id) {
-        // Update the SharePoint ID in the schedule
-        await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
-          sharepointId: data.d.Id,
-          attendanceId: attendance_id,
-        });
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     } else {
+  //       return { success: true }
+  //     }
+  //   } catch (error) {
 
-      }
-    } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
-    }
-  };
+  //     return { success: false }
 
-  const handleDragRoomBooking = async (date, from, to, attendance_id, courseName, roomName, roomSpace) => {
-    try {
-      console.log('courseName', courseName)
-      const accessToken = await getSharePointToken();
-      const dates = new Date(date);
-      const bookingDay = new Date();
-      const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+  //   }
+  // };
 
-      const formattedDate = moment(dates).format('YYYY-MM-DD');
-      const fromTimeSplit = from.split('+')[0];
-      const toTimeSplit = to.split('+')[0];
 
-      // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
-      const utcOffset = 3; // Change this value if daylight saving time is not in effect
+  // const handleSharePointBookingRoom = async (date, attendance_id, courseName) => {
+  //   try {
+  //     const accessToken = await getSharePointToken();
+  //     const dates = new Date(date);
+  //     const bookingDay = new Date()
+  //     const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
 
-      // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
-      const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();
-      const toTimes = moment(`${formattedDate}T${toTimeSplit}`).utcOffset(utcOffset, true).toISOString();
+  //     const formattedDate = moment(dates).format('YYYY-MM-DD');
+  //     const fromTimeSplit = fromSharePoint.split('+')[0];
+  //     const toTimeSplit = toSharePoint.split('+')[0];
 
-      const apiUrl =
-        "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+  //     // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+  //     const utcOffset = 3; // Change this value if daylight saving time is not in effect
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application/json;odata=verbose",
-          "Content-Type": "application/json;odata=verbose",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          __metadata: {
-            type: "SP.Data.BookingRoomListItem",
-          },
-          Title: `${roomName}`,
-          Space: `${roomSpace}`,
-          BookedBy: `${session.user?.name}`,
-          BookingDate: dates.toISOString(), // Use ISO string format for the date
-          BookingDay: `${formattedBookingDay}`,
-          FromTime: moment(fromTimes).toISOString(), // Add the UTC offset to adjust the time
-          ToTime: moment(toTimes).toISOString(), // Add the UTC offset to adjust the time
-          Description: `${courseName}`
-        }),
-      });
+  //     // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+  //     const fromTimes = moment(`${formattedDate}T${fromTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
+  //     const toTimes = moment(`${formattedDate}T${toTimeSplit}Z`).utcOffset(utcOffset, true).toISOString();
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+  //     const apiUrl =
+  //       "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
 
-      const data = await response.json();
+  //     const response = await fetch(apiUrl, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json;odata=verbose",
+  //         "Content-Type": "application/json;odata=verbose",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       body: JSON.stringify({
 
-      // Log the ID of the newly added item
-      if (data && data.d && data.d.Id) {
-        // Update the SharePoint ID in the schedule
-        await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
-          sharepointId: data.d.Id,
-          attendanceId: attendance_id,
-        });
-      }
-    } catch (error) {
-      console.error("Error submitting booking to SharePoint:", error.message);
-    }
-  };
+  //         __metadata: {
+  //           type: "SP.Data.BookingRoomListItem",
+  //         },
+  //         Title: `${roomName}`,
+  //         Space: `${building}`,
+  //         BookedBy: `${session.user?.name}`,
+  //         BookingDate: dates,
+  //         BookingDay: `${formattedBookingDay}`,
+  //         FromTime: fromTimes,
+  //         ToTime: toTimes,
+  //         Description: `${courseName}`
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+
+
+  //     // Log the ID of the newly added item
+  //     if (data && data.d && data.d.Id) {
+  //       // Update the SharePoint ID in the schedule
+  //       await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+  //         sharepointId: data.d.Id,
+  //         attendanceId: attendance_id,
+  //       });
+
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting booking to SharePoint:", error.message);
+  //   }
+  // };
+
+  // const handleDragRoomBooking = async (date, from, to, attendance_id, courseName, roomName, roomSpace) => {
+  //   try {
+  //     console.log('courseName', courseName)
+  //     // const accessToken = await getSharePointToken();
+  //     const dates = new Date(date);
+  //     const bookingDay = new Date();
+  //     const formattedBookingDay = moment(bookingDay).format('MM/DD/YYYY');
+
+  //     const formattedDate = moment(dates).format('YYYY-MM-DD');
+  //     const fromTimeSplit = from.split('+')[0];
+  //     const toTimeSplit = to.split('+')[0];
+
+  //     // Beirut/Lebanon is in UTC+2 during standard time and UTC+3 during daylight saving time
+  //     const utcOffset = 3; // Change this value if daylight saving time is not in effect
+
+  //     // Convert the local time to UTC and adjust to Beirut/Lebanon time zone
+  //     const fromTimes = moment(`${formattedDate}T${fromTimeSplit}`).utcOffset(utcOffset, true).toISOString();
+  //     const toTimes = moment(`${formattedDate}T${toTimeSplit}`).utcOffset(utcOffset, true).toISOString();
+
+  //     const apiUrl =
+  //       "https://esalb.sharepoint.com/sites/RoomBooking/_api/web/lists/getbytitle('BookingRoom')/items";
+
+  //     const response = await fetch(apiUrl, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json;odata=verbose",
+  //         "Content-Type": "application/json;odata=verbose",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       body: JSON.stringify({
+  //         __metadata: {
+  //           type: "SP.Data.BookingRoomListItem",
+  //         },
+  //         Title: `${roomName}`,
+  //         Space: `${roomSpace}`,
+  //         BookedBy: `${session.user?.name}`,
+  //         BookingDate: dates.toISOString(), // Use ISO string format for the date
+  //         BookingDay: `${formattedBookingDay}`,
+  //         FromTime: moment(fromTimes).toISOString(), // Add the UTC offset to adjust the time
+  //         ToTime: moment(toTimes).toISOString(), // Add the UTC offset to adjust the time
+  //         Description: `${courseName}`
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+
+  //     // Log the ID of the newly added item
+  //     if (data && data.d && data.d.Id) {
+  //       // Update the SharePoint ID in the schedule
+  //       await axios.post("/api/pmApi/UpdateSharePointIdSchedule", {
+  //         sharepointId: data.d.Id,
+  //         attendanceId: attendance_id,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting booking to SharePoint:", error.message);
+  //   }
+  // };
   const handleAccessToken = async (studentDetails) => {
     console.log('studentDetails', studentDetails)
     try {
       const refreshToken = await axios.post('/api/google-api/getRefreshToken', {
         oldRefreshToken: studentDetails
       })
+      console.log('refreshToken' , refreshToken)
 
       setGoogleToken(refreshToken.data.data)
     } catch (error) {
@@ -1978,7 +1979,7 @@ console.log('e' , e)
     }
   }
 
-
+console.log('access token google' , googleToken)
 
   const handleInsertGoogleEvent = async (day, fromTime, to_time, attendanceId, zoomURL) => {
 
@@ -2001,7 +2002,7 @@ console.log('e' , e)
 
 
       await axios.post('/api/google-api/addSchedule', {
-        access_Token: accessToken,
+        access_token: accessToken,
         event: schedule,
         attendance_id: attendanceId
       })
@@ -2031,7 +2032,7 @@ console.log('e' , e)
         end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
       };
       await axios.post('/api/google-api/addSchedule', {
-        access_Token: accessToken,
+        access_token: accessToken,
         event: schedule,
         attendance_id: attendanceId
       })
@@ -2066,6 +2067,7 @@ console.log('e' , e)
 
   const handleUpdateGoogleCalender = async (data, event_id, roomName, roomBuilding) => {
     try {
+      const accessToken = googleToken
       const formattedDate = moment(data.day).format('YYYY-MM-DD');
       let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
       let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
@@ -2086,7 +2088,7 @@ console.log('e' , e)
       };
 
       const payload = {
-        accessToken: googleToken,
+        accessToken: accessToken,
         eventId: event_id,
         newData: newData,
       };
@@ -2100,6 +2102,7 @@ console.log('e' , e)
   const handleUpdateGoogleCalenderZoom = async (data, event_id, zoomURL) => {
     try {
       console.log(zoomURL)
+      const accessToken = googleToken
       const formattedDate = moment(data.day).format('YYYY-MM-DD');
       let fromTime = moment.tz(data.fromTime, 'hh:mm A', 'Asia/Beirut');
       let toTime = moment.tz(data.toTime, 'hh:mm A', 'Asia/Beirut');
@@ -2120,7 +2123,7 @@ console.log('e' , e)
       };
 
       const payload = {
-        accessToken: googleToken,
+        accessToken: accessToken,
         eventId: event_id,
         newData: newData,
       };
@@ -2447,7 +2450,7 @@ console.log('e' , e)
               allStages={allStages}
               allroomsRef={allroomsRef}
               allClasses={allClasses}
-              UpdateFromSharePointBookingRoom={UpdateFromSharePointBookingRoom}
+              // UpdateFromSharePointBookingRoom={UpdateFromSharePointBookingRoom}
               handleClass={handleClass}
               clickEdit={clickEdit}
               handleFrom={handleFrom}
