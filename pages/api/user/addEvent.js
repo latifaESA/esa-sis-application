@@ -2,6 +2,9 @@ require('dotenv').config();
 const axios = require('axios');
 const { connect, disconnect } = require("../../../utilities/db");
 const { addTokensGoogle } = require("../controller/queries");
+
+
+
 async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
@@ -13,8 +16,9 @@ async function handler(req, res) {
 
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-    const { refreshToken, event , user_id } = req.body;
-
+    const NEXTAUTH_URL = process.env.NEXTAUTH_URL;
+    const { refreshToken, event , user_id , attendance_id } = req.body;
+    console.log('event' , event , req.body)
     // console.log('Incoming refreshToken and event:', JSON.stringify({ refreshToken, event }, null, 2));
 
     if (!CLIENT_ID || !CLIENT_SECRET || !refreshToken) {
@@ -141,6 +145,12 @@ async function handler(req, res) {
       );
 
       console.log('✅ Event created successfully:', createResponse.data);
+
+      await axios.post(`${NEXTAUTH_URL}/api/pmApi/fillgoogleCalender`, {
+        student_id :user_id,
+        event_id: createResponse.data.id,
+        attendance_id:attendance_id,
+      }); 
 
       return res.status(200).json({
         success: true,

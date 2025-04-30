@@ -429,7 +429,7 @@ const CourseSchedule = () => {
             // Parse the date and time strings
             const startDateTime = new Date(event.day);
             const endDateTime = new Date(event.day);
-      
+            const attendance_id= event.attendance_id
             // Adjust the start and end time based on the event's time zone offset
             const fromTimeParts = event.from_time.split(':');
             const toTimeParts = event.to_time.split(':');
@@ -473,14 +473,15 @@ const CourseSchedule = () => {
       
             const startDateTime = new Date(event.day);
             const endDateTime = new Date(event.day);
-  
+            
             const fromTimeParts = event.from_time.split(':');
             const toTimeParts = event.to_time.split(':');
   
             startDateTime.setHours(Number(fromTimeParts[0]));
             startDateTime.setMinutes(Number(fromTimeParts[1]));
             startDateTime.setSeconds(Number(fromTimeParts[2].split('+')[0]));
-  
+            const attendance_id= event.attendance_id
+
             endDateTime.setHours(Number(toTimeParts[0]));
             endDateTime.setMinutes(Number(toTimeParts[1]));
             endDateTime.setSeconds(Number(toTimeParts[2].split('+')[0]));
@@ -491,9 +492,9 @@ const CourseSchedule = () => {
             }
       
             const title = [
-              `C:${event.course_name}`,
-              `T:${event.teacher_fullname}`,
-              `Building:${event.room_building}`,
+              `${event.course_name}`,
+              // `T:${event.teacher_fullname}`,
+              `building:${event.room_building}`,
               `Room:${event.room_name}`,
             ].map((line) => line + '\n\n\n');
       
@@ -505,6 +506,8 @@ const CourseSchedule = () => {
               end: {
                 dateTime: endDateTime.toISOString(),
               },
+              attendance_id:attendance_id
+
             };
           });
           setEventPayloads(formattedEventsGoogle);
@@ -524,9 +527,11 @@ const CourseSchedule = () => {
   const SaveRefreshToken = async (refreshToken , authorizationCode) => {
     try {
       for (const evt of eventPayloads) {
+        console.log('event payload',eventPayloads)
         const response = await axios.post('/api/user/addEvent', {
           refreshToken,
           event: evt,
+          attendance_id:evt.attendance_id,
           code:authorizationCode.code,
           user_id:session.user?.userid
 
@@ -618,7 +623,7 @@ const CourseSchedule = () => {
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId="488510538109-36i4ol70jivfrtcu31upbmld812klgr7.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="30821939322-dr944pnurd06gsoinqn94a917ri0ntp0.apps.googleusercontent.com">
       <CourseSchedule />
     </GoogleOAuthProvider>
   );

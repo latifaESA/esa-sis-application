@@ -799,7 +799,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
           dragDateRef.current.date,
           place
         );
-
+        console.log('ev course' , ev ,  ev.course_id)
+      //  const course =  handleClass(ev.course_id)
+      //  console.log('course' , course)
         if (attendanceData.data.code != 200) {
 
           let { data } = await axios.post('/api/pmApi/createSingleSchedule', {
@@ -817,16 +819,16 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             if (data.success) {
               const response = await handleCreateZoomMeeting(ev.title, new Date(dragDateRef.current.date), ev.from, ev.to)
               await handleUpdateZoomOnlineSchedule(response.zoom_id, response.zoom_url, attendanceData.data.data, response.zoom_url)
-              await handleInsertGoogleEvent(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
+              await handleInsertGoogleEventOnSiteDrop(new Date(dragDateRef.current.date), ev.from, ev.to , ev.room_name , ev.roomBuilding ,ev.course , attendanceData.data.data)
 
               setStudent([]);
               getData();
             }
           } else {
             if (data.success) {
-
+             
               // await handleDragRoomBooking(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data, ev.course, ev.room_name, ev.room_building)
-              await handleInsertGoogleEventOnSite(new Date(dragDateRef.current.date), ev.from, ev.to, attendanceData.data.data)
+              await handleInsertGoogleEventOnSiteDrop(new Date(dragDateRef.current.date), ev.from, ev.to , ev.room_name , ev.roomBuilding ,ev.course , attendanceData.data.data)
 
               setStudent([]);
               getData();
@@ -1140,6 +1142,9 @@ export const CalenderById = ({ schedule, setSchedule }) => {
   const handleCreateAttendanceDragDrop = (ev, date, place) => {
     return new Promise((resolve, reject) => {
       try {
+  
+
+
         const payload1 = {
           table: 'tmpclass',
           Where: 'tmpclass_id',
@@ -1165,6 +1170,21 @@ export const CalenderById = ({ schedule, setSchedule }) => {
             );
 
             const response = await getStudentsDragDrop(ev);
+            // console.log('res' , response)
+            // let studentDetailsGoogle=[]
+            for(let i= 0 ; i<response.length ; i++){
+              // console.log('response studnet' , response[i].student_id)
+              const payload2 = {
+                major_id:majorId,
+                promotion: response[i].promotion 
+                
+              }
+              const response2 = await axios.post('/api/pmApi/getAllStudent', payload2)
+              console.log('response2' , response2)
+              await handleAccessToken(response2.data.data)
+             
+            }
+         
             const attendance_id = data.data.data;
             if (attendance_id) {
 
@@ -1966,7 +1986,7 @@ console.log('e' , e)
   //   }
   // };
   const handleAccessToken = async (studentDetails) => {
-    console.log('studentDetails', studentDetails)
+    // console.log('studentDetails', studentDetails)
     try {
  
 
@@ -2028,6 +2048,48 @@ console.log('e' , e)
         start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
         end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
       };
+      await axios.post('/api/google-api/addSchedule', {
+        access_token: accessToken,
+        event: schedule,
+        attendance_id: attendanceId
+      })
+
+
+      // if(response.statusText === 'OK'){
+      //  const logs= await axios.post('/api/pmApi/fillgoogleCalender' , {
+      //     student_id: '2024124599',
+      //     event_id:response.data.event.id
+
+      //   })
+      //   console.log(logs)
+      // }
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
+
+  const handleInsertGoogleEventOnSiteDrop = async (day, fromTime, to_time, roomName, roomBuilding, courseName , attendanceId) => {
+
+    try {
+
+      const accessToken = googleToken
+      // Define the schedule data
+      const formattedDate = moment(day).format('YYYY-MM-DD');
+      // Combine the date and time and format it as a full ISO string
+      const localDateTime = `${formattedDate}T${fromTime}:00`;
+      const localDateToTime = `${formattedDate}T${to_time}:00`;
+      
+
+      const schedule = {
+        summary: `${courseName}`,
+        description: `Room-${roomName} building-${roomBuilding}`,
+        start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
+        end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
+      };
+      console.log('schedulesss' , schedule)
       await axios.post('/api/google-api/addSchedule', {
         access_token: accessToken,
         event: schedule,
