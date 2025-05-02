@@ -1,7 +1,8 @@
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
+// import CourseSchedule from '../../components/Dashboard/Schedule/CourseSchedule';
 import { useRouter } from 'next/router';
+import Calendar from '../../components/Dashboard/Schedule/calendar';
 
 export default function Schedule() {
   const { data: session } = useSession();
@@ -27,7 +28,8 @@ export default function Schedule() {
 
           {/* <div className='grid lg:grid-cols-1 sm:grid-cols-1 gap-5 mb-5'> */}
           <div>
-            <CourseSchedule />
+            {/* <CourseSchedule /> */}
+            <Calendar />
           </div>
         </div>
       ) : redirect()}

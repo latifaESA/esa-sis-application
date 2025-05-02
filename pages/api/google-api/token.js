@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         const { tokens } = await oauth2Client.getToken(code);
 
         // Log tokens for debugging
-        console.log('Tokens received:', tokens);
+        // console.log('Tokens received:', tokens);
 
         return res.status(200).json({
             success: true,
