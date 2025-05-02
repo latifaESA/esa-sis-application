@@ -6,6 +6,7 @@ const { addTokensGoogle } = require("../controller/queries");
 
 
 async function handler(req, res) {
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
@@ -18,7 +19,7 @@ async function handler(req, res) {
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const NEXTAUTH_URL = process.env.NEXTAUTH_URL;
     const { refreshToken, event , user_id , attendance_id } = req.body;
-    console.log('event' , event , req.body)
+    // console.log('event' , event , req.body)
     // console.log('Incoming refreshToken and event:', JSON.stringify({ refreshToken, event }, null, 2));
 
     if (!CLIENT_ID || !CLIENT_SECRET || !refreshToken) {

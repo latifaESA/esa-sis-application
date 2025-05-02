@@ -1,6 +1,6 @@
 const { connect, disconnect } = require("../../../utilities/db");
 const { createAttendance } = require("../controller/queries");
-const { default: attendanceExist } = require("./exist/getAttendance");
+// const { default: attendanceExist } = require("./exist/getAttendance");
 const { default: OccupiedRoom } = require("./exist/roomOccupied");
 const { default: OccupiedTeacher } = require("./exist/teacherOccupied");
 import  moment from 'moment-timezone'
@@ -80,23 +80,23 @@ async function handler(req, res) {
  
     }
 
-    const exist = await attendanceExist(
-      connection,
-      teacher_id,
-      course_id,
-      date
-    );
+    // const exist = await attendanceExist(
+    //   connection,
+    //   teacher_id,
+    //   course_id,
+    //   date
+    // );
 
-    const date_exist = date.split('T')[0]
+    // const date_exist = date.split('T')[0]
 
-    if (exist) {
-      console.log('exist' , exist)
-      return res.status(200).json({
-        code: 200,
-        success: false,
-        message: `Scheduled Already Exist ${date_exist}!`,
-      });
-    }
+    // if (exist) {
+    //   console.log('exist' , exist)
+    //   return res.status(200).json({
+    //     code: 200,
+    //     success: false,
+    //     message: `Scheduled Already Exist ${date_exist}!`,
+    //   });
+    // }
     const response = await createAttendance(
       connection,
       teacher_id,

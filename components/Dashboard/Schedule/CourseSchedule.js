@@ -429,7 +429,7 @@ const CourseSchedule = () => {
             // Parse the date and time strings
             const startDateTime = new Date(event.day);
             const endDateTime = new Date(event.day);
-            const attendance_id= event.attendance_id
+            // const attendance_id= event.attendance_id
             // Adjust the start and end time based on the event's time zone offset
             const fromTimeParts = event.from_time.split(':');
             const toTimeParts = event.to_time.split(':');
