@@ -60,9 +60,10 @@ async function handler(req, res) {
   // console.log("after session");
   const encryptedBody = req.query.query;
   const query = JSON.parse(decrypt(encryptedBody));
+
   const emailToken = query.token;
   const email = query.email;
-  const id = query.id;
+  // const id = query.id;
   // const password = req.query.password;
   // console.log("quesries");
   // console.log(emailToken);
@@ -106,8 +107,8 @@ async function handler(req, res) {
       "user_contact",
       "userid",
       "userid",
-      "userid",
-      id
+      "email",
+      email
     );
 
     const existingUserToken = await findDataForResetPassword(
@@ -127,8 +128,8 @@ async function handler(req, res) {
       "program_manager",
       "pm_id",
       "userid",
-      "userid",
-      id
+      "email",
+      email
     );
 
     const existingPMToken = await findDataForResetPassword(
@@ -148,8 +149,8 @@ async function handler(req, res) {
       "program_manager_assistance",
       "pm_ass_id",
       "userid",
-      "userid",
-      id
+      "email",
+      email
     );
     const existingPMAssistanceToken = await findDataForResetPassword(
       connection,
@@ -167,8 +168,8 @@ async function handler(req, res) {
       "admin",
       "adminid",
       "userid",
-      "userid",
-      id
+      "email",
+      email
     );
     const existinAdminToken = await findDataForResetPassword(
       connection,
@@ -188,28 +189,41 @@ async function handler(req, res) {
         ) {
           const role = existingUserToken.rows[0].role;
           const newPassword = generatPassword(8);
-          const userid = existingUserEmail.rows[0].userid;
+          // const userid = existingUserEmail.rows[0].email;
           // // console.log('newPassword=', newPassword);
           //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
           // existingUserToken.password = bcryptjs.hashSync(newPassword);
           // await existingUserToken.save();
           // if (existingUserToken.isVerified)
           await UpdateToken(connection, emailToken);
-  
-          await newpassword(
-            connection,
-            existingUserToken.rows[0].userid,
-            newPassword
-          );
-          const encryptedQuery = encodeURIComponent(
-            encrypt(
-              JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-            )
-          );
-          res.writeHead(302, {
-            Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-            // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-          });
+          try {
+            const passwordResetResult = await newpassword(
+              connection,
+              existingUserToken.rows[0].email,
+              newPassword
+            );
+            
+            console.log('newpassword result:', passwordResetResult);
+            
+            const encryptedQueryData = encodeURIComponent(
+              encrypt(
+                JSON.stringify({ userid: existingUserToken.rows[0].email, password: newPassword })
+              )
+            );
+            
+            console.log('Encrypted query data:', encryptedQueryData);
+            
+            res.writeHead(302, {
+              Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQueryData}`,
+            });
+            res.end();
+          
+          
+          } catch (error) {
+            console.error('Error occurred:', error);
+            // Handle the error appropriately (send an error response, log, etc.)
+          }
+          
           res.end();
           await disconnect(connection);
           sis_app_logger.info(
@@ -270,7 +284,7 @@ async function handler(req, res) {
 
     if (
       (existingAdminEmail.rows[0] != null &&
-        existingAdminEmail.rows[0].adminid != null) &
+        existingAdminEmail.rows[0].adminemail != null) &
       (existinAdminToken.rows[0] != null)
     ) {
       if (
@@ -279,23 +293,36 @@ async function handler(req, res) {
       ) {
         const role = existinAdminToken.rows[0].role;
         const newPassword = generatPassword(8);
-        const userid = existingAdminEmail.rows[0].userid;
+        // const userid = existingAdminEmail.rows[0].email;
 
       await UpdateToken(connection, emailToken);
-      await newpassword(
+      try {
+        const passwordResetResult = await newpassword(
           connection,
-          existinAdminToken.rows[0].userid,
+          existingAdminEmail.rows[0].adminemail,
           newPassword
         );
-        const encryptedQuery = encodeURIComponent(
+        
+        console.log('newpassword result:', passwordResetResult);
+        
+        const encryptedQueryData = encodeURIComponent(
           encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
+            JSON.stringify({ userid: existingAdminEmail.rows[0].adminemail, password: newPassword })
           )
         );
+        
+        console.log('Encrypted query data:', encryptedQueryData);
+        
         res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
+          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQueryData}`,
         });
+        res.end();
+      
+      
+      } catch (error) {
+        console.error('Error occurred:', error);
+        // Handle the error appropriately (send an error response, log, etc.)
+      }
         res.end();
         await disconnect(connection);
         sis_app_logger.info(
@@ -328,7 +355,7 @@ async function handler(req, res) {
           return;
         }
         if (existingAdminEmail.rows[0].adminemail == null) {
-          console.log('pm headeradmin' , existingPMEmail.rows[0].pm_email)
+          console.log('pm headeradmin' , existingAdminEmail.rows[0].adminemail)
           res.writeHead(302, {
             Location: `${protocol}://${
               req.headers.host
@@ -367,7 +394,7 @@ async function handler(req, res) {
       
         const role = existingPMToken.rows[0].role;
         const newPassword = generatPassword(8);
-        const userid = existingPMEmail.rows[0].userid;
+        // const userid = existingPMEmail.rows[0].userid;
         // // console.log('newPassword=', newPassword);
         //if (existingUserToken.isVerified) existingUserToken.emailToken = 'null';
         // existingUserToken.password = bcryptjs.hashSync(newPassword);
@@ -375,20 +402,33 @@ async function handler(req, res) {
         // if (existingUserToken.isVerified)
         await UpdateToken(connection, emailToken);
 
-        await newpassword(
-          connection,
-          existingPMToken.rows[0].userid,
-          newPassword
-        );
-        const encryptedQuery = encodeURIComponent(
-          encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-          )
-        );
-        res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-        });
+        try {
+          const passwordResetResult = await newpassword(
+            connection,
+            existingPMToken.rows[0].pm_email,
+            newPassword
+          );
+          
+          console.log('newpassword result:', passwordResetResult);
+          
+          const encryptedQueryData = encodeURIComponent(
+            encrypt(
+              JSON.stringify({ userid: existingPMToken.rows[0].pm_email, password: newPassword })
+            )
+          );
+          
+          console.log('Encrypted query data:', encryptedQueryData);
+          
+          res.writeHead(302, {
+            Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQueryData}`,
+          });
+          res.end();
+        
+        
+        } catch (error) {
+          console.error('Error occurred:', error);
+          // Handle the error appropriately (send an error response, log, etc.)
+        }
         res.end();
         await disconnect(connection);
         sis_app_logger.info(
@@ -459,23 +499,36 @@ async function handler(req, res) {
       ) {
         const role = existingPMAssistanceToken.rows[0].role;
         const newPassword = generatPassword(8);
-        const userid = existingPMAssistanceEmail.rows[0].userid;
+        // const userid = existingPMAssistanceEmail.rows[0].userid;
         await UpdateToken(connection, emailToken);
 
-        await newpassword(
-          connection,
-          existingPMAssistanceToken.rows[0].userid,
-          newPassword
-        );
-        const encryptedQuery = encodeURIComponent(
-          encrypt(
-            JSON.stringify({ userid: `${userid}`, password: `${newPassword}` })
-          )
-        );
-        res.writeHead(302, {
-          Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQuery}`,
-          // Location: `${protocol}://${req.headers.host}/user/password/presetsignin?email=${email}&password=${newPassword}`,
-        });
+        try {
+          const passwordResetResult = await newpassword(
+            connection,
+            existingPMAssistanceToken.rows[0].pm_ass_email,
+            newPassword
+          );
+          
+          console.log('newpassword result:', passwordResetResult);
+          
+          const encryptedQueryData = encodeURIComponent(
+            encrypt(
+              JSON.stringify({ userid: existingPMAssistanceToken.rows[0].pm_ass_email, password: newPassword })
+            )
+          );
+          
+          console.log('Encrypted query data:', encryptedQueryData);
+          
+          res.writeHead(302, {
+            Location: `${protocol}://${req.headers.host}/user/password/presetsignin?query=${encryptedQueryData}`,
+          });
+          res.end();
+        
+        
+        } catch (error) {
+          console.error('Error occurred:', error);
+          // Handle the error appropriately (send an error response, log, etc.)
+        }
         res.end();
         await disconnect(connection);
         sis_app_logger.info(

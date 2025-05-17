@@ -6,39 +6,53 @@ const {
   insertNotifications,
 } = require('../controller/queries');
 
-// const axios = require('axios')
-// import https from 'https';
-
 async function handler(req, res) {
   try {
     const connection = await connect();
 
-    const { user_id, selectedMajorID, promotionValue, subjectContent, emailContent, selectedSignature } = req.body;
+    const {
+      user_id,
+      selectedMajorID,
+      promotionValue,
+      subjectContent,
+      emailContent,
+      selectedSignature,
+    } = req.body;
 
-    const data = await getEmailsByMajorId(connection, selectedMajorID, promotionValue);
-    console.log('the data of the students : ', data)
-    if (data.length > 0) {
-      const emails = data.map((row) => row.email);
-      const userID = data.map((row) => row.userid);
-      // await SendEmailTo(emails, subjectContent);
+    const studentsData = await getEmailsByMajorId(connection, selectedMajorID, promotionValue);
+    console.log('Students data:', studentsData);
+
+    if (studentsData.length > 0) {
+      const emails = studentsData.map((row) => row.email);
+      // const userIDs = studentsData.map((row) => row.userid);
+
+      console.log('Extracted emails:', emails);
+
+      // Send email to all
       await SendEmailTo(emails, emailContent, subjectContent, selectedSignature);
-      await insertNotifications(
-        connection,
-        userID,
-        user_id,
-        emailContent,
-        subjectContent
-      );
+
+      // Insert notification for each student
+      for (let i = 0; i < studentsData.length; i++) {
+        await insertNotifications(
+          connection,
+          [studentsData[i].userid], // assuming it accepts an array
+          user_id,
+          emailContent,
+          subjectContent,
+          studentsData[i].email
+        );
+      }
+
       await disconnect(connection);
-      return res.status('200').send(data);
+      return res.status(200).send(studentsData);
     } else {
+      await disconnect(connection);
       return res.status(404).json('No Student found');
     }
   } catch (error) {
-    // console.log('the error is: ', error)
-    return res.status('401').send(error);
-    // return error;
+    console.error('Error in handler:', error);
+    return res.status(401).send(error);
   }
 }
+
 export default handler;
-// module.exports = handler;

@@ -6,7 +6,9 @@ async function handler(req, res) {
   try {
     const connection = await connect();
     const { userID } = req.query;
+    console.log('userid' , userID)
     const data = await changeViewed(connection, userID);
+
     await disconnect(connection);
     return res.status("200").json(data);
   } catch (error) {

@@ -28,7 +28,7 @@ async function handler(req, res) {
       courseName,
       oldData } =
       req.body;
-  console.log('room id' , room_id)
+  // console.log('room id' , room_id)
     const classFilter = oldData.filter((sched) => sched.tmpschedule_id === tmpscheduleID)
     // console.log('----------------------classfilter---------------------------' , classFilter)
     const formattedDate = moment(day).format('DD-MM-YYYY');
@@ -113,84 +113,10 @@ async function handler(req, res) {
     // console.log(response)
 
     if (response.rowCount > 0) {
-      // student.map(async (students)=>{
-      //   try {
-
-      //    await SendEmail(
-      //       students.email ,
-      //       students.student_firstname ,
-      //       students.student_lastname, 
-      //       courseName , 
-      //       oldDate ,
-      //       oldFromTime,
-      //       oldToTime , 
-      //       oldIsOnline,
-      //       oldRoom,
-      //       oldBuilding,
-      //       oldTeacher,
-      //       formate,
-      //       oldFormate,
-      //       formattedDate,
-      //       oldFromTime,
-      //       ToTimeEmail,
-      //       is_online,
-      //       room_name,
-      //       building,
-      //       data.rows[0].teacher_firstname,
-      //       data.rows[0].teacher_lastname
-      //     )
-
-
-      //     await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`,{
-      //       receiverIds:[students.student_id], 
-      //       senderId:pm_id, 
-      // content:'<!DOCTYPE html>' +
-      //       '<html><head><title>Grades</title>' +
-      //       '</head><body><div>' +
-      //       `<div style="text-align: center;">
-      //          </div>` +
-      //       `</br>` +
-      //       `<p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p>` +
-      //       `<p>We trust this email finds you well.</p> ` +
-      //       `<p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p>` +
-      //       `<p>Previous Schedule:</p>` +
-      //       `<p>
-      //       <ul>
-      //         <li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>
-      //         ${oldIsOnline ? ``:`<li>Location:${oldRoom}-${oldBuilding}</li>`}
-      //         <li>Professor:${oldTeacher}</li>
-      //         <li>Formate:${oldFormate}</li>
-      //       </ul>
-      //       </p>`+
-
-      //       `<p>Update Schedule:</p>` +
-      //       `<p>
-
-      //       <ul>
-      //         <li>Date(s) and Time(s):${formattedDate}/${fromTimeEmail} To ${ToTimeEmail}</li>
-      //         ${is_online ? ``:`<li>Location:${room_name}-${building}</li>`}
-
-      //         <li>Professor:${data.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li>
-      //         <li>Formate:${formate}</li>
-      //       </ul>
-      //       </p>`+
-      //       `<p>
-      //       If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p>` +
-      //       `<p>Best regards,</p> ` +
-      //       `<p>ESA Business School</p> ` +
-
-      //       '</div></body></html>',
-      //        subject:'Update Schedule'
-      //     })
-      //   } catch (error) {
-      //     return error
-      //   }
-
-      // })
-
+      
       for (const students of student) {
         try {
-          const test = await SendEmail(
+           await SendEmail(
             students.email,
             students.student_firstname,
             students.student_lastname,
@@ -213,12 +139,12 @@ async function handler(req, res) {
             datateacher.rows[0].teacher_firstname,
             datateacher.rows[0].teacher_lastname
           );
-          console.log('test', test)
-          await axios.post(`${process.env.NEXTAUTH_URL}api/pmApi/addNotification`, {
+        
+          await axios.post(`${process.env.NEXTAUTH_URL}/api/pmApi/addNotification`, {
             receiverIds: [students.student_id],
             senderId: pm_id,
             content: `<!DOCTYPE html><html><head><title>Grades</title></head><body><div><div style="text-align: center;"></div></br><p>Dear <span style="font-weight: bold">${students.student_firstname} ${students.student_lastname}</span>,</p><p>We trust this email finds you well.</p> <p>We We would like to inform you of a necessary change to our ${courseName} schedule:</p><p>Previous Schedule:</p><p><ul><li>Date(s) and Time(s):${oldDate}/${oldFromTime} To ${oldToTime}</li>${oldIsOnline ? `` : `<li>Location:${oldRoom}-${oldBuilding}</li>`}<li>Professor:${oldTeacher}</li><li>Formate:${oldFormate}</li></ul></p><p>Update Schedule:</p><p><ul><li>Date(s) and Time(s):${formattedDate}/${fromTime} To ${toTime}</li>${is_online ? `` : `<li>Location:${room_name}-${building}</li>`}<li>Professor:${datateacher.rows[0].teacher_firstname} ${data.rows[0].teacher_lastname}</li><li>Formate:${formate}</li></ul></p><p>If you have any questions or concerns regarding these changes, please don't hesitate to contact your program manager.</p><p>Best regards,</p> <p>ESA Business School</p> '</div></body></html>`,
-            subject: 'Update Schedule',
+            subject: 'Updated Schedule',
           });
         } catch (error) {
           console.error('Error sending email:', error);

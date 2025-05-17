@@ -6,18 +6,19 @@
  * Copyright (c) 2023 ESA
  */
 
-const { insertData } = require('../controller/queries');
-const { insertPromotion, insertMajor } = require('../controller/queries');
+const { insertData, getAllById } = require('../controller/queries');
+const { insertMajor } = require('../controller/queries');
 const { addStudentActivityToLogs } = require('../controller/queries');
 const { connect } = require('../../../utilities/db');
 // const { sis_app_logger } = require('../logger');
 // const useragent = require('useragent');
 const { env } = require('process');
-import crypto from "crypto";
+// import crypto from "crypto";
 // import axios from 'axios'
 import bcryptjs from "bcryptjs";
 // import EmailAfterCreateAccount from "../../../utilities/emailing/emailAfterCreateAccount";
 import SendEmail from "../admin/adminApi/emailFormat";
+import SendEmailOld from "../admin/adminApi/emailExistUser";
 
 const getCurrentMonthYear = () => {
   const date = new Date();
@@ -33,14 +34,31 @@ const formatDateForDB = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-
 function generatePassword(length) {
-  const paternlist =
-    "0123456789ABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnpqrstuvwxyz#$%&()*+,-./:;<=>!?@[]^_`{|}~";
-  return Array.from(crypto.randomFillSync(new Uint8Array(length)))
-    .map((x) => paternlist[x % paternlist.length])
+  const patternList = "0123456789ABCDEFGHIJKLMNOPQSTUVWXYZabcdefghijklmnpqrstuvwxyz#$%&()*+,-./:;<=>!?@[]^_`{|}~";
+
+  const getCrypto = () => {
+    if (typeof window !== "undefined" && window.crypto) {
+      return window.crypto;
+    } else if (typeof require !== "undefined") {
+      return require("crypto").webcrypto;
+    } else {
+      throw new Error("Crypto API not available");
+    }
+  };
+
+  const cryptoObj = getCrypto();
+  const array = new Uint8Array(length);
+  cryptoObj.getRandomValues(array);
+
+  let password = Array.from(array)
+    .map(x => patternList[x % patternList.length])
     .join("");
+
+  return password;
 }
+
+
 
 async function handler(req, res) {
   try {
@@ -85,7 +103,20 @@ async function handler(req, res) {
         const new_pass = generatePassword(8);
         const salt = await bcryptjs.genSalt(8);
         const genPass = await bcryptjs.hash(new_pass, salt);
-     
+
+        const exist = await getAllById(connection , 'user_contact' ,'email' , `${recieved_data.personal_email}`)
+        console.log(
+          'exist',
+          exist
+        )
+        let insertExtraUser 
+        if(exist.rows.length > 0){
+          const columns_extra = ['userid', 'majorid', 'promotion' , 'email' , 'major_name'];
+        const extra_data = [`${recieved_data.CID}`, `${recieved_data.major_id}`, `${recieved_data.promotion}` , `${recieved_data.personal_email}` , `${recieved_data.major_name}`];
+         insertExtraUser = await insertData(connection, 'extra_user', columns_extra, extra_data);
+      
+        }
+        isSuccess = isSuccess && insertExtraUser.rowCount > 0;
                   // Insert major
         const columns_major = ['major_id', 'major_name' , 'status'];
         const values_major = [`${recieved_data.major_id}`, `EXED-${recieved_data.major_name}` , 'active'];
@@ -103,13 +134,13 @@ async function handler(req, res) {
         const time_acc = getCurrentMonthYear()
         const columns_promotion = ['promotion_name', 'major_id', 'academic_year'];
         const promotion_data = [`${recieved_data.promotion}`, `${recieved_data.major_id}`, current_year];
-        let insertIntoPromotionIfNotExist = await insertPromotion(connection, 'promotions', columns_promotion, promotion_data);
+        let insertIntoPromotionIfNotExist = await insertData(connection, 'promotions', columns_promotion, promotion_data);
       
         isSuccess = isSuccess && insertIntoPromotionIfNotExist.rowCount > 0;
 
         // Insert user
-        const columns_user = ['userid', 'role', 'userpassword'];
-        const values_user = [`${recieved_data.CID}`, 1, `${genPass}`];
+        const columns_user = ['userid', 'role', 'userpassword' , 'email'];
+        const values_user = [`${recieved_data.CID}`, 1, `${genPass}`,`${recieved_data.personal_email}`];
         let resUser = await insertData(connection, 'users', columns_user, values_user);
      
         isSuccess = isSuccess && resUser.rowCount > 0;
@@ -163,8 +194,8 @@ async function handler(req, res) {
         isSuccess = isSuccess && res_user_education.rowCount > 0;
 
         // Insert user document
-        const columns_document = ['userid', 'profileURL'];
-        const values_document = [`${recieved_data.CID}`, ''];
+        const columns_document = ['userid', 'profileURL' ,'email'];
+        const values_document = [`${recieved_data.CID}`, '' , `${recieved_data.personal_email}`];
         const resDocument = await insertData(connection, 'user_document', columns_document, values_document);
         
         isSuccess = isSuccess && resDocument.rowCount > 0;
@@ -177,8 +208,14 @@ async function handler(req, res) {
         const name = `${fname} ${lname}`;
         const studentId = recieved_data.CID;
         const email = recieved_data.personal_email;
-        SendEmail(name, email, new_pass, studentId, 'https://esasis.esa.edu.lb/file/setting/public/esa.png');
+        const program = recieved_data.major_name
+        if(exist.rows.length > 0){
+          SendEmailOld(name, email, 'https://esasis.esa.edu.lb/file/setting/public/esa.png', program);
 
+        }else{
+          SendEmail(name, email, new_pass, studentId, 'https://esasis.esa.edu.lb/file/setting/public/esa.png');
+
+        }
         // Return final response
         if (isSuccess) {
           return res.status(200).json({ message: 'Received student info' });

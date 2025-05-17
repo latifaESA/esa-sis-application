@@ -60,14 +60,14 @@ async function handler(req, res) {
       email
     );
  
-
+console.log('userrole' , userrole)
     const validateUserEmail = await findDataForResetPassword(
       connection,
       "users",
       "user_contact",
       "userid",
       "userid",
-      "userid",
+      "email",
       email
     );
     const validatePmEmail = await findDataForResetPassword(
@@ -76,7 +76,7 @@ async function handler(req, res) {
       "program_manager",
       "pm_id",
       "userid",
-      "userid",
+      "email",
       email
     );
     const validateAdmin = await findDataForResetPassword(
@@ -85,7 +85,7 @@ async function handler(req, res) {
       "admin",
       "adminid",
       "userid",
-      "userid",
+      "email",
       email
     );
 
@@ -95,20 +95,20 @@ async function handler(req, res) {
       "program_manager_assistance",
       "pm_ass_id",
       "userid",
-      "userid",
+      "email",
       email
     );
 
     if (
       validateUserEmail.rows[0] != null &&
-      validateUserEmail.rows[0].userid != null &&
+      validateUserEmail.rows[0].email != null &&
       validateUserEmail.rows[0].role === 1
       
     ) {
       // Set the emailToken
 
   
-    await newEmailToken(connection, validateUserEmail.rows[0].userid);
+    await newEmailToken(connection, validateUserEmail.rows[0].email);
      
       //validateUserEmail.emailToken = crypto.randomBytes(64).toString('hex');
       //await validateUserEmail.save();
@@ -116,25 +116,25 @@ async function handler(req, res) {
       // res.status(200).json('Email Verified Successfully.');
     } else if (
       validatePmEmail.rows[0] != null &&
-      validatePmEmail.rows[0].userid != null &&
+      validatePmEmail.rows[0].pm_email != null &&
       validatePmEmail.rows[0].role === 2
     
      
     ) {
      
-      await newEmailToken(connection, validatePmEmail.rows[0].userid );
+      await newEmailToken(connection, validatePmEmail.rows[0].pm_email );
     } else if (
       validatePmAssistanteEmail.rows[0] != null &&
-      validatePmAssistanteEmail.rows[0].userid != null
+      validatePmAssistanteEmail.rows[0].pm_ass_email != null
       &&  validatePmAssistanteEmail.rows[0].role===3
     ) {
-      await newEmailToken(connection, validatePmAssistanteEmail.rows[0].userid);
+      await newEmailToken(connection, validatePmAssistanteEmail.rows[0].pm_ass_email);
     } else if (
       validateAdmin.rows[0] != null &&
       validateAdmin.rows[0].userid != null
       &&  validateAdmin.rows[0].role===0
     ) {
-      await newEmailToken(connection, validateAdmin.rows[0].userid);
+      await newEmailToken(connection, validateAdmin.rows[0].adminemail);
     } else {
       res.status(404).json({
         message: "Account Doesn't Exist.",
@@ -149,7 +149,7 @@ async function handler(req, res) {
       "user_contact",
       "userid",
       "userid",
-      "userid",
+      "email",
       email
     );
 
@@ -159,7 +159,7 @@ async function handler(req, res) {
       "program_manager",
       "pm_id",
       "userid",
-      "userid",
+      "email",
       email
     );
     const userPmAssinfo = await findDataForResetPassword(
@@ -168,7 +168,7 @@ async function handler(req, res) {
       "program_manager_assistance",
       "pm_ass_id",
       "userid",
-      "userid",
+      "email",
       email
     );
     const admininfo = await findDataForResetPassword(
@@ -177,12 +177,12 @@ async function handler(req, res) {
       "admin",
       "adminid",
       "userid",
-      "userid",
+      "email",
       email
     );
    
   
-    if (userinfo.rows[0] && userinfo.rows[0].userid != null 
+    if (userinfo.rows[0] && userinfo.rows[0].email != null 
       && userrole.rows[0].role === 1) {
      
       res.status(201).send({
@@ -191,7 +191,7 @@ async function handler(req, res) {
         emailToken: userinfo.rows[0].token,
         ID: userinfo.rows[0].userid,
       });
-    } else if (userPminfo.rows[0] && userPminfo.rows[0].pm_id != null && userPminfo.rows[0].role===2) {
+    } else if (userPminfo.rows[0] && userPminfo.rows[0].pm_email != null && userPminfo.rows[0].role===2) {
       console.log('userPminfo.rows[0].role' ,userPminfo.rows[0].role)
       res.status(201).send({
         message: "Ready To send Reset Password Email",
@@ -201,7 +201,7 @@ async function handler(req, res) {
       });
     } else if (
       userPmAssinfo.rows[0] &&
-      userPmAssinfo.rows[0].pm_ass_id != null
+      userPmAssinfo.rows[0].pm_ass_email != null
       && userrole.rows[0].role === 3 
     ) {
       res.status(201).send({
@@ -210,7 +210,7 @@ async function handler(req, res) {
         emailToken: userPmAssinfo.rows[0].token,
         ID: userPmAssinfo.rows[0].userid,
       });
-    } else if (admininfo.rows[0] && admininfo.rows[0].adminid != null && userrole.rows[0].role===0) {
+    } else if (admininfo.rows[0] && admininfo.rows[0].adminemail != null && userrole.rows[0].role===0) {
       console.log("seret bel else admin");
       res.status(201).send({
         message: "Ready To send Reset Password Email",

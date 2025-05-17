@@ -250,7 +250,7 @@ async function Userinfo(connection, userid) {
   try {
     let UserData = await executeQuery(
       connection,
-      `select * from user_document where userid = '${userid}'`
+      `select * from user_document where email = '${userid}'`
     );
     return UserData;
   } catch (err) {

@@ -19,6 +19,7 @@ async function handler(req, res) {
       promotion,
       gpa
     );
+  
     await disconnect(connection);
 
     // console.log(data.rows);

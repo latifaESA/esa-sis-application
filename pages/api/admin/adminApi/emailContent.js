@@ -40,7 +40,7 @@ const SendEmailTo = async (name, email, password, ID , esa_logo , role) => {
 
       `<p> Please use the provided credentials below to log in and access the new SIS(Student Information System):
         <ul>
-        • Your Username: <span style="font-weight: bold">${ID}</span> <br>
+        • Your Username: <span style="font-weight: bold">${email}</span> <br>
         • Your Password: <span style="font-weight: bold">${password}</span> <br>
         • ${link} 
 

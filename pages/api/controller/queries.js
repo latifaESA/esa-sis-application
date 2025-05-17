@@ -76,7 +76,7 @@ async function newEmailToken(connection, userid) {
     let query = `
     UPDATE users
     SET token = '${emailToken}'
-    WHERE userid = '${userid}'`;
+    WHERE email = '${userid}'`;
     console.log('query', query)
 
     const result = await connection.query(query);
@@ -88,15 +88,16 @@ async function newEmailToken(connection, userid) {
 
 async function UpdateToken(connection, emailToken) {
   try {
+    console.log('emailToken' , emailToken)
     let UserData = await executeQuery(
       connection,
-      "UPDATE users set token=null where token=?",
+      "UPDATE users set token=null where token=$1",
       [emailToken]
     );
 
     return UserData;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log("error in the query file UpdateToken: ", err); return;
   }
 }
 
@@ -117,13 +118,13 @@ async function newpassword(connection, email, newPassword) {
     let query = `
     UPDATE users
     SET userpassword = '${password}'
-    WHERE userid = '${email}'`;
-    console.log('test', query)
+    WHERE email = '${email}'`;
+    console.log('test ===================================>', query)
 
     const result = await connection.query(query);
     return result;
   } catch (err) {
-    console.log("error in the query file : ", err); return;
+    console.log("error in the query file  newpassword : ", err); return;
   }
 }
 
@@ -462,23 +463,25 @@ const insertNotifications = async (
   receiverIds,
   senderId,
   content,
-  subject
+  subject,
+  email
 ) => {
   try {
     // Insert notifications for each receiver ID
     const result = await connection.query(
       `
-      INSERT INTO notifications (receiver_id, sender_id, content, subject, date, viewed)
+      INSERT INTO notifications (receiver_id, sender_id, content, subject,email, date ,viewed)
       SELECT
-        receiver_id,
+        $1 receiver_id,
         $2 as sender_id,
         $3 as content,
         $4 as subject,
+        $5 as email,
         current_timestamp as date,
         false as viewed
       FROM UNNEST($1::character varying[]) AS receiver_id;
     `,
-      [receiverIds, senderId, content, subject]
+      [receiverIds, senderId, content, subject , email]
     );
 
     return result;
@@ -523,7 +526,7 @@ const getEmailsSender = async (connection, receiver_id) => {
     END AS pm_lastname
   FROM notifications nt
   LEFT JOIN program_manager pm ON nt.sender_id = pm.pm_id
-  WHERE nt.receiver_id = $1
+  WHERE nt.email = $1
   ORDER BY nt.date DESC;  
     `,
       [receiver_id]
@@ -542,9 +545,10 @@ const changeViewed = async (connection, receiver_id) => {
       `
     UPDATE notifications
     SET viewed = true
-    WHERE receiver_id = $1 AND viewed = false;`,
+    WHERE email = $1 AND viewed = false;`,
       [receiver_id]
     );
+  
     return result;
   } catch (error) {
     console.log("error in the query file : ", error); return;
@@ -1754,11 +1758,11 @@ async function createPMAccount(
     WHEN pm_id = '${pm_id}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
     END AS message; 
-    insert into users(userid, role, userpassword)
-    values ('${pm_id}', '2', '${userpassword}') on conflict (userid) do nothing;
+    insert into users(userid, role, userpassword , email)
+    values ('${pm_id}', '2', '${userpassword}', '${pm_email}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid , profileurl)
-      VALUES('${pm_id}' , ' ') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl , email)
+      VALUES('${pm_id}' , ' ' , '${pm_email}') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${pm_id}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -1801,11 +1805,11 @@ async function createASAccount(
     WHEN pm_ass_id = '${pm_ass_id}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
     END AS message; 
-    insert into users(userid, role, userpassword)
-    values ('${pm_ass_id}', '3', '${userpassword}') on conflict (userid) do nothing;
+    insert into users(userid, role, userpassword , email)
+    values ('${pm_ass_id}', '3', '${userpassword}' , '${pm_ass_email}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid , profileurl)
-      VALUES('${pm_ass_id}','') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl , email)
+      VALUES('${pm_ass_id}','' ,'${pm_ass_email}') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${pm_ass_id}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -1835,11 +1839,11 @@ async function createAdmin(
     WHEN adminid = '${adminid}' THEN 'ID already exists'
     ELSE 'Conflict occurred'
     END AS message; 
-    insert into users(userid, role, userpassword)
-    values ('${adminid}', '0', '${userpassword}') on conflict (userid) do nothing;
+    insert into users(userid, role, userpassword , email)
+    values ('${adminid}', '0', '${userpassword}' , '${adminemail}') on conflict (userid) do nothing;
 
-    INSERT INTO user_document(userid , profileurl)
-      VALUES('${adminid}' , ' ') on conflict (userid) do nothing
+    INSERT INTO user_document(userid , profileurl , email)
+      VALUES('${adminid}' , ' ' , '${adminemail}') on conflict (userid) do nothing
       RETURNING CASE
       WHEN userid = '${adminid}' THEN 'ID already exists'
       ELSE 'Conflict occurred'
@@ -2252,16 +2256,18 @@ async function uploadAddress(
     console.log("error in the query file : ", error); return;
   }
 }
-async function ActiveUser(connection, { userid, userpassword }) {
+async function ActiveUser(connection, { userid, userpassword , email }) {
   try {
     const query = `INSERT INTO users(  
       userid,
       role,
-      userpassword
+      userpassword,
+      email
       )VALUES (
         '${userid}',
         '1',
-        '${userpassword}'
+        '${userpassword}',
+        '${email}'
       )`;
 
     const res = await connection.query(query);
@@ -2270,9 +2276,9 @@ async function ActiveUser(connection, { userid, userpassword }) {
     console.log("error in the query file : ", error); return;
   }
 }
-async function userDocument(connection, { userid }) {
+async function userDocument(connection, { userid ,profileurl ,email }) {
   try {
-    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , ' ') on conflict (userid) do nothing`;
+    const query = `INSERT INTO user_document (userid , profileurl) VALUES ('${userid}' , '${profileurl}' , '${email}') on conflict (userid) do nothing`;
 
     const res = await connection.query(query);
     return res;
@@ -2512,7 +2518,7 @@ async function profileStudent(connection, user_id) {
       from student inner join user_contact on user_contact.userid = student.student_id 
       inner join user_personal_address on user_personal_address.userid = student.student_id
       inner join major on student.major_id = major.major_id
-      where student.student_id = '${user_id}'
+      where student.student_id = '${user_id}' AND student.status = 'active';
 
     
       `;
@@ -2798,6 +2804,7 @@ async function addRequestForPm(
     const query = `INSERT INTO requests (pm_id, student_id, student_email, major_id, promotion, status, gpa, type)
     VALUES ('${pm_id}', '${student_id}', '${student_email}', '${major_id}', '${promotion}', 'pending', '${gpa}', 'transcript') `;
     const res = await connection.query(query);
+   
     return res;
   } catch (error) {
     console.log("error in the query file : ", error); return;
@@ -3835,7 +3842,7 @@ async function uploadStudentFinancial(
 }
 async function findUserRole(connection, userid) {
   try {
-    const query = `SELECT * FROM users WHERE userid= '${userid}'`
+    const query = `SELECT * FROM users WHERE email= '${userid}'`
     const res = await connection.query(query)
     return res
   } catch (error) {

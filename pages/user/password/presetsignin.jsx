@@ -61,9 +61,12 @@ const PreSignIn = () => {
     const encryptedQuery = router.query.query;
     // // console.log('encryptedQuery=', encryptedQuery);
     const query = JSON.parse(decrypt(encryptedQuery));
+    console.log('query' , query)
     // // console.log('query=', query);
     userid = query.userid;
+    console.log('email' , query.userid)
     password = query.password;
+    console.log('password' , query.password)
     testSession();
     // // console.log('email=', email);
     // // console.log('password=', password);

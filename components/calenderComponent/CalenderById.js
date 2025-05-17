@@ -2141,7 +2141,7 @@ console.log('e' , e)
 
       const newData = {
         summary: `${courseName}`,
-        description: `R-${roomName}-B-${roomBuilding}`,
+        location: `Room-${roomName} Building-${roomBuilding}`,
         start: { dateTime: localDateTime, timeZone: 'Asia/Beirut' },
         end: { dateTime: localDateToTime, timeZone: 'Asia/Beirut' },
       };

@@ -46,7 +46,7 @@ const ForgetPassword = () => {
         email,
       });
       const emailToken = res.data.emailToken;
-      const ID = res.data.ID;
+      const ID = res.data.email;
       const idForRes = res.data.email;
       await EmailForResetPassword({
         emailToken,
@@ -87,7 +87,7 @@ const ForgetPassword = () => {
             <h1 className="mb-4 text-3xl font-bold">
               Forget Your Account Password?
             </h1>
-            <h1 className="mb-4 text-xl">Please Enter Your ID .</h1>
+            <h1 className="mb-4 text-xl">Please Enter Your Email .</h1>
             {errors && (
               <div className="text-red-500 text-xl font-bold w-full text-center mt-4 mb-4">
                 {errorMessage}
@@ -96,7 +96,7 @@ const ForgetPassword = () => {
             <div>
               <input
                 type="text"
-                placeholder="Enter Your ID"
+                placeholder="Enter Your Email"
                 className={
                   errors.email
                     ? "w-1/2 text-center text-xl text-black mb-3 mt-2 border-8 border-red-400"
