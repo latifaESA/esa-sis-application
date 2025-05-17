@@ -356,11 +356,13 @@ async function handler(req, res) {
               token: "",
               isVerified: "",
               update_time: "",
+              email:student['Email(required)']
             });
 
             await userDocument(connection, {
               userid: studentId,
               profileurl: '',
+              email:student['Email(required)']
             });
 
             await uploadAddress(connection, {

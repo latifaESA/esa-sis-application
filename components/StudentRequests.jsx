@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 // import emailRequestTranscript from "../pages/api/user/emailRequestTranscript";
 import Loader from './Loader/Loader';
-
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 const StudentRequests = () => {
@@ -23,11 +23,12 @@ const StudentRequests = () => {
   const [pm_lastname, setPm_lastname] = useState('');
   const [pm_email, setPm_email] = useState('');
   const [pm_id, setPm_id] = useState('');
-
+  const router = useRouter();
+  const {majorId , userid ,majorName , promotion} = router.query
   // console.log(session?.user);
   const getStudent = async () => {
     let sendData = {
-      student_id: session?.user.userid,
+      student_id:session.user?.hasMultiMajor == 'true'? userid : session?.user.userid,
     };
     try {
       const res = await axios.post(
@@ -45,7 +46,7 @@ const StudentRequests = () => {
   };
   const getPM = async () => {
     let sendData = {
-      major_id: session?.user.majorid,
+      major_id: session.user?.hasMultiMajor == 'true' ? majorId :session?.user.majorid,
     };
     try {
       const res = await axios.post(
@@ -109,12 +110,12 @@ const StudentRequests = () => {
           semester,
           academicYear,
           reason,
-          student_id: session?.user.userid,
+          student_id: session.user?.hasMultiMajor == 'true' ? userid : session?.user.userid,
           major,
-          student_name: session?.user.name,
+          student_name: session.user?.hasMultiMajor == 'true' ? majorName : session?.user.name,
           student_email: stEmail,
           gpa,
-          promotion: session?.user.promotion,
+          promotion: session.user?.hasMultiMajor == 'true' ? promotion : session?.user.promotion,
           pm_firstName,
           pm_lastname,
           pm_email,
@@ -124,10 +125,10 @@ const StudentRequests = () => {
        
         let sendToPm = {
           pm_id,
-          student_id: session?.user.userid,
+          student_id: session.user?.hasMultiMajor == 'true' ? userid : session?.user.userid,
           student_email: stEmail,
-          major_id: session?.user.majorid,
-          promotion: session?.user.promotion,
+          major_id: session.user?.hasMultiMajor == 'true' ? majorId : session?.user.majorid,
+          promotion: session.user?.hasMultiMajor == 'true' ? promotion : session?.user.promotion,
           gpa: gpa,
         };
          await axios.post('/api/pmApi/addRequestForPm', sendToPm);

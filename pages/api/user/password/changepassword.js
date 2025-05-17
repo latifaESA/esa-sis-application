@@ -35,6 +35,7 @@ async function handler(req, res) {
   const { user } = session;
   // console.log('req.body=', req.body);
   const password = req.body.password;
+  const userid = req.body.userid;
   // const email = req.body.email;
 
   // console.log('Password=', password);
@@ -66,7 +67,7 @@ async function handler(req, res) {
         message: message,
       });
     } else {
-      await newpassword(connection, user.userid, password);
+      await newpassword(connection, userid, password);
       // // console.log(update);
       await disconnect(connection);
     }

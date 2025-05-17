@@ -17,6 +17,7 @@ export default function Attendance() {
     router.push('/AccessDenied');
   };
 
+  const {majorId , userid} = router.query
   const [present, setPresent] = useState('');
 
   const [attendance_date, setattendanceDate] = useState('');
@@ -27,15 +28,29 @@ export default function Attendance() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const payload = {
-          major_id: session.user.majorid,
-          student_id: session.user.userid,
-          teacher_firstname: '',
-          teacher_lastname: '',
-          course_name: '',
-          attendance_date: '',
-          present: '',
-        };
+        let payload;
+        if (session.user?.hasMultiMajor == 'true') {
+          payload = {
+            major_id: majorId,
+            student_id: userid,
+            teacher_firstname: '',
+            teacher_lastname: '',
+            course_name: '',
+            attendance_date: '',
+            present: '',
+          };
+        } else {
+          payload = {
+            major_id: session.user.majorid,
+            student_id: session.user.userid,
+            teacher_firstname: '',
+            teacher_lastname: '',
+            course_name: '',
+            attendance_date: '',
+            present: '',
+          };
+        }
+
         const result = await axios.post(
           '/api/user/filterAttendanceStudent',
           payload
@@ -54,15 +69,29 @@ export default function Attendance() {
 
   const handleShowAll = async () => {
     try {
-      const payload = {
-        major_id: session.user.majorid,
-        student_id: session.user.userid,
-        teacher_firstname: '',
-        teacher_lastname: '',
-        course_name: '',
-        attendance_date: '',
-        present: '',
-      };
+      let payload;
+      if (session.user?.hasMultiMajor == 'true') {
+        payload = {
+          major_id: majorId,
+          student_id: userid,
+          teacher_firstname: '',
+          teacher_lastname: '',
+          course_name: '',
+          attendance_date: '',
+          present: '',
+        };
+      } else {
+        payload = {
+          major_id: session.user.majorid,
+          student_id: session.user.userid,
+          teacher_firstname: '',
+          teacher_lastname: '',
+          course_name: '',
+          attendance_date: '',
+          present: '',
+        };
+      }
+
       const result = await axios.post(
         '/api/user/filterAttendanceStudent',
         payload
@@ -82,15 +111,30 @@ export default function Attendance() {
 
   const handleAttendance = async () => {
     try {
-      const payload = {
-        major_id: session.user.majorid,
-        student_id: session.user.userid,
-        teacher_firstname: teacher_firstname,
-        teacher_lastname: teacher_lastname,
-        course_name: course_name,
-        attendance_date: new Date(attendance_date),
-        present: present,
-      };
+      let payload;
+      if (session.user?.hasMultiMajor == 'true') {
+        payload = {
+          major_id: majorId,
+          student_id: userid,
+          teacher_firstname: teacher_firstname,
+          teacher_lastname: teacher_lastname,
+          course_name: course_name,
+          attendance_date: new Date(attendance_date),
+          present: present,
+        };
+      } else {
+        payload = {
+          major_id: session.user.majorid,
+          student_id: session.user.userid,
+
+          teacher_firstname: teacher_firstname,
+          teacher_lastname: teacher_lastname,
+          course_name: course_name,
+          attendance_date: new Date(attendance_date),
+          present: present,
+        }
+
+      }
       const result = await axios.post(
         '/api/user/filterAttendanceStudent',
         payload
@@ -180,8 +224,8 @@ export default function Attendance() {
                   className="ml-12 invisible max-[850px]:visible max-[850px]:hidden w-40 max-[850px]:ml-10"
                   type="date"
                   name="from"
-                  // value={formData.from}
-                  // onChange={handleChange}
+                // value={formData.from}
+                // onChange={handleChange}
                 ></input>
               </label>
 
@@ -223,8 +267,8 @@ export default function Attendance() {
                   className="ml-16 w-40 invisible max-[850px]:visible max-[850px]:hidden max-[850px]:ml-[60px]"
                   type="date"
                   name="to"
-                  // value={formData.to}
-                  // onChange={handleChange}
+                // value={formData.to}
+                // onChange={handleChange}
                 ></input>
               </label>
               <div className="flex flex-col min-[850px]:flex-row gap-4">

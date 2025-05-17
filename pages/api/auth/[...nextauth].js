@@ -60,7 +60,7 @@ export const authOptions = {
   callbacks: {
     /* A function that is called by the `next-auth` module. */
     async jwt({ token, user, trigger, session }) {
-      if(trigger === "update"){
+      if (trigger === "update") {
         token.name = session.user.name;
         return token
       }
@@ -76,8 +76,12 @@ export const authOptions = {
       if (user?.majorid) token.majorid = user.majorid;
       if (user?.promotion) token.promotion = user.promotion;
       if (user?.hasMultiMajor) token.hasMultiMajor = user.hasMultiMajor;
+      if (user?.email) token.email = user.email;
       if (user?.profileurl) token.profileurl = user.profileurl;
       if (user?.pimsId) token.pimsId = user.pimsId;
+      if (user?.extramajorid) token.extramajorid = user.extramajorid;
+      if (user?.user_extra_id) token.user_extra_id = user.user_extra_id;
+      if (user?.extraPromotion) token.extraPromotion = user.extraPromotion;
       return token;
     },
     async session({ session, token }) {
@@ -92,9 +96,13 @@ export const authOptions = {
       if (token?.promotion) session.user.promotion = token.promotion;
       if (token?.majorName) session.user.majorName = token.majorName;
       if (token?.hasMultiMajor) session.user.hasMultiMajor = token.hasMultiMajor;
+      if (token?.email) session.user.email = token.email;
       // if (token?.appisSaved) session.user.appisSaved = token.appisSaved;
       if (token?.profileurl) session.user.image = token.image;
       if (token?.pimsId) session.user.pimsId = token.pimsId;
+      if (token?.extramajorid) session.user.extramajorid = token.extramajorid;
+      if (token?.user_extra_id) session.user.user_extra_id = token.user_extra_id;
+      if (token?.extraPromotion) session.user.extraPromotion = token.extraPromotion;
       return session;
     },
   },
@@ -114,14 +122,48 @@ export const authOptions = {
         if (connection._connected) {
 
           // get the user info
+          // const user = await findData(
+          //   connection,
+          //   'users',
+          //   'userid',
+          //   credentials.userid
+          // );
           const user = await findData(
             connection,
             'users',
-            'userid',
+            'email',
             credentials.userid
           );
-          const userinfo = await Userinfo(connection, credentials.userid); //email from req body
-          // console.log(userinfo.rows[0].profileurl)
+
+          let userinfoRowUser = user.rows[0]; // default to rows[0]
+          if (userinfoRowUser.role === 1) {
+            const extInfoUser = await findData(
+              connection,
+              'extra_user',
+              'userid',
+              user.rows[0].userid
+            );
+  
+            if (extInfoUser.rowCount > 0 && user.rows.length > 1) {
+              userinfoRowUser = user.rows[1]; // use second entry if exists
+            }
+          }
+          // Check if user has extra info
+        
+
+          const userinfo = await Userinfo(connection, credentials.userid); //email from req bod
+          let userinfoRow = userinfo.rows[0]; // default to rows[0]
+          // Check if user has extra info
+          const extInfo = await findData(
+            connection,
+            'extra_user',
+            'userid',
+            userinfo.rows[0].userid
+          );
+
+          if (extInfo.rowCount > 0 && userinfo.rows.length > 1) {
+            userinfoRow = userinfo.rows[1]; // use second entry if exists
+          }
           // console.log("---------------------------------")
           //  check if there is user with the given id
           if (user.rowCount > 0) {
@@ -129,7 +171,7 @@ export const authOptions = {
             if (
               bcryptjs.compareSync(
                 credentials.password.trim(),
-                user.rows[0].userpassword
+                userinfoRowUser.userpassword
               )
             ) {
               // check if the user completed the survey
@@ -139,7 +181,7 @@ export const authOptions = {
                 let { data } = await axios.get(
                   // FIXME: Dear SIS Developper use process.env to retrive the Blue HOST
                   `https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=${parseInt(
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   )}`,
                   {
                     //    let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWGetUserPreventAccess?pathway=140&userid=${credentials.email}`, {
@@ -150,15 +192,15 @@ export const authOptions = {
                   }
                 );
                 if (data.blocked) {
-                   await updateStatusBlue(
+                  await updateStatusBlue(
                     connection,
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
                   // console.log('status blue', status);
 
                   const WeeklyLogs = await getStudentFromBlueForLogs(
                     connection,
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
 
                   if (WeeklyLogs.rowCount != 0) {
@@ -252,27 +294,44 @@ export const authOptions = {
                     );
                     // console.log(insertToLogs);
                   }
-                  if (user.rows[0].role === 1) {
+                  if (userinfoRowUser.role === 1) {
                     // get the student data
                     const ST = await findData(
                       connection,
                       'student',
                       'student_id',
-                      user.rows[0].userid
+                      userinfoRowUser.userid
                     );
+
 
                     const ST_FIN = await findData(
                       connection,
                       'student_financial',
                       'student_financial_id',
-                      user.rows[0].userid
+                      userinfoRowUser.userid
                     );
+
+                    const ST_Con = await findData(
+                      connection,
+                      'user_contact',
+                      'userid',
+                      userinfoRowUser.userid
+                    );
+
                     const ST_major = await findData(
                       connection,
                       "major",
                       "major_id",
                       ST_major.rows[0].major_id
                     );
+                    console.log('ST_major', ST_major)
+                    const ST_Ext = await findData(
+                      connection,
+                      'extra_user',
+                      'email',
+                      ST_Con.rows[0].email
+                    );
+
                     // console.log('this is ST ');
                     // console.log(ST);
                     // if the program_manager exists then send the data to frontend
@@ -280,10 +339,11 @@ export const authOptions = {
                       await disconnect(connection);
                       // Write to logger
                       if (req) {
+
                         // Log user information
                         // userinfo.role ==='1'?
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          `${new Date()}=${userinfoRowUser.role}=login=${req.body.userid
                           }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                           }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
@@ -292,14 +352,19 @@ export const authOptions = {
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                          role: user.rows[0].role.toString(),
+                          role: userinfoRowUser.role.toString(),
+                          email: `${ST_Con.rows[0].email}`,
                           status: `${data.blocked ? 'limited' : 'active'}`,
-                          userid: `${user.rows[0].userid}`,
-                          image: userinfo.rows[0].profileurl,
-                          accessToken: `${user.rows[0].access_token}`,
+                          userid: `${userinfoRowUser.userid}`,
+                          image:userinfoRow.profileurl,
+                          accessToken: `${userinfoRowUser.access_token}`,
                           majorid: ST.rows[0].major_id,
                           promotion: ST.rows[0].promotion,
                           majorName: ST_major.rows[0].major_name,
+                          extramajorid: `${ST_Ext.rows[0].majorid}`,
+                          hasMultiMajor: `${ST_Ext.rowCount > 0 ? true : false}`,
+                          user_extra_id: ST_Ext.rowCount > 0 ? ST_Ext.rows[0].userid : '',
+                          extraPromotion: `${ST_Ext.rows[0].promotion}`,
                           pimsId: ST_FIN.rowCount > 0 ? ST_FIN.rows[0].pims_id : ''
                         };
                       } else {
@@ -310,20 +375,22 @@ export const authOptions = {
                   }
                 } else {
 
-                  if (user.rows[0].role === 1) {
+                  if (userinfoRowUser.role === 1) {
                     // get the student data
                     const ST = await findData(
                       connection,
                       'student',
                       'student_id',
-                      user.rows[0].userid
+                      userinfoRowUser.userid
                     );
+
                     const ST_FIN = await findData(
                       connection,
                       'student_financial',
                       'stundent_financial_id',
-                      user.rows[0].userid
+                      userinfoRowUser.userid
                     );
+
                     const ST_major = await findData(
                       connection,
                       'major',
@@ -331,11 +398,25 @@ export const authOptions = {
                       ST.rows[0].major_id
                     )
 
+                    const ST_Con = await findData(
+                      connection,
+                      'user_contact',
+                      'userid',
+                      userinfoRowUser.userid
+                    );
+
+                    const ST_Ext = await findData(
+                      connection,
+                      'extra_user',
+                      'email',
+                      ST_Con.rows[0].email
+                    );
+                    console.log('ST_Ext', ST_Ext.rowCount > 0)
 
                     if (ST.rows[0].status === 'limited') {
                       await updateStatusPreBlue(
                         connection,
-                        user.rows[0].userid
+                        userinfoRowUser.userid
                       )
 
                     }
@@ -343,23 +424,26 @@ export const authOptions = {
                     // console.log(ST);
                     // if the program_manager exists then send the data to frontend
                     if (ST.rows) {
+
+
                       await disconnect(connection);
                       // Write to logger
                       if (req) {
                         // Log user information
                         // userinfo.role ==='1'?
+
                         sis_app_logger.info(
-                          `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                          `${new Date()}=${userinfoRowUser.role}=login=${req.body.userid
                           }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                           }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                           }`
                         );
                         // console.log('name', `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                         //                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                        //                           'role', user.rows[0].role.toString(),
+                        //                           'role', userinfoRowUser.role.toString(),
                         //                           'status', `${data.blocked ? 'limited' : 'active'}`,
-                        //                           'userid', `${user.rows[0].userid}`,
-                        //                           'accessToken' ,`${user.rows[0].access_token}`,
+                        //                           'userid', `${userinfoRowUser.userid}`,
+                        //                           'accessToken' ,`${userinfoRowUser.access_token}`,
                         //                           'image', userinfo.rows[0].profileurl,
                         //                           'majorid', ST.rows[0].major_id,
                         //                           'majorName', ST_major.rows[0].major_name,
@@ -368,15 +452,21 @@ export const authOptions = {
                         return {
                           name: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
                           // email: `${ST.rows[0].student_firstname} ${ST.rows[0].student_lastname}`,
-                          role: user.rows[0].role.toString(),
+                          role: userinfoRowUser.role.toString(),
                           status: `${data.blocked ? 'limited' : 'active'}`,
-                          userid: `${user.rows[0].userid}`,
-                          accessToken: `${user.rows[0].access_token}`,
-                          image: userinfo.rows[0].profileurl,
+                          userid: `${userinfoRowUser.userid}`,
+                          accessToken: `${userinfoRowUser.access_token}`,
+                          image: userinfoRow.profileurl,
                           majorid: ST.rows[0].major_id,
+                          // email: user.ST_Con[0].email,
+                          extramajorid: ST_Ext.rowCount > 0 ? `${ST_Ext.rows[0].majorid}` : '',
                           majorName: ST_major.rows[0].major_name,
                           promotion: ST.rows[0].promotion,
-                          pimsId: ST_FIN.rowCount > 0 ? ST_FIN.rows[0].pims_id : ''
+                          hasMultiMajor: `${ST_Ext.rowCount > 0 ? true : false}`,
+                          email: `${ST_Con.rows[0].email}`,
+                          extraPromotion: ST_Ext.rowCount > 0 ? `${ST_Ext.rows[0].promotion}` : '',
+                          pimsId: ST_FIN.rowCount > 0 ? ST_FIN.rows[0].pims_id : '',
+                          user_extra_id: ST_Ext.rowCount > 0 ? ST_Ext.rows[0].userid : '',
                         };
                       } else {
                         // if the student is not exists then send this message to frontend
@@ -393,7 +483,7 @@ export const authOptions = {
 
                 //   try{
 
-                //   let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${user.rows[0].userid}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
+                //   let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${userinfoRowUser.userid}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
 
                 //   httpsAgent: new https.Agent({
                 //       rejectUnauthorized: false,
@@ -410,7 +500,7 @@ export const authOptions = {
                 //       connection,
                 //       'student',
                 //       'student_id',
-                //       user.rows[0].userid,
+                //       userinfoRowUser.userid,
 
                 //     let {data} = await axios.get(`https://survey.esa.edu.lb/BPI/PathwayService.svc/PWBlueTasks?pathway=140&userid=${credentials.email}&SubjectIDs=2022_EMBA-CC-08_01,2022_EMBA-S-04_01,2022_EMBA-EC-03_02,2022_EMBA-EC-09_01`, {
 
@@ -418,13 +508,13 @@ export const authOptions = {
                 //     if(ST.rows){
 
                 // check if the user is admin
-                if (user.rows[0].role === 0) {
+                if (userinfoRowUser.role === 0) {
                   // get the admin data
                   const admin = await findData(
                     connection,
                     'admin',
                     'adminid',
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
                   // if the admin exists then send the data to frontend
                   if (admin.rows) {
@@ -434,23 +524,23 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        `${new Date()}=${userinfoRowUser.role}=login=${req.body.userid
                         }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
-                    // console.log('user.rows[0].role==', user.rows[0].role);
-                    // console.log(user.rows[0]);
+                    // console.log('userinfoRowUser.role==', userinfoRowUser.role);
+                    // console.log(userinfoRowUser);
                     // console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
                       status: admin.rows[0].admin_status,
-                      role: user.rows[0].role.toString(),
-                      userid: `${user.rows[0].userid}`,
-                      image: userinfo.rows[0].profileurl,
+                      role: userinfoRowUser.role.toString(),
+                      userid: `${userinfoRowUser.userid}`,
+                      image: userinfoRow.profileurl,
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
@@ -458,13 +548,13 @@ export const authOptions = {
                   }
                 }
 
-                else if (user.rows[0].role === 2) {
+                else if (userinfoRowUser.role === 2) {
                   // get the program_manager data
                   const PM = await findData(
                     connection,
                     'program_manager',
                     'pm_id',
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
                   const pm_major = await findData(
                     connection,
@@ -480,19 +570,19 @@ export const authOptions = {
                   )
                   const isExtra = extra.rowCount
                   // console.log(isExtra >0)
-                  // console.log(user.rows[0].userid);
+                  // console.log(userinfoRowUser.userid);
                   // console.log(PM);
                   // if the program_manager exists then send the data to frontend
                   if (PM.rows) {
                     await disconnect(connection);
-            
+
 
                     // Write to logger
                     if (req) {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        `${new Date()}=${userinfoRowUser.role}=login=${req.body.userid
                         }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
@@ -504,8 +594,8 @@ export const authOptions = {
                       //                              name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                       //                              email: PM.rows[0].pm_email,
                       //                              majorid: PM.rows[0].major_id,
-                      //                              role: (user.rows[0].role).toString(),
-                      //                              userid: user.rows[0].userid,
+                      //                              role: (userinfoRowUser.role).toString(),
+                      //                              userid: userinfoRowUser.userid,
                       //                              image: userinfo.rows[0].profileurl
                       //
                       //                            };
@@ -513,15 +603,15 @@ export const authOptions = {
                       //                      // if the program manager is not exists then send this message to frontend
                       //                      message = 'Program manager does not exists'
                       //                    }
-                      //                  }else if(user.rows[0].role === 3){
+                      //                  }else if(userinfoRowUser.role === 3){
                       //                    // get the program_manager_assistance data
                       //                    const AS = await findData(
                       //                      connection,
                       //                      'program_manager_assistance',
                       //                      'pm_ass_id',
-                      //                      user.rows[0].userid,
+                      //                      userinfoRowUser.userid,
                       //                    );
-                      //                    console.log(user.rows[0].userid)
+                      //                    console.log(userinfoRowUser.userid)
                       //                    console.log(AS)
                       //                    // if the program_manager_assistance exists then send the data to frontend
                       //                if(AS.rows){
@@ -532,7 +622,7 @@ export const authOptions = {
                       //                    // Log user information
                       //                    // userinfo.role ==='1'?
                       //                    sis_app_logger.info(
-                      //                      `${new Date()}=${user.rows[0].role}=login=${req.body.email}=${
+                      //                      `${new Date()}=${userinfoRowUser.role}=login=${req.body.email}=${
                       //                        userAgentinfo.os.family
                       //                      }=${userAgentinfo.os.major}=${userAgentinfo.family}=${
                       //                        userAgentinfo.source
@@ -541,25 +631,25 @@ export const authOptions = {
                       //=======
                       name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                       email: PM.rows[0].pm_email,
-                      role: user.rows[0].role.toString(),
+                      role: userinfoRowUser.role.toString(),
                       status: PM.rows[0].pm_status,
-                      userid: user.rows[0].userid,
+                      userid: userinfoRowUser.userid,
                       majorid: PM.rows[0].major_id,
                       majorName: pm_major.rows[0].major_name,
-                      hasMultiMajor:`${isExtra > 0 ? true : false}` ,
-                      image: userinfo.rows[0].profileurl,
+                      hasMultiMajor: `${isExtra > 0 ? true : false}`,
+                      image: userinfoRow.profileurl,
                     };
                   } else {
                     // if the program manager is not exists then send this message to frontend
                     message = 'Program manager does not exists';
                   }
-                } else if (user.rows[0].role === 3) {
+                } else if (userinfoRowUser.role === 3) {
                   // get the program_manager_assistance data
                   const AS = await findData(
                     connection,
                     'program_manager_assistance',
                     'pm_ass_id',
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
                   const pm_major = await findData(
                     connection,
@@ -575,7 +665,7 @@ export const authOptions = {
                     AS.rows[0].pm_ass_id
                   )
                   const isExtra = extra.rowCount
-                  // console.log(user.rows[0].userid);
+                  // console.log(userinfoRowUser.userid);
                   // console.log(AS);
                   // if the program_manager_assistance exists then send the data to frontend
                   if (AS.rows) {
@@ -585,7 +675,7 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.email
+                        `${new Date()}=${userinfoRowUser.role}=login=${req.body.email
                         }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
@@ -595,13 +685,13 @@ export const authOptions = {
                     return {
                       name: `${AS.rows[0].pm_ass_firstname} ${AS.rows[0].pm_ass_lastname}`,
                       email: AS.rows[0].pm_ass_email,
-                      role: user.rows[0].role.toString(),
-                      userid: user.rows[0].userid,
+                      role: userinfoRowUser.role.toString(),
+                      userid: userinfoRowUser.userid,
                       status: AS.rows[0].pm_ass_status,
                       majorid: AS.rows[0].major_id,
                       majorName: pm_major.rows[0].major_name,
-                      image: userinfo.rows[0].profileurl,
-                      hasMultiMajor:`${isExtra > 0 ? true : false}` ,
+                      image: userinfoRow.profileurl,
+                      hasMultiMajor: `${isExtra > 0 ? true : false}`,
 
                     };
                   } else {
@@ -611,21 +701,21 @@ export const authOptions = {
                   //=======
                   //                      name: `${PM.rows[0].pm_firstname} ${PM.rows[0].pm_lastname}`,
                   //                     email: PM.rows[0].pm_email,
-                  //                     role: user.rows[0].role.toString(),
-                  //                     userid: user.rows[0].userid,
+                  //                     role: userinfoRowUser.role.toString(),
+                  //                     userid: userinfoRowUser.userid,
                   //                     image: userinfo.rows[0].profileurl,
                   //                  };
                   //                 } else {
                   //                   // if the program manager is not exists then send this message to frontend
                   //                   message = 'Program manager does not exists';
                   // />>>>>>> main
-                } else if (user.rows[0].role === 4) {
+                } else if (userinfoRowUser.role === 4) {
                   // get the admin data
                   const admin = await findData(
                     connection,
                     'admin',
                     'adminid',
-                    user.rows[0].userid
+                    userinfoRowUser.userid
                   );
                   // if the admin exists then send the data to frontend
                   if (admin.rows) {
@@ -635,30 +725,30 @@ export const authOptions = {
                       // Log user information
                       // userinfo.role ==='1'?
                       sis_app_logger.info(
-                        `${new Date()}=${user.rows[0].role}=login=${req.body.userid
+                        `${new Date()}=${userinfoRowUser.role}=login=${req.body.userid
                         }=${userAgentinfo.os.family}=${userAgentinfo.os.major
                         }=${userAgentinfo.family}=${userAgentinfo.source}=${userAgentinfo.device.family
                         }`
                       );
                     }
-                    // console.log('user.rows[0].role==', user.rows[0].role);
-                    // console.log(user.rows[0]);
+                    // console.log('userinfoRowUser.role==', userinfoRowUser.role);
+                    // console.log(userinfoRowUser);
                     console.log('userinfo.rows[0]==', userinfo.rows[0]);
 
                     return {
                       name: `${admin.rows[0].admin_firstname}  ${admin.rows[0].admin_lastname}`,
                       email: admin.rows[0].adminemail,
                       status: admin.rows[0].admin_status,
-                      role: user.rows[0].role.toString(),
-                      userid: `${user.rows[0].userid}`,
-                      image: userinfo.rows[0].profileurl,
+                      role: userinfoRowUser.role.toString(),
+                      userid: `${userinfoRowUser.userid}`,
+                      image: userinfoRow.profileurl,
                     };
                   } else {
                     // if the admin is not exists then send this message to frontend
                     message = 'Super Admin does not exists';
                   }
                 }
-                // } else if (user.rows[0].role === 3) {
+                // } else if (userinfoRowUser.role === 3) {
                 //   // get the program_manager_assistance data
                 //   const AS = await findData(
                 //     connection,
@@ -710,7 +800,7 @@ export const authOptions = {
             } else {
               // if the password is incorrect then send this message
               message = 'Invalid Password';
- 
+
             }
           } else {
             message = 'user does not exist';

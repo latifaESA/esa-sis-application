@@ -90,7 +90,7 @@ const ResetPassword = () => {
           password,
         });
         setErrorMessage("Password Updated Successfully");
-        router.push(redirect || "/");
+        router.push(redirect || "/user/login");
         // if (result.error) {
         //   setErrorMessage(result.error);
         // }

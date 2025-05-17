@@ -13,7 +13,7 @@ const NotifPage = () => {
   useEffect(() => {
     const getNot = async () => {
       try {
-        let userID = session.user.userid;
+        let userID = session.user.email;
         const changeView = async () => {
           try {
             const result = await axios.post(`/api/user/changeView/${userID}`);

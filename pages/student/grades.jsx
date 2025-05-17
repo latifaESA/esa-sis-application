@@ -16,6 +16,7 @@ export default function Grades() {
   const { data: session } = useSession();
   const [studentGrades, setStudentGrades] = useState([])
   const router = useRouter()
+  const {userid , majorName} = router.query
   const redirect = () => {
     router.push('/AccessDenied')
   }
@@ -40,15 +41,16 @@ export default function Grades() {
     return "";
   };
 
-  const firstMajorWord = getFirstWordBeforeHyphen(session?.user.majorName);
-  const secondMajorWord = getFirstWordAfterHyphen(session?.user.majorName);
+  const firstMajorWord = getFirstWordBeforeHyphen(session.user?.hasMultiMajor == 'true' ? majorName :session?.user.majorName);
+  const secondMajorWord = getFirstWordAfterHyphen(session.user?.hasMultiMajor == 'true' ? majorName :session?.user.majorName);
+  console.log('secondMajorWord' , secondMajorWord)
   const isExeMajor = firstMajorWord === "EXED";
 
   const getGrade = async () => {
     try {
       const data = await axios.post('/api/user/StudentGrades', {
         table:'student_grades',
-        studentId: session.user?.userid
+        studentId:session.user?.hasMultiMajor == 'true' ? userid :session.user?.userid
       })
 
       setStudentGrades(data.data.data.rows)
@@ -61,7 +63,7 @@ export default function Grades() {
     try {
       const data = await axios.post('/api/user/StudentGrades', {
         table:'grades_rtf',
-        studentId: session.user?.userid
+      studentId:session.user?.hasMultiMajor == 'true' ? userid :session.user?.userid
       })
 
       setStudentGrades(data.data.data.rows)
@@ -74,7 +76,7 @@ export default function Grades() {
 
       const data = await axios.post('/api/user/StudentGrades', {
         table:'grades_gmp',
-        studentId: session.user?.userid
+        studentId:session.user?.hasMultiMajor == 'true' ?  userid : session.user?.userid
 
       })
 
@@ -89,7 +91,7 @@ export default function Grades() {
 
       const data = await axios.post('/api/user/StudentGrades', {
         table:'grade_exed',
-        studentId: session.user?.userid
+        studentId:session.user?.hasMultiMajor == 'true' ?  userid : session.user?.userid
 
       })
 

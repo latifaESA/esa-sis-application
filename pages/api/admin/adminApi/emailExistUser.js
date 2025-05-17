@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config("../env");
 const transporter = createTransporter();
 
-const SendEmail = async (name, email, password, studentId, esa_logo) => {
+const SendEmailOld = async (name, email, esa_logo , program) => {
   // console.log('wsll email' , password)
   try {
   //  console.log('pass' , password)
@@ -36,18 +36,9 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
       `<p>Dear <span style="font-weight: bold">${name}</span>,</p>` +
       `<p>Hope this email finds you well.</p> ` +
       `<p>Congratulations on your successful enrollment at ESA Business School ! As part of your academic journey with us, we've set up your access to the Student Information System (SIS). </p>` +
-      // `<p> Please login using the below credentials:</p>` +
-      // `<p>Your username: <span style="font-weight: bold">${email}</span>.</p>` +
-      // `<p>Your password: <span style="font-weight: bold">${defaultpassword}</span>.</p>` +
 
-      `<p> Here are your credentials:
-        <ul>
-        • Your Username: <span style="font-weight: bold">${email}</span> <br>
-        • Your Password: <span style="font-weight: bold">${password}</span>
-        </ul>
-        </p>
-        ` +
-      `<p> Please click on the below link to sign in to the SIS :</p>` +
+      `<p> We would like to inform you that your access to the Student Information System (SIS) remains active. Since you were previously enrolled in a certificate program at ESA, you can continue using the same credentials to sign in.</p>` +
+      `<p> Please log in to the SIS to access the details of your ${program} using the link below:</p>` +
       `<div style="text-align: center;"> 
             <a href='${link}' target="_blank" style="padding: 8px 12px; border: 1px solid #ED2939;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #0c0c0c;text-decoration: none;font-weight:bold;display: inline-block;">
             Sign In            
@@ -55,7 +46,7 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
             </div>` +
       `</br>` +
       `</br>` +
-      `<p>For further assistance, you may contact us on the following email: ${itServiceDeskEmail}.</p> ` +
+      `<p>If you need any help or have trouble accessing the system, please contact our IT support team at: ${itServiceDeskEmail}.</p> ` +
       `</br>` +
       `<p>Best regards,</p> ` +
       `<p>ESA Business School</p> ` +
@@ -82,4 +73,4 @@ const SendEmail = async (name, email, password, studentId, esa_logo) => {
 
 
 
-export default SendEmail;
+export default SendEmailOld;
